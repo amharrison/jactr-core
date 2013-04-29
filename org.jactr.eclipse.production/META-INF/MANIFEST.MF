@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Production Plug-in
+Bundle-SymbolicName: org.jactr.eclipse.production;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.jactr.eclipse.production.ProductionViewActivator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.jactr.tools,
+ org.jactr.io,
+ org.jactr.eclipse.ui,
+ org.jactr.support,
+ org.eclipse.draw2d,
+ org.jactr.eclipse.core,
+ org.eclipse.ui.editors,
+ org.eclipse.zest.core,
+ org.eclipse.zest.layouts
+Eclipse-LazyStart: true
+Export-Package: org.jactr.eclipse.production,
+ org.jactr.eclipse.production.handler
