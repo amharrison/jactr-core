@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: jACT-R Bundles Plug-in
+Bundle-SymbolicName: org.jactr.eclipse.bundles;singleton:=true
+Bundle-Version: 1.0.1.qualifier
+Bundle-Vendor: jactr.org
+Export-Package: org.jactr.eclipse.core.bundles,
+ org.jactr.eclipse.core.bundles.descriptors,
+ org.jactr.eclipse.core.bundles.meta,
+ org.jactr.eclipse.core.bundles.registry
+Require-Bundle: org.jactr,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.pde.core;visibility:=reexport,
+ org.jactr.io
+Eclipse-RegisterBuddy: org.apache.log4j 
+Eclipse-BuddyPolicy: registered
+Bundle-Activator: org.jactr.eclipse.core.bundles.BundlesActivator
+Bundle-ActivationPolicy: lazy
