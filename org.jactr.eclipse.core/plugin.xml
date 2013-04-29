@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+     <extension
+         id="builder.actrBuilder"
+         name="ACT-R Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder >
+         <run
+               class="org.jactr.eclipse.core.builder.ACTRIncrementalProjectBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="project.actrNature"
+         name="ACT-R Project Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.jactr.eclipse.core.project.ACTRProjectNature">
+         </run>
+      </runtime>
+   </extension>
+   <extension
+         point="org.eclipse.team.core.fileTypes">
+      <fileTypes
+            type="text"
+            extension="lisp">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="jactr">
+      </fileTypes>
+   </extension>
+   <extension
+         point="org.eclipse.team.core.ignore">
+      <ignore
+            enabled="true"
+            pattern="*.compiled">
+      </ignore>
+      <ignore
+            enabled="true"
+            pattern=".asts">
+      </ignore>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+   </extension>
+   
+
+</plugin>
