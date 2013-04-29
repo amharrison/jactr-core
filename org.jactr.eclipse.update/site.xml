@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="jACT-R IDE Update site" url="http://jactr.org/update/eclipse/">
+      jACT-R IDE update site
+   </description>
+   <feature url="features/org.jactr.eclipse.tools_1.3.0.201207130116.jar" id="org.jactr.eclipse.tools" version="1.3.0.201207130116">
+      <category name="org.jactr.eclipse"/>
+   </feature>
+   <feature url="features/org.jactr.eclipse.feature_1.3.0.201301152231.jar" id="org.jactr.eclipse.feature" version="1.3.0.201301152231">
+      <category name="org.jactr.eclipse"/>
+   </feature>
+   <category-def name="org.jactr.eclipse" label="jACT-R : Eclipse Integration"/>
+</site>

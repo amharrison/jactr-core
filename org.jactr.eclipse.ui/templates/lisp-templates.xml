@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+	
+<template 
+	context="lisp.procedural" 
+	description="Create production" 
+	id="org.jactr.eclipse.ui.templates.lisp.production"
+	name="production">(p ${name}
+  =goal&gt;
+  isa ${chunkType}
+  ${slot} ${value}
+  ${cursor}
+ ==&gt;
+  =goal&gt;
+   ${slot} ${value2}		
+)	
+</template>
+
+<template 
+	context="lisp.procedural" 
+	description="Create production chain" 
+	id="org.jactr.eclipse.ui.templates.lisp.production.chain"
+	name="production chain">
+;;
+;; initiate ${name}
+;; @next ${name}-failed, ${name}-completed
+;; 
+(p try-${name}
+  =goal&gt;
+  isa ${goalType}
+  ${goalSlot} ${initialValue}
+  
+ ?${request}&gt;
+  - state busy
+  
+  ${cursor}
+ ==&gt;
+  =goal&gt;
+   ${goalSlot} ${nextValue}
+  
+  +${request}&gt;
+   isa ${requestType}
+   ${requestSlot} ${requestValue} 
+)
+
+;;
+;; request ${name} failed
+;; @previous try-${name}
+;; 
+(p ${name}-failed
+  =goal&gt;
+  isa ${goalType}
+  ${goalSlot} ${nextValue}
+  
+  ?${request}&gt;
+   state error
+   
+ ==&gt;
+  =goal&gt;
+   ${goalSlot} ${failedFlag}
+)
+
+;;
+;; request ${name} completed
+;; @previous try-${name}
+;; 
+(p ${name}-completed
+  =goal&gt;
+  isa ${goalType}
+  ${goalSlot} ${nextValue}
+  
+  =${request}&gt;
+  isa ${requestType}
+  ${resultSlot} ${requestValue}
+ 
+ ==&gt;
+  =goal&gt;
+   ${goalSlot} ${completedFlag}
+   
+  -${request}&gt;
+ )  
+</template>
+		
+
+<template 
+	context="lisp.declarative" 
+	description="Create chunk-type" 
+	id="org.jactr.eclipse.ui.templates.lisp.chunkType"
+	name="chunkType">(chunk-type ${name} ${cursor})
+</template>	
+	
+<template 
+	context="lisp.declarative" 
+	description="Create chunk" 
+	id="org.jactr.eclipse.ui.templates.lisp.chunk"
+	name="chunk">(add-dm (${name} isa ${type} ${cursor}))
+</template>	
+
+<template 
+	context="lisp.slot" 
+	description="Specify slot equals" 
+	id="org.jactr.eclipse.ui.templates.lisp.slot"
+	name="slot=">${slotName} ${slotValue}
+</template>
+	
+		
+<template 
+	context="list.lhs" 
+	description="Buffer check" 
+	id="org.jactr.eclipse.ui.templates.lisp.production.check"
+	name="=">=${bufferName}&gt;
+ isa ${isaType}
+ ${cursor}
+</template>							
+
+<template 
+	context="lisp.lhs" 
+	description="Buffer query" 
+	id="org.jactr.eclipse.ui.templates.lisp.production.query"
+	name="?">?${bufferName}&gt;
+ ${cursor}	
+</template>	
+		
+<template 
+	context="lisp.rhs" 
+	description="Buffer add" 
+	id="org.jactr.eclipse.ui.templates.lisp.production.add"
+	name="+">+${bufferName}&gt;
+ isa ${chunktype}
+ ${cursor}
+</template>		
+
+<template 
+	context="lisp.rhs" 
+	description="Buffer remove" 
+	id="org.jactr.eclipse.ui.templates.lisp.production.remove"
+	name="-">-${bufferName}&gt;
+ ${cursor}
+</template>	
+
+<template 
+	context="lisp.rhs" 
+	description="Buffer modify" 
+	id="org.jactr.eclipse.ui.templates.lisp.production.modify"
+	name="=">=${bufferName}&gt;
+ ${cursor}
+</template>
+	
+<template 
+	context="lisp.rhs" 
+	description="Output" 
+	id="org.jactr.eclipse.ui.templates.lisp.production.output"
+	name="!">!output! ("${message}")
+${cursor}	
+</template>
+	
+			
+				
+</templates>

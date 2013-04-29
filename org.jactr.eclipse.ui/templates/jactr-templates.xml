@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+	
+<template 
+	context="jactr.procedural" 
+	description="production"
+	icon="icons/full/basic/production.gif"
+	id="org.jactr.eclipse.ui.templates.jactr.production"
+	name="production">&lt;!--
+ production ${name}
+--&gt;	
+&lt;production name="${name}"&gt;
+&lt;conditions&gt;
+&lt;match buffer="${goal}" type="${type}"&gt;
+&lt;slot name="${slotName}" equals="${value}"/&gt;${cursor}
+&lt;/match&gt;
+&lt;/conditions&gt;	
+&lt;actions&gt;
+&lt;modify buffer="${goal}"&gt;
+&lt;slot name="${slotName}" equals="${nextValue}"/&gt;
+&lt;/modify&gt;
+&lt;/actions&gt;
+&lt;/production&gt;</template>
+
+<template 
+	context="jactr.procedural" 
+	description="production chain"
+	icon="icons/full/basic/production.gif"
+	id="org.jactr.eclipse.ui.templates.jactr.production.chain"
+	name="production chain">&lt;!--
+ production chain, starting with attempt-${name}
+ @next ${name}-failed, ${name}-completed
+--&gt;	
+&lt;production name="attempt-${name}"&gt;
+&lt;conditions&gt;
+&lt;match buffer="${goal}" type="${goalType}"&gt;
+&lt;slot name="${goalSlot}" equals="${goalValue}"/&gt;
+${cursor}
+&lt;/match&gt;
+&lt;query buffer="${request}"&gt;
+&lt;slot name="${state}" ${not}="${busy}"/&gt;
+&lt;/query&gt;
+&lt;/conditions&gt;	
+&lt;actions&gt;
+&lt;modify buffer="${goal}"&gt;
+&lt;slot name="${goalSlot}" equals="${nextValue}"/&gt;
+&lt;/modify&gt;
+&lt;add buffer="${request}" type="${requestType}"&gt;
+&lt;slot name="${requestSlot}" ${equals}="${requestValue}"/&gt;${cursor}
+&lt;/add&gt;
+&lt;/actions&gt;
+&lt;/production&gt;
+
+&lt;!-- 
+ failed ${name}
+ @previous attempt-${name}
+--&gt;
+&lt;production name="${name}-failed"&gt;
+&lt;conditions&gt;
+&lt;match buffer="${goal}" type="${goalType}"&gt;
+&lt;slot name="${goalSlot}" equals="${nextValue}"/&gt;
+&lt;/match&gt;
+&lt;query buffer="${request}"&gt;
+&lt;slot name="${state}" ${equals}="${error}"/&gt;
+&lt;/query&gt;
+&lt;/conditions&gt;	
+&lt;actions&gt;
+&lt;modify buffer="${goal}"&gt;
+&lt;slot name="${goalSlot}" equals="${failedValue}"/&gt;
+&lt;/modify&gt;
+&lt;/actions&gt;
+&lt;/production&gt;
+
+&lt;!--
+ ${name} completed
+ @previous attempt-${name}
+--&gt;
+&lt;production name="${name}-completed"&gt;
+&lt;conditions&gt;
+&lt;match buffer="${goal}" type="${goalType}"&gt;
+&lt;slot name="${goalSlot}" equals="${nextValue}"/&gt;
+&lt;/match&gt;
+&lt;match buffer="${request}"&gt;
+&lt;slot name="${requestSlot}" ${equals}="${requestValue}"/&gt;
+&lt;/query&gt;
+&lt;/conditions&gt;	
+&lt;actions&gt;
+&lt;modify buffer="${goal}"&gt;
+&lt;slot name="${goalSlot}" equals="${completeValue}"/&gt;
+&lt;/modify&gt;
+&lt;remove buffer="${request}"/&gt;
+&lt;/actions&gt;
+&lt;/production&gt;
+</template>
+	
+<template 
+	context="jactr.parameters" 
+	description="Specify parameters block"
+    icon="icons/full/basic/prop_ps.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.parameters"
+	name="parameters">&lt;parameters&gt;
+&lt;parameter name="${name}" value="${value}"/&gt;
+&lt;/parameters&gt;</template>	
+
+<template 
+	context="jactr.parameter" 
+	description="Set parameter"
+	icon="icons/full/basic/parameter.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.parameter"
+	name="parameter">&lt;parameter name="${name}" value="${value}"/&gt;</template>
+	
+
+<template 
+	context="jactr.declarative" 
+	description="chunk-type: with slots"
+	icon="icons/full/basic/chunktype.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.chunkType"
+	name="chunkType">&lt;chunk-type name="${name}"&gt;
+&lt;slot name="${slotName}" equals="${slotValue}"/&gt;${cursor}
+&lt;/chunk-type&gt;</template>	
+
+<template 
+	context="jactr.declarative" 
+	description="chunk-type: no slots"
+	icon="icons/full/basic/chunktype.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.chunkType.simple"
+	name="chunkType-simple">&lt;chunk-type name="${name}"/&gt;${cursor}
+</template>
+	
+<template 
+	context="jactr.declarative" 
+	description="chunk: with slot"
+	icon="icons/full/basic/chunk.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.chunk"
+	name="chunk">&lt;chunk name="${name}" type="${parent}"&gt;
+&lt;slot name="${slotName}" equals="${slotValue}"/&gt;${cursor}
+&lt;/chunk&gt;</template>	
+	
+<template 
+    context="jactr.declarative" 
+    description="chunk: no slots"
+    icon="icons/full/basic/chunk.gif" 
+    id="org.jactr.eclipse.ui.templates.jactr.chunk.simple"
+    name="chunk simple">&lt;chunk name="${name}" type="${parent}"/&gt;</template>	
+
+<template 
+	context="jactr.slot" 
+	description="slot"
+	icon="icons/full/basic/slot.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.slot.eq"
+	name="slot">&lt;slot name="${slotName}" equals="${slotValue}"/&gt;${cursor}</template>	
+	
+
+<template 
+	context="jactr.conditionals" 
+	description="slot: equals"
+	icon="icons/full/basic/slot.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.conditionals.eq"
+	name="equals">&lt;slot name="${slotName}" equals="${slotValue}"/&gt;${cursor}</template>	
+	
+
+<template 
+	context="jactr.conditionals" 
+	description="slot: not equals"
+	icon="icons/full/basic/slot.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.conditionals.not"
+	name="not">&lt;slot name="${slotName}" not="${slotValue}"/&gt;${cursor}</template>
+	
+<template 
+	context="jactr.conditionals" 
+	description="slot: less than"
+	icon="icons/full/basic/slot.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.conditionals.lt.short"
+	name="less than">&lt;slot name="${slotName}" less-than="${slotValue}"/&gt;${cursor}</template>	
+	
+<template 
+	context="jactr.conditionals" 
+	description="slot: greater than"
+	icon="icons/full/basic/slot.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.slot.gt.short"
+	name="greater than">&lt;slot name="${slotName}" greater-than="${slotValue}"/&gt;${cursor}</template>	
+	
+<template 
+	context="jactr.conditionals" 
+	description="slot: less than equals"
+	icon="icons/full/basic/slot.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.slot.lte.short"
+	name="less than equals">&lt;slot name="${slotName}" less-than-equals="${slotValue}"/&gt;${cursor}</template>	
+	
+<template 
+	context="jactr.conditionals" 
+	description="slot: greater than or equal"
+	icon="icons/full/basic/slot.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.slot.gte.short"
+	name="greater than equals">&lt;slot name="${slotName}" greater-than-equals="${slotValue}"/&gt;${cursor}</template>		
+	
+<template 
+	context="jactr.lhs" 
+	description="check buffer contents"
+	icon="icons/full/basic/pattern.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.production.check"
+	name="check">&lt;match buffer="${bufferName}" type="${typeName}"&gt;
+&lt;slot name="${slotName}" equals="${slotValue}"/&gt;${cursor}	
+&lt;/match&gt;</template>		
+
+<template 
+	context="jactr.lhs" 
+	description="check buffer contents"
+	icon="icons/full/basic/pattern.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.production.check.alt1"
+	name="match">&lt;match buffer="${bufferName}" type="${typeName}"&gt;
+&lt;slot name="${slotName}" equals="${slotValue}"/&gt;${cursor}	
+&lt;/match&gt;</template>							
+					
+
+<template 
+	context="jactr.lhs" 
+	description="query buffer state"
+	icon="icons/full/basic/query.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.production.query"
+	name="query">&lt;query buffer="${bufferName}"&gt;
+&lt;slot name="${state}" ${equals}="${free}"/&gt;${cursor}
+&lt;/query&gt;</template>
+<template 
+	context="jactr.lhs" 
+	description="query buffer state"
+	icon="icons/full/basic/query.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.production.query.short"
+	name="?">&lt;query buffer="${bufferName}"&gt;
+&lt;slot name="${state}" ${equals}="${free}"/&gt;${cursor}
+&lt;/query&gt;</template>
+	
+		
+<template 
+	context="jactr.rhs" 
+	description="add to buffer / request"
+	icon="icons/full/basic/add.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.production.add"
+	name="add">&lt;add buffer="${bufferName}" type="${typeName}"&gt;
+&lt;slot name="${slotName}" equals="${slotValue}"/&gt;${cursor}
+&lt;/add&gt;</template>	
+
+<template 
+	context="jactr.rhs" 
+	description="add to buffer / request"
+	icon="icons/full/basic/add.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.production.add.short"
+	name="+">&lt;add buffer="${bufferName}" type="${typeName}"&gt;
+&lt;slot name="${slotName}" equals="${slotValue}"/&gt;${cursor}
+&lt;/add&gt;</template>		
+
+<template 
+	context="jactr.rhs" 
+	description="remove from buffer"
+	icon="icons/full/basic/remove.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.production.remove"
+	name="remove">&lt;remove buffer="${bufferName}"/&gt;${cursor}</template>	
+	
+<template 
+	context="jactr.rhs" 
+	description="remove from buffer"
+	icon="icons/full/basic/remove.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.production.remove.short"
+	name="-">&lt;remove buffer="${bufferName}"/&gt;${cursor}</template>	
+
+<template 
+	context="jactr.rhs" 
+	description="Modify buffer contents" 
+	icon="icons/full/basic/modify.gif"
+	id="org.jactr.eclipse.ui.templates.jactr.production.modify"
+	name="modify">&lt;modify buffer="${bufferName}"&gt;
+&lt;slot name="${slotName}" equals="${slotValue}"/&gt;${cursor}
+&lt;/modify&gt;</template>
+
+<template 
+	context="jactr.rhs" 
+	description="Modify buffer contents" 
+	icon="icons/full/basic/modify.gif"
+	id="org.jactr.eclipse.ui.templates.jactr.production.modify.short"
+	name="=">&lt;modify buffer="${bufferName}"&gt;
+&lt;slot name="${slotName}" equals="${slotValue}"/&gt;${cursor}
+&lt;/modify&gt;</template>
+
+<template 
+	context="jactr.rhs" 
+	description="Touch buffer contents" 
+	icon="icons/full/basic/modify.gif"
+	id="org.jactr.eclipse.ui.templates.jactr.production.touch"
+	name="touch">&lt;modify buffer="${bufferName}"/&gt;</template>
+	
+<template 
+	context="jactr.rhs" 
+	description="Proxy action" 
+	id="org.jactr.eclipse.ui.templates.jactr.production.proxyAction"
+	name="proxyAction">&lt;proxy-action class="${className}"/&gt;${cursor}</template>	
+
+<template 
+	context="jactr.lhs" 
+	description="Proxy condition" 
+	id="org.jactr.eclipse.ui.templates.jactr.production.proxyCondition"
+	name="proxyCondition">&lt;proxy-condition class="${className}"/&gt;${cursor}</template>			
+
+<template 
+	context="jactr.lhs" 
+	description="Scriptable condition" 
+	icon="icons/full/basic/script.gif"
+	id="org.jactr.eclipse.ui.templates.jactr.production.scriptableCondition"
+	name="scriptableCondition">&lt;scriptable-condition lang="${javascript}"&gt;&lt;![CDATA[
+${indent}function matches()
+${indent}{ // documentation : http://jactr.org/ 
+${indent} ${cursor}
+${indent} return true;
+${indent}}]]&gt;
+&lt;/scriptable-condition&gt;</template>
+
+<template 
+	context="jactr.rhs" 
+	description="Scriptable action"
+	icon="icons/full/basic/script.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.production.scriptableAction"
+	name="scriptableAction">&lt;scriptable-action lang="${javascript}"&gt;&lt;![CDATA[
+${indent}function fire()
+${indent}{// documentation : http://jactr.org/  
+${indent} ${cursor} 
+${indent} return 0;
+${indent}}]]&gt; 
+&lt;/scriptable-action&gt;</template>	
+			
+<template 
+	context="jactr.rhs" 
+	description="Output"
+	icon="icons/full/basic/output.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.production.output"
+	name="output">&lt;output&gt;"${message}"&lt;/output&gt;${cursor}</template>
+</templates>
