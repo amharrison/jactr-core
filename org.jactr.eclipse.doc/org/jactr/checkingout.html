@@ -1,0 +1,56 @@
+<html>
+ <head><title></title></head>
+ <body>
+ <h1>Checking out jACT-R</h1>
+  <p>Maintaining on the cusp of development is always fun, but it can be a little
+  complex. The first thing you need is to be familiar with CVS. All code is hosted
+  by <a href="http://sourceforge.net/">SourceForge</a>.
+  </p>
+  <h2>Anonymous Source Access</h2>
+  <p>Anonymous access allows you to checkout, but never commit any changes.<br>
+  <br>
+  <i>pserver:anonymous@cvs.sourceforge.net:/cvsroot/jactr</i>
+  </p>
+  <h2>Developer Source Access</h2>
+  <p>Developer access allows you to checkout and commit any changes.<br>
+  <br>
+  <i>extssh:developername@cvs.sourceforge.net:/cvsroot/jactr</i>
+  </p>
+  <h2>CVS Layout</h2>
+  <p>The CVS layout is a tad odd. The reason for this is to support as many
+  different development environments with as little redundancy as possible. There
+  is a directory for each (currently) support building tool, libraries, source, and tests.
+  <ul>
+   <li><i>src</i> : contains the source for the contained projects of the form src/<i>project.name</i>/src/<i>programming-language</i>.
+     (i.e. src/org.jactr/src/java)</li>
+   <li><i>test</i> : same as above but only contains testing code</li>
+   <li><i>repository</i> : all the libraries and jars required by specific projects of the form repository/<i>project.name</i>/lib/.
+     (i.e. repository/org.jactr/lib/...)</li>
+   <li><i>eclipse</i> : <a href="http://eclipse.org/">Eclipse</a> project descriptions for 
+     the supported projects. </li>
+   <li><i>ant</i> : ant build files for command line building</li>
+   <li><i>maven</i> : maven configuration files.</li>  
+  </ul>
+  </p>
+  <p>
+  In order to actually use this, first checkout the files for your given build tool (Eclipse, ant, maven). Then, in
+  the source directory for that configuration, check out the source files for the appropriate project. Do the same for the 
+  repository content.
+  </p>
+  <h3>Example</h3>
+  <p>Let's use Eclipse to check out the core jACT-R code. 
+  <ol>
+   <li>Open the CVS Repositories View (<b>Window</b>-<b>Show View</b>-<b>Other</b>-<b>CVS</b>-<b>CVS Repository</b>)</li>
+   <li>Add a new repository (Right click-<b>New</b>-<b>Repository Location</b>)</li>
+   <li>Enter the connection information from above</li>
+   <li>Select <b>Head</b>-<b>eclipse</b>-<b>org.jactr</b>. <b>Check Out As..</b> </li>
+   <li>Check out as project, name: org.jactr</li>
+   <li>Select <b>Head</b>-<b>src</b>-<b>org.jactr</b>-<b>src</b>-<b>java</b>. <b>Check Out As..</b> </li>
+   <li>Check out into existing project, target folder name: org.jactr</li>
+   <li>Select <b>Head</b>-<b>repository</b>-<b>org.jactr</b>-<b>lib</b>. <b>Check Out As..</b> </li>
+   <li>Check out into existing project, target folder name: org.jactr</li>
+   <li>You should now be able to build without any problems</li>
+  </ol>
+  </p>
+ </body>
+</html>

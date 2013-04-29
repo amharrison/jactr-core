@@ -1,0 +1,41 @@
+<html>
+ <head></head>
+ <body>
+  <h1>Constructing Models</h1>
+  <p>
+ACT-R models are just like any source code; simple ones are pretty much useless. The complexity makes building or loading models a bit of a pain.  There are two methods: loading an external file with a textual model description, or assembling a model programmatically. Loading from an external file is the preferred mechanism as it supports validation. Programmatic assembly, while more difficult, is useful in extension development or if you just need unheard of control.
+</p>
+
+<h2>Loading</h2>
+<pre>
+public Model loadModel(URL modelURL)
+{
+  Model model = null;
+  ModelParser mp = ModelParserFactory.getModelParser(url);
+  if(mp!=null)
+  {
+     if(mp.parse())
+      { 
+          //completely successful parsing..
+          AST modelDescription = mp.getDocumentTree(); //intermediate structure
+          //one can use the AST top analyse the model much easier than looking at the actual model
+          DefaultModelConstructor constructor = new DefaultModelConstructor();
+          constructor.traverse(modelDescription);
+          Model = constructor.getCurrentModel();
+      }
+     else
+      {
+         Collection parseWarnings = mp.getParserWarnings();
+         Collection parseExceptions = mp.getParserExceptions();
+          //process the warnings and exceptions
+      }
+  }
+}
+</pre>
+
+
+<h2>Programmatic Construction</h2>
+
+  
+ </body>
+</html>

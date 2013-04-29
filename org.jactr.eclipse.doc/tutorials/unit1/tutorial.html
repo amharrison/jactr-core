@@ -1,0 +1,80 @@
+<html>
+<head><title>Unit 1 Tutorial</title></head>
+<body>
+  <p><strong>Abstract</strong></p>
+<p>This document is an augmentation to the unit one tutorial found in the standard <a href="http://act-r.psy.cmu.edu/actr6/">ACT-R distribution</a>. To use this tutorial extension, read through the original tutorial and refer back to this document for jACT-R specific comments and features.</p>
+<p style="font-size: 14px;"><strong>Getting Started</strong></p>
+<p>Presumably, you have already followed the <a href="http://jactr.org/node/4">instructions</a> and configured your <a href="http://www.eclipse.org/">Eclipse environment</a> to run jACT-R. You will also want to <a href="http://jactr.org/node/6">import</a> the latest version of the unit one tutorial, included with this document.</p>
+<ul>
+<li>Project Archive : <a href="unit1.zip" title="org.jactr.tutorial.unit1.zip">org.jactr.tutorial.unit1.zip</a></li>
+</ul>
+<p style="font-size: 14px;"><strong>Count Model</strong></p>
+<p>The ACT-R tutorial starts you off with the basic of chunk, chunk-type, and production creation using the <strong>count</strong> model. The <strong>count.jactr</strong> model (found in <em>org.jactr.tutorial.unit1/models/</em>) contains the full model description using the jACT-R (XML-based) syntax, with the Lisp in comments. You may also use the Lisp code in jACT-R, however the Lisp parser is a tad buggy. (jACT-R aims to be syntactically agnostic. All models are compiled into an intermediate representation before building. One merely needs to build the appropriate parser to support alternative language syntaxes.)</p>
+<p style="font-size: 13px;"><strong>Running Models</strong></p>
+<p>jACT-R conforms to a compiled-language development model. You write your models, they are compiled, and are then executed in a separate runtime. As you edit the model you may see warnings (yellow underline markers) or errors (red underline markers). Mouse hovering or the <strong><em>Problems View</em></strong> will provide greater detail as to the error. All errors, but not warnings, must be resolved before attempting to the run the model.</p>
+<div style="text-align: center;">
+  <img src="http://jactr.org/files/errors.jpg" width="477" height="100" alt="errors.jpg" />
+</div>
+<p>Once the model is free of compilation errors, you can create a <a href="http://jactr.org/node/7">run configuration</a> for that model. Run configurations allow you to specify how the model should be executed, any startup/shutdown logic, and what devices and instruments should be connected to the model. If you open the <strong><em>Run Configurations</em></strong> dialog, you should see a <strong>jACT-R Run</strong> configuration for <strong>count</strong> already. Just select it and click on run.</p>
+<p style="text-align: center;"><a href="http://jactr.org/files/run-config.jpg"><img src="http://jactr.org/files/run-config-tm.jpg" width="131" height="100" alt="run-config.jpg" /></a></p>
+<p style="font-size: 13px;"><strong>Inspecting Model Output</strong></p>
+<p>The IDE includes a table based model log viewer where each row represents a block of time and each column corresponds to a module, buffer, or other logging source. Log messages are kept in a scrolling buffer that can be increased in size through the preferences. The amount and type of information that is logged is configured in the run configuration. The basics include routing the pure textual log messages as well as maintaining a visual representation of buffer states and contents.</p>
+<div style="text-align: center;">
+  <a href="http://jactr.org/files/logging.jpg"><img src="http://jactr.org/files/logging-tm.jpg" width="148" height="100" alt="logging.jpg" /></a>
+</div>
+<p style="font-size: 11px;"><strong><span style="color: #008F20;">jACT-R Note</span></strong><span style="color: #008F20;">: You may notice that in the ACT-R tutorial trace productions are selected at one time and then fired in the next, yet in jACT-R they appear to be selected and fired in the same time step. This is just a difference in logging. In both systems productions when fired post events that will be executed at some time in the future (typically 50ms later). jACT-R notifies that the production has fired immediately after the events are posted, ACT-R notifies once the events start to fire. Same behavior, same timing, just different logging.</span></p>
+<p><span style="font-weight: bold; font-size: 11px;"><span style="color: #0003D3;">IDE Note</span></span><span style="font-size: 11px;"><span style="color: #0003D3;">: The ACT-R trace in the tutorial runs 50ms longer than it does in the jACT-R run. This is a silly bug where the runtime can exit before it has finished sending the last block of logging information to the IDE. Nothing to worry about.</span></span></p>
+<p style="font-size: 11px;"><strong><span style="color: #0003D3;">IDE Note</span></strong><span style="color: #0003D3;">: If you look under the</span> <em><span style="color: #0003D3;">org.jactr.tutorial.unit1/runs</span></em><span style="color: #0003D3;">/ directory you will see a date stamped, then time stamped folder. Within that folder will (at least) be</span> <em><span style="color: #0003D3;">environment.xml</span></em><span style="color: #0003D3;">. This folder is where the model is actually running. All tools, instruments, devices, whatever, will output to this location. This makes keeping track of the various outcomes really simple. The</span> <em><span style="color: #0003D3;">environment.xml</span></em> <span style="color: #0003D3;">file is used to configure the jACT-R runtime and is quite useful in debugging.</span></p>
+<p style="font-size: 13px;"><strong>Pattern Matching Exercise</strong></p>
+<p>There is no mechanism (yet) to directly manipulate the instantiation of productions in jACT-R. Since the runtime is intentionally hidden from the modeler, something like this is not worth the effort (unless people start clamoring for it). However, if you want to see what is going on, take a look at the trace in for Procedural. jACT-R errs on the verbose side when it comes to logging and you can see quite clearly why any production does not match at any time. Combined with the buffer hovers (to show buffer state and content), you can usually figure out all you need to know.</p>
+<p style="font-size: 14px;"><strong>Addition Model</strong></p>
+<p>As with the count model, the addition model is provided and commented with the matching lisp code. Running it is just as simple, merely run the <strong>addition</strong> run configuration.</p>
+<p style="font-size: 14px;"><strong>Semantic Model</strong></p>
+<p>For the semantic model, the lisp tutorial asks readers to change which goal is the focus with the (goal-focus) command. Similar effect can be achieved by modifying the chunk attribute of the buffer tag at the end of the <strong>semantic.jactr</strong> model file.</p>
+<p>Unlike the lisp version of the model, all chunks are defined in the jACT-R model. Missing chunks are not warnings in jACT-R but outright errors. Delete the chunk <em>color</em> and see what happens. Having trouble finding the chunk in all that code? You can use standard <strong>Find</strong> command, or poke around in the <strong><em>Outline viewer</em></strong> (look under chunk).</p>
+<div style="text-align: center;">
+  <a href="http://jactr.org/files/outline.jpg"><img src="http://jactr.org/files/outline-tm.jpg" width="89" height="150" alt="outline.jpg" /></a>
+</div>
+<p style="font-size: 14px;"><strong>Building a Model</strong></p>
+<p>The first step in building a new model is to invoke the new model wizard. Right click on the models folder and select New - jACT-R Model.</p>
+<div style="text-align: center;">
+  <img src="http://jactr.org/files/new-model-1.jpg" width="577" height="138" alt="new-model-1.jpg" />
+</div>
+<p>This will open the wizard, allowing you to select from a set of preexisting modules. You will only need Declarative, Procedural, Retrieval, and Goal. Clicking Finish will generate the initial code necessary to get started.</p>
+<div style="text-align: center;">
+  <a href="http://jactr.org/files/new-model.jpg"><img src="http://jactr.org/files/new-model-tm.jpg" width="212" height="200" alt="new-model.jpg" /></a>
+</div>
+<p style="font-size: 13px;"><strong>Chunk-types &amp; chunks</strong></p>
+<p>To create the two chunk-types needed, scroll down to the declarative-memory section, type <em>chu</em> and hit <em>Control-Space</em>. This will pop up a sorted list of code template proposals. Typing XML is a pain, so I've automated most of it for you (templates exist for the Lisp editor too). Enter the name of chunk-type (<strong>addition-fact</strong>) and the first slot name (<strong>addend1</strong>). The slot value can be left as <em>null</em> (<em>null</em> and <em>nil</em> are treated the same). Hit <em>return</em> to close the template.</p>
+<div style="text-align: center;">
+  <img src="http://jactr.org/files/chunktype.jpg" width="480" height="232" alt="chunktype.jpg" />
+</div>
+<p>But we still have two more slots to define! Type <em>sl</em> and hit <em>Control-Space</em> again. Look, slot templates.</p>
+<div style="text-align: center;">
+  <img src="http://jactr.org/files/chunktype-2.jpg" width="480" height="137" alt="chunktype-2.jpg" />
+</div>
+<p>You can use this technique for almost every element in jACT-R. Go ahead, finish the chunk-types and chunks. Then we'll hit the productions.</p>
+<p style="font-size: 13px;"><strong>Productions</strong></p>
+<p>Productions can use the exact same template system, but these templates are often a little more complex. First, make sure you are in the procedural section of the model, then type <em>p</em> and <em>Control-Space</em>. The default production template will prompt you for the production name, the initial buffer to test, it's type, a slotName to test, an initial and final slot value. This pattern is really useful because it helps ensure that you write productions that don't loop forever (because they don't change the state).</p>
+<div style="text-align: center;">
+  <img src="http://jactr.org/files/production.jpg" width="384" height="231" alt="production.jpg" />
+</div>
+<p>Now, let's assume we are really lazy typers, or forgot the name of the chunk-type we are testing. Type the first couple of letters, <em>add</em> and hit <em>Control-Space</em> again. You will see a list of possible chunk-types, select and it will fill in the rest. Since the XML format is strongly typed, context completion is generally really good at guessing whether you want buffer, chunk-types, chunks, slots or variables. The Lisp editor isn't quite that good (yet).</p>
+<div style="text-align: center;">
+  <img src="http://jactr.org/files/guess.jpg" width="349" height="158" alt="guess.jpg" />
+</div>
+<p>Finally, you are also able to use code templates for <strong>q</strong>ueries, <strong>p</strong>roxies and <strong>s</strong>cripts (jACT-R equivalents of !eval!), as well as <strong>a</strong>dd, <strong>r</strong>emove, and <strong>o</strong>utput actions.</p>
+<p style="font-size: 11px;"><strong><span style="color: #0003D3;">IDE Note</span></strong> <span style="color: #0003D3;">: Templates can be modified and customized through the preferences.</span></p>
+<p style="font-size: 13px;"><strong>Initial Goal</strong></p>
+<p>To set the initial goal, merely modify the goal buffer section towards the end of the model.</p>
+<div style="text-align: center;">
+  <img src="http://jactr.org/files/goal.jpg" width="351" height="54" alt="goal.jpg" />
+</div>
+<p style="font-size: 13px;"><strong>Running Your Model</strong></p>
+<p>The easiest way to create a new run configuration is to just copy an old one. From the Run Configuration dialog, select the count configuration and click the duplicate button<img src="http://jactr.org/files/copy_edit.jpg" width="16" height="16" alt="copy_edit.gif" /> . Then uncheck the count model, check your new model and click Add Alias. You'll probably want to change the name of the run configuration, apply and run.</p>
+<div style="text-align: center;">
+  <a href="http://jactr.org/files/run-copy.jpg"><img src="http://jactr.org/files/run-copy-tm.jpg" width="134" height="100" alt="run-copy.jpg" /></a>
+</div>
+<p style="font-size: 11px;"><strong><span style="color: #008F20;">jACT-R Note</span></strong> <span style="color: #008F20;">: The alias mechanism allows you to run multiple instances of the same model in the runtime without any further hassle.</span></p>
+</body>
+</html>

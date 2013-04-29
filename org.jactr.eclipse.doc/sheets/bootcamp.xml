@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<compositeCheatsheet name="Eclipse BootCamp">
+   <taskGroup kind="sequence" name="IDE Basics" skip="false">
+      <intro>
+         Let&apos;s get you familiarized with the basics of the Eclipse IDE.
+      </intro>
+      <onCompletion>
+         Now that you&apos;ve gotten these basics down. Why not try unit 1? You can access it via the cheatsheet listing under help.
+      </onCompletion>
+      <task kind="cheatsheet" name="Perspectives" skip="true">
+         <intro>
+            First we need to make sure the IDE is configured for running jACT-R models.
+         </intro>
+         <onCompletion>
+            The jACT-R perspective is preconfigured for modeling. However, you are free to reconfigure it as you need for your workflow.
+         </onCompletion>
+         <param name="path" value="basics/perspectives.xml">
+         </param>
+      </task>
+      <task kind="cheatsheet" name="Views" skip="true">
+         <intro>
+            Views provide access to your data, models, and files.
+         </intro>
+         <onCompletion>
+            <b>Tip</b>: Views can often be configured and customized themselves. Look for the triangle in the upper right-hand corner of the view.
+         </onCompletion>
+         <param name="path" value="basics/views.xml">
+         </param>
+      </task>
+      <task kind="cheatsheet" name="Projects" skip="true">
+         <intro>
+            Everything in this IDE is centered around projects. Continue to learn more...
+         </intro>
+         <param name="path" value="basics/projects.xml">
+         </param>
+      </task>
+      <taskGroup kind="set" name="Working with Models" skip="true">
+         <task kind="cheatsheet" name="Creating models" skip="false">
+            <param name="path" value="basics/model.xml">
+            </param>
+         </task>
+      </taskGroup>
+   </taskGroup>
+</compositeCheatsheet>

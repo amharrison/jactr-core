@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<compositeCheatsheet name="Import/Export">
+   <taskGroup kind="set" name="Importing &amp; Exporting" skip="true">
+      <intro>
+         Eclipse provides a wide array of import/export options that can be exploited.
+      </intro>
+      <task kind="cheatsheet" name="Importing" skip="true">
+         <param name="path" value="import.xml">
+         </param>
+      </task>
+      <task kind="cheatsheet" name="Exporting" skip="true">
+         <param name="path" value="export.xml">
+         </param>
+      </task>
+   </taskGroup>
+</compositeCheatsheet>

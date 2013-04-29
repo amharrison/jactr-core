@@ -1,0 +1,41 @@
+<html>
+ <head></head>
+ <body>
+  <h1>Connecting to Reality</h1>
+  <p>
+
+</p>
+
+<h2>Reality Interface</h2>
+<h2>Configuration</h2>
+<h3>File</h3>
+<h3>Programmatically</h3>
+<pre>
+/**
+ this must be called before runtime.getController().run() is called. However,
+ it does not matter if models are added before or after this.
+*/
+ public void setupReality()
+ {
+  ACTRRuntime runtime = ACTRRuntime.getDefaultRuntime();
+  RealityInterface realInterface = runtime.getRealityInterface();
+  
+  //SwingRealityInterfaceComponent provides the eyes and hands for
+  // interacting with Swing GUIs
+  
+  SwingRealityInterfaceComponent swingRIC = new SwingRealityInterfaceComponent(realInterface);
+  
+  //we can add multiple reality interfaces.. but you'd better know what
+  // you're doing..
+   
+  realInterface.addRealityInterfaceComponent(swingRIC);
+  
+  //the configuration method will be called by the runtime just before
+  // the models are executed
+ }
+ 
+
+</pre>
+  
+ </body>
+</html>

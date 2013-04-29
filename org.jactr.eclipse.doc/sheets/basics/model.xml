@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet title="Creating jACT-R Models">
+   <intro>
+      <description>
+         Obvious we want to create models. The new model dialog allows you to define a new model and generate the code for it.
+      </description>
+   </intro>
+   <item title="Create new model" dialog="true" skip="true">
+      <description>
+         <b>File</b>,<b>New</b>,<b>jACT-R Model</b>, will open the new model dialog. Models are stored under the models/ folder in the respective project. If the IDE cannot infer the project, you will have to select it from the list.<br/>
+<br/>
+In addition to specifying the model name and initial modules to install, you can specify the syntax to use with the model&apos;s file name extension.<br/>
+<br/>
+<b>.lisp</b> will generate lisp.<br/>
+<b>.jactr</b> will generate the xml format.<br/>
+<br/>
+The jactr editor is more fully supported.
+      </description>
+      <command
+            confirm="false"
+            required="false"
+            serialization="org.eclipse.ui.newWizard(newWizardId=org.jactr.eclipse.ui.wizards.model.NewModelWizard)">
+      </command>
+   </item>
+</cheatsheet>

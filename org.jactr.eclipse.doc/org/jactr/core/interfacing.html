@@ -1,0 +1,82 @@
+<html>
+ <head></head>
+ <body>
+  <h1>Interfacing Experiments</h1>
+  <p>
+  Part of interfacing experiments with models almost inevitably requires there to be custom
+  launching code to get to two running and configured. In a continuous attempt to completely 
+  separate the model from the task, interfacing models is done through the environment configuration.
+  </p>
+  <p>
+  The ACTRRuntime has support for executing custom code after the reality interface has been
+  configured but before the models actually start running. It also supports the execution of code
+  after all the models have finished running (either normally or in error) but before the reality
+  interface has been destroyed.
+  </p>
+  <h2><a name="onstart">onStart & onStop</a></h2>
+  <p>
+  The onStart and onStop code hooks are instances of the java.lang.Runnable interface. In the case
+  of the environment configuration file, the tags &lt onStart class="class.name" / &gt accepts the class
+  name of the relevant code.
+  <br><br>
+  <b>Programmatically:</b>
+  <pre>
+   ...
+   ...
+   Runnable onStart = new Runnable(){
+     public void run()
+     {
+      //Print the names of the models
+      Collection models = ACTRRuntime.getDefaultRuntime().getModels();
+      Iterator itr = models.iterator();
+      while(itr.hasNext())
+       System.err.println( (Model)itr.next());
+     
+      //let's launch some imaginary experiment
+      Experiment myExp = new Experiment();
+      // let's pretend myExp.run() will open a window and start and experiment
+      // (if it doesn't use its own thread, you should provide it one..)
+      myExp.run();
+      //the models <b>WILL not</b> start util this method returns
+     }
+   };
+   ..
+   ACTRRuntime.getDefaultRuntime().setOnStart(onStart);
+   ..
+   .
+  </pre>
+  </p>
+  
+<h2>Application Data</h2>
+ <p>
+ Often times we may need to make some application (experiment) data available through out
+ the entire run. Say for instance that you're interfacing the model to the experiment, but
+ not through the reality interface (providing handles to manipulate the keyboard/mouse). You'd 
+ need productions that "click" etc. To do this, you'll need acccess to the experiment instance.
+ </p> 
+ <pre>
+ ...
+   ...
+   //we move the instantiation of the experiment up
+   // and make it final so that the onStart code
+   // can access it
+   final Experiment myExperiment = new Experiment();
+   
+   Runnable onStart = new Runnable(){
+     public void run()
+     {
+      myExperiment.run();
+      //the models <b>WILL not</b> start util this method returns
+     }
+   };
+   
+   ACTRRuntime runtime = ACTRRuntime.getDefaultRuntime();
+   runtime.setOnStart(onStart);
+   //this will now be accessible anywhere in the model.. 
+   // in particular in <a href="scripting.html">scripted productions</a> (see the next section)
+   runtime.setApplicationData(myExperiment);
+   ..
+   .
+  </pre>
+ </body>
+</html>

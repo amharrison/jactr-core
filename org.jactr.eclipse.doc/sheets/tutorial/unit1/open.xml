@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet
+      title="Open Count.jactr">
+   <intro>
+      <description>
+         To start this tutorial, let&apos;s open the model <b>count,jactr</b> in the project <b>org.jactr.tutorials.unit1</b>
+      </description>
+   </intro>
+   <item
+         skip="true"
+         title="Open">
+      <description>
+         Either double click on the count.jactr file (under models/) or use the open menu.
+      </description>
+      <command
+            required="false"
+            serialization="org.eclipse.ui.edit.text.openLocalFile"/>
+   </item>
+</cheatsheet>

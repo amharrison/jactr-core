@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet
+      title="Using Projects">
+   <intro
+         href="/org.eclipse.platform.doc.user/gettingStarted/qs-07a.htm">
+      <description>
+         All files (code, libraries, datasets, etc.) are grouped under projects. Projects also include configuration information. Typically projects are specialized based on what they are for (i.e. Java, ACT-R, etc.).<br/>
+<br/>
+Eclipse is able to manage these projects in a series of different ways. Not only can you use them locally, but you can export them in binary and source form to others to use.
+      </description>
+   </intro>
+   <item
+         skip="true"
+         title="New Projects">
+      <description>
+         New projects (of any type) are created via: <b>File</b>,<b>New</b>,<b>Project..</b>. From there you can specify the appropriate project.<br/>
+<br/>
+From there you can specify the project name, and optionally select from a set of templates to help you get started with more advanced concepts.
+      </description>
+      <command
+            required="false"
+            serialization="org.eclipse.ui.newWizard(newWizardId=org.jactr.eclipse.ui.wizards.project.NewACTRProjectWizard)"/>
+   </item>
+   <item
+         skip="true"
+         title="Exporting to Zip">
+      <description>
+         The easiest way to share a model with others is to export the project as a zip file. Just use the menu: <b>File</b>,<b>Export</b>,<b>Project as Archive</b>.
+      </description>
+      <command
+            required="false"
+            serialization="org.eclipse.ui.file.export(exportWizardId=org.eclipse.ui.wizards.export.ZipFile)"/>
+   </item>
+   <item
+         skip="true"
+         title="Importing from Zip">
+      <description>
+         If you get a project from someone, you can import it just as easily. Just go through the menu: <b>File</b>,<b>Import</b>,<b>Existing Project into Workspace</b> and select the <b>archive file</b>.
+      </description>
+      <command
+            required="false"
+            serialization="org.eclipse.ui.file.import(importWizardId=org.eclipse.ui.wizards.import.ExternalProject)"/>
+   </item>
+   <item
+         title="Explorting Plugins">
+      <description>
+         Projects can also be exported in binary form if you want to protect the source code in the project, or if you want to create a self-contained model. These are referred to as <b>plugins</b>.<br/>
+<br/>
+It&apos;s actually a bit beyond a cheat-sheet, but importing them is not.
+      </description>
+   </item>
+   <item
+         title="Importing Installed Plugins">
+      <description>
+         Binary projects, or <b>plugins</b>, are a useful way of packaging examples. <br/>
+<br/>
+To do so, use the menu: <b>File</b>,<b>Import</b>, <b>Plugins and Fragments</b>. At the bottom of the dialog, you will select Import As .. <b>Projects with Source Folders</b>. You can then search for, and select the plugin/project.<br/>
+<br/>
+(I know, it&apos;s complicated, I didn&apos;t design it)
+      </description>
+      <command
+            required="false"
+            serialization="org.eclipse.ui.file.import(importWizardId=org.eclipse.pde.ui.PluginImportWizard)"/>
+   </item>
+</cheatsheet>

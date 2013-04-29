@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet
+      title="Using Views">
+   <intro
+         href="/org.eclipse.platform.doc.user/gettingStarted/qs-02b.htm">
+      <description>
+         The main IDE window is composed of buttons and specific display regions. Each region can be maximized, minimized, moved, or resized. The display regions can contain any number of <b>views</b>. <br/>
+<br/>
+<b>Views</b> provide different ways to visualize data, edit files, control models, or navigate code.<br/>
+<br/>
+Different types of tasks provide different views. There are views that provide general control (like the file navigator, package exporter, outline, problem viewer, etc.). There are also custom ones, the most obvious being editors.<br/>
+<br/>
+      </description>
+   </intro>
+   <item
+         skip="true"
+         title="Opening Views">
+      <description>
+         Views can be opened through the menu: <b>Window</b>,<b>Show View</b>. Or the icon in the lower left of the workbench window.<br/>
+<br/>
+jACT-R specific views are under the jACT-R folder.
+      </description>
+      <command
+            required="false"
+            serialization="org.eclipse.ui.views.showView"/>
+   </item>
+</cheatsheet>

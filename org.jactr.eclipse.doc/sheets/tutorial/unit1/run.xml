@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet
+      title="Running">
+   <intro
+         href="/org.jactr.eclipse.doc/org/jactr/eclipse/using/actr.htm#run">
+      <description>
+         Let&apos;s run the count model. The model logic is separate from the execution logic. Execution logic is saved in run configurations, which are accessible through the <b>Run</b> menu.
+      </description>
+   </intro>
+   <item
+         href="/org.jactr.eclipse.doc/org/jactr/eclipse/using/actr.htm#run"
+         title="Run count">
+      <description>
+         Open the Run configurtion dialog, and select the count configuration. You will see a slew of options, including which models to run, what instruments to attach, etc.<br/>
+<br/>
+Select count and run it. You should see the output in the model log viewer.
+      </description>
+      <command
+            required="false"
+            serialization="org.eclipse.debug.ui.commands.OpenRunConfigurations"/>
+   </item>
+</cheatsheet>

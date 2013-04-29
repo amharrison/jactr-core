@@ -1,0 +1,86 @@
+<html>
+ <head></head>
+ <body>
+  <h1>Scripted Productions</h1>
+  <p>
+ Sometimes we just have to break the separation of model and task. For these moments we have customization.
+ There are two types of customization: scripting (Javascript currently, more in the future), and actually
+ writing and compiling java code.
+</p>
+<p>
+Why use one over the other? Scripting should be used for simple, one-time operations. Scripts are embedded
+in the model itself - so they are just as editable as the rest of the model. Compiled Java code is for more complex
+or frequently used operations. You can't modify their behavior much at runtime.
+</p>
+<p>
+!eval! in the Lisp version is equivalent to the scripting. One difference, however, is that the semantics
+are different for the right-hand and left-hand sides of the production. This differentiation extends to
+the compiled Java code as well.
+</p>
+
+<h2>Conditions</h2>
+<p>Along with the &lt match tag, there is the &lt scriptable-condition &gt tag. 
+<pre>
+ &lt;scriptable-condition&gt &lt;![CDATA[
+ function match(chunk, bindings)
+ {
+  //bindings is a Map containing variable/value pairs
+  //return true or false, if false, the production will fail to instantiate
+  //for example.. 
+  var runtime = jactr.getRuntime();
+  //with the runtime, we can get the application data
+  var myExperiment = runtime.getApplicationData();
+  //lets say myExperiment has a method .isReady() which returns true if
+  // the experiment is ready to continue (think spinning cursor delay)
+  // if this returns myExperiment.isReady(), it will only be viable
+  // for conflict resolution if the experiment is ready to go
+
+  return myExperiment.isReady();
+ }
+ ]]!&lt;/scriptable-condition&gt
+</pre>
+</p>
+<h2>Actions</h2>
+<p>
+Scriptable actions follow an identical logic.
+<pre>
+ &lt;scriptable-action&gt &lt;![CDATA[
+ function fire(model, instantiation, bindings)
+ {
+  //now we get the model, the production instantiation, and the variable bindings
+  //let's imagine myExperiment has .checkOption(int) where int is the choice option
+  // that the subject would respond with..
+  // and the option we'd use is bound to the variable =optionValue
+  var myExperiment = jactr.getRuntime().getApplicationData();
+  
+  var choiceOption = bindings.get("=optionValue");
+  myExperiment.checkOption(choiceOption);
+  return 0.0;
+ }
+ ]]!&lt;/scriptable-action&gt
+</pre>
+</p>
+<h3>Common Funtions</h3>
+<p>The scripting is provided by the <a href="http://www.mozilla.org/rhino/">Rhino</a> project from <a href="http://mozilla.org/">Mozilla</a>. This
+site has excellent documentation on scripting. To make things easier, the scriptable code has access to a <i>jactr</i> object. It includes:
+<ul>
+ <li>defineGlobal(String, Object) : adds the object to the global scripting context. jactr is actually installed into
+   the scripting environment with this call. </li>
+ <li>bind(Map, String, Object) : insert object into the bindings with the name. These bindings will hold true for the duration of the production's execution</li>
+ <li>getRuntime() : returns the ACTRRuntime</li>
+ <li>getSlotValue(Chunk, String) : return the value contained in the named slot of chunk</li>
+ <li>setSlotValue(Chunk, String, Object) : set the named slot of chunk to object</li>
+ <li>output(Model, String, Map) : output a template string to the model output trace and try to resolve variables from the map
+</ul>
+<h2>Compiled Code</h2>  
+<p>
+ If you want faster execution and don't require constant tweaking of the custom code, compiling the appropriate custom code is probably best.
+ Custom conditions must extend org.jactr.core.production.condition.Condition, actions must extends org.jactr.core.production.action.Action. However,
+ for customs it's best to work from org.jactr.core.production.condition.Pattern and org.jactr.core.production.action.DefaultAction.
+</p>
+<p>
+ To make the code accessible to models, you can use the proxy tags: &lt;proxy-action & &lt;proxy-condition, both 
+ of which task the <i>class=</i> attribute specifying the full class name of the custom code class.
+</p>
+ </body>
+</html>

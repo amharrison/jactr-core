@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet
+      title="Using Perspectives">
+   <intro
+         href="/org.eclipse.platform.doc.user/gettingStarted/qs-43.htm">
+      <description>
+         <b>Perspectives</b> are collections of menus, buttons, and views. The IDE includes predefined perspectives configured around a task. <br/>
+<br/>
+The jACT-R perspective provides access to common navigation, editing, and problem views in addition to custom views for dealing with ACT-R models.
+      </description>
+   </intro>
+   <item
+         skip="true"
+         title="Opening Perspective">
+      <description>
+         You can open the perspective through the menu : <b>Window</b>, <b>Open Perspective</b>, and select <b>jACT-R</b> (or <b>Other..</b> if it&apos;s not visible).
+      </description>
+      <command
+            required="false"
+            serialization="org.eclipse.ui.perspectives.showPerspective(org.eclipse.ui.perspectives.showPerspective.perspectiveId=org.jactr.eclipse.ui.perspective.ACTRPerspective)"/>
+   </item>
+</cheatsheet>

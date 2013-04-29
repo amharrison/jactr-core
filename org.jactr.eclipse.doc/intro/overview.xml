@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+  	<extensionContent id="orgjactreclipsehelp-introExtension" style="css/default.css" name="jACT-R Introduction" path="overview/@">
+		<group label="jACT-R Development" style-id="content-group" id="content-group">
+       		<link label="jACT-R Help" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.jactr.eclipse.doc/org/jactr/eclipse/using/index.html" id="jactr" style-id="content-link">
+          		<text>Learn about using Eclipse to develop ACT-R models using jACT-R</text>
+       		</link>
+       		<link url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=org.jactr.eclipse.doc.bootcamp" label="Using Eclipse BootCamp" id="jactr" style-id="content-link">
+               <text>Provides a quick introduction to the basics of Eclipse</text>
+            </link>
+            <link url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=org.jactr.eclipse.doc.tutorial.unit1" label="Dive into Unit 1" id="jactr" style-id="content-link">
+               <text>Jump head-first into Unit 1</text>
+            </link>
+       	</group>
+  	</extensionContent>
+</introContent>

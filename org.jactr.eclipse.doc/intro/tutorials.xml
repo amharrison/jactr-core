@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<introContent>
+  <!-- Extension to the SDK Tutorials Page. -->
+  <extensionContent id="org.jactr.eclipse.help" name="ACT-R Development" style="css/default.css" path="tutorials/@">
+    <group label="ACT-R Development" id="java" style-id="content-group">
+      <link url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=org.jactr.eclipse.help.bootcamp" label="Using Eclipse BootCamp" id="jactr" style-id="content-link">
+        <text>Provides a quick introduction to the basics of Eclipse</text>
+      </link>
+      <link url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=org.jactr.eclipse.help.tutorial.unit1" label="Dive into Unit 1" id="jactr" style-id="content-link">
+               <text>Jump head-first into Unit 1</text>
+            </link>
+    </group>
+  </extensionContent>
+</introContent>

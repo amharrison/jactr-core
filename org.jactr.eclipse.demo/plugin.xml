@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.exportWizards">
+      <wizard
+            category="org.jactr.export"
+            class="org.jactr.eclipse.demo.export.ExportDeployableWizard"
+            icon="icons/jactr.gif"
+            id="org.jactr.eclipse.demo.export"
+            name="Executable Model">
+         <selection
+               class="org.eclipse.core.resources.IProject">
+         </selection>
+         <description>
+            Exports a specific model execution environment (model, config, code, dependencies and resources) as a self-contained executable.
+         </description>
+      </wizard>
+   </extension>
+
+</plugin>

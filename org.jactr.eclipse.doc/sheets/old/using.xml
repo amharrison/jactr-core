@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<cheatsheet title="ACT-R and Eclipse">
+        <intro 
+                href="/org/jactr/eclipse/using/tcheatst.html">
+                <description>
+Welcome to the jACT-R Eclipse environment. Below is a series of 
+          cheatsheet style tutorials on the full range of activities you'll
+          likely use. Along the way you can get more information by clicking the
+          help icon.
+                </description>
+        </intro>
+<item 
+                href="/org/jactr/eclipse/using/perspective.html"
+                skip="true"
+                title="Open the ACT-R Perspective">
+                <action
+                        pluginId="org.eclipse.ui.cheatsheets"
+                        class="org.eclipse.ui.internal.cheatsheets.actions.OpenPerspective"
+                        param1="org/jactr/eclipse.ui.perspective.ACTRPerspective"/>
+                <description>
+Select <b>Window->Open Perspective->ACT-R</b> in the menubar at the top of the workbench.
+This step changes the perspective to set up the Eclipse workbench for Java development.
+You can click the "<b>Click to Perform</b>" button to have the "ACT-R" perspective opened automatically.
+                </description>
+</item>
+
+
+<item
+                href="/org/jactr/eclipse/using/project.html"
+                skip="true"
+                title="Creating an ACT-R Project">
+                <action
+                        pluginId="org.eclipse.ui.ide"
+                        class="org.eclipse.ui.actions.NewProjectAction"/>
+                <description>
+                Eclipse is a project based IDE. The first thing we need to do is to
+                create an ACT-R Project. It will contain the models, data, on other
+                required files. Clicking on the help icon will explain more about ACT-R
+                projects in Eclipse.
+                <br/>
+                Select <b>File->New->Project..</b> Under the ACT-R category, choose new <b>ACT-R Project</b>. 
+                Make the name: Unit1.
+                </description>
+</item>
+
+<item
+                href="/org/jactr/eclipse/using/new.html"
+                skip="true"
+                title="Creating a New ACT-R Model">
+                <action
+                        pluginId="org.eclipse.ui.workbench"
+                        class="org.eclipse.ui.actions.NewWizardAction"/>
+                <description>
+                Let's create a quickie model, something simple. How about the Unit 1
+                semantic model? Select the Unit1 project, or type Unit1 in the Project field.
+                <br/>
+                Select <b>File->New->ACT-R Model</b>. Make the name semantic.xml. Click Finish.
+                <br/>
+                A new file named semantic.xml should now exist under <b>Unit1/models/</b>. All models
+                <b>must</b> reside under this directory to be compiled and visible to Eclipse. 
+                </description>
+</item>
+
+<item
+                href="/org/jactr/eclipse/io/codegen.html"
+                skip="true"
+                title="XML Code Generation">
+                <description>
+                What the hell is that mess? That's the an XML syntax that jACT-R uses. jACT-R
+                can actually process any syntax - assuming someone writes a translator. Currently
+                parsers and generators exist for XML, and Lisp has a limited parser (the generator is forth coming).
+                <br/>
+                Let's try that Lisp parser..
+                </description>
+</item>
+
+
+<item
+                href="/org/jactr/eclipse/using/import.html"
+                title="Importing an existing ACT-R Model"
+                skip="true">
+                <description>
+                Better yet! Let's import a preexisting ACT-R Lisp model. 
+
+
+                Select <b>File->Import->File System</b>. Find the {install-location}/plugins/org/jactr/eclipse.help/models/unit1/.
+                Check semantic.lisp to import it. You will want to import it into the Unit1 project
+                under the <b>models/</b> folder.
+                </description>
+</item>
+
+<item
+                href="/org/jactr/eclipse/io/parsing.html"
+                skip="true"
+                title="Lisp importing">
+                <description>
+                Model files under the <b>models/</b> directory that has a *.lisp extension will
+                be opened, parsed, and processed using the the Lisp parser/generator. *.actr and *.xml files
+                in the <b>models/</b> directory will use the XML parser/generator. It should be relatively
+                easy for someone to put together a NGOMSL or GOMS parser/generator pair.
+                </description>
+</item>
+
+<item
+                href="/org/jactr/eclipse/io/parsing.html"
+                skip="true"
+                title="More on importing">
+                <description>
+                Right now the Lisp support is fairly limited. Elements that it does not
+                recognize will be clearly marked. You can open up semantic.lisp and edit
+                it. With each save, the system automatically checks the model's syntax. 
+                <br/>
+                You'll see that the parser doesn't really know what to do with the command
+                <b>(sdp ..)</b>. Warnings, such as this will be ignored during runs. Errors, such
+                as (----), are more difficult in that they are needed. I'm working as fast as I can
+                to get as complete of support as possible.
+                </description>
+</item>
+
+<item
+                href="/org/jactr/eclipse/using/text.html"
+                skip="true"
+                title="Editing models">
+                <description>
+                Eclipse supports other useful features such as auto-completion and
+                syntax color highlighting. The ACT-R Environment will support these soon - 
+                but it definately supports the basics: Editing(copy, cut, paste), Search, BookMarking,
+                and Navigation. 
+                <br/>
+                You can also rapidly navigate through problems that are detected in models. Try 
+                <b>Navigate->Next</b>. Delete that offending line, the next one and save. A clean,
+                runnable model.
+                </description>
+</item>
+
+<item
+                href="/org/jactr/eclipse/core/runtime.html"
+                skip="true"
+                title="Running models">
+                <description>
+                Individual model runs are controlled by specific configurgations (allowing you
+                to easily mix and match models and configurations later). 
+                <br/>
+                <b>Run->Run..</b>. Select <b>ACT-R Model->New</b>. 
+                <br/>
+                <b>Name:</b> semanitc-1<br/>
+                <b>Project:</b>Unit1<br/>
+                Check semantic.lisp. <b>Apply</b> <b>Run</b>
+                </description>
+</item>
+
+<item
+                href="/org/jactr/eclipse/core/runtime.html"
+                skip="true"
+                title="Running a model">
+                <description>
+                Individual model runs are controlled by specific configurgations (allowing you
+                to easily mix and match models and configurations later). 
+                <br/>
+                <b>Run->Run..</b>. Select <b>ACT-R Model->New</b>. 
+                <br/>
+                <b>Name:</b> semanitc-1<br/>
+                <b>Project:</b>Unit1<br/>
+                Check semantic.lisp. <b>Apply</b> <b>Run</b>
+                </description>
+</item>
+
+<item
+                href="/org/jactr/eclipse/core/logging.html"
+                skip="true"
+                title="Model Tracing">
+                <description>
+                The model, while running, spits back a great deal of tracing information that you
+                can selectively view in the Model Log View. You can examine the logs of the executed models from the current
+                or previous run. 
+                </description>
+</item>
+
+<item
+                href="/org/jactr/eclipse/using/output.html"
+                skip="true"
+                title="Model Output">
+                <description>
+                Check the <b>runs/</b> folder of the Unit1 project. It should contain a folder
+                with the time and date of the last run. Inside you'll find the folders <b>initial/</b>,
+                <b>terminal</b>, semantic.env, and possibly jactr-error.log.
+                <br/>
+                <b>initial/</b> contains an automatically generated version of the model before it runs. It will
+                attempt to match syntaxes, but at worst it will be in xml. <br/>
+                <b>terminal/</b> contains the end of run versions of the models.
+                <b>semantic.env</b> is an xml file that describes the running paramters of the environment. This
+                file can be used for command-lime commandos.<br/>
+                <b>jactr-error.log</b> will contain any errors or warnings from the run.
+                </description>
+</item>
+
+<item
+                href="/org/jactr/eclipse/core/runtime.html"
+                skip="true"
+                title="Running multiple models">
+                <description>
+                jACT-R completely separates the simulation of the world, the bodies, and
+                the minds of models. Running multiple models in the same environment is a cinch.
+                <br/>
+                <b>Run->Run..</b>. Select <b>ACT-R Model->semantic-1</b>. Bring up the context-menu, Duplicate.
+                <br/>
+                Now select the model in the configuration. Add a model aliases as semantic-2. Each
+                model must be uniquely identified. Aliases permit you to run multiple instances of a model
+                each with a different name. You can also select different models that exist in the current
+                project.<br/>
+                <b>Apply</b> <b>Run</b>...
+                </description>
+</item>
+
+</cheatsheet>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet
+      title="Import org.jactr.tutorial.unit1">
+   <intro>
+      <description>
+         
+      </description>
+   </intro>
+   <item
+         title="Open up Tutorial">
+      <description>
+         First we&apos;ll open up the tutorial in the browser.
+      </description>
+      <command
+            required="true"
+            serialization="org.eclipse.ui.help.displayHelp(href=/org.jactr.eclipse.doc/tutorials/unit1/tutorial.html)"/>
+   </item>
+   <item
+         title="Download the project">
+      <description>
+         Download the project zip file to some where on your harddrive.
+      </description>
+   </item>
+   <item
+         href="/org.eclipse.platform.doc.user/gettingStarted/qs-31a.htm"
+         title="Import the zip file">
+      <description>
+         Now we are going to import the project into your workspace.
+      </description>
+      <command
+            required="true"
+            serialization="org.eclipse.ui.file.import(importWizardId=org.eclipse.ui.wizards.import.ExternalProject)"/>
+   </item>
+</cheatsheet>
