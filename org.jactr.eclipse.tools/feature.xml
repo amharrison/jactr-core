@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.jactr.eclipse.tools"
+      label="jACT-R Eclipse Tools"
+      version="1.3.0.qualifier">
+
+   <description>
+      Provides optional visualization and static analysis tools.
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <url>
+      <update label="jACT-R Core" url="http://jactr.org/update/release/org.jactr.eclipse.update"/>
+      <discovery label="Zest Visualization" url="http://download.eclipse.org/tools/gef/updates/releases/"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.zest.core" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.zest.layouts" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.gef" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.jactr" version="1.2.15" match="greaterOrEqual"/>
+      <import plugin="org.jactr.eclipse.compilers" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.jactr.eclipse.core" version="1.2.8" match="greaterOrEqual"/>
+      <import plugin="org.jactr.eclipse.ui" version="1.2.8" match="greaterOrEqual"/>
+      <import plugin="org.jactr.io" version="1.0.9" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface.text" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.editors" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.jactr.tools"/>
+      <import plugin="org.jactr.support"/>
+      <import plugin="org.eclipse.draw2d"/>
+      <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.pde.ui" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.pde.ui.templates" version="3.4.200" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.jactr.eclipse.association.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.jactr.eclipse.production"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.jactr.eclipse.association.ui.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.jactr.eclipse.production.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.jactr.eclipse.ui.wizard.xml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
