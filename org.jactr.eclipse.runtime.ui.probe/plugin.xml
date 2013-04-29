@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+         <view
+            allowMultiple="false"
+            category="org.jactr.eclipse.ui.views.category"
+            class="org.jactr.eclipse.runtime.ui.probe.ModelProbeView"
+            icon="icons/readwrite_obj.gif"
+            id="org.jactr.eclipse.runtime.ui.probe.ModelProbeView"
+            name="jACT-R Probes">
+      </view>
+   </extension>
+   
+
+</plugin>

@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: jACT-R Probe View Plug-in
+Bundle-SymbolicName: org.jactr.eclipse.runtime.ui.probe;singleton:=true
+Bundle-Version: 1.0.1.qualifier
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.jactr.eclipse.runtime,
+ org.jactr.eclipse.runtime.ui,
+ org.jactr,
+ org.jactr.eclipse.ui,
+ org.eclipse.swt,
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.birt.chart.device.swt,
+ org.eclipse.birt.chart.engine,
+ org.eclipse.birt.chart.ui,
+ org.eclipse.birt.chart.device.extension,
+ org.eclipse.debug.core,
+ org.jactr.eclipse.core,
+ org.eclipse.birt.chart.engine.extension,
+ org.jactr.tools;bundle-version="1.1.0"
+Export-Package: 
+ org.jactr.eclipse.runtime.ui.probe.components
+Bundle-Vendor: jactr.org
+Bundle-ActivationPolicy: lazy
+Eclipse-RegisterBuddy: org.apache.log4j
+Import-Package: com.ibm.icu.impl.locale,
+ com.ibm.icu.util;version="4.4.2.2"

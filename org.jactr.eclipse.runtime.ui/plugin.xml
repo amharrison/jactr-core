@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+     <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            icon="icons/full/basic/jactr-run.gif"
+            configTypeID="org.jactr.eclipse.runtime.launching.normal"
+            id="org.jactr.runtime.launching.launchConfigurationTypeImage.default">
+      </launchConfigurationTypeImage>
+      <launchConfigurationTypeImage
+            icon="icons/full/basic/jactr-iterative.gif"
+            configTypeID="org.jactr.eclipse.runtime.launching.iterative"
+            id="org.jactr.runtime.launching.launchConfigurationTypeImage.default">
+      </launchConfigurationTypeImage>
+      <launchConfigurationTypeImage
+            icon="icons/full/basic/jactr-run.gif"
+            configTypeID="org.jactr.eclipse.runtime.launching.cr"
+            id="org.jactr.runtime.launching.launchConfigurationTypeImage.default">
+      </launchConfigurationTypeImage>
+   </extension>
+   
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            type="org.jactr.eclipse.runtime.launching.normal"
+            class="org.jactr.eclipse.runtime.ui.tabs.normal.ACTRLaunchConfigurationTabGroup"
+            id="org.jactr.eclipse.runtime.launching.launchConfigurationTabGroup.normal">
+      </launchConfigurationTabGroup>
+      <launchConfigurationTabGroup
+            type="org.jactr.eclipse.runtime.launching.cr"
+            class="org.jactr.eclipse.runtime.ui.tabs.cr.CRLaunchConfigurationTabGroup"
+            id="org.jactr.eclipse.runtime.launching.launchConfigurationTabGroup.cr">
+      </launchConfigurationTabGroup>
+      <launchConfigurationTabGroup
+            type="org.jactr.eclipse.runtime.launching.iterative"
+            class="org.jactr.eclipse.runtime.ui.tabs.iterative.IterativeLaunchConfigurationTabGroup"
+            id="org.jactr.eclipse.runtime.launching.launchConfigurationTabGroup.iterative">
+      </launchConfigurationTabGroup>
+   </extension>
+
+
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            class="org.jactr.eclipse.runtime.ui.model.ACTRBreakpointAdapterFactory"
+            adaptableType="org.eclipse.ui.texteditor.ITextEditor">
+         <adapter type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget"/>
+      </factory>
+   </extension>
+
+<!--
+-->   
+  <extension
+         point="org.eclipse.debug.ui.debugModelPresentations">
+      <debugModelPresentation
+            class="org.jactr.eclipse.runtime.ui.model.ACTRModelPresentation"
+            id="org.jactr.eclipse.runtime.debug.DebugClient">
+      </debugModelPresentation>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="%ACTRCategory.name"
+            id="org.jactr.eclipse.ui.views.category"/>
+      <view
+            allowMultiple="false"
+            category="org.jactr.eclipse.ui.views.category"
+            class="org.jactr.eclipse.runtime.ui.log2.ModelLogView2"
+            fastViewWidthRatio="s"
+            icon="icons/full/basic/jactr-log.gif"
+            id="org.jactr.eclipse.runtime.ui.log2.ModelLogView2"
+            name="jACT-R Log"/>      
+            
+      <view
+            category="org.jactr.eclipse.ui.views.category"
+            class="org.jactr.eclipse.runtime.ui.visicon.VisiconView"
+            icon="icons/full/basic/visicon.gif"
+            id="org.jactr.eclipse.runtime.ui.visicon.VisiconViewer"
+            name="jACT-R Visicon">
+      </view>
+      <view
+            allowMultiple="false"
+            category="org.jactr.eclipse.ui.views.category"
+            class="org.jactr.eclipse.runtime.ui.buffer.BufferView"
+            icon="icons/full/basic/preconflict.gif"
+            id="org.jactr.eclipse.runtime.ui.buffer.bufferView"
+            name="Buffer State"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="org.jactr.eclipse.ui.views.category"
+            class="org.jactr.eclipse.runtime.ui.production.ProductionView"
+            icon="icons/full/basic/production.gif"
+            id="org.jactr.eclipse.runtime.ui.production.productionView"
+            name="Conflict Set"
+            restorable="true">
+      </view>
+      
+<!--
+      <view
+            allowMultiple="false"
+            icon="icons/full/basic/jactr-log.gif"
+            class="org.jactr.eclipse.runtime.ui.buffer.ModelBufferView"
+            category="org.jactr.eclipse.ui.views.category"
+            name="jACT-R Buffer View"
+            id="org.jactr.eclipse.runtime.ui.buffer.ModelBufferView"/>
+-->
+   </extension>
+   
+   
+   
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="ACTRPreferencePage"
+            class="org.jactr.eclipse.runtime.ui.preferences.RuntimePreferencePage"
+            id="ACTRRuntimePreferencePage"
+            name="Run/Debug">
+      </page>
+      <page
+            category="ACTRRuntimePreferencePage"
+            class="org.jactr.eclipse.runtime.ui.preferences.LogPreferencePage"
+            id="LogViewPreferencePage"
+            name="Log View">
+      </page>
+      <page
+            category="ACTRRuntimePreferencePage"
+            class="org.jactr.eclipse.runtime.ui.preferences.ProbePreferencePage"
+            id="ProbeViewPreferencePage"
+            name="Probe View">
+      </page>
+      <page
+            category="ACTRRuntimePreferencePage"
+            class="org.jactr.eclipse.runtime.ui.preferences.MarkerPreferencePage"
+            id="MarkerUIPreferencePage"
+            name="Marker Display">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.jactr.eclipse.runtime.ui.command.ProductionStateHandler"
+            description="Disable/enable production"
+            id="org.jactr.eclipse.runtime.ui.production.state.command"
+            name="Change production availability">
+      </command>
+      <command
+             defaultHandler="org.jactr.eclipse.runtime.ui.command.ArchivalSessionLoader"
+             description="Playback session"
+             id="org.jactr.eclipse.runtime.ui.command.playback"
+             name="Playback">
+       </command>
+   </extension>
+   <extension
+          point="org.eclipse.ui.bindings">
+       <key
+             commandId="org.jactr.eclipse.runtime.ui.production.state.command"
+             contextId="org.eclipse.ui.textEditorScope"
+             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+             sequence="M1+SHIFT+D">
+       </key>
+   </extension>    
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.jactr.eclipse.ui.editor.context?after=jactr">
+         <command
+               commandId="org.jactr.eclipse.runtime.ui.production.state.command"
+               icon="icons/full/basic/production.gif"
+               label="Disable/Enable Production"
+               mnemonic="D"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="true"
+            locationURI="popup:org.jactr.eclipse.ui.menu?after=org.jactr.eclipse.ui.menu.convert">
+         <command
+               commandId="org.jactr.eclipse.runtime.ui.command.playback"
+               helpContextId="Playback archived session data"
+               label="Playback"
+               style="push">
+            <visibleWhen
+                   checkEnabled="false">
+                <iterate
+                      ifEmpty="false"
+                      operator="and">
+                   <adapt
+                         type="org.eclipse.core.resources.IFolder">
+                    <test property="org.eclipse.core.resources.name"
+                         value="sessionData"/>
+                   </adapt>
+                </iterate>
+             </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.jactr.eclipse.runtime.ui.preferences.RuntimeUIPreferenceInitializer">
+      </initializer>
+   </extension>
+   
+   
+</plugin>

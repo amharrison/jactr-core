@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+     <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            name="jACT-R Run"
+            delegate="org.jactr.eclipse.runtime.launching.norm.DefaultACTRLaunchConfiguration"
+            sourceLocatorId="org.jactr.eclipse.runtime.launching.sourceLookupDirector.actr"
+            sourcePathComputerId="org.jactr.eclipse.runtime.launching.sourcePathComputer.actr"
+            modes="run, debug"
+            id="org.jactr.eclipse.runtime.launching.normal">
+      </launchConfigurationType>
+      <launchConfigurationType
+            name="jACT-R Iterative Run"
+            delegate="org.jactr.eclipse.runtime.launching.iterative.IterativeACTRLaunchConfiguration"
+            sourceLocatorId="org.jactr.eclipse.runtime.launching.sourceLookupDirector.actr"
+            sourcePathComputerId="org.jactr.eclipse.runtime.launching.sourcePathComputer.actr"
+            modes="run,debug"
+            id="org.jactr.eclipse.runtime.launching.iterative">
+      </launchConfigurationType>
+      <launchConfigurationType
+            name="CommonReality Run"
+            delegate="org.jactr.eclipse.runtime.launching.cr.CRLaunchConfiguration"
+            sourceLocatorId="org.jactr.eclipse.runtime.launching.sourceLookupDirector.actr"
+            sourcePathComputerId="org.jactr.eclipse.runtime.launching.sourcePathComputer.actr"
+            modes="run, debug"
+            id="org.jactr.eclipse.runtime.launching.cr">
+      </launchConfigurationType>
+   </extension>
+   
+   
+
+   <extension
+         point="org.eclipse.debug.core.sourceLocators">
+      <sourceLocator
+            name="ACTR Source Lookup Director"
+            class="org.jactr.eclipse.runtime.launching.support.ACTRSourceLookupDirector"
+            id="org.jactr.eclipse.runtime.launching.sourceLookupDirector.actr">
+      </sourceLocator>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.sourcePathComputers">
+      <sourcePathComputer
+            class="org.jactr.eclipse.runtime.launching.support.ACTRSourcePathComputerDelegate"
+            id="org.jactr.eclipse.runtime.launching.sourcePathComputer.actr">
+      </sourcePathComputer>
+   </extension>
+
+
+
+   <extension
+         point="org.eclipse.debug.core.breakpoints">
+      <breakpoint
+            markerType="org.jactr.eclipse.runtime.debug.markerType.actrBreakpoint.marker"
+            class="org.jactr.eclipse.runtime.debug.marker.ACTRBreakpoint"
+            id="org.jactr.eclipse.runtime.debug.markerType.actrBreakpoint">
+      </breakpoint>
+   </extension>
+   
+  <extension
+         id="debug.markerType.actrBreakpoint.marker"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.debug.core.lineBreakpointMarker"></super>
+      <persistent value="true"/>
+   </extension>
+  <extension
+        point="org.eclipse.core.variables.dynamicVariables">
+     <variable
+           description="ACT-R Project name"
+           name="actr_project"
+           resolver="org.jactr.eclipse.runtime.launching.support.ACTRProjectVariableResolver"
+           supportsArgument="false"/>
+  </extension>
+  <extension
+        point="org.eclipse.core.runtime.preferences">
+     <initializer
+           class="org.jactr.eclipse.runtime.preferences.RuntimePreferenceInitializer">
+     </initializer>
+  </extension>
+  <extension
+        id="disable.marker"
+        name="Production status marker"
+        point="org.eclipse.core.resources.markers">
+     <persistent
+           value="true">
+     </persistent>
+     <attribute
+           name="productionName">
+     </attribute>
+     <super
+           type="org.eclipse.core.resources.textmarker">
+     </super>
+  </extension>
+  <extension
+        point="org.eclipse.ui.ide.markerSupport">
+     <markerContentGenerator
+           id="org.jactr.eclipse.runtime.production.markerGenerator"
+           name="ACTR Production State">
+        <markerFieldReference
+              id="productionName"
+              visible="true">
+        </markerFieldReference>
+        <markerTypeReference
+              id="org.jactr.eclipse.runtime.disable.marker">
+        </markerTypeReference>
+     </markerContentGenerator>
+  </extension>
+  <extension
+        point="org.eclipse.ui.ide.markerImageProviders">
+     <imageprovider
+           icon="icons/disable.gif"
+           id="org.jactr.eclipse.runtime.disable.imageProvider"
+           markertype="org.jactr.eclipse.runtime.disable.marker">
+     </imageprovider>
+  </extension>
+  <extension
+        point="org.eclipse.ui.editors.markerAnnotationSpecification">
+     <specification
+           annotationType="org.jactr.eclipse.runtime.disable.annotation"
+           colorPreferenceKey="disable.color"
+           colorPreferenceValue="153,0,0"
+           contributesToHeader="false"
+           highlightPreferenceKey="disable.highlight"
+           highlightPreferenceValue="false"
+           icon="icons/disable.gif"
+           includeOnPreferencePage="true"
+           isGoToNextNavigationTarget="false"
+           isGoToNextNavigationTargetKey="disable.next"
+           isGoToPreviousNavigationTarget="false"
+           isGoToPreviousNavigationTargetKey="disable.prev"
+           label="ACTR : Production state"
+           overviewRulerPreferenceKey="disable.overview"
+           overviewRulerPreferenceValue="true"
+           presentationLayer="5"
+           showInNextPrevDropdownToolbarAction="true"
+           showInNextPrevDropdownToolbarActionKey="disable.nextPrev"
+           textPreferenceKey="disable.text"
+           textPreferenceValue="true"
+           textStylePreferenceKey="disable.style"
+           textStylePreferenceValue="NONE"
+           verticalRulerPreferenceKey="disable.vertical"
+           verticalRulerPreferenceValue="true">
+     </specification>
+  </extension>
+  <extension
+        point="org.eclipse.ui.editors.annotationTypes">
+     <type
+           markerSeverity="0"
+           markerType="org.jactr.eclipse.runtime.disable.marker"
+           name="org.jactr.eclipse.runtime.disable.annotation">
+     </type>
+  </extension>
+   
+</plugin>
