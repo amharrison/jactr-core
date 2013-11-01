@@ -127,9 +127,9 @@ public class ArchiveController implements ISessionController2
     double startTime = _currentTime;
     double endTime = _currentTime + windowSize;
 
+    ACTRDebugElement.fireResumeEvent(_session, 0);
     _index.pump(startTime, endTime, _pumper);
 
-    ACTRDebugElement.fireResumeEvent(_session, 0);
     return true;
   }
 
@@ -171,7 +171,7 @@ public class ArchiveController implements ISessionController2
 
     _index.pump(_currentTime, targetTime, _pumper);
 
-    ACTRDebugElement.fireResumeEvent(_session, 0);
+    // ACTRDebugElement.fireResumeEvent(_session, 0);
   }
 
   public boolean canRunFor(Object duration)
@@ -197,7 +197,7 @@ public class ArchiveController implements ISessionController2
             targetDuration, _index.getEndTime()));
 
       _index.pump(_currentTime, targetTime, _pumper);
-      ACTRDebugElement.fireResumeEvent(_session, 0);
+      // ACTRDebugElement.fireResumeEvent(_session, 0);
     }
     else
       throw new IllegalArgumentException(String.format(

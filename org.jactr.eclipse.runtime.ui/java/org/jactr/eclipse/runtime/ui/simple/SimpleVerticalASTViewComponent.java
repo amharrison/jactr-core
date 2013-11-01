@@ -100,7 +100,6 @@ public abstract class SimpleVerticalASTViewComponent implements
   public void noAST()
   {
     _treeViewer.setInput(_astSupport.create(JACTRBuilder.MODEL, "no data"));
-
   }
 
   public void setFocus()

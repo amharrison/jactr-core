@@ -62,6 +62,20 @@ public class RuntimePreferencePage extends FieldEditorPreferencePage implements
     iField.setEmptyStringAllowed(false);
     addField(iField);
 
+    iField = new IntegerFieldEditor(RuntimePreferences.PLAYBACK_RATE,
+        "Playback messages per second", getFieldEditorParent());
+    iField.setTextLimit(4);
+    iField.setValidRange(10, 10000);
+    iField.setEmptyStringAllowed(false);
+    addField(iField);
+
+    iField = new IntegerFieldEditor(RuntimePreferences.PLAYBACK_BLOCKSIZE,
+        "Playback block size", getFieldEditorParent());
+    iField.setTextLimit(4);
+    iField.setValidRange(10, 1000);
+    iField.setEmptyStringAllowed(false);
+    addField(iField);
+
     addField(new SpacerFieldEditor(getFieldEditorParent()));
     addField(new LabelFieldEditor("Iterative Runs", getFieldEditorParent()));
 

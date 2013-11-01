@@ -126,7 +126,6 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
           */
     if (_logData instanceof ILiveSessionDataStream)
       ((ILiveSessionDataStream) _logData).removeListener(_liveListener);
-
   }
 
   public Object[] getElements(Object inputElement)
@@ -204,8 +203,11 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
       if (lastData != null)
       {
         Table table = _viewer.getTable();
-        table.select(table.getItemCount() - 1);
-        table.showSelection();
+        int item = table.getItemCount() - 1;
+        // disable automatic selection for performance reasons
+        // table.select(item);
+        // table.showSelection();
+        table.showItem(table.getItem(item));
       }
 
       monitor.done();

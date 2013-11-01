@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.jactr.eclipse.core.concurrent.QueueingJob;
 import org.jactr.eclipse.runtime.RuntimePlugin;
 import org.jactr.eclipse.runtime.debug.elements.ACTRDebugElement;
+import org.jactr.eclipse.runtime.preferences.RuntimePreferences;
 import org.jactr.eclipse.runtime.session.ISession;
 import org.jactr.eclipse.runtime.trace.RuntimeTraceManager;
 import org.jactr.tools.tracer.transformer.ITransformedEvent;
@@ -67,7 +68,7 @@ public class EventPumper extends QueueingJob
       _isFree = false;
     }
 
-    queue(500);
+    queue(150);
   }
 
   public boolean isFree()
@@ -107,7 +108,11 @@ public class EventPumper extends QueueingJob
       }
     }
 
-    processIndices(monitor, toLoad, 50);
+    int blockSize = RuntimePlugin.getDefault().getPreferenceStore()
+        .getInt(RuntimePreferences.PLAYBACK_BLOCKSIZE);
+
+    processIndices(new SubProgressMonitor(monitor, toLoad.size()), toLoad,
+        blockSize);
 
     //
     //
@@ -171,7 +176,7 @@ public class EventPumper extends QueueingJob
     if (isFree())
       ACTRDebugElement.fireSuspendEvent(_session, 0);
     else
-      schedule(500);
+      schedule();
 
     return Status.OK_STATUS;
   }
@@ -344,63 +349,114 @@ public class EventPumper extends QueueingJob
 
     boolean done = false;
 
-    while (!done && !monitor.isCanceled() && _session.isOpen())
+    long startTime = System.currentTimeMillis();
+    int desiredRate = RuntimePlugin.getDefault().getPreferenceStore()
+        .getInt(RuntimePreferences.PLAYBACK_RATE);
+
+    try
     {
-      /*
-       * read in eventBlockSize events
-       */
-      try
+      while (!done && !monitor.isCanceled() && _session.isOpen())
       {
-        ITransformedEvent ite = (ITransformedEvent) inputStream.readObject();
-        double eventTime = ite.getSimulationTime();
-
-        if (index._span[0] <= eventTime && eventTime < index._span[1])
-          events.add(ite);
-        else
+        /*
+         * read in eventBlockSize events
+         */
+        try
         {
-          if (LOGGER.isDebugEnabled())
-            LOGGER.debug(String.format(
-                "%s (%.2f) outside of range to pump (%.2f, %.2f)", ite
-                    .getClass().getName(), eventTime, index._span[0],
-                index._span[1]));
+          ITransformedEvent ite = (ITransformedEvent) inputStream.readObject();
+          double eventTime = ite.getSimulationTime();
 
-          done = eventTime >= index._span[1];
+          if (index._span[0] <= eventTime && eventTime < index._span[1])
+            events.add(ite);
+          else
+          {
+            if (LOGGER.isDebugEnabled())
+              LOGGER.debug(String.format(
+                  "%s (%.2f) outside of range to pump (%.2f, %.2f)", ite
+                      .getClass().getName(), eventTime, index._span[0],
+                  index._span[1]));
+
+            done = eventTime >= index._span[1];
+          }
         }
-      }
-      catch (EOFException e)
-      {
-        done = true;
-      }
-      catch (ClassNotFoundException e)
-      {
-        LOGGER.error("failed to read record ", e);
-      }
+        catch (EOFException e)
+        {
+          done = true;
+        }
+        catch (ClassNotFoundException e)
+        {
+          LOGGER.error("failed to read record ", e);
+        }
 
-      /*
-       * fire them off!
-       */
-      if (events.size() >= eventBlockSize || done) try
-      {
-        SubProgressMonitor pm = new SubProgressMonitor(monitor, events.size());
+        /*
+         * fire them off!
+         */
+        if (events.size() >= eventBlockSize || done)
+          try
+          {
+            SubProgressMonitor pm = new SubProgressMonitor(monitor,
+                events.size());
 
-        pm.beginTask("Propogating Events", events.size());
-        rtm.fireEvents(pm, events, _session);
-        // may want to consider yielding here?
+            if (LOGGER.isDebugEnabled())
+              LOGGER.debug(String.format("Firing %d events", events.size()));
 
-        pm.done();
-        events.clear();
+            pm.beginTask("Propogating Events", events.size());
+            rtm.fireEvents(pm, events, _session);
+            pm.done();
 
-        // meh?
-        // Thread.yield();
-        Thread.sleep(250);
+            if (events.size() > 0)
+              _controller.setCurrentTime(events.getLast().getSimulationTime());
+          }
+          catch (Exception e)
+          {
+            e.printStackTrace(System.err);
+          }
+          finally
+          {
+            try
+            {
+              /*
+               * this is all wrong and must be fixed we should put the padding
+               * between events
+               */
+              long actualDelta = System.currentTimeMillis() - startTime;
+              long targetDelta = (long) ((double) events.size()
+                  / (double) desiredRate * 1000d);
+
+              long sleepTime = targetDelta - actualDelta;
+
+              if (LOGGER.isDebugEnabled())
+                LOGGER.debug(String.format(
+                    "actual %d/%d | target %d/%d sleepTime %d", events.size(),
+                    actualDelta, events.size(), targetDelta, sleepTime));
+
+              events.clear();
+
+              if (sleepTime > 0)
+                try
+                {
+                  if (LOGGER.isDebugEnabled())
+                    LOGGER.debug(String.format("Sleeping %d ms", sleepTime));
+
+                  Thread.sleep(sleepTime);
+                }
+                catch (InterruptedException e)
+                {
+
+                }
+
+              startTime = System.currentTimeMillis();
+            }
+            catch (Exception e2)
+            {
+              LOGGER.error("Oops in sleep! ", e2);
+            }
+          }
+
       }
-      catch (Exception e)
-      {
-        e.printStackTrace(System.err);
-      }
-
     }
-
-    FastList.recycle(events);
+    finally
+    {
+      FastList.recycle(events);
+    }
   }
 }

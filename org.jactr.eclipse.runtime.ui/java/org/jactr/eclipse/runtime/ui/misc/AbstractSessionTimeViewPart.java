@@ -32,9 +32,8 @@ public abstract class AbstractSessionTimeViewPart extends ViewPart implements
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(AbstractSessionTimeViewPart.class);
-
+  static private final transient Log LOGGER           = LogFactory
+                                                          .getLog(AbstractSessionTimeViewPart.class);
 
   private List<SessionTimeSelection> _selectionEvents = new ArrayList<SessionTimeSelection>();
 
@@ -76,22 +75,36 @@ public abstract class AbstractSessionTimeViewPart extends ViewPart implements
 
   private void queue(SessionTimeSelection sts)
   {
-    boolean shouldProcess = false;
+    boolean alreadyQueued = false;
     synchronized (_selectionEvents)
     {
-      shouldProcess = _selectionEvents.size() == 0;
+      alreadyQueued = _selectionEvents.size() > 0;
       _selectionEvents.add(sts);
     }
 
-    if (shouldProcess)
-      getViewSite().getShell().getDisplay().asyncExec(new Runnable() {
+    if (!alreadyQueued)
+    {
+      Runnable runner = new Runnable() {
 
         public void run()
         {
+          if (LOGGER.isDebugEnabled())
+            LOGGER.debug(String.format("running runner %s", this));
+
+          if (_selectionEvents.size() == 0)
+          {
+            if (LOGGER.isDebugEnabled())
+              LOGGER
+                  .debug(String.format("runner has nothing to do, returning"));
+            return;
+          }
+
           _currentSelection = null;
+
           synchronized (_selectionEvents)
           {
-            _currentSelection = _selectionEvents.get(_selectionEvents.size() - 1);
+            _currentSelection = _selectionEvents
+                .get(_selectionEvents.size() - 1);
             _selectionEvents.clear();
           }
 
@@ -103,7 +116,12 @@ public abstract class AbstractSessionTimeViewPart extends ViewPart implements
                 showPostConflictResolution());
         }
 
-      });
+      };
+
+      if (LOGGER.isDebugEnabled())
+        LOGGER.debug(String.format("Queuing runner %s", runner));
+      getViewSite().getShell().getDisplay().asyncExec(runner);
+    }
   }
 
   public void setSelection(SessionTimeSelection selection)

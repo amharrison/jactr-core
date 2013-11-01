@@ -38,4 +38,8 @@ public interface RuntimePreferences
 
   public static final String DONT_ASK_DEBUG_SWITCH       = "dontAskToSwitchToDebug";
 
+  public static final String PLAYBACK_RATE               = "playbackMessagesPerSecond";
+
+  public static final String PLAYBACK_BLOCKSIZE          = "playbackBlockSize";
+
 }
