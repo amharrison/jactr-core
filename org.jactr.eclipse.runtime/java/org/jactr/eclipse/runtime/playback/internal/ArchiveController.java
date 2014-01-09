@@ -19,8 +19,8 @@ public class ArchiveController implements ISessionController2
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER      = LogFactory
-                                                     .getLog(ArchiveController.class);
+  static private final transient Log LOGGER        = LogFactory
+                                                       .getLog(ArchiveController.class);
 
   private final ArchivalIndex        _index;
 
@@ -28,13 +28,17 @@ public class ArchiveController implements ISessionController2
 
   private double                     _currentTime;
 
-  private boolean                    _terminated = false;
+  private boolean                    _terminated   = false;
 
   private final ISession             _session;
 
   private ITreeContentProvider       _runForContent;
 
   private ITreeContentProvider       _runToContent;
+
+  private boolean                    _canSkipAhead = true;
+
+  private double                     _currentStepSize;
 
   public ArchiveController(ISession session, ArchivalIndex index,
       EventPumper pumper)
@@ -43,6 +47,8 @@ public class ArchiveController implements ISessionController2
     _session = session;
     _pumper = pumper;
     _currentTime = _index.getStartTime();
+    _currentStepSize = RuntimePlugin.getDefault().getPreferenceStore()
+        .getInt(RuntimePreferences.RUNTIME_DATA_WINDOW);
     setRunForContentProvider(new DefaultRunForContentProvider());
   }
 
@@ -118,17 +124,14 @@ public class ArchiveController implements ISessionController2
   {
     if (!canResume()) throw new RuntimeException("Must be suspended first");
 
-    /*
-     * calculate the block of times that we'd like to pump via the ArchivalIndex
-     * and pumper
-     */
-    double windowSize = RuntimePlugin.getDefault().getPreferenceStore()
-        .getInt(RuntimePreferences.RUNTIME_DATA_WINDOW) * 0.75;
+    double windowSize = _currentStepSize;
     double startTime = _currentTime;
     double endTime = _currentTime + windowSize;
 
     ACTRDebugElement.fireResumeEvent(_session, 0);
     _index.pump(startTime, endTime, _pumper);
+
+
 
     return true;
   }
@@ -148,6 +151,11 @@ public class ArchiveController implements ISessionController2
     _currentTime = currentTime;
   }
 
+  public void setStepSize(double stepSize)
+  {
+    _currentStepSize = stepSize;
+  }
+
   public boolean canRunTo(Object destination)
   {
     if (destination instanceof Number)
@@ -163,13 +171,23 @@ public class ArchiveController implements ISessionController2
     if (destination instanceof Number)
       targetTime = ((Number) destination).doubleValue();
     if (destination instanceof MarkerRecord)
-      targetTime = ((MarkerRecord) destination)._time + 1;
+      targetTime = ((MarkerRecord) destination)._time + 0.1;
 
     if (targetTime <= _currentTime)
       throw new IllegalArgumentException(String.format(
           "Target time %.2f has already passed %.2f", targetTime, _currentTime));
 
-    _index.pump(_currentTime, targetTime, _pumper);
+    double startTime = _currentTime;
+    if (_canSkipAhead)
+    {
+      double fullWindow = RuntimePlugin.getDefault().getPreferenceStore()
+          .getInt(RuntimePreferences.RUNTIME_DATA_WINDOW);
+
+      if (targetTime > startTime + fullWindow)
+        startTime = targetTime - fullWindow;
+    }
+
+    _index.pump(startTime, targetTime, _pumper);
 
     // ACTRDebugElement.fireResumeEvent(_session, 0);
   }

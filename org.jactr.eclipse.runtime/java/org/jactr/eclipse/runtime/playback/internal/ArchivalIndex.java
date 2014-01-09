@@ -31,6 +31,7 @@ public class ArchivalIndex
   final private double[]                 _span  = { Double.MAX_VALUE,
       Double.MIN_VALUE                         };
 
+
   public ArchivalIndex(IResource resource)
   {
     _indexFile = resource;

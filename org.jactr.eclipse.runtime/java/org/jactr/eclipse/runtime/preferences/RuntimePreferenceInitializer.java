@@ -32,8 +32,8 @@ public class RuntimePreferenceInitializer extends AbstractPreferenceInitializer
     prefs.setDefault(RuntimePreferences.DEBUG_STACK_PREF, 20);
     prefs.setDefault(RuntimePreferences.VERIFY_RUN_PREF, false);
     prefs.setDefault(RuntimePreferences.PROBE_RUNTIME_DATA_WINDOW, 60);
-    prefs.setDefault(RuntimePreferences.PLAYBACK_RATE, 500);
-    prefs.setDefault(RuntimePreferences.PLAYBACK_BLOCKSIZE, 100);
+    prefs.setDefault(RuntimePreferences.PLAYBACK_RATE, 1000);
+    prefs.setDefault(RuntimePreferences.PLAYBACK_BLOCKSIZE, 200);
 
     prefs.setDefault(RuntimePreferences.DONT_ASK_RUN_SWITCH, false);
     prefs.setDefault(RuntimePreferences.DONT_ASK_DEBUG_SWITCH, false);
