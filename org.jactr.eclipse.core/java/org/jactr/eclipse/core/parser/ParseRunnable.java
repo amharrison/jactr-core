@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.jactr.eclipse.core.CorePlugin;
 import org.jactr.eclipse.core.comp.ICompilationUnit;
 import org.jactr.eclipse.core.comp.ICompilationUnitRunnable;
+import org.jactr.eclipse.core.comp.IProjectCompilationUnit;
 import org.jactr.eclipse.core.comp.internal.ExceptionContainer;
 import org.jactr.eclipse.core.comp.internal.IMutableCompilationUnit;
 import org.jactr.io.parser.CanceledException;
@@ -61,6 +62,16 @@ public class ParseRunnable implements ICompilationUnitRunnable
     try
     {
       _modelParser.reset();
+
+      /*
+       * make sure the project is specified before attempting..
+       */
+      ProjectSensitiveParserImportDelegate importDelegate = (ProjectSensitiveParserImportDelegate) _modelParser
+          .getImportDelegate();
+      if (importDelegate != null
+          && _compilationUnit instanceof IProjectCompilationUnit)
+        importDelegate.setProject(((IProjectCompilationUnit) _compilationUnit)
+            .getResource().getProject());
 
       if (LOGGER.isDebugEnabled()) LOGGER.debug("Parse started");
 

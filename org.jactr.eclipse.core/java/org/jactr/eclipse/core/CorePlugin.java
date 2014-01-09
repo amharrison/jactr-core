@@ -9,6 +9,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
+import org.jactr.eclipse.core.parser.ProjectSensitiveParserImportDelegate;
+import org.jactr.io.parser.IParserImportDelegate;
+import org.jactr.io.parser.ParserImportDelegateFactory;
+import org.jactr.io.parser.ParserImportDelegateFactory.IParserImportDelegateFactoryImpl;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -29,7 +33,6 @@ public class CorePlugin extends Plugin
   private ResourceBundle             resourceBundle;
 
   private BundleContext              _bundleContext;
-  
 
   /**
    * The constructor.
@@ -69,6 +72,18 @@ public class CorePlugin extends Plugin
      */
     org.jactr.launching.Activator.getDefault();
 
+    /*
+     * we also need to set the default import delegate
+     */
+
+    ParserImportDelegateFactory
+        .setFactoryImpl(new IParserImportDelegateFactoryImpl() {
+
+          public IParserImportDelegate createDelegate(Object... params)
+          {
+            return new ProjectSensitiveParserImportDelegate();
+          }
+        });
   }
 
   /**
@@ -99,7 +114,7 @@ public class CorePlugin extends Plugin
     ResourceBundle bundle = CorePlugin.getDefault().getResourceBundle();
     try
     {
-      return (bundle != null) ? bundle.getString(key) : key;
+      return bundle != null ? bundle.getString(key) : key;
     }
     catch (MissingResourceException e)
     {
@@ -114,8 +129,6 @@ public class CorePlugin extends Plugin
   {
     return resourceBundle;
   }
-  
-  
 
   static public void log(IStatus status)
   {

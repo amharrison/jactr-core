@@ -15,6 +15,7 @@ package org.jactr.eclipse.core.parser;
 
 import java.net.URL;
 
+import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IContainer;
@@ -36,7 +37,6 @@ import org.jactr.eclipse.core.bundles.descriptors.ASTParticipantDescriptor;
 import org.jactr.eclipse.core.bundles.registry.ASTParticipantRegistry;
 import org.jactr.io.parser.DefaultParserImportDelegate;
 import org.jactr.io.participant.IASTParticipant;
-import org.jactr.io.participant.impl.BasicASTParticipant;
 
 public class ProjectSensitiveParserImportDelegate extends
     DefaultParserImportDelegate implements IProjectSensitive
@@ -54,6 +54,38 @@ public class ProjectSensitiveParserImportDelegate extends
   public void setProject(IProject project)
   {
     _project = project;
+  }
+
+  @Override
+  public CommonTree importModuleInto(CommonTree modelDescriptor,
+      String moduleClassName, boolean importContents) throws Exception
+  {
+    try
+    {
+      return super.importModuleInto(modelDescriptor, moduleClassName,
+          importContents);
+    }
+    catch (Exception e)
+    {
+      CorePlugin.error(e.getMessage(), e);
+      throw e;
+    }
+  }
+
+  @Override
+  public CommonTree importExtensionInto(CommonTree modelDescriptor,
+      String extensionClassName, boolean importContents) throws Exception
+  {
+    try
+    {
+      return super.importExtensionInto(modelDescriptor, extensionClassName,
+          importContents);
+    }
+    catch (Exception e)
+    {
+      CorePlugin.error(e.getMessage(), e);
+      throw e;
+    }
   }
 
   @Override
@@ -82,11 +114,13 @@ public class ProjectSensitiveParserImportDelegate extends
        */
       for (ASTParticipantDescriptor desc : ASTParticipantRegistry.getRegistry()
           .getDescriptors(_project))
-        if (desc.getContributingClassName().equals(moduleClassName))
-          return true;
+        if (desc.getContributingClassName().equals(moduleClassName)) //          CorePlugin.debug(String.format("Found contributor %s for %s in %s",
+//              desc.getContributingClassName(), moduleClassName, project
+//                  .getProject().getName()));
+        return true;
 
-      // CorePlugin.error(String.format("Could not find %s within %s",
-      // moduleClassName, _project));
+      CorePlugin.error(String.format("Could not find %s within %s",
+          moduleClassName, _project));
     }
     catch (Exception e)
     {
@@ -188,8 +222,13 @@ public class ProjectSensitiveParserImportDelegate extends
                   "Could not find %s (%s) within %s' classpath",
                   contentLocation, location, _project.getName()));
 
-            participant = new BasicASTParticipant(resource.getLocationURI()
-                .toURL());
+            URL contentURL = resource.getLocationURI().toURL();
+
+            // CorePlugin.debug(String.format(
+            // "Creating participant for content @ %s",
+            // contentURL.toExternalForm()));
+
+            participant = new IDEBasicASTParticipant(contentURL);
           }
           catch (Exception e)
           {
@@ -240,15 +279,20 @@ public class ProjectSensitiveParserImportDelegate extends
           IFile modelFile = modelsFolder.getFile(url);
           if (modelFile == null || !modelFile.exists()) continue;
 
-          if (LOGGER.isDebugEnabled())
-            LOGGER.debug("Found a matching file at " + modelFile.getFullPath());
+          // CorePlugin.debug("Found a matching file at "
+          // + modelFile.getFullPath());
 
           if (javaProject.isOnClasspath(modelFile))
           {
             if (LOGGER.isDebugEnabled())
               LOGGER.debug("Is on classpath, returning url");
 
-            return modelFile.getLocation().toFile().toURL();
+            URL rtn = modelFile.getLocation().toFile().toURI().toURL();
+
+            // CorePlugin.debug(String.format("On path at %s",
+            // rtn.toExternalForm()));
+
+            return rtn;
           }
           else if (LOGGER.isDebugEnabled())
             LOGGER.debug("is not on classpath");
@@ -256,8 +300,7 @@ public class ProjectSensitiveParserImportDelegate extends
     }
     catch (Exception e)
     {
-      if (LOGGER.isDebugEnabled())
-        LOGGER.debug("Failed to extract location info for " + url, e);
+      CorePlugin.error("Failed to extract location info for " + url, e);
     }
     return super.resolveURL(url, baseURL);
   }

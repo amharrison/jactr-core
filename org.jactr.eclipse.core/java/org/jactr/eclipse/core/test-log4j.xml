@@ -156,22 +156,23 @@
 	<logger name="org.jactr.eclipse.runtime.session"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.ui.log2.live"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.ui.probe.ModelProbeView"><level value="debug" /></logger>
-	<logger name="org.jactr.eclipse.runtime.ui.log2.ModelLogView2"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.ui.generic.view.AbstractModelViewPart"><level value="debug" /></logger>
 	<logger name="org.jactr.tools.tracer.sinks.trace.internal"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.ui.misc.AbstractRuntimeModelViewPart"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.probe2.StringTable"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.ui.probe.components"><level value="warn" /></logger>
-	<logger name="org.jactr.eclipse.runtime.playback.internal"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.ui.editor.assist"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.ui.probe.components"><level value="debug" /></logger>
-	<logger name="org.jactr.eclipse.runtime.playback"><level value="warn" /></logger>
 	<logger name="org.jactr.eclipse.runtime.ui.log2.TableLabelProvider"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.ui.probe.components.MarkerSupport"><level value="debug" /></logger>
+	<logger name="org.jactr.eclipse.runtime.playback"><level value="warn" /></logger>
 	<logger name="org.jactr.eclipse.runtime.ui.probe.ModelProbeView"><level value="debug" /></logger>
-	-->
 	<logger name="org.jactr.eclipse.runtime.log2.LogData"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.log2.LogRuntimeTraceListener"><level value="debug" /></logger>
+	<logger name="org.jactr.eclipse.runtime.playback.internal.EventPumper"><level value="debug" /></logger>
+	<logger name="org.jactr.eclipse.runtime.ui.log2.ModelLogView2"><level value="debug" /></logger>
+	<logger name="org.jactr.eclipse.runtime.ui.misc.AbstractSessionTimeViewPart"><level value="debug" /></logger>
+	-->
 	
 	
 
