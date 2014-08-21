@@ -4,6 +4,8 @@ package org.jactr.eclipse.runtime.ui.log2.live;
  * default logging
  */
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.locks.ReentrantLock;
@@ -55,6 +57,8 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
   private Set<String>                             _knownColumns;
 
   private QueueingUIJob                           _updater;
+  
+  private List<ColumnListener>					  _columnListeners = new LinkedList<ColumnListener>();
 
   public LiveLogDataContentProvider(TableViewer viewer)
   {
@@ -236,7 +240,19 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
         TableColumn column = new TableColumn(table, SWT.LEFT);
         column.setText(stream);
         _knownColumns.add(stream);
+        for(ColumnListener listener: _columnListeners) {
+        	listener.added(column);
+        }
       }
 
+  }
+  
+  public void addColumnListener(ColumnListener listener)
+  {
+	  _columnListeners.add(listener);
+  }
+  
+  public void removeColumnListener(ColumnListener listener) {
+	  _columnListeners.remove(listener);
   }
 }

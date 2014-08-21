@@ -38,10 +38,14 @@ import org.jactr.eclipse.runtime.log2.ILogSessionDataStream;
 import org.jactr.eclipse.runtime.log2.LogData;
 import org.jactr.eclipse.runtime.session.data.ISessionData;
 import org.jactr.eclipse.runtime.session.stream.ISessionDataStream;
+import org.jactr.eclipse.runtime.ui.UIPlugin;
+import org.jactr.eclipse.runtime.ui.log2.live.ColumnListener;
 import org.jactr.eclipse.runtime.ui.log2.live.LiveLogDataContentProvider;
 import org.jactr.eclipse.runtime.ui.misc.AbstractRuntimeModelViewPart;
 import org.jactr.eclipse.runtime.ui.selection.SessionTimeSelection;
 import org.jactr.eclipse.runtime.ui.selection.SessionTimeSelectionProvider;
+
+import static org.jactr.eclipse.runtime.ui.log2.ToggleColumnAction.*;
 
 public class ModelLogView2 extends AbstractRuntimeModelViewPart
 {
@@ -55,11 +59,17 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
                                                           .getName();
 
   static private String[]            _expectedStreams = {
-      Logger.Stream.TIME.name(), "MARKERS", Logger.Stream.OUTPUT.name(),
-      Logger.Stream.GOAL.name(), Logger.Stream.IMAGINAL.name(),
-      Logger.Stream.RETRIEVAL.name(), Logger.Stream.PROCEDURAL.name(),
-      Logger.Stream.DECLARATIVE.name(), Logger.Stream.VISUAL.name(),
-      Logger.Stream.AURAL.name(), Logger.Stream.MOTOR.name() };
+      Logger.Stream.TIME.name(),
+      "MARKERS",
+      Logger.Stream.OUTPUT.name(),
+      Logger.Stream.GOAL.name(),
+      Logger.Stream.IMAGINAL.name(),
+      Logger.Stream.RETRIEVAL.name(),
+      Logger.Stream.PROCEDURAL.name(),
+      Logger.Stream.DECLARATIVE.name(),
+      Logger.Stream.VISUAL.name(),
+      Logger.Stream.AURAL.name(),
+      Logger.Stream.MOTOR.name() };
 
   private Color                      EXCEPTION_COLOR  = new Color(
                                                           Display.getCurrent(),
@@ -193,11 +203,17 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
     int properties = SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL
         | SWT.BORDER;
 
-    TableViewer viewer = new TableViewer(parent, properties);
+    final TableViewer viewer = new TableViewer(parent, properties);
     viewer.setLabelProvider(new TableLabelProvider(viewer.getTable()));
 
     // if (logStream instanceof ILiveSessionDataStream)
-    viewer.setContentProvider(new LiveLogDataContentProvider(viewer));
+    LiveLogDataContentProvider contentProvider = new LiveLogDataContentProvider(viewer);
+	viewer.setContentProvider(contentProvider);
+	contentProvider.addColumnListener(new ColumnListener() {
+		@Override public void added(TableColumn column) {
+		    getViewSite().getActionBars().getMenuManager().add(new ToggleColumnAction(ModelLogView2.this, viewer.getTable(), column));
+			getViewSite().getActionBars().updateActionBars();
+		}});
 
     viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -295,8 +311,12 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
     {
       TableColumn column = new TableColumn(table, SWT.LEFT);
       column.setText(stream);
-      column.setResizable(true);
+      column.setResizable(!stream.equals("TIME"));
+      if(stream.equals("TIME"))
+    	  column.setWidth(TIME_COLUMN_WIDTH);
+      getViewSite().getActionBars().getMenuManager().add(new ToggleColumnAction(this, table, column));
     }
+	getViewSite().getActionBars().updateActionBars();
 
     table.addControlListener(new ControlAdapter() {
       @Override
@@ -311,13 +331,22 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
 
   protected void adjustColumnSizes(Table table)
   {
+	int resizableColumns = 0;
+	for(TableColumn column: table.getColumns()) {
+		if(column.getResizable())
+			resizableColumns++;
+	}
     /*
      * resize
      */
-    int size = table.getClientArea().width / table.getColumnCount();
+    int size = (table.getClientArea().width-TIME_COLUMN_WIDTH) / resizableColumns;
 
-    for (TableColumn column : table.getColumns())
-      column.setWidth(size);
+    table.setRedraw(false);
+    for (TableColumn column : table.getColumns()) {
+    	if(column.getResizable())
+    		column.setWidth(size);
+    }
+    table.setRedraw(true);
   }
 
   @Override
