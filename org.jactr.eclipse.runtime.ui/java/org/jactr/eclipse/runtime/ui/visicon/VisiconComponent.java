@@ -36,6 +36,8 @@ public class VisiconComponent extends Canvas
   static private final transient Log LOGGER = LogFactory
                                                 .getLog(VisiconComponent.class);
 
+  public static final float DEFAULT_MAGNIFICATION = 1.25f;
+  
   /*
    * for rendering the visicon
    */
@@ -60,15 +62,18 @@ public class VisiconComponent extends Canvas
   private IIdentifier                _found;
 
   private IIdentifier                _encoded;
+  
+  private float _magnification = DEFAULT_MAGNIFICATION;
 
   public VisiconComponent(Composite parent, int style,
-      VisualDescriptor descriptor)
+      VisualDescriptor descriptor, float magnification)
   {
     super(parent, style);
 
     _descriptor = descriptor;
     _features = new HashMap<IIdentifier, Feature>();
-
+    _magnification = magnification;
+    
     addMouseMoveListener(new MouseMoveListener() {
 
       public void mouseMove(MouseEvent me)
@@ -120,30 +125,8 @@ public class VisiconComponent extends Canvas
 
       public void controlResized(ControlEvent e)
       {
-        if (_transform != null)
-        {
-          _transform.dispose();
-          _inverse.dispose();
-        }
-
-        _transform = new Transform(e.display);
-        _inverse = new Transform(e.display);
-
-        Rectangle bounds = ((Control) e.widget).getBounds();
-        double[] res = _descriptor.getResolution();
-        if (res == null) return;
-
-        // scale
-        _transform.scale(bounds.width / (float) (res[0] * 1.25), -bounds.height
-            / (float) (res[1] * 1.25));
-        // and center
-        _transform.translate((float) (res[0] * 1.25) / 2f,
-            -(float) (res[1] * 1.25) / 2);
-
-        _inverse.multiply(_transform);
-        if (bounds.height != 0 && bounds.width != 0) _inverse.invert();
+    	  updateTransform();
       }
-
     };
 
     addPaintListener(_painter);
@@ -159,6 +142,41 @@ public class VisiconComponent extends Canvas
      */
     for (IIdentifier identifier : _descriptor.getIdentifiers())
       add(identifier, _descriptor.getData(identifier));
+  }
+  
+  void setMagnification(float magnification) {
+	  System.err.println("magnification="+magnification);
+	  _magnification = magnification;
+	  updateTransform();
+	  redraw();
+  }
+  
+  private void updateTransform() {
+    if (_transform != null) {
+      _transform.dispose();
+      _inverse.dispose();
+    }
+
+    _transform = new Transform(getDisplay());
+    _inverse = new Transform(getDisplay());
+
+    Rectangle bounds = getBounds();
+    double[] res = _descriptor.getResolution();
+    
+    if (res == null)
+    	return;
+
+    // scale
+    _transform.scale( bounds.width  / (float) (res[0] * _magnification),
+    		         -bounds.height / (float) (res[1] * _magnification));
+    // and center
+    _transform.translate((float) (res[0] * _magnification) / 2f,
+        -(float) (res[1] * _magnification) / 2);
+
+    _inverse.multiply(_transform);
+    
+    if (bounds.height != 0 && bounds.width != 0)
+    	_inverse.invert();
   }
 
   protected void drawAxes(GC graphics)
