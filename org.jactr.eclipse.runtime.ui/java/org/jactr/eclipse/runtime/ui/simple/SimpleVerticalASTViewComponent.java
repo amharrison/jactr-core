@@ -4,6 +4,8 @@ package org.jactr.eclipse.runtime.ui.simple;
  * default logging
  */
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 import javolution.util.FastList;
 
@@ -86,6 +88,9 @@ public abstract class SimpleVerticalASTViewComponent implements
       return;
     }
 
+    Collection<Object> collapsedElements = new LinkedList<Object>();
+    getCollapsedEntries(_treeViewer.getInput(), collapsedElements);
+    
     /*
      * combine the asts
      */
@@ -93,10 +98,57 @@ public abstract class SimpleVerticalASTViewComponent implements
     for (CommonTree tree : trees)
       root.addChild(tree);
 
+    _treeViewer.getTree().setRedraw(false);
     _treeViewer.setInput(root);
-
+    collapseElements(root, collapsedElements);
+    _treeViewer.getTree().setRedraw(true);
   }
-
+  
+  private void getCollapsedEntries(Object element, Collection<Object> collapsedElements) {
+	  getCollapsedEntries(element, collapsedElements, "", 0);
+  }
+  
+  private void getCollapsedEntries(Object element, Collection<Object> collapsedElements, String prefix,
+		  int index) {
+	  if(element == null)
+		  return;
+	  if(element instanceof CommonTree) {
+		  CommonTree ct = (CommonTree)element;
+		  String path = prefix+"."+ct.getText()+index;
+		  if(!_treeViewer.getExpandedState(ct))
+			  collapsedElements.add(path);
+		  List children = ct.getChildren();
+		  if(children != null) {
+			  for(int i=0;i<children.size();i++) {
+				  getCollapsedEntries(children.get(i), collapsedElements, path, i);
+			  }
+		  }
+	  }
+  }
+  
+  private void collapseElements(Object newElement, Collection<Object> collapsedOldElements) {
+	  collapseElements(newElement, collapsedOldElements, "", 0);
+  }
+  
+  private void collapseElements(Object newElement, Collection<Object> collapsedOldElements,
+		  String prefix, int index) {
+	  if(newElement == null)
+		  return;
+	  if(newElement instanceof CommonTree) {
+		  CommonTree ct = (CommonTree)newElement;
+		  String path = prefix+"."+ct.getText()+index;
+		  if(collapsedOldElements.contains(path)) {
+			  _treeViewer.setExpandedState(ct, false);
+		  }
+		  List children = ct.getChildren();
+		  if(children != null) {
+			  for(int i=0;i<children.size();i++) {
+				  collapseElements(children.get(i), collapsedOldElements, path, i);
+			  }
+		  }
+  	}
+  }
+  
   public void noAST()
   {
     _treeViewer.setInput(_astSupport.create(JACTRBuilder.MODEL, "no data"));
