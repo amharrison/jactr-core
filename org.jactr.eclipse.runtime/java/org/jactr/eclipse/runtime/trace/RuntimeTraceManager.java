@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.concurrent.Executor;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.jactr.eclipse.runtime.RuntimePlugin;
 import org.jactr.eclipse.runtime.session.ISession;
 import org.jactr.eclipse.runtime.trace.impl.GeneralEventManager;
 import org.jactr.tools.tracer.transformer.ITransformedEvent;
@@ -52,30 +53,43 @@ public class RuntimeTraceManager
   public void fireEvent(ITransformedEvent event, ISession session)
   {
     _eventManager.notify(new Event(event, session));
+    // RuntimePlugin.info(String.format("(single) fired %s %.4f",
+    // event.getClass()
+    // .getSimpleName(), event.getSimulationTime()));
   }
 
   public void fireEvents(Collection<ITransformedEvent> events, ISession session)
   {
     for (ITransformedEvent event : events)
       _eventManager.notify(new Event(event, session));
+    // RuntimePlugin.info(String.format("(bulk) fired %s %.4f", event.getClass()
+    // .getSimpleName(), event.getSimulationTime()));
   }
 
   public void fireEvents(IProgressMonitor monitor,
       Collection<ITransformedEvent> events, ISession session)
   {
-    try
+    for (ITransformedEvent event : events)
     {
-      for (ITransformedEvent event : events)
-      {
-        if (monitor.isCanceled()) return;
+      if (monitor.isCanceled()) return;
 
+      try
+      {
         _eventManager.notify(new Event(event, session));
+
+        // RuntimePlugin.info(String.format("(monitored) fired %s %.4f", event
+        // .getClass().getSimpleName(), event.getSimulationTime()));
+      }
+      catch (Exception e)
+      {
+        RuntimePlugin.error(String.format(
+            "Failed to notify event %s, skipping", event.getClass()
+                .getSimpleName()), e);
+      }
+      finally
+      {
         monitor.worked(1);
       }
-    }
-    finally
-    {
-      // monitor.done();
     }
 
   }
