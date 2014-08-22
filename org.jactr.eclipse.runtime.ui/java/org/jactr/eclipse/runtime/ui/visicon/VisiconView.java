@@ -37,6 +37,8 @@ public class VisiconView extends AbstractRuntimeModelViewPart
   // to be notified of data changes
   private IVisualDescriptorListener  _descriptorListener;
 
+  private ZoomSliderContribution zoomSlider;
+  
   @Override
   public void init(IViewSite site) throws PartInitException
   {
@@ -160,6 +162,19 @@ public class VisiconView extends AbstractRuntimeModelViewPart
       addModelData(desc.getModelName(), desc);
 
     FastList.recycle(container);
+    
+  }
+  
+  @Override
+protected void configureModelControl() {
+	createZoomSlider();
+	super.configureModelControl();
+}
+
+  private void createZoomSlider() {
+	  zoomSlider = new ZoomSliderContribution(getTabFolder(), VisiconComponent.DEFAULT_MAGNIFICATION);
+	  getViewSite().getActionBars().getToolBarManager().add(zoomSlider);
+	  getViewSite().getActionBars().updateActionBars();
   }
 
   @Override
@@ -176,9 +191,16 @@ public class VisiconView extends AbstractRuntimeModelViewPart
     if (!(modelData instanceof VisualDescriptor)) return null;
 
     VisualDescriptor desc = (VisualDescriptor) modelData;
-    VisiconComponent comp = new VisiconComponent(parent, SWT.NONE, desc);
+    VisiconComponent comp = new VisiconComponent(parent, SWT.NONE, desc, getMagnification());
     desc.add(_descriptorListener);
     return comp;
+  }
+  
+  private float getMagnification() {
+	  if(zoomSlider != null)
+		  return zoomSlider.getMagnification();
+	  else
+		  return VisiconComponent.DEFAULT_MAGNIFICATION;
   }
 
   @Override

@@ -14,6 +14,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.jactr.core.logging.Logger;
 import org.jactr.eclipse.runtime.log2.LogData;
 import org.jactr.eclipse.runtime.marker.OpenMarkerSessionDataStream;
 import org.jactr.eclipse.runtime.marker.OpenMarkers;
@@ -50,7 +51,21 @@ public class TableLabelProvider extends LabelProvider implements
 
     TableColumn column = _table.getColumn(columnIndex);
 
-    return ld.get(column.getText());
+    String text = ld.get(column.getText());
+    if(column.getText().equals(Logger.Stream.PROCEDURAL.toString())) {
+    	// Show only the last line of the procedural text (or the line
+    	// before the last line, if the last line is empty).
+    	int lastIndex = text.lastIndexOf("\n");
+    	if(lastIndex != -1) {
+    		String newText = text.substring(lastIndex + 1).trim();
+    		if(newText.length() == 0 && lastIndex != -1) {
+    			int secondLastIndex = text.lastIndexOf("\n", lastIndex-1);
+    			newText = text.substring(secondLastIndex+1).trim();
+    		}
+    		text = newText;
+    	}
+    }
+    return text;
   }
 
   public Color getForeground(Object element, int columnIndex)

@@ -23,6 +23,8 @@ import org.osgi.framework.BundleContext;
 public class UIPlugin extends AbstractUIPlugin
 {
 
+	public static final String PLUGIN_ID = "org.jactr.eclipse.runtime.ui";
+	
   // The shared instance.
   private static UIPlugin plugin;
 
