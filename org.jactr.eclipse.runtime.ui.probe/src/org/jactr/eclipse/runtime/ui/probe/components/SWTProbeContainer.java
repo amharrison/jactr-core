@@ -16,7 +16,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.jactr.eclipse.runtime.probe2.ModelProbeData;
 
-public class SWTProbeContainer extends AbstractProbeContainer
+public class SWTProbeContainer extends AbstractBIRTProbeContainer
 {
   /**
    * Logger definition
