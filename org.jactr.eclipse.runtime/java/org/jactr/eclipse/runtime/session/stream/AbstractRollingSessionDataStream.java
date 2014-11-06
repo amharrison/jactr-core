@@ -20,7 +20,7 @@ import org.jactr.eclipse.runtime.session.data.ISessionData;
 import org.jactr.eclipse.runtime.trace.impl.GeneralEventManager;
 
 public abstract class AbstractRollingSessionDataStream<I, T> extends
-    AbstractSessionDataStream<I, T> implements ILiveSessionDataStream<T>
+    AbstractSessionDataStream<T> implements ILiveSessionDataStream<T>
 {
   /**
    * Logger definition
@@ -156,7 +156,7 @@ public abstract class AbstractRollingSessionDataStream<I, T> extends
     _eventManager.notify(new Object[] { added, modified, removed });
   }
 
-  @Override
+
   public void append(I data)
   {
     append(Collections.singleton(data));

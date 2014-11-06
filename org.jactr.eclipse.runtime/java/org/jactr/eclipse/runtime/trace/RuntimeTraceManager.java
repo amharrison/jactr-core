@@ -3,9 +3,12 @@ package org.jactr.eclipse.runtime.trace;
 /*
  * default logging
  */
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Executor;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.jactr.eclipse.runtime.RuntimePlugin;
 import org.jactr.eclipse.runtime.session.ISession;
@@ -14,7 +17,8 @@ import org.jactr.tools.tracer.transformer.ITransformedEvent;
 
 public class RuntimeTraceManager
 {
-
+  static private final transient Log                        LOGGER = LogFactory
+                                                                       .getLog(RuntimeTraceManager.class);
   private GeneralEventManager<IRuntimeTraceListener, Event> _eventManager;
 
   public RuntimeTraceManager()
@@ -35,6 +39,14 @@ public class RuntimeTraceManager
     _eventManager.clear();
   }
 
+  public Collection<IRuntimeTraceListener> getListeners(
+      Collection<IRuntimeTraceListener> container)
+  {
+    if (container == null) container = new ArrayList<IRuntimeTraceListener>();
+    _eventManager.getListeners(container);
+    return container;
+  }
+
   public void addListener(IRuntimeTraceListener listener)
   {
     addListener(listener, null);
@@ -53,8 +65,9 @@ public class RuntimeTraceManager
   public void fireEvent(ITransformedEvent event, ISession session)
   {
     _eventManager.notify(new Event(event, session));
-    // RuntimePlugin.info(String.format("(single) fired %s %.4f",
-    // event.getClass()
+
+    // if (LOGGER.isDebugEnabled())
+    // LOGGER.debug(String.format("(single) fired %s %.4f", event.getClass()
     // .getSimpleName(), event.getSimulationTime()));
   }
 
