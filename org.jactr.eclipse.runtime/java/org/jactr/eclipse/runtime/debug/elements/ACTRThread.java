@@ -143,7 +143,7 @@ public class ACTRThread extends ACTRDebugElement implements IThread
         _stackFrames.remove(_breakpointStackFrame);
 
       if (_stackFrames.size() >= _maxHistory)
-        _stackFrames.subList(0, (_maxHistory - _cullHistoryTo)).clear();
+        _stackFrames.subList(0, _maxHistory - _cullHistoryTo).clear();
 
       _stackFrames.add(frame);
     }
@@ -222,16 +222,18 @@ public class ACTRThread extends ACTRDebugElement implements IThread
 
   public boolean canResume()
   {
-    if (isTerminated()) return false;
-
-    return isSuspended();
+    // if (isTerminated()) return false;
+    //
+    // return isSuspended();
+    return false;
   }
 
   public boolean canSuspend()
   {
-    if (isTerminated()) return false;
+    // if (isTerminated()) return false;
 
-    return !isSuspended();
+    // return !isSuspended();
+    return false;
   }
 
   public boolean isSuspended()
@@ -262,7 +264,8 @@ public class ACTRThread extends ACTRDebugElement implements IThread
 
   public boolean canStepReturn()
   {
-    return isSuspended();
+    // return isSuspended();
+    return false;
   }
 
   public boolean isStepping()
