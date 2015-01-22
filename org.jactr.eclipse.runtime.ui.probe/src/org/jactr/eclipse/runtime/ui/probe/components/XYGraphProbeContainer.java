@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.nebula.visualization.xygraph.figures.ToolbarArmedXYGraph;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace.PointStyle;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace.TraceType;
@@ -56,7 +57,9 @@ public class XYGraphProbeContainer extends
     LightweightSystem lws = new LightweightSystem(this);
 
     _graph = new XYGraph();
-    lws.setContents(_graph);
+    ToolbarArmedXYGraph toolbarArmedXYGraph = new ToolbarArmedXYGraph(_graph);
+
+    lws.setContents(toolbarArmedXYGraph);
 
     // build the component here-ish
     configureGraph(_graph);
@@ -94,11 +97,14 @@ public class XYGraphProbeContainer extends
         return Status.OK_STATUS;
       }
     };
+
+    // so it is hidden
+    _updateJob.setSystem(true);
   }
 
   protected void configureGraph(XYGraph graph)
   {
-    graph.primaryXAxis.setTitle("time");
+    graph.primaryXAxis.setTitle("Time");
     graph.primaryXAxis.setTimeUnit(Calendar.MILLISECOND);
     graph.primaryXAxis.setAutoScale(true);
     graph.primaryXAxis.setDateEnabled(true);
@@ -113,7 +119,7 @@ public class XYGraphProbeContainer extends
     graph.primaryXAxis.setZoomType(ZoomType.PANNING);
     graph.primaryXAxis.setFormatPattern("mm:ss.SSS");
 
-    graph.primaryYAxis.setTitle("value");
+    graph.primaryYAxis.setTitle("Parameter Value");
     graph.primaryYAxis.setAutoScale(true);
     graph.primaryYAxis.setShowMajorGrid(true);
 
