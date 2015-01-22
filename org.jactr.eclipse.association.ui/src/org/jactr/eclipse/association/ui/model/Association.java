@@ -3,6 +3,12 @@ package org.jactr.eclipse.association.ui.model;
 /*
  * default logging
  */
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
+
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,6 +29,8 @@ public class Association
 
   final private double               _strength;
 
+  private Map<String, String>        _parameters;
+
   public Association(CommonTree jChunk, CommonTree iChunk, int count,
       double strength)
   {
@@ -30,6 +38,24 @@ public class Association
     _jChunk = jChunk;
     _count = count;
     _strength = strength;
+  }
+
+  public void setParameter(String name, String value)
+  {
+    if (_parameters == null) _parameters = new TreeMap<String, String>();
+    _parameters.put(name, value);
+  }
+
+  public String getParameter(String name)
+  {
+    if (_parameters == null) return null;
+    return _parameters.get(name);
+  }
+
+  public Collection<String> getParameterNames()
+  {
+    if (_parameters == null) return Collections.EMPTY_LIST;
+    return new ArrayList<String>(_parameters.keySet());
   }
 
   public CommonTree getJChunk()

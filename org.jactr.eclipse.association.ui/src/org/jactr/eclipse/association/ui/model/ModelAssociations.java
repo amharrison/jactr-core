@@ -14,6 +14,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jactr.core.chunk.four.ISubsymbolicChunk4;
+import org.jactr.eclipse.association.ui.mapper.IAssociationMapper;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
 
@@ -31,20 +32,24 @@ public class ModelAssociations
 
   private Collection<Association>              _associations;
 
-  public ModelAssociations(CommonTree modelDescriptor)
+  private IAssociationMapper                   _mapper;
+
+  public ModelAssociations(CommonTree modelDescriptor, IAssociationMapper mapper)
   {
-    this();
+    this(mapper);
     process(modelDescriptor, null);
   }
 
-  public ModelAssociations(CommonTree modelDescriptor, String focalChunk)
+  public ModelAssociations(CommonTree modelDescriptor,
+      IAssociationMapper mapper, String focalChunk)
   {
-    this();
+    this(mapper);
     process(modelDescriptor, focalChunk);
   }
 
-  public ModelAssociations()
+  public ModelAssociations(IAssociationMapper mapper)
   {
+    _mapper = mapper;
     _jChunks = new TreeMap<String, Collection<Association>>();
     _iChunks = new TreeMap<String, Collection<Association>>();
     _associations = new HashSet<Association>();
@@ -69,32 +74,22 @@ public class ModelAssociations
       if (!parameters.containsKey(linkKey)) continue;
 
       String allLinks = parameters.get(linkKey).getChild(1).getText();
-      /*
-       * ((ichunk count strength), ...)
-       */
-      String[] links = allLinks.split(",");
-      for (String link : links)
-        try
-        {
-          link = link.substring(link.lastIndexOf('(') + 1, link.indexOf(')'));
-          String[] components = link.split(" ");
-          String iChunk = components[0].toLowerCase();
-          int count = Integer.parseInt(components[1]);
-          double rStrength = Double.parseDouble(components[2]);
 
-          if (focus == null || focus.equals(jChunk.getKey())
-              || focus.equals(iChunk))
-          {
-            Association association = new Association(jChunk.getValue(),
-                allChunks.get(iChunk), count, rStrength);
-            addAssociation(association);
-          }
+      try
+      {
+      for (Association association : _mapper.extractAssociations(allLinks,
+          modelDescriptor, allChunks))
+        if (focus == null
+            || focus.equals(ASTSupport.getName(association.getJChunk()))
+            || focus.equals(ASTSupport.getName(association.getIChunk())))
+          addAssociation(association);
+
         }
         catch (Exception e)
         {
           if (LOGGER.isWarnEnabled())
-            LOGGER.warn(String.format("Failed to extract link info from %s",
-                link));
+          LOGGER.warn(String.format("Failed to extract link info from %s",
+              allLinks));
         }
     }
   }

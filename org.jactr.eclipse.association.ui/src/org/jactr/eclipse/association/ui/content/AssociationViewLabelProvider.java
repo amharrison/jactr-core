@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.zest.core.viewers.IConnectionStyleProvider;
 import org.eclipse.zest.core.viewers.IEntityStyleProvider;
 import org.eclipse.zest.core.widgets.ZestStyles;
+import org.jactr.eclipse.association.ui.mapper.IAssociationMapper;
 import org.jactr.eclipse.association.ui.model.Association;
 import org.jactr.eclipse.association.ui.views.AssociationViewer;
 import org.jactr.eclipse.ui.content.ACTRLabelProvider;
@@ -39,8 +40,12 @@ public class AssociationViewLabelProvider extends ACTRLabelProvider implements
 
   private Color                      _outgoing;
 
-  public AssociationViewLabelProvider(AssociationViewer viewer)
+  private IAssociationMapper         _mapper;
+
+  public AssociationViewLabelProvider(AssociationViewer viewer,
+      IAssociationMapper mapper)
   {
+    _mapper = mapper;
     _format = NumberFormat.getNumberInstance();
     _format.setMinimumFractionDigits(2);
     _format.setMaximumFractionDigits(2);
@@ -48,6 +53,11 @@ public class AssociationViewLabelProvider extends ACTRLabelProvider implements
 
     _incoming = new Color(Display.getCurrent(), new RGB(0, 0, 128));
     _outgoing = new Color(Display.getCurrent(), new RGB(128, 0, 0));
+  }
+
+  public void setMapper(IAssociationMapper mapper)
+  {
+    _mapper = mapper;
   }
 
   @Override
@@ -62,9 +72,9 @@ public class AssociationViewLabelProvider extends ACTRLabelProvider implements
   public String getText(Object element)
   {
     if (element instanceof Association)
-      return String.format("%.2f", ((Association) element).getStrength());
+      return _mapper.getLabel((Association) element);
     if (element instanceof CommonTree)
-      return ASTSupport.getName((CommonTree) element);
+      return _mapper.getLabel((CommonTree) element);
     return "";
   }
 

@@ -1,11 +1,13 @@
 package org.jactr.eclipse.association.ui.views;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuCreator;
@@ -20,6 +22,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
@@ -43,6 +47,11 @@ import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import org.jactr.eclipse.association.ui.content.AssociationViewLabelProvider;
 import org.jactr.eclipse.association.ui.content.AssociativeContentProvider;
+import org.jactr.eclipse.association.ui.internal.Activator;
+import org.jactr.eclipse.association.ui.mapper.IAssociationMapper;
+import org.jactr.eclipse.association.ui.mapper.impl.DefaultAssociationMapper;
+import org.jactr.eclipse.association.ui.mapper.registry.AssociationMapperDescriptor;
+import org.jactr.eclipse.association.ui.mapper.registry.AssociationMapperRegistry;
 import org.jactr.eclipse.association.ui.model.Association;
 import org.jactr.eclipse.association.ui.model.ModelAssociations;
 import org.jactr.eclipse.ui.UIPlugin;
@@ -56,20 +65,22 @@ public class AssociationViewer extends ViewPart implements
   /**
    * The ID of the view as specified by the extension.
    */
-  public static final String       VIEW_ID    = "org.jactr.eclipse.association.ui.views.AssociationViewer";
+  public static final String               VIEW_ID           = "org.jactr.eclipse.association.ui.views.AssociationViewer";
 
-  private GraphViewer              _viewer;
+  private GraphViewer                      _viewer;
 
-  private int                      _nodeStyle = ZestStyles.NODES_FISHEYE
-                                                  | ZestStyles.NODES_NO_LAYOUT_RESIZE;
+  private int                              _nodeStyle        = ZestStyles.NODES_FISHEYE
+                                                                 | ZestStyles.NODES_NO_LAYOUT_RESIZE;
 
-  private Action                   _viewAll;
+  private Action                           _viewAll;
 
-  private ZoomContributionViewItem _zoomAction;
+  protected IAssociationMapper             _mapper;
+
+  private ZoomContributionViewItem         _zoomAction;
 
   private ACTRModelEditor                  _lastEditor;
 
-  private Class<? extends LayoutAlgorithm> _lastLayoutClass = RadialLayoutAlgorithm.class;
+  private Class<? extends LayoutAlgorithm> _lastLayoutClass  = RadialLayoutAlgorithm.class;
 
   private Comparator                       _layoutComparator = new Comparator() {
 
@@ -105,6 +116,91 @@ public class AssociationViewer extends ViewPart implements
    */
   public AssociationViewer()
   {
+
+    // grab the last associaiton mapper, or default.
+    restoreAssociationMapper();
+  }
+
+  /**
+   * grab the last used association Mapper
+   */
+  protected void restoreAssociationMapper()
+  {
+    String mapperClassName = Activator.getDefault().getPreferenceStore()
+        .getString(VIEW_ID + ".mapper");
+    if (mapperClassName.length() == 0) // null
+      mapperClassName = DefaultAssociationMapper.class.getName();
+
+    for (AssociationMapperDescriptor desc : AssociationMapperRegistry
+        .getRegistry().getAllDescriptors())
+      if (desc.getClassName().equals(mapperClassName))
+        setAssociationMapper(desc);
+
+  }
+
+  protected void setAssociationMapper(AssociationMapperDescriptor descriptor)
+  {
+    // set
+    try
+    {
+      IAssociationMapper assMapper = (IAssociationMapper) descriptor
+          .instantiate();
+      setAssociationMapper(assMapper);
+
+      // save
+      Activator.getDefault().getPreferenceStore()
+          .setValue(VIEW_ID + ".mapper", descriptor.getClassName());
+    }
+    catch (Exception e)
+    {
+      UIPlugin.log(
+          IStatus.ERROR,
+          String.format("Failed to instantiation %s ",
+              descriptor.getClassName()), e);
+    }
+
+  }
+
+  protected void setAssociationMapper(IAssociationMapper mapper)
+  {
+    _mapper = mapper;
+
+    if (_viewer != null)
+    {
+      // I should probably test that we are in the ui thread..
+      ((AssociationViewLabelProvider) _viewer.getLabelProvider())
+          .setMapper(_mapper);
+
+      _viewer.setInput(_viewer.getInput());
+      forceCurve(10);
+    }
+  }
+
+  public IAssociationMapper getAssociationMapper()
+  {
+    return _mapper;
+  }
+
+  /**
+   * @param modelDescriptor
+   *          may be null
+   * @param nearestChunk
+   *          may be null
+   * @return
+   */
+  protected ModelAssociations getAssociations(CommonTree modelDescriptor,
+      CommonTree nearestChunk)
+  {
+    ModelAssociations rtn = null;
+    if (modelDescriptor != null)
+      if (nearestChunk != null)
+        rtn = new ModelAssociations(modelDescriptor, getAssociationMapper(),
+            ASTSupport.getName(nearestChunk));
+      else
+        rtn = new ModelAssociations(modelDescriptor, getAssociationMapper());
+    else
+      rtn = new ModelAssociations(getAssociationMapper());
+    return rtn;
   }
 
   public void viewAll(final ACTRModelEditor editor)
@@ -119,13 +215,7 @@ public class AssociationViewer extends ViewPart implements
 
           CommonTree descriptor = editor.getCompilationUnit()
               .getModelDescriptor();
-          ModelAssociations associations = null;
-          if (descriptor != null)
-            associations = new ModelAssociations(descriptor);
-          else
-            associations = new ModelAssociations();
-
-          _viewer.setInput(associations);
+          _viewer.setInput(getAssociations(descriptor, null));
           forceCurve(10);
         }
         finally
@@ -144,10 +234,8 @@ public class AssociationViewer extends ViewPart implements
   }
 
   public void view(final ACTRModelEditor editor, final CommonTree nearestChunk,
-      Class<? extends LayoutAlgorithm> layoutClass)
+      final Class<? extends LayoutAlgorithm> layoutClass)
   {
-    final Class fLayoutClass = layoutClass == null ? RadialLayoutAlgorithm.class
-        : layoutClass;
     Runnable runner = new Runnable() {
       public void run()
       {
@@ -158,16 +246,10 @@ public class AssociationViewer extends ViewPart implements
 
           CommonTree descriptor = editor.getCompilationUnit()
               .getModelDescriptor();
-          ModelAssociations associations = null;
-          if (descriptor != null && nearestChunk != null)
-            associations = new ModelAssociations(descriptor, ASTSupport
-                .getName(nearestChunk));
-          else
-            associations = new ModelAssociations();
 
-          setLayoutAlgorithm(fLayoutClass);
+          setLayoutAlgorithm(layoutClass);
 
-          _viewer.setInput(associations);
+          _viewer.setInput(getAssociations(descriptor, nearestChunk));
           if (nearestChunk != null)
             forceCurve(30);
           else
@@ -239,7 +321,8 @@ public class AssociationViewer extends ViewPart implements
     _viewer.setNodeStyle(_nodeStyle);
 
     // _viewer.setConnectionStyle(ZestStyles.CONNECTIONS_DIRECTED);
-    _viewer.setLabelProvider(new AssociationViewLabelProvider(this));
+    _viewer.setLabelProvider(new AssociationViewLabelProvider(this,
+        getAssociationMapper()));
     _viewer.setContentProvider(new AssociativeContentProvider());
 
     setLayoutAlgorithm(RadialLayoutAlgorithm.class);
@@ -356,6 +439,113 @@ public class AssociationViewer extends ViewPart implements
     // manager.add(action1);
     // manager.add(new Separator());
     // manager.add(action2);
+
+    /*
+     * associationMapper control
+     */
+    IMenuCreator menuCreator = new IMenuCreator() {
+
+      private Menu _menu;
+
+      public void dispose()
+      {
+        if (_menu != null && !_menu.isDisposed()) _menu.dispose();
+        _menu = null;
+      }
+
+      protected void addMenuListener(Menu menu)
+      {
+        menu.addMenuListener(new MenuListener() {
+
+          @Override
+          public void menuHidden(MenuEvent e)
+          {
+
+          }
+
+          @Override
+          public void menuShown(MenuEvent e)
+          {
+            // TODO Auto-generated method stub
+            Menu menu = (Menu) e.widget;
+            String mapperName = getAssociationMapper().getClass().getName();
+            for (MenuItem item : menu.getItems())
+            {
+              AssociationMapperDescriptor descriptor = (AssociationMapperDescriptor) item
+                  .getData();
+
+              if (descriptor.getClassName().equals(mapperName))
+                item.setSelection(true);
+              else
+                item.setSelection(false);
+            }
+          }
+
+        });
+      }
+
+      public Menu getMenu(Control parent)
+      {
+        if (_menu == null || _menu.getParent() != parent)
+        {
+          if (_menu != null) dispose();
+          _menu = new Menu(parent);
+          buildMenu(_menu);
+        }
+        return _menu;
+      }
+
+      public Menu getMenu(Menu parent)
+      {
+        if (_menu == null || _menu.getParentMenu() != parent)
+        {
+          if (_menu != null) dispose();
+          _menu = new Menu(parent);
+          buildMenu(_menu);
+        }
+        return _menu;
+      }
+
+      protected void buildMenu(Menu menu)
+      {
+        addMenuListener(_menu);
+
+        Collection<AssociationMapperDescriptor> descriptors = AssociationMapperRegistry
+            .getRegistry().getAllDescriptors();
+
+        for (AssociationMapperDescriptor descriptor : descriptors)
+        {
+          MenuItem item = new MenuItem(menu, SWT.CHECK);
+          item.setData(descriptor);
+          item.setText(descriptor.getName());
+
+          item.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e)
+            {
+
+            }
+
+            public void widgetSelected(SelectionEvent e)
+            {
+              setAssociationMapper((AssociationMapperDescriptor) ((MenuItem) e.widget)
+                  .getData());
+            }
+          });
+        }
+
+      }
+    };
+
+    Action layoutAction = new Action("Set Association Mapper",
+        IAction.AS_DROP_DOWN_MENU) {
+    };
+
+    // layoutAction.setImageDescriptor(ProductionViewActivator.getDefault()
+    // .getImageRegistry().getDescriptor(LAYOUT));
+    layoutAction.setMenuCreator(menuCreator);
+
+    manager.add(layoutAction);
   }
 
   private void fillContextMenu(IMenuManager manager)
@@ -473,7 +663,8 @@ public class AssociationViewer extends ViewPart implements
       public void run()
       {
         ACTRModelEditor editor = ACTRModelEditor.getActiveEditor();
-        if (editor != null) viewAll(editor);
+        if (editor != null)
+          viewAll(editor);
         else if (_lastEditor != null) viewAll(_lastEditor);
       }
     };
