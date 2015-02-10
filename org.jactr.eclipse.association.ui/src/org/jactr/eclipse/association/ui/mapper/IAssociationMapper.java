@@ -24,6 +24,10 @@ public interface IAssociationMapper
 
   public String getLabel(CommonTree element);
 
+  public String getToolTip(CommonTree element);
+
+  public String getToolTip(Association association);
+
   /**
    * extract the Associations for jChunk defined in the string. Other chunk
    * references are provided in the map

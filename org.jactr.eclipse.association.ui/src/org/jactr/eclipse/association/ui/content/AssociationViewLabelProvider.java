@@ -8,7 +8,6 @@ import java.text.NumberFormat;
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.draw2d.ConnectionRouter;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.swt.graphics.Color;
@@ -21,7 +20,6 @@ import org.jactr.eclipse.association.ui.mapper.IAssociationMapper;
 import org.jactr.eclipse.association.ui.model.Association;
 import org.jactr.eclipse.association.ui.views.AssociationViewer;
 import org.jactr.eclipse.ui.content.ACTRLabelProvider;
-import org.jactr.io.antlr3.misc.ASTSupport;
 
 public class AssociationViewLabelProvider extends ACTRLabelProvider implements
     IConnectionStyleProvider, IEntityStyleProvider
@@ -40,6 +38,10 @@ public class AssociationViewLabelProvider extends ACTRLabelProvider implements
 
   private Color                      _outgoing;
 
+  private Color                      _default;
+
+  private Color                      _selected;
+
   private IAssociationMapper         _mapper;
 
   public AssociationViewLabelProvider(AssociationViewer viewer,
@@ -51,8 +53,10 @@ public class AssociationViewLabelProvider extends ACTRLabelProvider implements
     _format.setMaximumFractionDigits(2);
     _viewer = viewer;
 
-    _incoming = new Color(Display.getCurrent(), new RGB(0, 0, 128));
+    _incoming = new Color(Display.getCurrent(), new RGB(0, 128, 0));
     _outgoing = new Color(Display.getCurrent(), new RGB(128, 0, 0));
+    _default = new Color(Display.getCurrent(), new RGB(128, 128, 128));
+    _selected = new Color(Display.getCurrent(), new RGB(0, 0, 128));
   }
 
   public void setMapper(IAssociationMapper mapper)
@@ -65,6 +69,8 @@ public class AssociationViewLabelProvider extends ACTRLabelProvider implements
   {
     _incoming.dispose();
     _outgoing.dispose();
+    _default.dispose();
+    _selected.dispose();
     super.dispose();
   }
 
@@ -93,16 +99,16 @@ public class AssociationViewLabelProvider extends ACTRLabelProvider implements
      * highlight color. if there is no selection, we return null
      */
 
-    if (selection instanceof Association) return null;
+    if (selection instanceof Association) return _default;
 
     if (selection instanceof CommonTree)
     {
       Association ass = (Association) rel;
       if (ass.getIChunk().equals(selection)) return _outgoing;
-      return _incoming;
+      if (ass.getJChunk().equals(selection)) return _incoming;
     }
 
-    return null;
+    return _default;
   }
 
   // protected double getScore(Object rel)
@@ -125,8 +131,7 @@ public class AssociationViewLabelProvider extends ACTRLabelProvider implements
 
   public Color getHighlightColor(Object rel)
   {
-
-    return getColor(rel);
+    return _selected;
   }
 
   public int getLineWidth(Object rel)
@@ -140,10 +145,9 @@ public class AssociationViewLabelProvider extends ACTRLabelProvider implements
   public IFigure getTooltip(Object element)
   {
     if (element instanceof Association)
-      return new Label(String.format("Strength %.2f",
-          ((Association) element).getStrength()));
+      return new Label(_mapper.getToolTip((Association) element));
     if (element instanceof CommonTree)
-      return new Label(ASTSupport.getName((CommonTree) element));
+      return new Label(_mapper.getToolTip((CommonTree)element));
     return null;
   }
 
@@ -193,9 +197,5 @@ public class AssociationViewLabelProvider extends ACTRLabelProvider implements
     return null;
   }
 
-  public ConnectionRouter getRouter(Object rel)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+
 }

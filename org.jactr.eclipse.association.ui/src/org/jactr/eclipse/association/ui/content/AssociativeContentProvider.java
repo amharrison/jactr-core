@@ -22,7 +22,10 @@ public class AssociativeContentProvider implements IGraphContentProvider
 
   public Object[] getElements(Object input)
   {
-    return _associations.getAssociations();
+    // possible when there is no input available yet
+
+    if (input == _associations) return _associations.getAssociations();
+    return null;
   }
 
   public Object getSource(Object rel)

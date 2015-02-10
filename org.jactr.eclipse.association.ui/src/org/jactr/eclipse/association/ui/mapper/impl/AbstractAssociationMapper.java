@@ -34,5 +34,17 @@ public abstract class AbstractAssociationMapper implements IAssociationMapper
     return ASTSupport.getName(element);
   }
 
+  @Override
+  public String getToolTip(Association association)
+  {
+    return String.format("Strength %.2f", association.getStrength());
+  }
+
+  @Override
+  public String getToolTip(CommonTree element)
+  {
+    return ASTSupport.getName(element);
+  }
+
 
 }

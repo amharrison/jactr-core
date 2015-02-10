@@ -85,6 +85,8 @@ public class Association
     int result = 1;
     result = prime * result + (_iChunk == null ? 0 : _iChunk.hashCode());
     result = prime * result + (_jChunk == null ? 0 : _jChunk.hashCode());
+    result = prime * result
+        + (_parameters == null ? 0 : _parameters.hashCode());
     return result;
   }
 
@@ -105,7 +107,13 @@ public class Association
       if (other._jChunk != null) return false;
     }
     else if (!_jChunk.equals(other._jChunk)) return false;
+    if (_parameters == null)
+    {
+      if (other._parameters != null) return false;
+    }
+    else if (!_parameters.equals(other._parameters)) return false;
     return true;
   }
+
 
 }

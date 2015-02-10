@@ -4,6 +4,7 @@ package org.jactr.eclipse.association.ui.model;
  * default logging
  */
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
@@ -34,6 +35,8 @@ public class ModelAssociations
 
   private IAssociationMapper                   _mapper;
 
+  private CommonTree                           _modelDescriptor;
+
   public ModelAssociations(CommonTree modelDescriptor, IAssociationMapper mapper)
   {
     this(mapper);
@@ -55,8 +58,14 @@ public class ModelAssociations
     _associations = new HashSet<Association>();
   }
 
+  public CommonTree getModelDescriptor()
+  {
+    return _modelDescriptor;
+  }
+
   private void process(CommonTree modelDescriptor, String focus)
   {
+    _modelDescriptor = modelDescriptor;
     Map<String, CommonTree> allChunks = ASTSupport.getMapOfTrees(
         modelDescriptor, JACTRBuilder.CHUNK);
 
@@ -78,11 +87,18 @@ public class ModelAssociations
       try
       {
       for (Association association : _mapper.extractAssociations(allLinks,
-          modelDescriptor, allChunks))
+            jChunk.getValue(), allChunks))
         if (focus == null
             || focus.equals(ASTSupport.getName(association.getJChunk()))
             || focus.equals(ASTSupport.getName(association.getIChunk())))
+          {
+            if (LOGGER.isDebugEnabled())
+              LOGGER.debug(String.format("adding Link: j:%s i:%s str:%.2f",
+                  association.getJChunk().toStringTree(), association
+                      .getIChunk().toStringTree(), association.getStrength()));
+
           addAssociation(association);
+          }
 
         }
         catch (Exception e)
@@ -106,6 +122,27 @@ public class ModelAssociations
     add(j, association, _jChunks);
     add(i, association, _iChunks);
     _associations.add(association);
+  }
+
+  public Collection<Association> getOutboundAssociations(String jChunkName)
+  {
+    return get(jChunkName, _jChunks);
+  }
+
+  public Collection<Association> getInboundAssociations(String iChunkName)
+  {
+    return get(iChunkName, _iChunks);
+  }
+
+  protected Collection<Association> get(String keyName,
+      Map<String, Collection<Association>> map)
+  {
+    Collection<Association> rtn = map.get(keyName.toLowerCase());
+    if (rtn == null)
+      rtn = Collections.EMPTY_LIST;
+    else
+      rtn = Collections.unmodifiableCollection(rtn);
+    return rtn;
   }
 
   public Association[] getAssociations()

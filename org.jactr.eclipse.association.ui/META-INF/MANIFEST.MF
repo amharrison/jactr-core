@@ -2,23 +2,23 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Association Viewer Ui Plug-in
 Bundle-SymbolicName: org.jactr.eclipse.association.ui; singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.1.qualifier
 Bundle-Activator: org.jactr.eclipse.association.ui.internal.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.zest.core,
  org.eclipse.zest.layouts,
- org.eclipse.gef;bundle-version="3.4.0",
- org.jactr;bundle-version="1.2.15",
- org.jactr.eclipse.compilers;bundle-version="1.0.0",
- org.jactr.eclipse.core;bundle-version="1.2.8",
- org.jactr.eclipse.ui;bundle-version="1.2.8",
- org.jactr.io;bundle-version="1.0.9",
- org.eclipse.jface.text;bundle-version="3.4.0",
- org.eclipse.ui.workbench.texteditor;bundle-version="3.4.0",
+ org.eclipse.gef,
+ org.jactr,
+ org.jactr.eclipse.compilers,
+ org.jactr.eclipse.core,
+ org.jactr.eclipse.ui,
+ org.jactr.io,
+ org.eclipse.jface.text,
+ org.eclipse.ui.workbench.texteditor,
  org.eclipse.ui.editors,
- org.jactr.eclipse.bundles;bundle-version="1.0.1",
- org.eclipse.core.resources;bundle-version="3.8.101"
+ org.jactr.eclipse.bundles,
+ org.eclipse.core.resources
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.jactr.eclipse.association.ui.mapper,
