@@ -13,6 +13,7 @@ import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -25,13 +26,13 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author harrison
  */
-public class SelectionDialog extends TitleAreaDialog
+public class ListSelectionDialog extends TitleAreaDialog
 {
   /**
    * Logger definition
    */
   static private final transient Log LOGGER = LogFactory
-                                                .getLog(SelectionDialog.class);
+                                                .getLog(ListSelectionDialog.class);
 
   private ILabelProvider             _labelProvider;
 
@@ -47,7 +48,7 @@ public class SelectionDialog extends TitleAreaDialog
 
   private Collection<Object>         _checkedItems;
 
-  public SelectionDialog(Shell parentShell, String title, String message,
+  public ListSelectionDialog(Shell parentShell, String title, String message,
       Object input,
       IStructuredContentProvider contentProvider, ILabelProvider labelProvider)
   {
@@ -68,6 +69,17 @@ public class SelectionDialog extends TitleAreaDialog
   }
 
   @Override
+  protected boolean isResizable()
+  {
+    return true;
+  }
+
+  protected CheckboxTreeViewer getViewer()
+  {
+    return _viewer;
+  }
+
+  @Override
   protected Control createDialogArea(Composite parent)
   {
     Composite area = (Composite) super.createDialogArea(parent);
@@ -81,7 +93,9 @@ public class SelectionDialog extends TitleAreaDialog
     _viewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
     _viewer.setContentProvider(_contentProvider);
     _viewer.setLabelProvider(_labelProvider);
+    _viewer.setComparator(new ViewerComparator());
     _viewer.setInput(_input); // pass a non-null that will be ignored
+
 
     return area;
   }

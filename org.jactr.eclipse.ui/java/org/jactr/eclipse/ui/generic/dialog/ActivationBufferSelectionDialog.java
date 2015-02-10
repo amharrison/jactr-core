@@ -12,18 +12,18 @@ import org.eclipse.swt.widgets.Shell;
 import org.jactr.eclipse.ui.content.ACTRLabelProvider;
 import org.jactr.eclipse.ui.content.FlatTreeContentProvider;
 
-public class ChunkTypeSelectionDialog extends ListSelectionDialog
+public class ActivationBufferSelectionDialog extends ListSelectionDialog
 {
   /**
    * Logger definition
    */
   static private final transient Log LOGGER = LogFactory
-                                                .getLog(ChunkTypeSelectionDialog.class);
+                                                .getLog(ActivationBufferSelectionDialog.class);
 
-  public ChunkTypeSelectionDialog(Shell parentShell, String title,
-      String message, Collection<CommonTree> chunkTypes)
+  public ActivationBufferSelectionDialog(Shell parentShell, String title,
+      String message, Collection<CommonTree> buffers)
   {
-    super(parentShell, title, message, chunkTypes,
+    super(parentShell, title, message, buffers,
         new FlatTreeContentProvider(), new ACTRLabelProvider());
   }
 
