@@ -2,6 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension-point id="associationMapper" name="Association Mapper" schema="schema/associationMapper.exsd"/>
+   <extension-point id="associationFilter" name="Association Filter" schema="schema/associationFilter.exsd"/>
 
    <extension
          point="org.eclipse.ui.views">
@@ -59,9 +60,15 @@
       <associationMapper
             class="org.jactr.eclipse.association.ui.mapper.impl.DefaultAssociationMapper"
             name="Default" />
-      <associationMapper
-            class="org.jactr.eclipse.association.ui.mapper.impl.TestAssociationMapper"
-            name="Test" />      
+   </extension>
+   <extension
+         point="org.jactr.eclipse.association.ui.associationFilter">
+      <associationFilter
+            class="org.jactr.eclipse.association.ui.filter.providers.ChunkTypeFilterProvider">
+      </associationFilter>
+      <associationFilter
+            class="org.jactr.eclipse.association.ui.filter.providers.StrengthFilterProvider">
+      </associationFilter>
    </extension>
 
 </plugin>

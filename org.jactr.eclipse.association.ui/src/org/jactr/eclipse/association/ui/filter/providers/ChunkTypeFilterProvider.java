@@ -86,7 +86,13 @@ public class ChunkTypeFilterProvider implements IFilterProvider
     return new ViewerFilter[0];
   }
 
-  private CommonTree getModelData()
+  /**
+   * will try to get model data from the active associative viewer first, then
+   * the active editor
+   * 
+   * @return
+   */
+  static public CommonTree getModelData()
   {
     CommonTree modelDescriptor = null;
     AssociationViewer viewer = AssociationViewer.getActiveViewer();

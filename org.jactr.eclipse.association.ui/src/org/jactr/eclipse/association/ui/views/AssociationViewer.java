@@ -1,6 +1,6 @@
 package org.jactr.eclipse.association.ui.views;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
@@ -55,7 +55,8 @@ import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import org.jactr.eclipse.association.ui.content.AssociationViewLabelProvider;
 import org.jactr.eclipse.association.ui.content.AssociativeContentProvider;
 import org.jactr.eclipse.association.ui.filter.IFilterProvider;
-import org.jactr.eclipse.association.ui.filter.providers.ChunkTypeFilterProvider;
+import org.jactr.eclipse.association.ui.filter.registry.AssociationFilterDescriptor;
+import org.jactr.eclipse.association.ui.filter.registry.AssociationFilterRegistry;
 import org.jactr.eclipse.association.ui.internal.Activator;
 import org.jactr.eclipse.association.ui.mapper.IAssociationMapper;
 import org.jactr.eclipse.association.ui.mapper.impl.DefaultAssociationMapper;
@@ -126,6 +127,8 @@ public class AssociationViewer extends ViewPart implements
 
                                                              };
 
+  private Collection<IFilterProvider>      _availableFilterProviders;
+
   /**
    * The constructor.
    */
@@ -135,6 +138,25 @@ public class AssociationViewer extends ViewPart implements
     // grab the last associaiton mapper, or default.
     _lastLayoutClass = getLastLayout();
     restoreAssociationMapper();
+
+    assembleFilterProviders();
+  }
+
+  private void assembleFilterProviders()
+  {
+    _availableFilterProviders = new ArrayList<IFilterProvider>();
+    AssociationFilterRegistry afr = AssociationFilterRegistry.getRegistry();
+    for (AssociationFilterDescriptor afd : afr.getAllDescriptors())
+      try
+      {
+        _availableFilterProviders.add((IFilterProvider) afd.instantiate());
+      }
+      catch (Exception e)
+      {
+        UIPlugin.log(
+            String.format("Failed to instantiation filter provider : %s",
+                afd.getClassName()), e);
+      }
   }
 
   static public AssociationViewer getActiveViewer()
@@ -617,10 +639,7 @@ public class AssociationViewer extends ViewPart implements
       {
         addMenuListener(_menu);
 
-        Collection<IFilterProvider> providers = Arrays
-            .asList(new ChunkTypeFilterProvider());
-
-        for (IFilterProvider provider : providers)
+        for (IFilterProvider provider : _availableFilterProviders)
         {
           MenuItem item = new MenuItem(menu, SWT.PUSH);
           item.setData(provider);
@@ -862,17 +881,31 @@ public class AssociationViewer extends ViewPart implements
     manager.add(filterAction);
 
     manager.add(new Separator());
-    // manager.add(action2);
 
-    Action layoutAction = new Action("Set Association Mapper",
+    Action layoutAction = new Action("Set Layout Algorithm",
         IAction.AS_DROP_DOWN_MENU) {
     };
 
     // layoutAction.setImageDescriptor(ProductionViewActivator.getDefault()
     // .getImageRegistry().getDescriptor(LAYOUT));
-    layoutAction.setMenuCreator(createMappingMenu());
+    layoutAction.setMenuCreator(createLayoutMenu());
 
     manager.add(layoutAction);
+
+    manager.add(new Separator());
+
+    // manager.add(action2);
+
+    Action mapperAction = new Action("Set Association Mapper",
+        IAction.AS_DROP_DOWN_MENU) {
+    };
+
+    // layoutAction.setImageDescriptor(ProductionViewActivator.getDefault()
+    // .getImageRegistry().getDescriptor(LAYOUT));
+    mapperAction.setMenuCreator(createMappingMenu());
+
+    manager.add(mapperAction);
+
   }
 
   private void fillContextMenu(IMenuManager manager)
@@ -904,16 +937,6 @@ public class AssociationViewer extends ViewPart implements
         _viewer.applyLayout();
       }
     });
-
-    Action layoutAction = new Action("Set Layout Algorithm",
-        IAction.AS_DROP_DOWN_MENU) {
-    };
-
-    // layoutAction.setImageDescriptor(ProductionViewActivator.getDefault()
-    // .getImageRegistry().getDescriptor(LAYOUT));
-    layoutAction.setMenuCreator(createLayoutMenu());
-
-    manager.add(layoutAction);
 
   }
 
