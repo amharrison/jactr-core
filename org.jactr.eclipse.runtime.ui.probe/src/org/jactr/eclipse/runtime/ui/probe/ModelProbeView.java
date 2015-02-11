@@ -272,6 +272,7 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
     {
       if (LOGGER.isDebugEnabled())
         LOGGER.debug(String.format("%s DataStream : %s. Root : %s", lsds,
+            modelName,
             lsds != null ? lsds.getRoot() : null));
 
       if (sessionData.isOpen())
