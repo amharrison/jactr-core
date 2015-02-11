@@ -364,7 +364,7 @@ public class AssociationViewer extends ViewPart implements
         showBusy(true);
         _lastEditor = editor;
 
-        setLayoutAlgorithm(layoutClass);
+        setLayoutAlgorithm(layoutClass, false);
       }
     };
 
@@ -507,7 +507,7 @@ public class AssociationViewer extends ViewPart implements
         getAssociationMapper()));
     _viewer.setContentProvider(new AssociativeContentProvider());
 
-    setLayoutAlgorithm(_lastLayoutClass);
+    setLayoutAlgorithm(_lastLayoutClass, false);
     /*
      * handle resize correctly
      */
@@ -576,7 +576,6 @@ public class AssociationViewer extends ViewPart implements
             refreshNode((CommonTree) selected);
           if (selected instanceof Association)
             refreshEdge((Association) selected);
-
         }
 
         forceCurve(10);
@@ -614,7 +613,7 @@ public class AssociationViewer extends ViewPart implements
     return _currentSelection;
   }
 
-  protected void setLayoutAlgorithm(Class clazz)
+  protected void setLayoutAlgorithm(Class clazz, final boolean forceLayout)
   {
     _lastLayoutClass = clazz;
 
@@ -636,7 +635,7 @@ public class AssociationViewer extends ViewPart implements
       Display.getCurrent().asyncExec(new Runnable() {
         public void run()
         {
-          _viewer.setLayoutAlgorithm(alg, true);
+          _viewer.setLayoutAlgorithm(alg, forceLayout);
           // _viewer.refresh();
         }
       });
@@ -858,7 +857,7 @@ public class AssociationViewer extends ViewPart implements
 
             public void widgetSelected(SelectionEvent e)
             {
-              setLayoutAlgorithm((Class) ((MenuItem) e.widget).getData());
+              setLayoutAlgorithm((Class) ((MenuItem) e.widget).getData(), true);
             }
           });
         }
