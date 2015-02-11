@@ -55,9 +55,8 @@ public class JobExecutor implements Executor
     {
       super(name);
       _runner = runner;
-      setSystem(true);
+      setSystem(false);
       setPriority(Job.SHORT);
-      
     }
 
     @Override
@@ -74,4 +73,5 @@ public class JobExecutor implements Executor
       }
     }
   }
+
 }
