@@ -5,6 +5,9 @@ package org.jactr.eclipse.ui.generic.dialog;
  */
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
+
+import javolution.util.FastList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,6 +23,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.jactr.eclipse.ui.UIPlugin;
 
 /**
  * general filterable dialog.
@@ -49,8 +53,8 @@ public class ListSelectionDialog extends TitleAreaDialog
   private Collection<Object>         _checkedItems;
 
   public ListSelectionDialog(Shell parentShell, String title, String message,
-      Object input,
-      IStructuredContentProvider contentProvider, ILabelProvider labelProvider)
+      Object input, IStructuredContentProvider contentProvider,
+      ILabelProvider labelProvider)
   {
     super(parentShell);
     _title = title;
@@ -96,6 +100,7 @@ public class ListSelectionDialog extends TitleAreaDialog
     _viewer.setComparator(new ViewerComparator());
     _viewer.setInput(_input); // pass a non-null that will be ignored
 
+    restoreState();
 
     return area;
   }
@@ -112,7 +117,41 @@ public class ListSelectionDialog extends TitleAreaDialog
     for (Object checked : _viewer.getCheckedElements())
       _checkedItems.add(checked);
 
+    saveState();
+
     super.okPressed();
+  }
+
+  private void restoreState()
+  {
+    String checked = UIPlugin.getDefault().getPreferenceStore()
+        .getString(getClass().getName() + ".checked");
+
+    FastList<String> checkedNames = FastList.newInstance();
+
+    for (String item : checked.split(","))
+      checkedNames.add(item);
+
+    for (Object element : _contentProvider.getElements(_input))
+    {
+      String label = _labelProvider.getText(element);
+      _viewer.setChecked(element, checkedNames.contains(label));
+    }
+    FastList.recycle(checkedNames);
+  }
+
+  private void saveState()
+  {
+    FastList<String> checkedNames = FastList.newInstance();
+
+    for (Object checked : _checkedItems)
+      checkedNames.add(_labelProvider.getText(checked));
+
+    String all = checkedNames.stream().collect(Collectors.joining(","));
+    UIPlugin.getDefault().getPreferenceStore()
+        .setValue(getClass().getName() + ".checked", all);
+
+    FastList.recycle(checkedNames);
   }
 
 }
