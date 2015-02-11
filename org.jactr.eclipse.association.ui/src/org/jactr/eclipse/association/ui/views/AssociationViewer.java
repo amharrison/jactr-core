@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
+import java.util.concurrent.CompletableFuture;
 
 import javolution.util.FastList;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -64,13 +67,21 @@ import org.jactr.eclipse.association.ui.mapper.registry.AssociationMapperDescrip
 import org.jactr.eclipse.association.ui.mapper.registry.AssociationMapperRegistry;
 import org.jactr.eclipse.association.ui.model.Association;
 import org.jactr.eclipse.association.ui.model.ModelAssociations;
+import org.jactr.eclipse.core.concurrent.JobExecutor;
 import org.jactr.eclipse.ui.UIPlugin;
+import org.jactr.eclipse.ui.concurrent.UIJobExecutor;
 import org.jactr.eclipse.ui.editor.ACTRModelEditor;
 import org.jactr.io.antlr3.misc.ASTSupport;
 
 public class AssociationViewer extends ViewPart implements
     IZoomableWorkbenchPart
 {
+
+  /**
+   * Logger definition
+   */
+  static private final transient Log       LOGGER            = LogFactory
+                                                                 .getLog(AssociationViewer.class);
 
   /**
    * The ID of the view as specified by the extension.
@@ -248,13 +259,15 @@ public class AssociationViewer extends ViewPart implements
   }
 
   /**
+   * creates but does not process the modelAssociation data
+   * 
    * @param modelDescriptor
    *          may be null
    * @param nearestChunk
    *          may be null
    * @return
    */
-  protected ModelAssociations getAssociations(CommonTree modelDescriptor,
+  private ModelAssociations getAssociations(CommonTree modelDescriptor,
       CommonTree nearestChunk)
   {
     ModelAssociations rtn = null;
@@ -266,6 +279,7 @@ public class AssociationViewer extends ViewPart implements
         rtn = new ModelAssociations(modelDescriptor, getAssociationMapper());
     else
       rtn = new ModelAssociations(getAssociationMapper());
+
     return rtn;
   }
 
@@ -276,27 +290,29 @@ public class AssociationViewer extends ViewPart implements
 
   public void viewAll(final ACTRModelEditor editor)
   {
-    Runnable runner = new Runnable() {
-      public void run()
-      {
-        try
-        {
-          showBusy(true);
-          _lastEditor = editor;
+    view(editor, null);
 
-          CommonTree descriptor = editor.getCompilationUnit()
-              .getModelDescriptor();
-          _viewer.setInput(getAssociations(descriptor, null));
-          forceCurve(30);
-        }
-        finally
-        {
-          showBusy(false);
-        }
-      }
-    };
-
-    _viewer.getControl().getDisplay().asyncExec(runner);
+    // Runnable runner = new Runnable() {
+    // public void run()
+    // {
+    // try
+    // {
+    // showBusy(true);
+    // _lastEditor = editor;
+    //
+    // CommonTree descriptor = editor.getCompilationUnit()
+    // .getModelDescriptor();
+    // _viewer.setInput(getAssociations(descriptor, null));
+    // forceCurve(30);
+    // }
+    // finally
+    // {
+    // showBusy(false);
+    // }
+    // }
+    // };
+    //
+    // _viewer.getControl().getDisplay().asyncExec(runner);
   }
 
   public void view(ACTRModelEditor editor, CommonTree nearestChunk)
@@ -307,36 +323,118 @@ public class AssociationViewer extends ViewPart implements
   public void view(final ACTRModelEditor editor, final CommonTree nearestChunk,
       final Class<? extends LayoutAlgorithm> layoutClass)
   {
-    Runnable runner = new Runnable() {
+    // Runnable runner = new Runnable() {
+    // public void run()
+    // {
+    // try
+    // {
+    // showBusy(true);
+    // _lastEditor = editor;
+    //
+    // CommonTree descriptor = editor.getCompilationUnit()
+    // .getModelDescriptor();
+    //
+    // setLayoutAlgorithm(layoutClass);
+    //
+    // _viewer.setInput(getAssociations(descriptor, nearestChunk));
+    //
+    // forceCurve(30);
+    //
+    // }
+    // catch (Exception e)
+    // {
+    // UIPlugin.log("Failed to focus on " + nearestChunk, e);
+    // }
+    // finally
+    // {
+    // showBusy(false);
+    // }
+    // }
+    // };
+    //
+    // _viewer.getControl().getDisplay().asyncExec(runner);
+
+    Runnable setup = new Runnable() {
+
+      @Override
       public void run()
       {
-        try
-        {
-          showBusy(true);
-          _lastEditor = editor;
+        LOGGER.debug("starting view");
 
-          CommonTree descriptor = editor.getCompilationUnit()
-              .getModelDescriptor();
+        showBusy(true);
+        _lastEditor = editor;
 
-          setLayoutAlgorithm(layoutClass);
-
-          _viewer.setInput(getAssociations(descriptor, nearestChunk));
-
-          forceCurve(30);
-
-        }
-        catch (Exception e)
-        {
-          UIPlugin.log("Failed to focus on " + nearestChunk, e);
-        }
-        finally
-        {
-          showBusy(false);
-        }
+        setLayoutAlgorithm(layoutClass);
       }
     };
 
-    _viewer.getControl().getDisplay().asyncExec(runner);
+    Runnable cleanup = new Runnable() {
+
+      @Override
+      public void run()
+      {
+        LOGGER.debug("Done setting view");
+        showBusy(false);
+      }
+
+    };
+
+    /*
+     * our new version: 1) get the model association data (this is already
+     * parallelized)
+     */
+    CommonTree descriptor = editor.getCompilationUnit().getModelDescriptor();
+    final ModelAssociations associations = getAssociations(descriptor,
+        nearestChunk);
+    JobExecutor ex = new JobExecutor("association slave");
+    final UIJobExecutor uiex = new UIJobExecutor("association slave ui");
+
+    // setup
+    CompletableFuture<Void> setupProc = CompletableFuture.runAsync(setup, uiex);
+
+    // build the associations, but only after setup
+    CompletableFuture<Void> assProc = setupProc.thenComposeAsync((v) -> {
+      return associations.process(
+          Runtime.getRuntime().availableProcessors() / 2 + 1,
+          ex);
+    }, ex);
+
+    // cleanup just in case
+    assProc.exceptionally(t -> {
+      UIPlugin.log(String.format("Failed to process associations in parallel"),
+          t);
+      uiex.execute(cleanup);
+      return null;
+    });
+
+    // when this is done, we can actually set the display
+    CompletableFuture<Void> setProc = assProc.thenAcceptAsync(
+        (v) -> {
+          try
+          {
+            if (LOGGER.isDebugEnabled())
+              LOGGER.debug(String.format("Setting input for viewer"));
+
+            _viewer.setInput(associations);
+
+            forceCurve(30);
+          }
+          catch (Exception e)
+          {
+            UIPlugin.log("Failed to focus on " + nearestChunk, e);
+          }
+        }, uiex);
+
+    // clean up after failure or success
+    setProc
+        .handle((v, t) -> {
+          if (t != null)
+            UIPlugin.log(
+                String.format("Failed to set associations in parallel"), t);
+          uiex.execute(cleanup);
+          return null;
+        });
+
   }
 
   /**
