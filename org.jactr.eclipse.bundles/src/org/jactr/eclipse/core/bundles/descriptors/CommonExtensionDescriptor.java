@@ -56,7 +56,6 @@ public class CommonExtensionDescriptor extends ExtensionDescriptor
         .getAttribute("name"), false);
     _configurationElement = descriptor;
     _className = _configurationElement.getAttribute("class");
-
   }
 
   public String getClassName()
@@ -122,7 +121,9 @@ public class CommonExtensionDescriptor extends ExtensionDescriptor
   @Override
   public String toString()
   {
-    return getName();
+    String name = getName();
+    if (name != null) return name;
+    return super.toString();
   }
 
   public String getDescription()

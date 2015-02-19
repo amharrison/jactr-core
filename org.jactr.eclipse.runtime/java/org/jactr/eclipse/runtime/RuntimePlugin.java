@@ -17,6 +17,7 @@ import org.jactr.eclipse.runtime.session.manager.ISessionManager;
 import org.jactr.eclipse.runtime.session.manager.internal.SessionManager;
 import org.jactr.eclipse.runtime.trace.RuntimeTraceManager;
 import org.jactr.eclipse.runtime.visual.VisualTraceCenter;
+import org.jactr.eclipse.ui.concurrent.SWTExecutor;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -48,7 +49,6 @@ public class RuntimePlugin extends Plugin
   public RuntimePlugin()
   {
     super();
-    plugin = this;
     try
     {
       resourceBundle = ResourceBundle
@@ -94,9 +94,18 @@ public class RuntimePlugin extends Plugin
         .addListener(new org.jactr.eclipse.runtime.buffer2.BufferRuntimeTraceListener());
     _runtimeTraceManager
         .addListener(new ConflictResolutionRuntimeTraceListener());
-    _runtimeTraceManager
-        .addListener(new org.jactr.eclipse.runtime.probe2.ModelProbeRuntimeListener());
+    // _runtimeTraceManager
+    // .addListener(new
+    // org.jactr.eclipse.runtime.probe2.ModelProbeRuntimeListener());
+
+    // must be run on SWT thread for the probe data storage
+    _runtimeTraceManager.addListener(
+        new org.jactr.eclipse.runtime.probe3.ModelProbeRuntimeListener(),
+        new SWTExecutor());
+
     _runtimeTraceManager.addListener(new MarkerRuntimeTraceListener());
+
+    plugin = this;
   }
 
   /**
@@ -109,6 +118,7 @@ public class RuntimePlugin extends Plugin
     if (preferenceStore != null) preferenceStore.save();
     _runtimeTraceManager.clear();
     _runtimeTraceManager = null;
+    plugin = null;
   }
 
   public RuntimeTraceManager getRuntimeTraceManager()

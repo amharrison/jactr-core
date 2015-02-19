@@ -30,11 +30,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
-import org.jactr.eclipse.runtime.RuntimePlugin;
 import org.jactr.eclipse.runtime.marker.MarkerSessionDataStream;
-import org.jactr.eclipse.runtime.preferences.RuntimePreferences;
-import org.jactr.eclipse.runtime.probe2.IModelProbeSessionDataStream;
 import org.jactr.eclipse.runtime.probe2.ModelProbeData;
+import org.jactr.eclipse.runtime.probe3.IModelProbeSessionDataStream;
 import org.jactr.eclipse.runtime.session.ILocalSession;
 import org.jactr.eclipse.runtime.session.ISession;
 import org.jactr.eclipse.runtime.session.data.ISessionData;
@@ -42,10 +40,9 @@ import org.jactr.eclipse.runtime.session.stream.ILiveSessionDataStream;
 import org.jactr.eclipse.runtime.session.stream.ILiveSessionDataStreamListener;
 import org.jactr.eclipse.runtime.session.stream.ISessionDataStream;
 import org.jactr.eclipse.runtime.ui.misc.AbstractRuntimeModelViewPart;
-import org.jactr.eclipse.runtime.ui.probe.components.AWTProbeContainer;
 import org.jactr.eclipse.runtime.ui.probe.components.AbstractProbeContainer;
 import org.jactr.eclipse.runtime.ui.probe.components.MarkerSupport;
-import org.jactr.eclipse.runtime.ui.probe.components.SWTProbeContainer;
+import org.jactr.eclipse.runtime.ui.probe.components.XYGraphProbeContainer;
 import org.jactr.eclipse.ui.concurrent.SWTExecutor;
 import org.jactr.eclipse.ui.images.JACTRImages;
 
@@ -69,6 +66,7 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
 
   private final Map<ISessionData, MarkerSupport>          _installedMarkerSupport = new HashMap<ISessionData, MarkerSupport>();
 
+  @SuppressWarnings("rawtypes")
   private final Map<ISessionData, AbstractProbeContainer> _installedContainers    = new HashMap<ISessionData, AbstractProbeContainer>();
 
   public ModelProbeView()
@@ -123,10 +121,10 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
         _lastSaveTo = _lastSaveTo.removeLastSegments(1);
 
         // ((ModelProbeContainer) selected.getControl()).saveCSV(fileName);
-        saveData(
-            ((AbstractProbeContainer) getSelectedTab().getControl())
-                .getProbeData(),
-            fileName);
+        // saveData(
+        // ((AbstractProbeContainer) getSelectedTab().getControl())
+        // .getProbeData(),
+        // fileName);
       }
     };
 
@@ -137,6 +135,7 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
     _saveCVSAction.setEnabled(false);
 
     _filterAction = new Action("Filter") {
+      @SuppressWarnings("rawtypes")
       @Override
       public void run()
       {
@@ -271,6 +270,11 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
      */
     if (lsds == null || lsds.getRoot() == null)
     {
+      if (LOGGER.isDebugEnabled())
+        LOGGER.debug(String.format("%s DataStream : %s. Root : %s", lsds,
+            modelName,
+            lsds != null ? lsds.getRoot() : null));
+
       if (sessionData.isOpen())
       {
         if (!wasDeferred(modelData))
@@ -282,23 +286,29 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
         else
         {
           if (LOGGER.isDebugEnabled())
-            LOGGER.debug(String.format("%s was deferred, ignoring", modelName));
-          removeDeferred(modelData);
+            LOGGER.debug(String.format("%s was deferred, retrying", modelName));
+          deferAdd(modelName, modelData, 1000);
         }
       }
-      else if (LOGGER.isDebugEnabled())
-        LOGGER.debug(String.format("SessionData is closed for %s, ignoring",
-            modelName));
+      else
+      {
+        if (LOGGER.isDebugEnabled())
+          LOGGER.debug(String.format("SessionData is closed for %s, ignoring",
+              modelName));
+        removeDeferred(modelData);
+      }
       return null;
     }
 
+    removeDeferred(modelData);
+
     AbstractProbeContainer container = null;
 
-
-    if (_useAWT)
-      container = new AWTProbeContainer(parent, lsds.getRoot());
-    else
-      container = new SWTProbeContainer(parent, lsds.getRoot());
+    // if (_useAWT)
+    // container = new AWTProbeContainer(parent, lsds.getRoot());
+    // else
+    // container = new SWTProbeContainer(parent, lsds.getRoot());
+    container = new XYGraphProbeContainer(parent, lsds.getRoot());
 
     _installedContainers.put(sessionData, container);
 
@@ -313,17 +323,15 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
      * install marker support if possible
      */
     if (rootSessionData.getDataStream("marker") != null)
-    {
       if (LOGGER.isDebugEnabled())
         LOGGER.debug(String.format("Installing marker support"));
-
-      MarkerSupport support = new MarkerSupport(container,
-          (MarkerSessionDataStream) rootSessionData.getDataStream("marker"),
-          RuntimePlugin.getDefault().getPreferenceStore()
-              .getInt(RuntimePreferences.RUNTIME_DATA_WINDOW));
-
-      _installedMarkerSupport.put(sessionData, support);
-    }
+    /*
+     * MarkerSupport support = new MarkerSupport(container,
+     * (MarkerSessionDataStream) rootSessionData.getDataStream("marker"),
+     * RuntimePlugin.getDefault().getPreferenceStore()
+     * .getInt(RuntimePreferences.RUNTIME_DATA_WINDOW));
+     * _installedMarkerSupport.put(sessionData, support);
+     */
 
     /*
      * if we've already got filters, apply them
@@ -333,6 +341,9 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
 
     if (lsds instanceof ILiveSessionDataStream)
     {
+      if (LOGGER.isDebugEnabled())
+        LOGGER.debug(String.format("Is a live stream, listening"));
+
       final AbstractProbeContainer fContainer = container;
       ILiveSessionDataStreamListener<ModelProbeData> listener = new ILiveSessionDataStreamListener<ModelProbeData>() {
 
@@ -365,6 +376,7 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
     _installedMarkerSupport.remove(modelData);
   }
 
+  @SuppressWarnings("rawtypes")
   @Override
   protected void tabSelected(CTabItem item)
   {
@@ -403,22 +415,20 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
 
       for (Map.Entry<ISessionData, AbstractProbeContainer> entry : _installedContainers
           .entrySet())
-        if(entry.getKey().getModelName().startsWith(modelRootName+"."))
+        if (entry.getKey().getModelName().startsWith(modelRootName + "."))
         {
           if (LOGGER.isDebugEnabled())
             LOGGER.debug(String.format("Installing marker support"));
-          AbstractProbeContainer apc = entry.getValue();
-          
-          MarkerSupport support = new MarkerSupport(apc,
-              (MarkerSessionDataStream) sessionDataStream, RuntimePlugin
-              .getDefault().getPreferenceStore()
-              .getInt(RuntimePreferences.RUNTIME_DATA_WINDOW));
-          
-          _installedMarkerSupport.put(entry.getKey(), support);
+          entry.getValue();
+
+          // MarkerSupport support = new MarkerSupport(apc,
+          // (MarkerSessionDataStream) sessionDataStream, RuntimePlugin
+          // .getDefault().getPreferenceStore()
+          // .getInt(RuntimePreferences.RUNTIME_DATA_WINDOW));
+          //
+          // _installedMarkerSupport.put(entry.getKey(), support);
         }
     }
   }
-
-
 
 }

@@ -68,6 +68,7 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
     _pendingAdds = FastList.newInstance();
     _pendingUpdates = FastList.newInstance();
 
+
     _liveListener = new ILiveSessionDataStreamListener<LogData>() {
 
       public void dataChanged(ILiveSessionDataStream stream,

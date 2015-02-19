@@ -232,7 +232,14 @@ public abstract class AbstractACTRLaunchConfiguration extends
           monitor);
 
       _session = createSession(workingCopy, launch, mode, envFile, monitor);
+    }
+    catch (CoreException ce)
+    {
+      throw ce;
+    }
 
+    try
+    {
       configuration = workingCopy.doSave();
       
       super.launch(configuration, mode, launch, monitor);

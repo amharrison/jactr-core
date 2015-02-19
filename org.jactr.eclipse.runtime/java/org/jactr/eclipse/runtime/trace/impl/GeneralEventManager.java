@@ -3,6 +3,7 @@ package org.jactr.eclipse.runtime.trace.impl;
 /*
  * default logging
  */
+import java.util.Collection;
 import java.util.concurrent.Executor;
 
 import org.apache.commons.logging.Log;
@@ -39,6 +40,16 @@ public class GeneralEventManager<L, E> extends EventManager
   public void addListener(L listener, Executor executor)
   {
     addListenerObject(new Pair(listener, executor));
+  }
+
+  public void getListeners(Collection<L> container)
+  {
+    for (Object pair : getListeners())
+    {
+      L actual = ((Pair) pair)._listener;
+      container.add(actual);
+    }
+
   }
 
   public void removeListener(L listener)

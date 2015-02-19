@@ -28,6 +28,7 @@ Export-Package: org.jactr.eclipse.runtime,
  org.jactr.eclipse.runtime.playback.internal,
  org.jactr.eclipse.runtime.preferences,
  org.jactr.eclipse.runtime.probe2,
+ org.jactr.eclipse.runtime.probe3,
  org.jactr.eclipse.runtime.production2,
  org.jactr.eclipse.runtime.session,
  org.jactr.eclipse.runtime.session.control,
@@ -55,7 +56,8 @@ Require-Bundle: org.eclipse.debug.core,
  org.commonreality,
  org.jactr.eclipse.execution,
  org.eclipse.core.filesystem,
- org.commonreality.mina.core
+ org.commonreality.mina.core,
+ org.jactr.eclipse.ui;bundle-version="1.2.8"
 Bundle-ActivationPolicy: lazy
 Eclipse-RegisterBuddy: org.commonreality.mina.core, org.apache.log4j
 Plugin-Class: org.jactr.eclipse.runtime.RuntimePlugin

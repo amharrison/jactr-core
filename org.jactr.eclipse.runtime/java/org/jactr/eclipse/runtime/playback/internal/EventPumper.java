@@ -114,58 +114,6 @@ public class EventPumper extends QueueingJob
     processIndices(new SubProgressMonitor(monitor, toLoad.size()), toLoad,
         blockSize);
 
-    //
-    //
-    // RuntimeTraceManager rtm = RuntimePlugin.getDefault()
-    // .getRuntimeTraceManager();
-    // FastList<ITransformedEvent> events = FastList.newInstance();
-    //
-    // monitor.beginTask(
-    // String.format("Replaying %d event archives", toLoad.size()),
-    // toLoad.size() * 2);
-    //
-    // try
-    // {
-    // for (ArchivalIndex.Index record : toLoad)
-    // try
-    // {
-    // if (!_session.isOpen() || monitor.isCanceled())
-    // return Status.CANCEL_STATUS;
-    //
-    // monitor.subTask(String.format("Loading from %.2fs to %.2fs.",
-    // record._span[0], record._span[1]));
-    //
-    // pumpRecord(monitor, record, events);
-    // monitor.worked(1);
-    //
-    // if (events.size() > 0)
-    // {
-    // monitor.subTask(String.format(
-    // "Replaying %d events from %.2fs to %.2fs.", events.size(),
-    // record._span[0], record._span[1]));
-    //
-    // rtm.fireEvents(monitor, events, _session);
-    // }
-    // events.clear();
-    // monitor.worked(1);
-    //
-    // _controller.setCurrentTime(record._span[1]);
-    //
-    // }
-    // catch (Exception e)
-    // {
-    // LOGGER.debug("Failed to load record ", e);
-    // }
-    //
-    // }
-    // finally
-    // {
-    // monitor.done();
-    //
-    // FastList.recycle(toLoad);
-    // FastList.recycle(events);
-    // }
-
     FastList.recycle(toLoad);
 
     synchronized (_queue)
@@ -317,7 +265,7 @@ public class EventPumper extends QueueingJob
         }
         catch (Exception e)
         {
-
+          RuntimePlugin.error("Failed to pump all records", e);
         }
       }
     }
@@ -355,6 +303,7 @@ public class EventPumper extends QueueingJob
 
     try
     {
+      double lastKnownTime = 0;
       while (!done && !monitor.isCanceled() && _session.isOpen())
       {
         /*
@@ -364,9 +313,12 @@ public class EventPumper extends QueueingJob
         {
           ITransformedEvent ite = (ITransformedEvent) inputStream.readObject();
           double eventTime = ite.getSimulationTime();
+          lastKnownTime = eventTime;
 
           if (index._span[0] <= eventTime && eventTime < index._span[1])
             events.add(ite);
+//            RuntimePlugin.info(String.format("read & added %s %.4f", ite
+//                .getClass().getSimpleName(), ite.getSimulationTime()));
           else
           {
             if (LOGGER.isDebugEnabled())
@@ -376,6 +328,10 @@ public class EventPumper extends QueueingJob
                   index._span[1]));
 
             done = eventTime >= index._span[1];
+
+            // RuntimePlugin.info(String.format(
+            // "read & skipped %s %.4f (done:%s)", ite.getClass()
+            // .getSimpleName(), ite.getSimulationTime(), done));
           }
         }
         catch (EOFException e)
@@ -396,6 +352,9 @@ public class EventPumper extends QueueingJob
             SubProgressMonitor pm = new SubProgressMonitor(monitor,
                 events.size());
 
+            // RuntimePlugin.info(String.format("firing %d events @ %.4f",
+            // events.size(), lastKnownTime));
+
             if (LOGGER.isDebugEnabled())
               LOGGER.debug(String.format("Firing %d events", events.size()));
 
@@ -403,12 +362,15 @@ public class EventPumper extends QueueingJob
             rtm.fireEvents(pm, events, _session);
             pm.done();
 
-            if (events.size() > 0)
-              _controller.setCurrentTime(events.getLast().getSimulationTime());
+            if (events.size() > 0) _controller.setCurrentTime(lastKnownTime);
           }
           catch (Exception e)
           {
-            e.printStackTrace(System.err);
+
+            events.clear();
+
+            RuntimePlugin.error(String.format("failed firing %d events @ %.4f",
+                events.size(), lastKnownTime), e);
           }
           finally
           {
@@ -431,12 +393,16 @@ public class EventPumper extends QueueingJob
 
               events.clear();
 
+              // RuntimePlugin.info(String.format("cleared events"));
+
               if (sleepTime > 0)
                 try
                 {
                   if (LOGGER.isDebugEnabled())
                     LOGGER.debug(String.format("Sleeping %d ms", sleepTime));
 
+                  // RuntimePlugin.info(String.format("sleeping %d",
+                  // sleepTime));
                   Thread.sleep(sleepTime);
                 }
                 catch (InterruptedException e)
@@ -451,7 +417,12 @@ public class EventPumper extends QueueingJob
               LOGGER.error("Oops in sleep! ", e2);
             }
           }
-
+        // else
+        // /*
+        // * not ready to flush
+        // */
+        // RuntimePlugin.info(String.format("not ready to flush events (%d) (done:%s) @ %.4f",
+        // events.size(), done, lastKnownTime));
       }
     }
     finally

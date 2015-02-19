@@ -3,6 +3,8 @@ package org.jactr.eclipse.runtime.session.manager.internal;
 /*
  * default logging
  */
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -104,6 +106,13 @@ public class SessionManager implements ISessionManager
   public void addListener(ISessionManagerListener listener, Executor executor)
   {
     _eventManager.addListener(listener, executor);
+  }
+
+  public Collection<ISessionManagerListener> getListeners()
+  {
+    Collection<ISessionManagerListener> listeners = new ArrayList<ISessionManagerListener>();
+    _eventManager.getListeners(listeners);
+    return listeners;
   }
 
   public void removeListener(ISessionManagerListener listener)

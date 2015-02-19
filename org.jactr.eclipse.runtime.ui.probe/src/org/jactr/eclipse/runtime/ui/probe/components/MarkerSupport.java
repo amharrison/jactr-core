@@ -35,7 +35,7 @@ import org.jactr.eclipse.runtime.ui.marker.MarkerUI;
  * @author harrison
  */
 public class MarkerSupport implements
-    AbstractProbeContainer.IChartUpdateListener
+    AbstractBIRTProbeContainer.IChartUpdateListener
 {
   /**
    * Logger definition
@@ -45,7 +45,7 @@ public class MarkerSupport implements
 
   private final MarkerSessionDataStream              _msds;
 
-  private final AbstractProbeContainer               _chartContainer;
+  private final AbstractBIRTProbeContainer               _chartContainer;
 
   private final ILiveSessionDataStreamListener<Long> _markerListener;
 
@@ -64,7 +64,7 @@ public class MarkerSupport implements
 
   private final double                               _rangePadding;
 
-  public MarkerSupport(AbstractProbeContainer chartContainer,
+  public MarkerSupport(AbstractBIRTProbeContainer chartContainer,
       MarkerSessionDataStream msds, double runtimeWindowSize)
   {
     _rangePadding = 2 * runtimeWindowSize;

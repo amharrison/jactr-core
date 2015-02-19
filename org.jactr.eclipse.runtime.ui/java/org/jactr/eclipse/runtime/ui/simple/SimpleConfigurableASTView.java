@@ -206,4 +206,5 @@ public abstract class SimpleConfigurableASTView extends
   }
 
   abstract protected boolean isSensitiveToConflictResolution();
+
 }

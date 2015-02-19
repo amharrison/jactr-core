@@ -9,7 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jactr.eclipse.runtime.session.data.ISessionData;
 
-public abstract class AbstractSessionDataStream<I, T> implements
+public abstract class AbstractSessionDataStream<T> implements
     ISessionDataStream<T>
 {
   /**
@@ -42,7 +42,4 @@ public abstract class AbstractSessionDataStream<I, T> implements
   {
     return _streamName;
   }
-
-
-  abstract public void append(I data);
 }

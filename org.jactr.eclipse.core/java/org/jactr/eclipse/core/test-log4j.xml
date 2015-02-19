@@ -166,15 +166,19 @@
 	<logger name="org.jactr.eclipse.runtime.ui.log2.TableLabelProvider"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.ui.probe.components.MarkerSupport"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.playback"><level value="warn" /></logger>
-	<logger name="org.jactr.eclipse.runtime.ui.probe.ModelProbeView"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.log2.LogData"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.log2.LogRuntimeTraceListener"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.playback.internal.EventPumper"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.ui.log2.ModelLogView2"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.ui.misc.AbstractSessionTimeViewPart"><level value="debug" /></logger>
+	
+	<logger name="org.jactr.eclipse.runtime.ui.probe"><level value="debug" /></logger>
+	<logger name="org.jactr.eclipse.runtime.probe3"><level value="warn" /></logger>
+	<logger name="org.jactr.eclipse.runtime.trace.RuntimeTraceManager"><level value="debug" /></logger>
+	
+	<logger name="org.jactr.eclipse.association.ui.model.ModelAssociations"><level value="debug" /></logger>	
+	<logger name="org.jactr.eclipse.association.ui.views.AssociationViewer"><level value="debug" /></logger>	
 	-->
-	
-	
 
 	<root>
 		<level value="warn" />

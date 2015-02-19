@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
+            <!--
    <extension
          point="org.eclipse.ui.commands">
       <command
@@ -56,13 +57,11 @@
                   name="org.jactr.eclipse.production.separator3"
                   visible="true">
             </separator>
-            <!--
             <command
                   commandId="org.jactr.eclipse.production.command.visualize.sequence"
                   mnemonic="S"
                   style="push">
             </command>
-            -->
             <command
                   commandId="org.jactr.eclipse.production.command.visualize.radial.in"
                   icon="icons/previous.gif"
@@ -89,5 +88,6 @@
             name="Production Sequence">
       </view>
    </extension>
+            -->
 
 </plugin>

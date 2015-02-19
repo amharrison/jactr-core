@@ -30,7 +30,7 @@ import org.jactr.eclipse.runtime.probe2.ModelProbeData;
  * 
  * @author harrison
  */
-public class AWTProbeContainer extends AbstractProbeContainer
+public class AWTProbeContainer extends AbstractBIRTProbeContainer
 {
   /**
    * Logger definition
