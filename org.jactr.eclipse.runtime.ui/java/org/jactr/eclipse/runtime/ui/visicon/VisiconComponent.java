@@ -177,41 +177,6 @@ public class VisiconComponent extends Canvas
     if (bounds.height != 0 && bounds.width != 0)
     	_inverse.invert();
   }
-  
-  void setMagnification(float magnification) {
-	  System.err.println("magnification="+magnification);
-	  _magnification = magnification;
-	  updateTransform();
-	  redraw();
-  }
-  
-  private void updateTransform() {
-    if (_transform != null) {
-      _transform.dispose();
-      _inverse.dispose();
-    }
-
-    _transform = new Transform(getDisplay());
-    _inverse = new Transform(getDisplay());
-
-    Rectangle bounds = getBounds();
-    double[] res = _descriptor.getResolution();
-    
-    if (res == null)
-    	return;
-
-    // scale
-    _transform.scale( bounds.width  / (float) (res[0] * _magnification),
-    		         -bounds.height / (float) (res[1] * _magnification));
-    // and center
-    _transform.translate((float) (res[0] * _magnification) / 2f,
-        -(float) (res[1] * _magnification) / 2);
-
-    _inverse.multiply(_transform);
-    
-    if (bounds.height != 0 && bounds.width != 0)
-    	_inverse.invert();
-  }
 
   protected void drawAxes(GC graphics)
   {
