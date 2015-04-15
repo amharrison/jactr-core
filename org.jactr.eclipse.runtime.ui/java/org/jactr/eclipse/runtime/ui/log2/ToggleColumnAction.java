@@ -1,21 +1,28 @@
 package org.jactr.eclipse.runtime.ui.log2;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Consumer;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Widget;
 import org.jactr.eclipse.runtime.ui.UIPlugin;
 
-public class ToggleColumnAction extends Action {
+public class ToggleColumnAction extends Action implements IToggleColumnAction {
 
 	public static final int TIME_COLUMN_WIDTH = 70;
 	public static final String PREFERENCE_COLUMN_VISIBILITY_PREFIX = UIPlugin.PLUGIN_ID+".columnVisible";
 	
 	private final ModelLogView2 view;
-	private final Table table;
-	private final TableColumn column;
+	private final List<Table> tables = new ArrayList<>();
+	private final List<TableColumn> columns = new ArrayList<>();
 	private final String preferenceKey;
 	private int lastWidth;
 	
@@ -23,8 +30,8 @@ public class ToggleColumnAction extends Action {
 		super(column.getText(), IAction.AS_CHECK_BOX);
 		super.setChecked(true);
 		this.view = view;
-		this.table = table;
-		this.column = column;
+		this.tables.add(table);
+		this.columns.add(column);
 		this.preferenceKey = PREFERENCE_COLUMN_VISIBILITY_PREFIX+"."+this.getClass().getName()+"."+column.getText();
 		this.lastWidth = column.getText().equals("TIME")?TIME_COLUMN_WIDTH:column.getWidth();
 		column.addControlListener(new ControlAdapter() {
@@ -45,7 +52,7 @@ public class ToggleColumnAction extends Action {
 		} else if(value.equals("true")) {
 			// fine
 		} else if(value.equals("false")) {
-			hideColumn();
+			hideColumns();
 			super.setChecked(false);
 		} else {
 			throw new IllegalStateException("Invalid visibility preference for key="+preferenceKey+": "+value);
@@ -61,25 +68,86 @@ public class ToggleColumnAction extends Action {
 		return (isChecked()?"Hide":"Show")+" column "+getText();
 	}
 	
-	private void hideColumn() {
+	/* (non-Javadoc)
+	 * @see org.jactr.eclipse.runtime.ui.log2.IToggleColumnAction#getColumnText()
+	 */
+	@Override
+	public String getColumnText() {
+		return getText();
+	}
+	
+	@Override
+	public int getNumberOfColumns() {
+		return columns.size();
+	}
+	
+	@Override
+	public void add(TableColumn column, Table table) {
+		columns.add(column);
+		if(!tables.contains(table)) {
+			tables.add(table);
+		}
+		if(isChecked()) {
+			showColumn(column);
+		} else {
+			hideColumn(column);
+		}
+	}
+	
+	@Override
+	public void remove(TableColumn column) {
+		columns.remove(column);
+	}
+	
+	private <T extends Widget> void invokeForEachAndRemoveDisposed(List<T> list,
+			Consumer<T> consumer){
+		Iterator<T> iter = list.iterator();
+		while(iter.hasNext()) {
+			T element = iter.next();
+			if(element.isDisposed()) {
+				System.err.println("Removing disposed element="+element);
+				iter.remove();
+			} else {
+				consumer.accept(element);
+			}
+		};
+	}
+	
+	private void hideColumns() {
+		invokeForEachAndRemoveDisposed(columns, this::hideColumn);
+	}
+
+	private void hideColumn(TableColumn column) {
 		column.setWidth(0);
 		column.setResizable(false);
+	}
+
+	private void showColumns() {
+		invokeForEachAndRemoveDisposed(columns, this::showColumn);
+	}
+
+	private void showColumn(TableColumn column) {
+		column.setResizable(!column.getText().equals("TIME"));
+		column.setWidth(lastWidth);
 	}
 
 	@Override
 	public void setChecked(boolean checked) {
 		if(isChecked() && !checked) {
 			// Hide column
-			hideColumn();
+			hideColumns();
 			saveVisibilityPreference(false);
 		} else if(!isChecked() && checked){
 			// Show column
-			column.setResizable(!column.getText().equals("TIME"));
-			column.setWidth(lastWidth);
+			showColumns();
 			saveVisibilityPreference(true);
 		}
 		super.setChecked(checked);
-		view.adjustColumnSizes(table);
+		invokeForEachAndRemoveDisposed(tables, view::adjustColumnSizes);
+	}
+	
+	public String toString() {
+		return "ToggleColumnAction(text="+getText()+" tables="+tables+" columns="+columns+")";
 	}
 
 }
