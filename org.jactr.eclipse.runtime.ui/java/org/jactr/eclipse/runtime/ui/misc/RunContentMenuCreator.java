@@ -105,7 +105,7 @@ public class RunContentMenuCreator implements IMenuCreator
 
     buildSubMenu(menu, "Run for ...", _controller.getRunForContentProvider(),
         false);
-    buildSubMenu(menu, "Run to ...", _controller.getRunToContentProvider(),
+    buildSubMenu(menu, "Skip to ...", _controller.getRunToContentProvider(),
         true);
 
     menu.addMenuListener(new MenuListener() {
@@ -150,7 +150,7 @@ public class RunContentMenuCreator implements IMenuCreator
            * simple dialog
            */
           InputDialog dialog = new InputDialog(Display.getCurrent()
-              .getActiveShell(), "Run until", "Enter time to run until",
+              .getActiveShell(), "Skip to", "Enter time to jump to",
               String.format("%.2f", _controller.getCurrentTime()),
               new IInputValidator() {
 
@@ -222,7 +222,7 @@ public class RunContentMenuCreator implements IMenuCreator
        */
       ITimeBasedAction action = new TimeBasedAction(this, node, isRunTo);
 
-      action.setText(String.format("%s %s", isRunTo ? "Run to " : "Run for ",
+      action.setText(String.format("%s %s", isRunTo ? "Skip to " : "Run for ",
           _labelProvider.getText(node)));
 
       _allActions.add(action);
