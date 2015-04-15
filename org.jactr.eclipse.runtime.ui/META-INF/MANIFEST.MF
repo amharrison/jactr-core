@@ -45,6 +45,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jdt.core,
  org.jactr,
  org.eclipse.ui.editors,
- org.commonreality.mina.core;bundle-version="2.0.4"
+ org.commonreality.mina.core;bundle-version="2.0.4",
+ org.eclipse.jface,
+ org.eclipse.swt
 Eclipse-RegisterBuddy: org.apache.log4j 
 Bundle-ActivationPolicy: lazy
