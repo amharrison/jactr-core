@@ -192,7 +192,7 @@ public class SelectSessionAction extends ControlContribution implements
    */
   public void sessionSelected(ISession session)
   {
-    if (_combo.isDisposed()) return;
+    if (_combo == null || _combo.isDisposed()) return;
 
     if (session == null)
       _combo.select(_combo.getItemCount() - 1);

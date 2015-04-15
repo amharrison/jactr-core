@@ -241,20 +241,19 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
         TableColumn column = new TableColumn(table, SWT.LEFT);
         column.setText(stream);
         _knownColumns.add(stream);
-
-        for (ColumnListener listener : _columnListeners)
-          listener.added(column);
+        for(ColumnListener listener: _columnListeners) {
+        	listener.added(column);
+        }
       }
 
   }
-
+  
   public void addColumnListener(ColumnListener listener)
   {
-    _columnListeners.add(listener);
+	  _columnListeners.add(listener);
   }
-
-  public void removeColumnListener(ColumnListener listener)
-  {
-    _columnListeners.remove(listener);
+  
+  public void removeColumnListener(ColumnListener listener) {
+	  _columnListeners.remove(listener);
   }
 }

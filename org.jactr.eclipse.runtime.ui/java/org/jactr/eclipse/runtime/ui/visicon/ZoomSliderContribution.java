@@ -26,7 +26,6 @@ public class ZoomSliderContribution extends ControlContribution {
 
 	protected void zoomCurrentTab() {
 		if(tabs.getSelection() != null) {
-			System.err.println("Selection="+slider.getSelection());
 			((VisiconComponent)tabs.getSelection().getControl()).setMagnification((float)slider.getSelection()/100.0f);
 		}
 	}

@@ -102,9 +102,8 @@ public abstract class SimpleVerticalASTViewComponent implements
     _treeViewer.setInput(root);
     collapseElements(root, collapsedElements);
     _treeViewer.getTree().setRedraw(true);
-
   }
-
+  
   public void noAST()
   {
     _treeViewer.setInput(_astSupport.create(JACTRBuilder.MODEL, "no data"));

@@ -4,10 +4,16 @@ package org.jactr.eclipse.runtime.ui.log2;
  * default logging
  */
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -210,10 +216,15 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
     LiveLogDataContentProvider contentProvider = new LiveLogDataContentProvider(viewer);
 	viewer.setContentProvider(contentProvider);
 	contentProvider.addColumnListener(new ColumnListener() {
-		@Override public void added(TableColumn column) {
-		    getViewSite().getActionBars().getMenuManager().add(new ToggleColumnAction(ModelLogView2.this, viewer.getTable(), column));
-			getViewSite().getActionBars().updateActionBars();
-		}});
+		@Override public void added(final TableColumn column) {
+			boolean updateActionBars = createActionForColumnOrAddColumnToExistingAction(
+					viewer.getTable(), column, column.getText());
+			if(updateActionBars)
+			{
+				getViewSite().getActionBars().updateActionBars();
+			}
+		}
+		});
 
     viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -307,6 +318,7 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
     /*
      * populate the column headers & pack
      */
+    boolean updateActionBars = false;
     for (String stream : _expectedStreams)
     {
       TableColumn column = new TableColumn(table, SWT.LEFT);
@@ -314,9 +326,12 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
       column.setResizable(!stream.equals("TIME"));
       if(stream.equals("TIME"))
     	  column.setWidth(TIME_COLUMN_WIDTH);
-      getViewSite().getActionBars().getMenuManager().add(new ToggleColumnAction(this, table, column));
+      updateActionBars |= createActionForColumnOrAddColumnToExistingAction(table, column, stream);
     }
-	getViewSite().getActionBars().updateActionBars();
+    if(updateActionBars)
+    {
+    	getViewSite().getActionBars().updateActionBars();
+    }
 
     table.addControlListener(new ControlAdapter() {
       @Override
@@ -329,6 +344,24 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
     table.pack();
   }
 
+  /**
+   * 
+   * @return True, if the action bars need to be updated. False, if not.
+   */
+  protected boolean createActionForColumnOrAddColumnToExistingAction(Table table, TableColumn column, String columnText)
+  {
+	  boolean updateActionBars = false;
+      IToggleColumnAction action = getActionFor(columnText);
+	  if(action == null)
+	  {
+	      getViewSite().getActionBars().getMenuManager().add(new ToggleColumnAction(this, table, column));
+	      updateActionBars = true;
+      } else {
+    	  action.add(column, table);
+      }
+	  return updateActionBars;
+  }
+  
   protected void adjustColumnSizes(Table table)
   {
 	int resizableColumns = 0;
@@ -361,5 +394,22 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
   {
     deferAdd(sessionData.getModelName(), sessionData, 250);
   }
-
+  
+  private IToggleColumnAction getActionFor(String columnName)
+  {
+	Optional<IContributionItem> firstMatchingItem = Arrays.stream(getViewSite().getActionBars().getMenuManager().getItems())
+			.filter(
+				item -> {
+					IAction action = null;
+					boolean hasAction = item instanceof ActionContributionItem
+							&& (action = ((ActionContributionItem)item).getAction()) instanceof IToggleColumnAction
+							&& ((IToggleColumnAction)action).getColumnText().equals(columnName);
+					return hasAction;
+				}).findFirst();
+	if(firstMatchingItem.isPresent()) {
+		return (IToggleColumnAction)((ActionContributionItem)firstMatchingItem.get()).getAction();
+	} else {
+		return null;
+	}
+  }
 }
