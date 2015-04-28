@@ -224,6 +224,7 @@ public class XYGraphProbeContainer extends
       _graph.addTrace(trace);
     }
 
+
     FastSet.recycle(allKnown);
     FastSet.recycle(allData);
   }
