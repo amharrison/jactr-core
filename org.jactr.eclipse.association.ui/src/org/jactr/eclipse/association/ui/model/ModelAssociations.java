@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.Executor;
 
 import javolution.util.FastList;
@@ -28,20 +29,22 @@ public class ModelAssociations
   /**
    * Logger definition
    */
-  static private final transient Log           LOGGER = LogFactory
-                                                          .getLog(ModelAssociations.class);
+  static private final transient Log                             LOGGER = LogFactory
+                                                                            .getLog(ModelAssociations.class);
 
-  private Map<String, Collection<Association>> _jChunks;
+  private ConcurrentSkipListMap<String, Collection<Association>> _jChunks;
 
-  private Map<String, Collection<Association>> _iChunks;
+  private ConcurrentSkipListMap<String, Collection<Association>> _iChunks;
 
-  private Collection<Association>              _associations;
+  private Collection<Association>                                _associations;
 
-  private IAssociationMapper                   _mapper;
+  private IAssociationMapper                                     _mapper;
 
-  private CommonTree                           _modelDescriptor;
+  private CommonTree                                             _modelDescriptor;
 
-  private String                               _focus;
+  private String                                                 _focus;
+
+
 
   public ModelAssociations(CommonTree modelDescriptor,
       IAssociationMapper mapper, String focalChunk)
@@ -59,9 +62,10 @@ public class ModelAssociations
   public ModelAssociations(IAssociationMapper mapper)
   {
     _mapper = mapper;
-    _jChunks = new TreeMap<String, Collection<Association>>();
-    _iChunks = new TreeMap<String, Collection<Association>>();
-    _associations = new HashSet<Association>();
+    _jChunks = new ConcurrentSkipListMap<String, Collection<Association>>();
+    _iChunks = new ConcurrentSkipListMap<String, Collection<Association>>();
+    _associations = Collections
+        .synchronizedCollection(new HashSet<Association>());
   }
 
   public CommonTree getModelDescriptor()
@@ -130,9 +134,8 @@ public class ModelAssociations
                   //
                   final Collection<CommonTree> subList = allChunks.subList(i
                       * blockSize, i * blockSize + blockSize);
-                  submitted.add(CompletableFuture.runAsync(
-                      () -> {
-                        process(subList, allChunksMap);
+                  submitted.add(CompletableFuture.runAsync(() -> {
+                    process(subList, allChunksMap);
                   }, executor));
                 }
               }
@@ -185,8 +188,7 @@ public class ModelAssociations
 
     if (!recycledParameters.containsKey(linkKey)) return;
 
-    String allLinks = recycledParameters.get(linkKey)
-        .getChild(1).getText();
+    String allLinks = recycledParameters.get(linkKey).getChild(1).getText();
 
     try
     {
@@ -209,7 +211,7 @@ public class ModelAssociations
     {
       if (LOGGER.isWarnEnabled())
         LOGGER.warn(String.format("Failed to extract link info from %s",
-            allLinks));
+ allLinks), e);
     }
 
   }
@@ -302,14 +304,17 @@ public class ModelAssociations
   }
 
   private void add(String name, Association association,
-      Map<String, Collection<Association>> container)
+      ConcurrentSkipListMap<String, Collection<Association>> container)
   {
-    Collection<Association> collection = container.get(name);
-    if (collection == null)
-    {
-      collection = new FastList<Association>();
-      container.put(name, collection);
-    }
+    FastList<Association> addIfMissing = FastList.newInstance();
+    Collection<Association> collection = container.putIfAbsent(name,
+        addIfMissing);
+
+    // we already had a collection attached
+    if (collection != null)
+      FastList.recycle(addIfMissing);
+    else
+      collection = addIfMissing;
 
     collection.add(association);
   }

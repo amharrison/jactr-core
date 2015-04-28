@@ -393,10 +393,10 @@ public class AssociationViewer extends ViewPart implements
     CompletableFuture<Void> setupProc = CompletableFuture.runAsync(setup, uiex);
 
     // build the associations, but only after setup
-    CompletableFuture<Void> assProc = setupProc.thenComposeAsync((v) -> {
+    final CompletableFuture<Void> assProc = setupProc.thenComposeAsync((v) -> {
+
       return associations.process(
-          Runtime.getRuntime().availableProcessors() / 2 + 1,
-          ex);
+          Runtime.getRuntime().availableProcessors() / 2 + 1, ex);
     }, ex);
 
     // cleanup just in case
@@ -466,8 +466,26 @@ public class AssociationViewer extends ViewPart implements
            * the same chunks aren't stacked on top of each other.
            */
           if (data instanceof Association)
-            trueDepth = 10 + data.hashCode() % 50;
-          link.setCurveDepth((int) trueDepth);
+          {
+            Association ass = (Association) data;
+
+            // we don't tweak self-links
+            if (ass.getIChunk() != ass.getJChunk())
+            {
+              trueDepth = 10 + data.hashCode() % 50;
+              link.setCurveDepth((int) trueDepth);
+            }
+          }
+
+          // still trying to figure out how to force labels to midpoint
+          // after using curve depth
+          // for(Object child : link.getConnectionFigure().getChildren())
+          // {
+          // IFigure childFigure = (IFigure) child;
+          // link.getConnectionFigure().add(childFigure, childFigure);
+          // childFigure.getUpdateManager()
+          // }
+
         }
         completed = true;
       }
