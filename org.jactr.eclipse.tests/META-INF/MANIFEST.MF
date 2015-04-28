@@ -4,13 +4,8 @@ Bundle-Name: Tests
 Bundle-SymbolicName: org.jactr.eclipse.tests
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-ClassPath: lib/jmock-2.6.0.jar,
- lib/jmock-junit4-2.6.0.jar,
- lib/jmock-legacy-2.6.0.jar,
- lib/jmock-script-2.6.0.jar,
- .
-Require-Bundle: org.junit,
- org.eclipse.core.resources,
+Bundle-ClassPath: .
+Require-Bundle: org.eclipse.core.resources,
  org.eclipse.debug.core,
  org.eclipse.jface,
  org.eclipse.ui.workbench,
