@@ -238,7 +238,7 @@ public class ACTRReconcilingStrategy implements IReconcilingStrategy,
     // _editor.close(false);
     _resource = null;
 
-    System.gc();
+    // System.gc();
   }
 
   // private class CompilationUnitRule implements ISchedulingRule
