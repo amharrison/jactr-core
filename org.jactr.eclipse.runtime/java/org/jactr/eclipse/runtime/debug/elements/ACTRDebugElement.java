@@ -35,6 +35,11 @@ public class ACTRDebugElement extends PlatformObject implements IDebugElement
     _target = target;
   }
 
+  public ACTRDebugTarget getACTRDebugTarget()
+  {
+    return _target;
+  }
+
   public IDebugTarget getDebugTarget()
   {
     return _target;

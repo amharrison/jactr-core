@@ -213,7 +213,7 @@ public class ACTRStackFrame extends ACTRDebugElement implements IStackFrame
 
   public boolean canTerminate()
   {
-    return false;
+    return _thread.canTerminate();
   }
 
   public boolean isTerminated()
@@ -223,7 +223,7 @@ public class ACTRStackFrame extends ACTRDebugElement implements IStackFrame
 
   public void terminate() throws DebugException
   {
-
+    _thread.terminate();
   }
 
 }

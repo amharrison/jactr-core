@@ -222,10 +222,7 @@ public class ACTRThread extends ACTRDebugElement implements IThread
 
   public boolean canResume()
   {
-    // if (isTerminated()) return false;
-    //
-    // return isSuspended();
-    return false;
+    return getACTRDebugTarget().canResume();
   }
 
   public boolean canSuspend()
@@ -233,23 +230,22 @@ public class ACTRThread extends ACTRDebugElement implements IThread
     // if (isTerminated()) return false;
 
     // return !isSuspended();
-    return false;
+    return getACTRDebugTarget().canSuspend();
   }
 
   public boolean isSuspended()
   {
-    return _target.getACTRSession().getShadowController().isSuspended(
-        _modelName);
+    return getACTRDebugTarget().isSuspended();
   }
 
   public void resume() throws DebugException
   {
-    _target.getACTRSession().getShadowController().resume(_modelName);
+    getACTRDebugTarget().resume();
   }
 
   public void suspend() throws DebugException
   {
-    _target.getACTRSession().getShadowController().suspend(_modelName);
+    getACTRDebugTarget().suspend();
   }
 
   public boolean canStepInto()
@@ -285,23 +281,22 @@ public class ACTRThread extends ACTRDebugElement implements IThread
 
   public void stepReturn() throws DebugException
   {
-    resume();
+    // resume();
   }
 
   public boolean canTerminate()
   {
-    return false;
+    return getACTRDebugTarget().canTerminate();
   }
 
   public boolean isTerminated()
   {
-    return !_target.getACTRSession().getShadowController()
-        .isRunning(_modelName);
+    return getACTRDebugTarget().isTerminated();
   }
 
   public void terminate() throws DebugException
   {
-
+    getACTRDebugTarget().terminate();
   }
 
 }
