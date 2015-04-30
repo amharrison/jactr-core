@@ -52,6 +52,12 @@ public abstract class ACTRTemplateCompletionProcessor extends
 
   static public final String                PARAMETER        = "parameter";
 
+  static public final String                MODULE           = "module";
+
+  static public final String                EXTENSION        = "extension";
+
+  static public final String                MODEL_CONTENTS   = "modelContents";
+
   private Map<Integer, TemplateContextType> _contexts;
 
   private ACTRModelEditor                   _editor;
@@ -88,8 +94,13 @@ public abstract class ACTRTemplateCompletionProcessor extends
     // two different contexts
     // addContextType(JACTRBuilder.CHUNK, idPrefix, PARAMETERS);
     addContextType(JACTRBuilder.BUFFER, idPrefix, PARAMETERS);
-    addContextType(JACTRBuilder.MODEL, idPrefix, PARAMETERS);
     addContextType(JACTRBuilder.PARAMETERS, idPrefix, PARAMETER);
+    addContextType(JACTRBuilder.MODEL, idPrefix, MODEL_CONTENTS);
+
+    addContextType(JACTRBuilder.MODULE, idPrefix, PARAMETERS);
+    addContextType(JACTRBuilder.MODULES, idPrefix, MODULE);
+    addContextType(JACTRBuilder.EXTENSION, idPrefix, PARAMETERS);
+    addContextType(JACTRBuilder.EXTENSIONS, idPrefix, EXTENSION);
 
     addSuspendType(JACTRBuilder.SCRIPTABLE_ACTION);
     addSuspendType(JACTRBuilder.SCRIPTABLE_CONDITION);

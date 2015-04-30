@@ -78,6 +78,10 @@ public class PositionMarker implements ITreeTracker
   {
     setLocationID(POSITION_ID);
     _relevantTypes.add(JACTRBuilder.MODEL);
+    _relevantTypes.add(JACTRBuilder.MODULES);
+    _relevantTypes.add(JACTRBuilder.MODULE);
+    _relevantTypes.add(JACTRBuilder.EXTENSIONS);
+    _relevantTypes.add(JACTRBuilder.EXTENSION);
     _relevantTypes.add(JACTRBuilder.DECLARATIVE_MEMORY);
     _relevantTypes.add(JACTRBuilder.PROCEDURAL_MEMORY);
 

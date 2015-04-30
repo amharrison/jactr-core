@@ -332,4 +332,76 @@ ${indent}}]]&gt;
 	icon="icons/full/basic/output.gif" 
 	id="org.jactr.eclipse.ui.templates.jactr.production.output"
 	name="output">&lt;output&gt;"${message}"&lt;/output&gt;${cursor}</template>
+
+
+
+<template 
+	context="jactr.modules" 
+	description="Create modules block"
+    icon="icons/full/basic/prop_ps.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.modules"
+	name="modules">&lt;modules&gt;${cursor}
+&lt;/modules&gt;</template>	
+
+<template 
+	context="jactr.module" 
+	description="Create module block"
+    icon="icons/full/basic/prop_ps.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.module"
+	name="module">
+&lt;module class="${className}" import="true"&gt;
+&lt;parameters&gt;
+&lt;parameter name="${name}" value="${value}"/&gt;${cursor}
+&lt;/parameters&gt;
+&lt;/module&gt;</template>	
+
+
+
+<template 
+	context="jactr.extensions" 
+	description="Create extensions block"
+    icon="icons/full/basic/prop_ps.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.extensions"
+	name="extensions">&lt;extensions&gt;${cursor}
+&lt;/extensions&gt;</template>
+
+
+
+<template 
+	context="jactr.extension" 
+	description="Create extension block"
+    icon="icons/full/basic/prop_ps.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.extension"
+	name="extension">&lt;extension class="${className}" import="true"&gt;
+&lt;parameters&gt;
+&lt;parameter name="${name}" value="${value}"/&gt;${cursor}
+&lt;/parameters&gt;
+&lt;/extension&gt;</template>	
+
+
+<template 
+	context="jactr.modelContents" 
+	description="Create extensions block"
+    icon="icons/full/basic/prop_ps.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.modelContents.extensions"
+	name="extensions">&lt;extensions&gt;${cursor}
+&lt;/extensions&gt;</template>
+
+<template 
+	context="jactr.modelContents" 
+	description="Create modules block"
+    icon="icons/full/basic/prop_ps.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.modelContents.modules"
+	name="modules">&lt;modules&gt;${cursor}
+&lt;/modules&gt;</template>	
+
+<template 
+	context="jactr.modelContents" 
+	description="Specify parameters block"
+    icon="icons/full/basic/prop_ps.gif" 
+	id="org.jactr.eclipse.ui.templates.jactr.modelContents.parameters"
+	name="parameters">&lt;parameters&gt;
+&lt;parameter name="${name}" value="${value}"/&gt;
+&lt;/parameters&gt;</template>	
+
 </templates>

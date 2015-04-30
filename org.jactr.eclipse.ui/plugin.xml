@@ -180,6 +180,11 @@
       <contextType name="Conditional slots:jactr" class="org.jactr.eclipse.ui.editor.template.ACTRContextType" id="jactr.conditionals"/>
       <contextType name="Parameters:jactr" class="org.jactr.eclipse.ui.editor.template.ACTRContextType" id="jactr.parameters"/>
       <contextType name="Parameter:jactr" class="org.jactr.eclipse.ui.editor.template.ACTRContextType" id="jactr.parameter"/>
+      <contextType name="Modules:jactr" class="org.jactr.eclipse.ui.editor.template.ACTRContextType" id="jactr.modules"/>
+      <contextType name="Module:jactr" class="org.jactr.eclipse.ui.editor.template.ACTRContextType" id="jactr.module"/>
+      <contextType name="Extensions:jactr" class="org.jactr.eclipse.ui.editor.template.ACTRContextType" id="jactr.extensions"/>
+      <contextType name="Extension:jactr" class="org.jactr.eclipse.ui.editor.template.ACTRContextType" id="jactr.extension"/>
+      <contextType name="Model:jactr" class="org.jactr.eclipse.ui.editor.template.ACTRContextType" id="jactr.modelContents"/>
       
       
       <contextType name="RHS:lisp" class="org.jactr.eclipse.ui.editor.template.ACTRContextType" id="lisp.rhs"/>
@@ -254,6 +259,12 @@
              description="Archive run"
              id="org.jactr.eclipse.ui.command.archive"
              name="Archive">
+       </command>
+       <command
+             defaultHandler="org.jactr.eclipse.ui.commands.UseTools"
+             description="Use Tools"
+             id="org.jactr.eclipse.ui.command.useTools"
+             name="UseTools">
        </command>
        <command
              categoryId="org.eclipse.ui.category.textEditor"
@@ -331,6 +342,25 @@
                 </iterate>
              </visibleWhen>
           </command>
+          
+          <command
+                commandId="org.jactr.eclipse.ui.command.useTools"
+                icon="icons/full/basic/library.gif"
+                id="org.jactr.eclipse.ui.menu.useTools"
+                label="Use Tools"
+                style="push"
+                tooltip="Select what tools to use in your jACT-R project">
+             <visibleWhen
+                      checkEnabled="false">
+                      <iterate
+                            ifEmpty="false">
+                         <adapt
+                               type="org.eclipse.core.resources.IProject">
+                         </adapt>
+                      </iterate>
+                </visibleWhen>
+          </command>
+          
           </menu>
        </menuContribution>
        <!-- package nav -->

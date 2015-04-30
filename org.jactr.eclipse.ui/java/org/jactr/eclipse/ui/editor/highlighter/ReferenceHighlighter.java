@@ -130,8 +130,8 @@ public class ReferenceHighlighter
 
     try
     {
-    ((IAnnotationModelExtension) _editor.getAnnotationModel())
-        .replaceAnnotations(_lastAnnotations, Collections.EMPTY_MAP);
+      ((IAnnotationModelExtension) _editor.getAnnotationModel())
+          .replaceAnnotations(_lastAnnotations, Collections.EMPTY_MAP);
     }
     catch (Exception e)
     {
@@ -306,8 +306,8 @@ public class ReferenceHighlighter
         HighlightAnnotations.CHUNK_ID, _editor.getBase());
 
     map.putAll(highlightNamable(modelDescriptor, chunkName, -1,
-        JACTRBuilder.IDENTIFIER, HighlightAnnotations.CHUNK_ID, _editor
-            .getBase()));
+        JACTRBuilder.IDENTIFIER, HighlightAnnotations.CHUNK_ID,
+        _editor.getBase()));
 
     return map;
   }
@@ -321,8 +321,8 @@ public class ReferenceHighlighter
         _editor.getBase());
 
     map.putAll(highlightNamable(modelDescriptor, chunkTypeName, -1,
-        JACTRBuilder.PARENT, HighlightAnnotations.CHUNK_TYPE_ID, _editor
-            .getBase()));
+        JACTRBuilder.PARENT, HighlightAnnotations.CHUNK_TYPE_ID,
+        _editor.getBase()));
 
     return map;
   }

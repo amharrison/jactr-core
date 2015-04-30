@@ -33,7 +33,13 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.ui.ide.IDE;
+import org.jactr.eclipse.core.bundles.registry.InstrumentRegistry;
+import org.jactr.eclipse.core.bundles.registry.ModuleRegistry;
+import org.jactr.eclipse.core.bundles.registry.SensorRegistry;
 import org.jactr.eclipse.ui.UIPlugin;
+import org.jactr.eclipse.ui.wizards.pages.CommonExtensionDescriptorLabelProvider;
+import org.jactr.eclipse.ui.wizards.pages.CommonExtensionWizardPage;
+import org.jactr.eclipse.ui.wizards.pages.ToolsExplanationWizardPage;
 import org.jactr.eclipse.ui.wizards.templates.ModuleWizard;
 
 /**
@@ -51,15 +57,17 @@ public class NewACTRProjectWizard extends Wizard implements INewWizard
    * Logger definition
    */
 
-  static private final transient Log   LOGGER = LogFactory
-                                                  .getLog(NewACTRProjectWizard.class);
+  static private final transient Log            LOGGER       = LogFactory
+                                                                 .getLog(NewACTRProjectWizard.class);
 
-  static public final String           ID     = NewACTRProjectWizard.class
-                                                  .getName();
+  static public final String                    ID           = NewACTRProjectWizard.class
+                                                                 .getName();
 
-  private WizardNewProjectCreationPage mainPage;
+  private WizardNewProjectCreationPage          mainPage;
 
-  private ACTRWizardSelectionPage      wizardPage;
+  private ACTRWizardSelectionPage               wizardPage;
+
+  private Collection<CommonExtensionWizardPage> _commonPages = new ArrayList<CommonExtensionWizardPage>();
 
   /**
    * Constructor for SampleNewWizard.
@@ -78,14 +86,54 @@ public class NewACTRProjectWizard extends Wizard implements INewWizard
   public void addPages()
   {
     mainPage = new WizardNewProjectCreationPage("ACT-R Project");
-    mainPage.setDescription("Provide a unique name for the project");
+    mainPage.setInitialProjectName("edu.your.institution.lab.project");
+    mainPage
+        .setDescription("Provide a unique name for the project, preferably using the java reverse URL convention.");
     addPage(mainPage);
+
+    addPage(new ToolsExplanationWizardPage(
+        "toolsExp",
+        "Library of Tools",
+        "On the following pages you will select what tools you'd like your project to use.\n You can always change your mind later.",
+        "jACT-R uses modular bundles of code to contribute or change your model's behavior.\n You need to select those tools in order to use them."
+            + "\nThis is a convenience to avoid having to directly edit your projects dependencies."));
+
+    CommonExtensionWizardPage inst = new CommonExtensionWizardPage(
+        () -> ModuleRegistry.getRegistry().getAllDescriptors(),
+        new CommonExtensionDescriptorLabelProvider(), "module", "Modules",
+        "Select modules you'd like to use in your project.");
+    addPage(inst);
+    _commonPages.add(inst);
+
+    inst = new CommonExtensionWizardPage(
+        () -> org.jactr.eclipse.core.bundles.registry.ExtensionRegistry
+            .getRegistry().getAllDescriptors(),
+        new CommonExtensionDescriptorLabelProvider(), "ext", "Extensions",
+        "Select runtime extensions that you'd like to use in your project.");
+    addPage(inst);
+    _commonPages.add(inst);
+
+    inst = new CommonExtensionWizardPage(
+        () -> SensorRegistry.getRegistry().getAllDescriptors(),
+        new CommonExtensionDescriptorLabelProvider(),
+        "sensor",
+        "Interfaces",
+        "Select sensors/interfaces with CommonReality that you'd like to use in your project.");
+    addPage(inst);
+    _commonPages.add(inst);
+
+    inst = new CommonExtensionWizardPage(() -> InstrumentRegistry.getRegistry()
+        .getAllDescriptors(), new CommonExtensionDescriptorLabelProvider(),
+        "inst", "Instruments",
+        "Select instruments you'd like to use in your project.");
+    addPage(inst);
+    _commonPages.add(inst);
 
     Collection<IWizardNode> wizards = createTemplateWizards();
 
     wizardPage = new ACTRWizardSelectionPage("ACT-R Selection", wizards);
     wizardPage
-        .setDescription("Select code generating wizard for further customization");
+        .setDescription("Optionally, you can select code generating wizard for further customization, or just Finish.");
     addPage(wizardPage);
 
   }
@@ -108,7 +156,8 @@ public class NewACTRProjectWizard extends Wizard implements INewWizard
       IConfigurationElement[] configs = extension.getConfigurationElements();
       // looking for wizard
       for (IConfigurationElement element : configs)
-        if (element.getName().equals("wizard")) // category :
+        if (element.getName().equals("wizard"))
+          // category :
           // org.jactr.project.wizard
           if (element.getAttribute("category") != null
               && element.getAttribute("category").equals(
@@ -198,8 +247,12 @@ public class NewACTRProjectWizard extends Wizard implements INewWizard
       IPluginContentWizard wizard = wizardPage.getSelectedWizard();
       if (wizard == null) wizard = new ModuleWizard();
 
-      getContainer().run(false, false,
-          new NewProjectCreationOperation(pluginData, provider, wizard));
+      getContainer().run(
+          false,
+          false,
+          new NewProjectCreationOperation(pluginData, provider, wizard,
+              _commonPages));
+
     }
     catch (InterruptedException e)
     {
@@ -224,13 +277,17 @@ public class NewACTRProjectWizard extends Wizard implements INewWizard
   static public class NewProjectCreationOperation extends
       org.eclipse.pde.internal.ui.wizards.plugin.NewProjectCreationOperation
   {
-    private final IProject _project;
+    private final IProject                              _project;
+
+    private final Collection<CommonExtensionWizardPage> _commonPages;
 
     public NewProjectCreationOperation(IFieldData data,
-        IProjectProvider provider, IPluginContentWizard contentWizard)
+        IProjectProvider provider, IPluginContentWizard contentWizard,
+        Collection<CommonExtensionWizardPage> commonPages)
     {
       super(data, provider, contentWizard);
       _project = provider.getProject();
+      _commonPages = commonPages;
     }
 
     @Override
@@ -240,8 +297,10 @@ public class NewACTRProjectWizard extends Wizard implements INewWizard
 
       super.execute(monitor);
 
+
+
       /*
-       * this automatically opens manifest, I want to close it..
+       * the above automatically opens manifest, I want to close it..
        */
       final IWorkbenchWindow ww = PlatformUI.getWorkbench()
           .getActiveWorkbenchWindow();
@@ -252,14 +311,22 @@ public class NewACTRProjectWizard extends Wizard implements INewWizard
           if (page != null)
             try
             {
-              IEditorPart part = IDE.openEditor(page, _project
-                  .getFile("META-INF/MANIFEST.MF"), true);
+              IEditorPart part = IDE.openEditor(page,
+                  _project.getFile("META-INF/MANIFEST.MF"), true);
               if (part != null) page.closeEditor(part, false);
+
             }
             catch (Exception e)
             {
 
             }
+
+          /*
+           * make sure everyone is closed.. This is done here, otherwise we can
+           * get some weird unmodifiable messages.
+           */
+          for (CommonExtensionWizardPage extPage : _commonPages)
+            extPage.ensureDependencies(_project);
         }
       });
     }
