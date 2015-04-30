@@ -40,7 +40,6 @@ public class BundleTools extends Plugin
   {
     super();
     _defaultInstance = this;
-    
   }
 
   public BundleContext getBundleContext()
@@ -80,7 +79,7 @@ public class BundleTools extends Plugin
 
   static public void log(IStatus status)
   {
-    getDefault().getLog().log(status);
+    BundlesActivator.getDefault().getLog().log(status);
   }
 
   static public void log(int level, int code, String message, Throwable thrown)

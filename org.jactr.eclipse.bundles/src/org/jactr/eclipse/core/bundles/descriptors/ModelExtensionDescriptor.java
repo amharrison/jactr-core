@@ -23,15 +23,12 @@ public class ModelExtensionDescriptor extends CommonExtensionDescriptor
     super(descriptor);
   }
 
-  @Override
-  public String getDescription()
+  public ModelExtensionDescriptor(String contributor, String name,
+      String className, String desc)
   {
-    IConfigurationElement[] elements = getConfigurationElement().getChildren("description");
-    StringBuilder sb = new StringBuilder();
-    for(IConfigurationElement element : elements)
-      sb.append(element.getValue()).append("\n");
-    return sb.toString();
+    super("org.jactr.extensions", contributor, name, className, desc);
   }
+
 }
 
 

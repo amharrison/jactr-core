@@ -95,7 +95,8 @@ public abstract class AbstractExtensionPointRegistry<T extends ExtensionDescript
   public Collection<T> getDescriptors(IProject project,
       boolean includeRequirements)
   {
-    return getDescriptors(PluginRegistry.findModel(project), false);
+    return getDescriptors(PluginRegistry.findModel(project),
+        includeRequirements);
   }
 
   /**
