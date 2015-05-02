@@ -34,10 +34,10 @@ public class ProbePreferencePage extends FieldEditorPreferencePage implements
 
     IntegerFieldEditor iField = new IntegerFieldEditor(
         RuntimePreferences.PROBE_RUNTIME_DATA_WINDOW,
-        "Seconds of data to retain",
+        "Seconds of data to retain (memory intensive)",
         getFieldEditorParent());
     iField.setTextLimit(5);
-    iField.setValidRange(1, 60);
+    iField.setValidRange(1, 600);
     iField.setEmptyStringAllowed(false);
     addField(iField);
 

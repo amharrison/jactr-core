@@ -34,10 +34,11 @@ public class LogPreferencePage extends FieldEditorPreferencePage implements
     addField(new LabelFieldEditor("Logging", getFieldEditorParent()));
 
     IntegerFieldEditor iField = new IntegerFieldEditor(
-        RuntimePreferences.RUNTIME_DATA_WINDOW, "Seconds of data to retain",
+        RuntimePreferences.RUNTIME_DATA_WINDOW,
+        "Seconds of data to retain (memory intensive)",
         getFieldEditorParent());
     iField.setTextLimit(5);
-    iField.setValidRange(1, 60);
+    iField.setValidRange(1, 600);
     iField.setEmptyStringAllowed(false);
     addField(iField);
 
