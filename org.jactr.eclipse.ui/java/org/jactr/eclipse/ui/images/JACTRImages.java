@@ -174,6 +174,7 @@ public class JACTRImages
     declareRegistryImage(CLOSE, BASIC + "close.gif");
     declareRegistryImage(SUSPEND, BASIC+"suspend.gif");
     declareRegistryImage(RESUME, BASIC + "resume.gif");
+
   }
 
   /**

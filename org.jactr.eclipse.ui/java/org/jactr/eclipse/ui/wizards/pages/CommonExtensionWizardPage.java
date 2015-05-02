@@ -5,6 +5,7 @@ package org.jactr.eclipse.ui.wizards.pages;
  */
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -21,6 +22,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.swt.SWT;
@@ -85,6 +87,33 @@ public class CommonExtensionWizardPage extends WizardPage
             descriptorSelected(getSelectedDescriptor());
           }
         });
+    // _descriptorList.setComparator(new ViewerComparator(
+    // new Comparator<CommonExtensionDescriptor>() {
+    //
+    // @Override
+    // public int compare(CommonExtensionDescriptor o1,
+    // CommonExtensionDescriptor o2)
+    // {
+    // /*
+    // * comparing by name
+    // */
+    // String name1 = o1.getName();
+    // String name2 = o2.getName();
+    // return name1.compareTo(name2);
+    // }
+    // }));
+    _descriptorList.setComparator(new ViewerComparator(
+        new Comparator<String>() {
+
+          @Override
+          public int compare(String o1, String o2)
+          {
+            /*
+             * comparing by name
+             */
+            return o1.compareTo(o2);
+          }
+        }));
 
     _descriptorList.addCheckStateListener(new ICheckStateListener() {
 

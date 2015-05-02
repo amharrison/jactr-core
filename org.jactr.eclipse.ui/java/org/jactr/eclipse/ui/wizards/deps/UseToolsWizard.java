@@ -5,6 +5,8 @@ package org.jactr.eclipse.ui.wizards.deps;
  */
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,6 +17,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
+import org.jactr.eclipse.core.bundles.descriptors.CommonExtensionDescriptor;
 import org.jactr.eclipse.core.bundles.registry.InstrumentRegistry;
 import org.jactr.eclipse.core.bundles.registry.ModuleRegistry;
 import org.jactr.eclipse.core.bundles.registry.SensorRegistry;
@@ -52,36 +55,82 @@ public class UseToolsWizard extends Wizard implements IWorkbenchWizard
         "jACT-R uses modular bundles of code to contribute or change your model's behavior.\nYou need to select those tools in order to use them."
             + "\nThis is a convenience to avoid having to directly edit your projects dependencies."));
 
+    // modules
+    Function<IProject, Collection<? extends CommonExtensionDescriptor>> mSupplier = (
+        p) -> ModuleRegistry.getRegistry().getDescriptors(p);
+    Predicate<CommonExtensionDescriptor> installed = (ced) -> isInstalled(ced,
+        mSupplier);
+    Function<CommonExtensionDescriptor, String> decorator = (ced) -> isInstalled(
+        ced, mSupplier) ? "(available)" : "";
+    CommonExtensionDescriptorLabelProvider labelProvider = new CommonExtensionDescriptorLabelProvider(
+        null, installed, decorator);
+
     CommonExtensionWizardPage inst = new CommonExtensionWizardPage(
-        () -> ModuleRegistry.getRegistry().getAllDescriptors(),
-        new CommonExtensionDescriptorLabelProvider(), "module", "Modules",
+        () -> ModuleRegistry.getRegistry().getAllDescriptors(), labelProvider,
+        "module", "Modules",
         "Select modules you'd like to use in your project.");
     addPage(inst);
     _commonPages.add(inst);
 
+    // extensions
+    Function<IProject, Collection<? extends CommonExtensionDescriptor>> eSupplier = (
+        p) -> org.jactr.eclipse.core.bundles.registry.ExtensionRegistry
+        .getRegistry().getDescriptors(p);
+    installed = (ced) -> isInstalled(ced, eSupplier);
+    decorator = (ced) -> isInstalled(ced, eSupplier) ? "(available)" : "";
+    labelProvider = new CommonExtensionDescriptorLabelProvider(null, installed,
+        decorator);
+
     inst = new CommonExtensionWizardPage(
         () -> org.jactr.eclipse.core.bundles.registry.ExtensionRegistry
-            .getRegistry().getAllDescriptors(),
-        new CommonExtensionDescriptorLabelProvider(), "ext", "Extensions",
+            .getRegistry().getAllDescriptors(), labelProvider, "ext",
+        "Extensions",
         "Select runtime extensions that you'd like to use in your project.");
     addPage(inst);
     _commonPages.add(inst);
 
+    // sensors
+    Function<IProject, Collection<? extends CommonExtensionDescriptor>> sSupplier = (
+        p) -> SensorRegistry.getRegistry().getDescriptors(p);
+    installed = (ced) -> isInstalled(ced, sSupplier);
+    decorator = (ced) -> isInstalled(ced, sSupplier) ? "(available)" : "";
+    labelProvider = new CommonExtensionDescriptorLabelProvider(null, installed,
+        decorator);
+
     inst = new CommonExtensionWizardPage(
         () -> SensorRegistry.getRegistry().getAllDescriptors(),
-        new CommonExtensionDescriptorLabelProvider(),
+        labelProvider,
         "sensor",
         "Interfaces",
         "Select sensors/interfaces with CommonReality that you'd like to use in your project.");
     addPage(inst);
     _commonPages.add(inst);
 
+    // instruments
+    Function<IProject, Collection<? extends CommonExtensionDescriptor>> iSupplier = (
+        p) -> InstrumentRegistry.getRegistry().getDescriptors(p);
+    installed = (ced) -> isInstalled(ced, iSupplier);
+    decorator = (ced) -> isInstalled(ced, iSupplier) ? "(available)" : "";
+    labelProvider = new CommonExtensionDescriptorLabelProvider(null, installed,
+        decorator);
     inst = new CommonExtensionWizardPage(() -> InstrumentRegistry.getRegistry()
-        .getAllDescriptors(), new CommonExtensionDescriptorLabelProvider(),
+        .getAllDescriptors(), labelProvider,
         "inst", "Instruments",
         "Select instruments you'd like to use in your project.");
     addPage(inst);
     _commonPages.add(inst);
+  }
+
+  protected boolean isInstalled(
+      CommonExtensionDescriptor ced,
+      Function<IProject, Collection<? extends CommonExtensionDescriptor>> dependentExtension)
+  {
+    if (_project == null) return false;
+
+    for (CommonExtensionDescriptor installed : dependentExtension
+        .apply(_project))
+      if (installed.getClassName().equals(ced.getClassName())) return true;
+    return false;
   }
 
   public void init(IWorkbench workbench, IStructuredSelection selection)
@@ -93,14 +142,12 @@ public class UseToolsWizard extends Wizard implements IWorkbenchWizard
       IResource resource = (IResource) obj;
       _project = resource.getProject();
     }
-    else
-    if (obj instanceof IProject) _project = (IProject) obj;
-    else
-      if(obj instanceof IAdaptable)
+    else if (obj instanceof IProject)
+      _project = (IProject) obj;
+    else if (obj instanceof IAdaptable)
       _project = (IProject) ((IAdaptable) obj).getAdapter(IProject.class);
-    
-    
-    if(_project==null)
+
+    if (_project == null)
       LOGGER.error("I have no idea how to get a project out of this!! "
           + obj.getClass().getName());
 
