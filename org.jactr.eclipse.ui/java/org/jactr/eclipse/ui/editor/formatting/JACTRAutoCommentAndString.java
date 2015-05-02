@@ -80,7 +80,10 @@ public class JACTRAutoCommentAndString implements IAutoEditStrategy
         if (command.text.equals("!")
             && document.getChar(command.offset - 1) == '<')
         {
-          command.text = "!--  --";
+          if (_closeCarret)
+            command.text = "!--  --";
+          else
+            command.text = "!--  -->";
           command.caretOffset = command.offset + 4;
           command.shiftsCaret = false;
         }
