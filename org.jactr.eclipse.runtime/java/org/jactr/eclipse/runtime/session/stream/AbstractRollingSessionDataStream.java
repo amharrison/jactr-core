@@ -6,35 +6,50 @@ package org.jactr.eclipse.runtime.session.stream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.ListIterator;
 import java.util.concurrent.Executor;
-
-import javolution.util.FastList;
+import java.util.stream.Stream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jactr.eclipse.runtime.session.data.ISessionData;
 import org.jactr.eclipse.runtime.trace.impl.GeneralEventManager;
 
+/**
+ * Abstract data stream that assumes temporally increasing insertion times. The
+ * stream accepts some input I, creating
+ * 
+ * @author harrison
+ * @param <I>
+ * @param <T>
+ */
 public abstract class AbstractRollingSessionDataStream<I, T> extends
     AbstractSessionDataStream<T> implements ILiveSessionDataStream<T>
 {
   /**
    * Logger definition
    */
-  static private final transient Log                                               LOGGER = LogFactory
-                                                                                              .getLog(AbstractRollingSessionDataStream.class);
+  static private final transient Log                                               LOGGER    = LogFactory
+                                                                                                 .getLog(AbstractRollingSessionDataStream.class);
 
-  protected final TreeMap<Double, Collection<T>>                                   _data;
+  // protected final TreeMap<Double, Collection<T>> _data;
 
-  private final double                                                             _windowSize;
+  // private final double _windowSize;
 
-  private final double                                                             _maxWindowSize;
+  // private final double _maxWindowSize;
+
+  protected final List<TimedData<T>>                                               _data;
+
+  private final int                                                                _hardCapacityLimit;
+
+  private final int                                                                _softCapacityLimit;
 
   private T                                                                        _lastData;
+
+  private TimedData<T>                                                             _lastTimedData;
+
+  private double                                                                   _lastTime = Double.MIN_VALUE;
 
   protected final GeneralEventManager<ILiveSessionDataStreamListener<T>, Object[]> _eventManager;
 
@@ -42,10 +57,16 @@ public abstract class AbstractRollingSessionDataStream<I, T> extends
       ISessionData sessionData, double windowSize)
   {
     super(streamName, sessionData);
-    _windowSize = windowSize;
-    _maxWindowSize = _windowSize * 1.2;
+    // _windowSize = windowSize;
+    // _maxWindowSize = _windowSize * 1.2;
 
-    _data = new TreeMap<Double, Collection<T>>();
+    _softCapacityLimit = (int) (windowSize * 20); // tmp assumption of 50ms
+    _hardCapacityLimit = (int) (1.2 * windowSize * 20);
+
+    // _data = new TreeMap<Double, Collection<T>>();
+    _data = new ArrayList<TimedData<T>>(_hardCapacityLimit + 1); // so we don't
+                                                                 // allocate
+                                                                 // anymore
 
     _eventManager = new GeneralEventManager<ILiveSessionDataStreamListener<T>, Object[]>(
         new GeneralEventManager.INotifier<ILiveSessionDataStreamListener<T>, Object[]>() {
@@ -77,6 +98,8 @@ public abstract class AbstractRollingSessionDataStream<I, T> extends
     {
       _data.clear();
       _lastData = null;
+      _lastTime = Double.MIN_VALUE;
+      _lastTimedData = null;
     }
   }
 
@@ -90,8 +113,26 @@ public abstract class AbstractRollingSessionDataStream<I, T> extends
   {
     synchronized (_data)
     {
-      return _data.subMap(startTime, true, endTime, true).size();
+      return ranged(startTime, endTime, true).count();
     }
+  }
+
+  /**
+   * assuming within a synch
+   * 
+   * @param startTime
+   * @param endTime
+   * @return
+   */
+  private Stream<TimedData<T>> ranged(double startTime, double endTime,
+      boolean inclusive)
+  {
+    if (inclusive)
+      return _data.stream().filter(
+          (td) -> td.getTime() >= startTime && td.getTime() <= endTime);
+
+    return _data.stream().filter(
+        (td) -> td.getTime() >= startTime && td.getTime() < endTime);
   }
 
   /**
@@ -101,13 +142,14 @@ public abstract class AbstractRollingSessionDataStream<I, T> extends
       Collection<T> container)
   {
     if (container == null) container = new ArrayList<T>();
+    final Collection<T> fContainer = container;
+
     synchronized (_data)
     {
-      for (Collection<T> data : _data.subMap(startTime, true, endTime, true)
-          .values())
-        container.addAll(data);
+      ranged(startTime, endTime, true).forEach(
+          (td) -> fContainer.addAll(td.getData()));
     }
-    return container;
+    return fContainer;
   }
 
   public Collection<T> getLatestData(double endTime, Collection<T> container)
@@ -115,8 +157,19 @@ public abstract class AbstractRollingSessionDataStream<I, T> extends
     if (container == null) container = new ArrayList<T>();
     synchronized (_data)
     {
-      Double key = _data.floorKey(endTime);
-      if (key != null) container.addAll(_data.get(key));
+      // greates that is less than or equal endTime
+      ListIterator<TimedData<T>> itr = _data.listIterator(_data.size());
+      while (itr.hasPrevious())
+      {
+        TimedData<T> td = itr.previous();
+        double refTime = td.getTime();
+        if (refTime <= endTime)
+        {
+          container.addAll(td.getData());
+          break;
+        }
+      }
+
     }
     return container;
   }
@@ -125,8 +178,8 @@ public abstract class AbstractRollingSessionDataStream<I, T> extends
   {
     synchronized (_data)
     {
-      if (_data.size() == 0) return 0;
-      return _data.firstKey();
+      if (_data.size() > 0) return _data.get(0).getTime();
+      return 0;
     }
   }
 
@@ -134,8 +187,7 @@ public abstract class AbstractRollingSessionDataStream<I, T> extends
   {
     synchronized (_data)
     {
-      if (_data.size() == 0) return 0;
-      return _data.lastKey();
+      return _lastTime;
     }
   }
 
@@ -147,15 +199,12 @@ public abstract class AbstractRollingSessionDataStream<I, T> extends
 
     if (added.size() == 0) return;
 
-    double lastSampleTime = getTime(added.get(added.size() - 1));
-
-    Collection<T> removed = removeExpiredData(lastSampleTime);
+    Collection<T> removed = removeExpiredData();
 
     Collection<T> modified = getModifiedData();
 
     _eventManager.notify(new Object[] { added, modified, removed });
   }
-
 
   public void append(I data)
   {
@@ -186,20 +235,35 @@ public abstract class AbstractRollingSessionDataStream<I, T> extends
     for (I input : toAdd)
       for (T data : toOutputData(input))
       {
-        _lastData = data;
         sampleTime = getTime(data);
+        TimedData<T> timedData = null;
 
         synchronized (_data)
         {
-          Collection<T> container = _data.get(sampleTime);
-          if (container == null)
+          if (sampleTime > _lastTime || _lastTimedData == null)
           {
-            container = FastList.newInstance();
-            _data.put(sampleTime, container);
+            timedData = new TimedData<T>(sampleTime, data);
+            _lastTimedData = timedData;
+            _data.add(_lastTimedData);
           }
+          else
+            // assuming it's equal..
+            _lastTimedData.add(data);
 
-          container.add(data);
+          _lastData = data;
+          _lastTime = sampleTime;
+
           added.add(data);
+
+          // Collection<T> container = _data.get(sampleTime);
+          // if (container == null)
+          // {
+          // container = FastList.newInstance();
+          // _data.put(sampleTime, container);
+          // }
+          //
+          // container.add(data);
+          // added.add(data);
         }
       }
 
@@ -210,49 +274,60 @@ public abstract class AbstractRollingSessionDataStream<I, T> extends
 
   abstract protected Collection<T> toOutputData(I input);
 
-  protected Collection<T> removeExpiredData(double lastSampleTime)
+  protected Collection<T> removeExpiredData()
   {
     Collection<T> removed = Collections.EMPTY_LIST;
 
+    // synchronized (_data)
+    // {
+    // /*
+    // * we want to cull from firstKey to (firstKey + lastSampleTime -
+    // * _maxwindowSize)
+    // */
+    // double firstKey = _data.firstKey();
+    // double delta = lastSampleTime - firstKey;
+    // if (delta < _maxWindowSize) return removed;
+    //
+    // double endKey = firstKey + _maxWindowSize - _windowSize;
+    // removed = new ArrayList<T>();
+    //
+    // Iterator<Map.Entry<Double, Collection<T>>> itr = _data
+    // .headMap(endKey, false).entrySet().iterator();
+    //
+    // while (itr.hasNext())
+    // {
+    // /*
+    // * we just visit each entry once to remove, as opposed to doing a while
+    // * loop, as that will allow us to do partial removals as necessary.
+    // */
+    // Map.Entry<Double, Collection<T>> entry = itr.next();
+    //
+    // Collection<T> container = entry.getValue();
+    //
+    // removeSubset(entry.getKey(), endKey, container, removed);
+    //
+    // if (container.size() == 0)
+    // {
+    // itr.remove();
+    // FastList.recycle((FastList<T>) container);
+    // }
+    // }
+    //
+    // if (LOGGER.isDebugEnabled())
+    // LOGGER.debug(String.format(
+    // "Window(%.2f) exceeded(%.2f), culled %d records %s", _windowSize,
+    // lastSampleTime, removed.size(), removed));
+    // }
+
     synchronized (_data)
     {
-      /*
-       * we want to cull from firstKey to (firstKey + lastSampleTime -
-       * _maxwindowSize)
-       */
-      double firstKey = _data.firstKey();
-      double delta = lastSampleTime - firstKey;
-      if (delta < _maxWindowSize) return removed;
-
-      double endKey = firstKey + _maxWindowSize - _windowSize;
-      removed = new ArrayList<T>();
-
-      Iterator<Map.Entry<Double, Collection<T>>> itr = _data
-          .headMap(endKey, false).entrySet().iterator();
-
-      while (itr.hasNext())
-      {
-        /*
-         * we just visit each entry once to remove, as opposed to doing a while
-         * loop, as that will allow us to do partial removals as necessary.
-         */
-        Map.Entry<Double, Collection<T>> entry = itr.next();
-
-        Collection<T> container = entry.getValue();
-
-        removeSubset(entry.getKey(), endKey, container, removed);
-
-        if (container.size() == 0)
+      if (_data.size() >= _hardCapacityLimit)
+        while (_data.size() >= _softCapacityLimit)
         {
-          itr.remove();
-          FastList.recycle((FastList<T>) container);
+          if (removed.size() == 0)
+            removed = new ArrayList<T>(_hardCapacityLimit - _softCapacityLimit);
+          removed.addAll(_data.remove(0).getData());
         }
-      }
-
-      if (LOGGER.isDebugEnabled())
-        LOGGER.debug(String.format(
-            "Window(%.2f) exceeded(%.2f), culled %d records %s", _windowSize,
-            lastSampleTime, removed.size(), removed));
     }
 
     if (removed.size() > 0) removed(removed);
@@ -293,4 +368,33 @@ public abstract class AbstractRollingSessionDataStream<I, T> extends
 
   abstract protected double getTime(T data);
 
+  private class TimedData<T>
+  {
+    double        _time;
+
+    Collection<T> _data;
+
+    public TimedData(double time, T data)
+    {
+      _time = time;
+      _data = new ArrayList<T>(2); // bold assumption here.. not much colliding
+                                   // data..
+      _data.add(data);
+    }
+
+    public void add(T data)
+    {
+      _data.add(data);
+    }
+
+    public double getTime()
+    {
+      return _time;
+    }
+
+    public Collection<T> getData()
+    {
+      return _data;
+    }
+  }
 }

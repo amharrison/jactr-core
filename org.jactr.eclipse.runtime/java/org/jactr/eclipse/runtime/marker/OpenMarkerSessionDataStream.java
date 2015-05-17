@@ -102,7 +102,7 @@ public class OpenMarkerSessionDataStream extends
     else
     {
       _currentlyOpen.add(markerId);
-      lastData.add(markerId);
+      if (lastData != null) lastData.add(markerId);
     }
 
     return rtn;

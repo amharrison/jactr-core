@@ -19,11 +19,14 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,6 +62,7 @@ import org.jactr.eclipse.runtime.launching.ACTRLaunchConstants;
 import org.jactr.tools.async.common.MINAEndpoint;
 import org.jactr.tools.async.controller.RemoteInterface;
 import org.jactr.tools.async.iterative.listener.NetworkedIterativeRunListener;
+import org.jactr.tools.async.sync.SynchronizationManager;
 import org.jactr.tools.tracer.RuntimeTracer;
 import org.jactr.tools.tracer.listeners.ProceduralModuleTracer;
 import org.jactr.tools.tracer.sinks.NetworkedSink;
@@ -495,15 +499,57 @@ public class EnvironmentConfigurator
     }
   }
 
+  @SuppressWarnings("unchecked")
   static private void setupRuntimeTracers(PrintWriter pw, String credentials,
       String address, int port, String mode, boolean isIterative,
       ILaunchConfiguration config) throws CoreException
   {
-    boolean useTracer = !isIterative
-        || config.getAttribute(ACTRLaunchConstants.ATTR_RECORD_TRACE, false);
+    boolean isDebug = mode.equals(ILaunchManager.DEBUG_MODE);
 
-    if (useTracer)
+    boolean useNetworkSync = config.getAttribute(
+        ACTRLaunchConstants.ATTR_IDE_TRACE, false);
+    boolean useArchivalSync = config.getAttribute(
+        ACTRLaunchConstants.ATTR_RECORD_TRACE, false);
+
+    /*
+     * if iterative run, no sync is permitted - unless it is archival. iterative
+     * normal : only archival, if selected. iterative debug : only archival, if
+     * selected. normal : selected debug : +networked
+     */
+    if (isIterative)
+      useNetworkSync = false;
+    else
+      useNetworkSync ^= isDebug; // we force it on
+
+    // not using any? leave
+    if (!useArchivalSync && !useNetworkSync) return;
+
+    Map<String, Map<String, String>> traceListeners = new TreeMap<String, Map<String, String>>();
+    Collection<RuntimeTracerDescriptor> selectedTraceListeners = ACTRLaunchConfigurationUtils
+        .getRequiredTracers(config);
+
+    selectedTraceListeners.forEach((rtd) -> {
+      try
+      {
+        traceListeners.put(rtd.getClassName(), config.getAttribute(
+            ACTRLaunchConstants.ATTR_PARAMETERS + rtd.getClassName(),
+            Collections.EMPTY_MAP));
+      }
+      catch (Exception e)
+      {
+        LOGGER.error("EnvironmentConfigurator. threw Exception : ", e);
+      }
+    });
+
+    if (isDebug && !isIterative) // we must be using network sync..
+      traceListeners.put(ProceduralModuleTracer.class.getName(),
+          Collections.EMPTY_MAP);
+
+    if (traceListeners.size() > 0)
     {
+      /*
+       * now we actually do the writing. If there are
+       */
       pw.println("<!-- and this routes events like log and production firing over the network -->");
       pw.println(" <attachment class=\"" + RuntimeTracer.class.getName()
           + "\" attach=\"all\">");
@@ -512,65 +558,126 @@ public class EnvironmentConfigurator
       pw.println("   <parameter name=\"" + RuntimeTracer.EXECUTOR_PARAM
           + "\" value=\"Background\"/>");
 
-      /*
-       * normal runs almost always route to the IDE, but iterative runs never
-       * do. However, iterative runs are allowed to use the ArchivalSink
-       */
-      StringBuilder sinks = new StringBuilder();
-
-      if (!isIterative
-          && config.getAttribute(ACTRLaunchConstants.ATTR_IDE_TRACE, true))
-        sinks.append(NetworkedSink.class.getName()).append(",");
-
-      if (config.getAttribute(ACTRLaunchConstants.ATTR_RECORD_TRACE, false))
-        sinks.append(ArchivalSink.class.getName()).append(",");
-
-      sinks.delete(sinks.length() - 1, sinks.length());
+      Collection<String> sinks = new ArrayList<String>();
+      if (useArchivalSync) sinks.add(ArchivalSink.class.getName());
+      if (useNetworkSync) sinks.add(NetworkedSink.class.getName());
 
       pw.println("   <parameter name=\"" + RuntimeTracer.SINK_CLASS
-          + "\" value=\"" + sinks.toString() + "\"/>");
-
-      Collection<RuntimeTracerDescriptor> traceListeners = ACTRLaunchConfigurationUtils
-          .getRequiredTracers(config);
-      StringBuilder listeners = new StringBuilder();
-      boolean hasDebug = false;
-      for (RuntimeTracerDescriptor listener : traceListeners)
-      {
-        if (!hasDebug
-            && listener.getClassName().equals(
-                ProceduralModuleTracer.class.getName())) hasDebug = true;
-
-        listeners.append(listener.getClassName()).append(",");
-
-        Map<String, String> parameters = config.getAttribute(
-            ACTRLaunchConstants.ATTR_PARAMETERS + listener.getClassName(),
-            new TreeMap<String, String>());
-        if (parameters.size() > 0)
-        {
-          pw.println("<!-- params for " + listener.getClassName() + " -->");
-          for (Map.Entry<String, String> parameter : parameters.entrySet())
-            pw.println("   <parameter name=\"" + parameter.getKey()
-                + "\" value=\"" + parameter.getValue() + "\"/>");
-        }
-      }
-
-      // kill ','
-      if (listeners.length() != 0)
-        listeners.delete(listeners.length() - 1, listeners.length());
-
-      if (mode.equals(ILaunchManager.DEBUG_MODE) && !hasDebug)
-      {
-        if (listeners.length() != 0) listeners.append(",");
-        listeners.append(ProceduralModuleTracer.class.getName());
-      }
-
+          + "\" value=\"" + sinks.stream().collect(Collectors.joining(","))
+          + "\"/>");
       pw.println("   <parameter name=\"" + RuntimeTracer.LISTENERS
-          + "\" value=\"" + listeners + "\"/>");
+          + "\" value=\""
+          + traceListeners.keySet().stream().collect(Collectors.joining(","))
+          + "\"/>");
+
+      traceListeners.entrySet().forEach(
+          (e) -> {
+            Map<String, String> params = e.getValue();
+            if (params.size() > 0)
+            {
+              pw.println("<!-- parameters for " + e.getKey() + "-->");
+              params.entrySet().forEach(
+                  (pe) -> {
+                    pw.println("   <parameter name=\"" + pe.getKey()
+                        + "\" value=\"" + pe.getValue() + "\"/>");
+                  });
+            }
+          });
 
       pw.println("  </parameters>");
-
       pw.println(" </attachment>");
+
+      if (useNetworkSync)
+      {
+        /*
+         * auto install the synch manager..
+         */
+        pw.println("<!-- since we are connecting to the IDE, we'll auto install the sync tool -->");
+        pw.println(String.format("<attachment class=\"%s\" />",
+            SynchronizationManager.class.getName()));
+      }
     }
+
+    // /*
+    // * the uses of traces is more complex than the above. Tracers are used if
+    // we
+    // * are non-iterative debug (which gives us break point control). Tracers
+    // are
+    // * used there are requested tracers (from the run config), AND at least
+    // one
+    // * sync
+    // */
+    //
+    // if (useTracer)
+    // {
+    // pw.println("<!-- and this routes events like log and production firing over the network -->");
+    // pw.println(" <attachment class=\"" + RuntimeTracer.class.getName()
+    // + "\" attach=\"all\">");
+    //
+    // pw.println("  <parameters>");
+    // pw.println("   <parameter name=\"" + RuntimeTracer.EXECUTOR_PARAM
+    // + "\" value=\"Background\"/>");
+    //
+    // /*
+    // * normal runs almost always route to the IDE, but iterative runs never
+    // * do. However, iterative runs are allowed to use the ArchivalSink
+    // */
+    // StringBuilder sinks = new StringBuilder();
+    //
+    // if (!isIterative
+    // && config.getAttribute(ACTRLaunchConstants.ATTR_IDE_TRACE, true))
+    // sinks.append(NetworkedSink.class.getName()).append(",");
+    //
+    // if (config.getAttribute(ACTRLaunchConstants.ATTR_RECORD_TRACE, false))
+    // sinks.append(ArchivalSink.class.getName()).append(",");
+    //
+    // sinks.delete(sinks.length() - 1, sinks.length());
+    //
+    // pw.println("   <parameter name=\"" + RuntimeTracer.SINK_CLASS
+    // + "\" value=\"" + sinks.toString() + "\"/>");
+    //
+    // Collection<RuntimeTracerDescriptor> traceListeners =
+    // ACTRLaunchConfigurationUtils
+    // .getRequiredTracers(config);
+    // StringBuilder listeners = new StringBuilder();
+    // boolean hasDebug = false;
+    // for (RuntimeTracerDescriptor listener : traceListeners)
+    // {
+    // if (!hasDebug
+    // && listener.getClassName().equals(
+    // ProceduralModuleTracer.class.getName())) hasDebug = true;
+    //
+    // listeners.append(listener.getClassName()).append(",");
+    //
+    // Map<String, String> parameters = config.getAttribute(
+    // ACTRLaunchConstants.ATTR_PARAMETERS + listener.getClassName(),
+    // new TreeMap<String, String>());
+    // if (parameters.size() > 0)
+    // {
+    // pw.println("<!-- params for " + listener.getClassName() + " -->");
+    // for (Map.Entry<String, String> parameter : parameters.entrySet())
+    // pw.println("   <parameter name=\"" + parameter.getKey()
+    // + "\" value=\"" + parameter.getValue() + "\"/>");
+    // }
+    // }
+    //
+    // // kill ','
+    // if (listeners.length() != 0)
+    // listeners.delete(listeners.length() - 1, listeners.length());
+    //
+    // if (mode.equals(ILaunchManager.DEBUG_MODE) && !hasDebug)
+    // {
+    // if (listeners.length() != 0) listeners.append(",");
+    // listeners.append(ProceduralModuleTracer.class.getName());
+    // }
+    //
+    // pw.println("   <parameter name=\"" + RuntimeTracer.LISTENERS
+    // + "\" value=\"" + listeners + "\"/>");
+    //
+    // pw.println("  </parameters>");
+    //
+    // pw.println(" </attachment>");
+    // }
 
   }
 
@@ -579,30 +686,30 @@ public class EnvironmentConfigurator
       ILaunchConfiguration config) throws CoreException
   {
 
-    pw.println("<!-- this attachment sets up the network  communication and control -->");
-    pw.println(" <attachment class=\"" + RemoteInterface.class.getName()
-        + "\" attach=\"all\">");
-    pw.println("   <parameters>");
+      pw.println("<!-- this attachment sets up the network  communication and control -->");
+      pw.println(" <attachment class=\"" + RemoteInterface.class.getName()
+          + "\" attach=\"all\">");
+      pw.println("   <parameters>");
 
-    /*
-     * by default we always use this set up..
-     */
-    pw.println("     <parameter name=\"" + MINAEndpoint.TRANSPORT_CLASS
-        + "\" value=\"" + NIOTransportProvider.class.getName() + "\"/>");
-    pw.println("     <parameter name=\"" + MINAEndpoint.PROTOCOL_CLASS
-        + "\" value=\"" + SerializingProtocol.class.getName() + "\"/>");
-    pw.println("     <parameter name=\"" + MINAEndpoint.SERVICE_CLASS
-        + "\" value=\"" + ClientService.class.getName() + "\"/>");
-    pw.println("     <parameter name=\"" + MINAEndpoint.CREDENTAILS
-        + "\" value=\"" + credentials + "\"/>");
-    pw.println("     <parameter name=\"" + MINAEndpoint.ADDRESS + "\" value=\""
-        + address + ":" + port + "\"/>");
-    pw.println("     <parameter name=\"SendModelOnSuspend\" value=\"false\"/>");
-    // pw.println("     <parameter name=\"SendModelOnSuspend\" value=\""
-    // + mode.equals(ILaunchManager.DEBUG_MODE) + "\"/>");
+      /*
+       * by default we always use this set up..
+       */
+      pw.println("     <parameter name=\"" + MINAEndpoint.TRANSPORT_CLASS
+          + "\" value=\"" + NIOTransportProvider.class.getName() + "\"/>");
+      pw.println("     <parameter name=\"" + MINAEndpoint.PROTOCOL_CLASS
+          + "\" value=\"" + SerializingProtocol.class.getName() + "\"/>");
+      pw.println("     <parameter name=\"" + MINAEndpoint.SERVICE_CLASS
+          + "\" value=\"" + ClientService.class.getName() + "\"/>");
+      pw.println("     <parameter name=\"" + MINAEndpoint.CREDENTAILS
+          + "\" value=\"" + credentials + "\"/>");
+      pw.println("     <parameter name=\"" + MINAEndpoint.ADDRESS
+          + "\" value=\"" + address + ":" + port + "\"/>");
+      pw.println("     <parameter name=\"SendModelOnSuspend\" value=\"false\"/>");
+      // pw.println("     <parameter name=\"SendModelOnSuspend\" value=\""
+      // + mode.equals(ILaunchManager.DEBUG_MODE) + "\"/>");
 
-    pw.println("   </parameters>");
-    pw.println("</attachment>");
+      pw.println("   </parameters>");
+      pw.println("</attachment>");
 
     setupRuntimeTracers(pw, credentials, address, port, mode, false, config);
   }

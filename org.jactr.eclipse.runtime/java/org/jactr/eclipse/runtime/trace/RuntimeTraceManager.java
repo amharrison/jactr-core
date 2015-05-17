@@ -65,10 +65,6 @@ public class RuntimeTraceManager
   public void fireEvent(ITransformedEvent event, ISession session)
   {
     _eventManager.notify(new Event(event, session));
-
-    // if (LOGGER.isDebugEnabled())
-    // LOGGER.debug(String.format("(single) fired %s %.4f", event.getClass()
-    // .getSimpleName(), event.getSimulationTime()));
   }
 
   public void fireEvents(Collection<ITransformedEvent> events, ISession session)

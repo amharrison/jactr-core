@@ -27,7 +27,7 @@ public interface ISessionDataStream<T>
   public long getAmountOfDataAvailable(double startTime, double endTime);
 
   /**
-   * return all the available data for this time range
+   * return all the available data for this time range, inclusive
    * 
    * @param startTime
    * @param endTime
@@ -36,10 +36,27 @@ public interface ISessionDataStream<T>
   public Collection<T> getData(double startTime, double endTime,
       Collection<T> container);
 
+  /**
+   * get the lastest data that is less than or equal to endTime
+   * 
+   * @param endTime
+   * @param container
+   * @return
+   */
   public Collection<T> getLatestData(double endTime, Collection<T> container);
 
+  /**
+   * earliest available time
+   * 
+   * @return
+   */
   public double getStartTime();
 
+  /**
+   * latested availabel time
+   * 
+   * @return
+   */
   public double getEndTime();
 
   public void clear();
