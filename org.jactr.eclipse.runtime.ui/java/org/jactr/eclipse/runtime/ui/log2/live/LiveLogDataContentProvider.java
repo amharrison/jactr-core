@@ -28,7 +28,6 @@ import org.jactr.eclipse.runtime.log2.LogData;
 import org.jactr.eclipse.runtime.session.stream.ILiveSessionDataStream;
 import org.jactr.eclipse.runtime.session.stream.ILiveSessionDataStreamListener;
 import org.jactr.eclipse.ui.concurrent.QueueingUIJob;
-import org.jactr.eclipse.ui.concurrent.SWTExecutor;
 
 public class LiveLogDataContentProvider implements IStructuredContentProvider
 {
@@ -124,7 +123,8 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
       _logData = (ILogSessionDataStream) newInput;
       if (_logData instanceof ILiveSessionDataStream)
         ((ILiveSessionDataStream) _logData).addListener(_liveListener,
-            new SWTExecutor());
+        // new SWTExecutor()); //this may have been killing our performance..
+            null);
     }
     else /*
           * remove
@@ -241,9 +241,8 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
         TableColumn column = new TableColumn(table, SWT.LEFT);
         column.setText(stream);
         _knownColumns.add(stream);
-        for(ColumnListener listener: _columnListeners) {
-        	listener.added(column);
-        }
+        for(ColumnListener listener: _columnListeners)
+          listener.added(column);
       }
 
   }

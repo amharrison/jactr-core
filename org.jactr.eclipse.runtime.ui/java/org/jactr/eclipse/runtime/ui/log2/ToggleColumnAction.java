@@ -2,7 +2,6 @@ package org.jactr.eclipse.runtime.ui.log2;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -33,7 +32,12 @@ public class ToggleColumnAction extends Action implements IToggleColumnAction {
 		this.tables.add(table);
 		this.columns.add(column);
 		this.preferenceKey = PREFERENCE_COLUMN_VISIBILITY_PREFIX+"."+this.getClass().getName()+"."+column.getText();
-		this.lastWidth = column.getText().equals("TIME")?TIME_COLUMN_WIDTH:column.getWidth();
+    // this.lastWidth =
+    // column.getText().equals("TIME")?TIME_COLUMN_WIDTH:column.getWidth();
+    // I appreciate the frustration of resizing time all the time, but fixed is
+    // worse if you ever
+    // run longer..
+    this.lastWidth = column.getWidth();
 		column.addControlListener(new ControlAdapter() {
 			@Override
 			public void controlResized(ControlEvent e) {
@@ -46,17 +50,17 @@ public class ToggleColumnAction extends Action implements IToggleColumnAction {
 	
 	private void loadVisibility() {
 		String value = UIPlugin.getDefault().getPreferenceStore().getString(preferenceKey);
-		if(value == null || value.equals("")) {
-			// initialize the preference
+		if(value == null || value.equals(""))
+      // initialize the preference
 			UIPlugin.getDefault().getPreferenceStore().setValue(preferenceKey, "true");
-		} else if(value.equals("true")) {
+    else if(value.equals("true")) {
 			// fine
 		} else if(value.equals("false")) {
 			hideColumns();
 			super.setChecked(false);
-		} else {
-			throw new IllegalStateException("Invalid visibility preference for key="+preferenceKey+": "+value);
 		}
+    else
+      throw new IllegalStateException("Invalid visibility preference for key="+preferenceKey+": "+value);
 	}
 	
 	private void saveVisibilityPreference(boolean visibility) {
@@ -84,14 +88,10 @@ public class ToggleColumnAction extends Action implements IToggleColumnAction {
 	@Override
 	public void add(TableColumn column, Table table) {
 		columns.add(column);
-		if(!tables.contains(table)) {
-			tables.add(table);
-		}
-		if(isChecked()) {
-			showColumn(column);
-		} else {
-			hideColumn(column);
-		}
+		if(!tables.contains(table)) tables.add(table);
+		if(isChecked()) showColumn(column);
+    else
+      hideColumn(column);
 	}
 	
 	@Override
@@ -107,9 +107,9 @@ public class ToggleColumnAction extends Action implements IToggleColumnAction {
 			if(element.isDisposed()) {
 				System.err.println("Removing disposed element="+element);
 				iter.remove();
-			} else {
-				consumer.accept(element);
 			}
+      else
+        consumer.accept(element);
 		};
 	}
 	
@@ -127,7 +127,8 @@ public class ToggleColumnAction extends Action implements IToggleColumnAction {
 	}
 
 	private void showColumn(TableColumn column) {
-		column.setResizable(!column.getText().equals("TIME"));
+    // column.setResizable(!column.getText().equals("TIME"));
+    column.setResizable(true);
 		column.setWidth(lastWidth);
 	}
 
@@ -146,7 +147,8 @@ public class ToggleColumnAction extends Action implements IToggleColumnAction {
 		invokeForEachAndRemoveDisposed(tables, view::adjustColumnSizes);
 	}
 	
-	public String toString() {
+	@Override
+  public String toString() {
 		return "ToggleColumnAction(text="+getText()+" tables="+tables+" columns="+columns+")";
 	}
 
