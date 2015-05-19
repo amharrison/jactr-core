@@ -16,7 +16,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
@@ -43,7 +46,7 @@ import org.jactr.eclipse.runtime.ui.misc.AbstractRuntimeModelViewPart;
 import org.jactr.eclipse.runtime.ui.probe.components.AbstractProbeContainer;
 import org.jactr.eclipse.runtime.ui.probe.components.MarkerSupport;
 import org.jactr.eclipse.runtime.ui.probe.components.XYGraphProbeContainer;
-import org.jactr.eclipse.ui.concurrent.SWTExecutor;
+import org.jactr.eclipse.ui.concurrent.QueueingUIJob;
 import org.jactr.eclipse.ui.images.JACTRImages;
 
 public class ModelProbeView extends AbstractRuntimeModelViewPart
@@ -69,6 +72,8 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
   @SuppressWarnings("rawtypes")
   private final Map<ISessionData, AbstractProbeContainer> _installedContainers    = new HashMap<ISessionData, AbstractProbeContainer>();
 
+  private QueueingUIJob                                   _updater;
+
   public ModelProbeView()
   {
     /*
@@ -77,6 +82,19 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
     String os = System.getProperty("os.name");
     if (os.equalsIgnoreCase("mac os x")) _useAWT = true;
     _filteredProbes = new TreeMap<String, Set<String>>();
+
+    _updater = new QueueingUIJob("Log Populator") {
+
+      @Override
+      public IStatus runInUIThread(IProgressMonitor monitor)
+      {
+        LOGGER.warn("This should be calling the graph display update");
+        return Status.OK_STATUS;
+      }
+    };
+
+    // hide it from the user
+    _updater.setSystem(true);
   }
 
   @Override
@@ -344,7 +362,6 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
       if (LOGGER.isDebugEnabled())
         LOGGER.debug(String.format("Is a live stream, listening"));
 
-      final AbstractProbeContainer fContainer = container;
       ILiveSessionDataStreamListener<ModelProbeData> listener = new ILiveSessionDataStreamListener<ModelProbeData>() {
 
         public void dataChanged(ILiveSessionDataStream stream,
@@ -353,12 +370,17 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
             Collection<ModelProbeData> removed)
         {
           // this is how we update..
-          fContainer.refresh();
+          // fContainer.refresh();
+          /*
+           * instead of updating in this thread, we queue up a gui update..
+           */
+          // _updater.queue(MINIMUM_RESPONSIVENESS);
+          LOGGER.warn("probeview is not currently upating rendering correctly");
         }
 
       };
 
-      ((ILiveSessionDataStream) lsds).addListener(listener, new SWTExecutor());
+      ((ILiveSessionDataStream) lsds).addListener(listener, null);
 
       container.setData("liveSessionListener", listener);
       container.setData("sessionData", sessionData);
@@ -366,6 +388,7 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
 
     return container;
   }
+
 
   @Override
   protected void disposeModelComposite(String modelName, Object modelData,
