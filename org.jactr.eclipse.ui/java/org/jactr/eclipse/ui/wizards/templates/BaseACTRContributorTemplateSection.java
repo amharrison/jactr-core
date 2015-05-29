@@ -168,7 +168,11 @@ public abstract class BaseACTRContributorTemplateSection extends
      */
     rtn.add(new PluginReference("org.jactr.support", null, 0));
 
-    rtn.add(new PluginReference("org.commonreality", null, 0));
+    rtn.add(new PluginReference("org.commonreality.api", null, 0));
+    rtn.add(new PluginReference("org.commonreality.core", null, 0));
+    rtn.add(new PluginReference("org.commonreality.time", null, 0));
+    rtn.add(new PluginReference("org.commonreality.sensors", null, 0));
+    rtn.add(new PluginReference("org.commonreality.modalities", null, 0));
 
     rtn.add(new PluginReference("org.apache.log4j", null, 0));
     return rtn;
