@@ -161,7 +161,6 @@
 	<logger name="org.jactr.eclipse.runtime.ui.misc.AbstractRuntimeModelViewPart"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.probe2.StringTable"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.ui.probe.components"><level value="warn" /></logger>
-	<logger name="org.jactr.eclipse.ui.editor.assist"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.ui.probe.components"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.ui.log2.TableLabelProvider"><level value="debug" /></logger>
 	<logger name="org.jactr.eclipse.runtime.ui.probe.components.MarkerSupport"><level value="debug" /></logger>
@@ -178,8 +177,16 @@
 	
 	<logger name="org.jactr.eclipse.association.ui.model.ModelAssociations"><level value="debug" /></logger>	
 	<logger name="org.jactr.eclipse.association.ui.views.AssociationViewer"><level value="debug" /></logger>	
+	<logger name="org.jactr.eclipse.ui.editor.assist"><level value="debug" /></logger>
 	-->
 
+
+    <logger name="org.commonreality.netty"><level value="debug"/></logger>
+    <logger name="org.commonreality.net"><level value="debug"/></logger>
+	<logger name="org.jactr.tools.async.shadow.handlers">
+		<level value="debug" />
+	</logger>
+	
 	<root>
 		<level value="warn" />
 		<appender-ref ref="CONSOLE" />

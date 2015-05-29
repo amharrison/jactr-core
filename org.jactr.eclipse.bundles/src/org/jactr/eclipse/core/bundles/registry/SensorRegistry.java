@@ -43,7 +43,7 @@ public class SensorRegistry extends
 
   private SensorRegistry()
   {
-    super("org.commonreality.sensors");
+    super("org.commonreality.core.sensors");
   }
 
   @Override

@@ -53,6 +53,9 @@ public class InstrumentRegistry extends
     {
       String instrName = extPointElement.getAttribute("name").getValue();
       String instrClass = extPointElement.getAttribute("class").getValue();
+      boolean isHidden = Boolean.parseBoolean(extPointElement.getAttribute(
+          "hidden").getValue());
+
       StringBuilder instrDesc = new StringBuilder();
       Map<String, String> parameters = new TreeMap<String, String>();
       for (IPluginObject child : extPointElement.getChildren())
@@ -71,7 +74,7 @@ public class InstrumentRegistry extends
             + " class:" + instrClass + " desc:" + instrDesc + " props:"
             + parameters);
       return new InstrumentDescriptor(extPointElement.getPluginBase().getId(),
-          instrName, instrClass, instrDesc.toString(), parameters);
+          instrName, instrClass, instrDesc.toString(), parameters, isHidden);
     }
     else
       throw new IllegalArgumentException("Was expecting instrument tag, got "

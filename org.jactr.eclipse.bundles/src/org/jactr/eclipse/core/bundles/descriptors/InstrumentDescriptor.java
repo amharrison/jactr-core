@@ -22,20 +22,30 @@ public class InstrumentDescriptor extends CommonExtensionDescriptor
 {
 
   private Map<String,String> _parameters;
+
+  private boolean             _isHidden = false;
   
-  public InstrumentDescriptor(String contributor, String name, String className, String desc, Map<String,String> parameters)
+  public InstrumentDescriptor(String contributor, String name,
+      String className, String desc, Map<String, String> parameters,
+      boolean isHidden)
   {
     super("org.jactr.instruments",contributor,name,className,desc);
     _parameters = new TreeMap<String,String>(parameters);
+    _isHidden = isHidden;
   }
   
   public InstrumentDescriptor(IConfigurationElement descriptor)
   {
     super(descriptor);
     _parameters = new TreeMap<String,String>();
+    _isHidden = Boolean.parseBoolean(descriptor.getAttribute("hidden"));
   }
 
   
+  public boolean isHidden()
+  {
+    return _isHidden;
+  }
   
   public Map<String, String> getParameters()
   {
