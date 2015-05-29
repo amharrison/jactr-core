@@ -31,9 +31,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.commonreality.agents.DumbAgent;
-import org.commonreality.mina.protocol.SerializingProtocol;
-import org.commonreality.mina.service.ClientService;
-import org.commonreality.mina.transport.NIOTransportProvider;
+import org.commonreality.net.protocol.IProtocolConfiguration;
+import org.commonreality.net.provider.INetworkingProvider;
+import org.commonreality.net.transport.ITransportProvider;
 import org.commonreality.reality.impl.DefaultReality;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -42,7 +42,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
@@ -59,7 +61,8 @@ import org.jactr.eclipse.core.bundles.descriptors.SensorDescriptor;
 import org.jactr.eclipse.runtime.RuntimePlugin;
 import org.jactr.eclipse.runtime.launching.ACTRLaunchConfigurationUtils;
 import org.jactr.eclipse.runtime.launching.ACTRLaunchConstants;
-import org.jactr.tools.async.common.MINAEndpoint;
+import org.jactr.embed.EmbedConnector;
+import org.jactr.tools.async.common.NetworkedEndpoint;
 import org.jactr.tools.async.controller.RemoteInterface;
 import org.jactr.tools.async.iterative.listener.NetworkedIterativeRunListener;
 import org.jactr.tools.async.sync.SynchronizationManager;
@@ -74,8 +77,10 @@ public class EnvironmentConfigurator
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(EnvironmentConfigurator.class);
+  static private final transient Log LOGGER       = LogFactory
+                                                      .getLog(EnvironmentConfigurator.class);
+
+  static private final String        NET_PROVIDER = "org.commonreality.netty.NettyNetworkingProvider";
 
   static public IFile createRuntimeEnvironmentFile(ILaunchConfiguration config,
       String mode, IProgressMonitor monitor) throws CoreException
@@ -257,7 +262,7 @@ public class EnvironmentConfigurator
   }
 
   /**
-   * get the common reality sensor info
+   * get the common reality sensor info, but only if not using embed
    * 
    * @param configuration
    * @return
@@ -266,23 +271,27 @@ public class EnvironmentConfigurator
   static protected Map<SensorDescriptor, Map<String, String>> getSensorInfo(
       ILaunchConfiguration configuration) throws CoreException
   {
+    boolean usingEmbed = configuration.getAttribute(
+        ACTRLaunchConstants.ATTR_USE_EMBED_CONTROLLER, false);
     /*
      * now we snag all the reality interfaces
      */
     Map<SensorDescriptor, Map<String, String>> interfaces = new HashMap<SensorDescriptor, Map<String, String>>();
-    for (SensorDescriptor sensor : ACTRLaunchConfigurationUtils
-        .getRequiredSensors(configuration))
-    {
-      /*
-       * we need the parameters for the sensor
-       */
-      Map<String, String> parameters = new TreeMap<String, String>();
-      parameters = configuration.getAttribute(
-          ACTRLaunchConstants.ATTR_PARAMETERS + sensor.getClassName(),
-          parameters);
 
-      interfaces.put(sensor, parameters);
-    }
+    if (!usingEmbed)
+      for (SensorDescriptor sensor : ACTRLaunchConfigurationUtils
+          .getRequiredSensors(configuration))
+      {
+        /*
+         * we need the parameters for the sensor
+         */
+        Map<String, String> parameters = new TreeMap<String, String>();
+        parameters = configuration.getAttribute(
+            ACTRLaunchConstants.ATTR_PARAMETERS + sensor.getClassName(),
+            parameters);
+
+        interfaces.put(sensor, parameters);
+      }
     return interfaces;
   }
 
@@ -298,6 +307,9 @@ public class EnvironmentConfigurator
       throws CoreException
   {
 
+    String protocol = INetworkingProvider.NOOP_PROTOCOL;
+    String transport = INetworkingProvider.NOOP_TRANSPORT;
+
     if (interfaces.size() != 0)
     {
       pw.println("<!-- common reality configuration -->");
@@ -305,8 +317,9 @@ public class EnvironmentConfigurator
       pw.println("  <reality class=\"org.commonreality.reality.impl.DefaultReality\">");
       pw.println("    <!-- define all the connections -->");
       pw.println("    <services>");
-      pw.println("     <server transport=\"org.commonreality.mina.transport.LocalTransportProvider\" ");
-      pw.println("             protocol=\"org.commonreality.mina.protocol.NOOPProtocol\"");
+      pw.println(String.format("     <server provider=\"%s\"", NET_PROVIDER));
+      pw.println(String.format("             transport=\"%s\"", transport));
+      pw.println(String.format("             protocol=\"%s\"", protocol));
       pw.println("             address=\"4567\"/>");
       pw.println("    </services>");
       pw.println("    <!-- define the credentials necessary to connect -->");
@@ -351,8 +364,9 @@ public class EnvironmentConfigurator
         pw.println("  <sensor class=\"" + sensor.getClassName() + "\">");
         pw.println("    <credential value=\"" + sensor.getName() + ":1234\"/>");
         pw.println("    <services>");
-        pw.println("     <client transport=\"org.commonreality.mina.transport.LocalTransportProvider\" ");
-        pw.println("             protocol=\"org.commonreality.mina.protocol.NOOPProtocol\"");
+        pw.println(String.format("     <client provider=\"%s\"", NET_PROVIDER));
+        pw.println(String.format("             transport=\"%s\"", transport));
+        pw.println(String.format("             protocol=\"%s\"", protocol));
         pw.println("             address=\"4567\"/>");
         pw.println("    </services>");
         for (Map.Entry<String, String> entry : parameters.entrySet())
@@ -373,8 +387,9 @@ public class EnvironmentConfigurator
         pw.println("  <agent class=\"" + DumbAgent.class.getName() + "\">");
         pw.println("    <credential value=\"mockAgent:1234\"/>");
         pw.println("    <services>");
-        pw.println("     <client transport=\"org.commonreality.mina.transport.LocalTransportProvider\" ");
-        pw.println("             protocol=\"org.commonreality.mina.protocol.NOOPProtocol\"");
+        pw.println(String.format("     <client provider=\"%s\"", NET_PROVIDER));
+        pw.println(String.format("             transport=\"%s\"", transport));
+        pw.println(String.format("             protocol=\"%s\"", protocol));
         pw.println("             address=\"4567\"/>");
         pw.println("    </services>");
         pw.println("  </agent>");
@@ -386,8 +401,11 @@ public class EnvironmentConfigurator
             pw.println("  <agent class=\"" + ACTRAgent.class.getName() + "\">");
             pw.println("    <credential value=\"" + modelName + ":1234\"/>");
             pw.println("    <services>");
-            pw.println("     <client transport=\"org.commonreality.mina.transport.LocalTransportProvider\" ");
-            pw.println("             protocol=\"org.commonreality.mina.protocol.NOOPProtocol\"");
+            pw.println(String.format("     <client provider=\"%s\"",
+                NET_PROVIDER));
+            pw.println(String
+                .format("             transport=\"%s\"", transport));
+            pw.println(String.format("             protocol=\"%s\"", protocol));
             pw.println("             address=\"4567\"/>");
             pw.println("    </services>");
             pw.println("    <property name=\"ACTRAgent.ModelName\" value=\""
@@ -411,15 +429,19 @@ public class EnvironmentConfigurator
         + (useDebugController ? DebugController.class.getName()
             : DefaultController.class.getName()) + "\" />");
 
+    boolean useEmbed = configuration.getAttribute(
+        ACTRLaunchConstants.ATTR_USE_EMBED_CONTROLLER, false);
+
     /*
      * now we need to set up the connector
      */
+    String connector = LocalConnector.class.getName();
     pw.println("<!-- Connector specifies how we interface with common reality, if at all -->");
     if (needsCommonReality)
-      pw.println("<connector class=\"" + CommonRealityConnector.class.getName()
-          + "\"/>");
-    else
-      pw.println("<connector class=\"" + LocalConnector.class.getName()
+      connector = CommonRealityConnector.class.getName();
+    else if (useEmbed) connector = EmbedConnector.class.getName();
+
+    pw.println("<connector class=\"" + connector
           + "\"/>");
 
     /*
@@ -686,30 +708,58 @@ public class EnvironmentConfigurator
       ILaunchConfiguration config) throws CoreException
   {
 
-      pw.println("<!-- this attachment sets up the network  communication and control -->");
-      pw.println(" <attachment class=\"" + RemoteInterface.class.getName()
-          + "\" attach=\"all\">");
-      pw.println("   <parameters>");
+    INetworkingProvider provider = null;
+    try
+    {
+      provider = INetworkingProvider.getProvider(NET_PROVIDER);
+    }
+    catch (Exception e)
+    {
+      throw new CoreException(new Status(IStatus.ERROR,
+          RuntimePlugin.PLUGIN_ID, String.format(
+              "Failed to get networking provider %s", NET_PROVIDER), e));
+    }
 
-      /*
-       * by default we always use this set up..
-       */
-      pw.println("     <parameter name=\"" + MINAEndpoint.TRANSPORT_CLASS
-          + "\" value=\"" + NIOTransportProvider.class.getName() + "\"/>");
-      pw.println("     <parameter name=\"" + MINAEndpoint.PROTOCOL_CLASS
-          + "\" value=\"" + SerializingProtocol.class.getName() + "\"/>");
-      pw.println("     <parameter name=\"" + MINAEndpoint.SERVICE_CLASS
-          + "\" value=\"" + ClientService.class.getName() + "\"/>");
-      pw.println("     <parameter name=\"" + MINAEndpoint.CREDENTAILS
-          + "\" value=\"" + credentials + "\"/>");
-      pw.println("     <parameter name=\"" + MINAEndpoint.ADDRESS
-          + "\" value=\"" + address + ":" + port + "\"/>");
-      pw.println("     <parameter name=\"SendModelOnSuspend\" value=\"false\"/>");
-      // pw.println("     <parameter name=\"SendModelOnSuspend\" value=\""
-      // + mode.equals(ILaunchManager.DEBUG_MODE) + "\"/>");
+    pw.println("<!-- this attachment sets up the network  communication and control -->");
+    pw.println(" <attachment class=\"" + RemoteInterface.class.getName()
+        + "\" attach=\"all\">");
+    pw.println("   <parameters>");
 
-      pw.println("   </parameters>");
-      pw.println("</attachment>");
+    /*
+     * by default we always use this set up..
+     */
+    ITransportProvider transport = provider
+        .getTransport(INetworkingProvider.NIO_TRANSPORT);
+    pw.println(String.format("     <parameter name=\"%s\" value=\"%s\"/>",
+        NetworkedEndpoint.TRANSPORT_CLASS, transport.getClass().getName()));
+
+    IProtocolConfiguration proto = provider
+        .getProtocol(INetworkingProvider.SERIALIZED_PROTOCOL);
+    pw.println(String.format("     <parameter name=\"%s\" value=\"%s\"/>",
+        NetworkedEndpoint.PROTOCOL_CLASS, proto.getClass().getName()));
+
+    /*
+     * this newClient call might seem expensive the the services don't create
+     * state info until they are configured and started.
+     */
+    pw.println(String.format("     <parameter name=\"%s\" value=\"%s\"/>",
+        NetworkedEndpoint.SERVICE_CLASS, provider.newClient().getClass()
+            .getName()));
+
+    pw.println("     <parameter name=\"" + NetworkedEndpoint.CREDENTAILS
+        + "\" value=\"" + credentials + "\"/>");
+    pw.println("     <parameter name=\"" + NetworkedEndpoint.ADDRESS
+        + "\" value=\"" + address + ":" + port + "\"/>");
+    /*
+     * this is generally commented out because it is sooooo expensive.
+     */
+    pw.println("     <parameter name=\"SendModelOnSuspend\" value=\"false\"/>");
+
+    // pw.println("     <parameter name=\"SendModelOnSuspend\" value=\""
+    // + mode.equals(ILaunchManager.DEBUG_MODE) + "\"/>");
+
+    pw.println("   </parameters>");
+    pw.println("</attachment>");
 
     setupRuntimeTracers(pw, credentials, address, port, mode, false, config);
   }

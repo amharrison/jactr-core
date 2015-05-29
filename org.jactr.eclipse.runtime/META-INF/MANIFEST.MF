@@ -51,13 +51,14 @@ Require-Bundle: org.eclipse.debug.core,
  org.eclipse.pde.ui,
  org.eclipse.core.variables,
  org.jactr.eclipse.bundles,
- org.commonreality.mina,
  org.eclipse.debug.ui,
- org.commonreality,
  org.jactr.eclipse.execution,
  org.eclipse.core.filesystem,
- org.commonreality.mina.core,
- org.jactr.eclipse.ui;bundle-version="1.2.8"
+ org.jactr.eclipse.ui;bundle-version="1.2.8",
+ org.commonreality.net;bundle-version="1.0.0",
+ org.commonreality.netty;bundle-version="1.0.0",
+ org.commonreality.api;bundle-version="1.0.0",
+ org.commonreality.core;bundle-version="1.2.8"
 Bundle-ActivationPolicy: lazy
 Eclipse-RegisterBuddy: org.commonreality.mina.core, org.apache.log4j
 Plugin-Class: org.jactr.eclipse.runtime.RuntimePlugin

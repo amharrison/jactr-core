@@ -14,7 +14,7 @@ import java.util.concurrent.Executor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.commonreality.executor.InlineExecutor;
+import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.eclipse.runtime.launching.session.AbstractSession;
 import org.jactr.eclipse.runtime.session.ISession;
 import org.jactr.eclipse.runtime.session.ISessionListener;
@@ -135,7 +135,7 @@ public class SessionManager implements ISessionManager
     /*
      * add our own listener
      */
-    session.addListener(_sessionListener, InlineExecutor.get());
+    session.addListener(_sessionListener, ExecutorServices.INLINE_EXECUTOR);
 
     _eventManager.notify(new Object[] { Boolean.TRUE, session });
   }

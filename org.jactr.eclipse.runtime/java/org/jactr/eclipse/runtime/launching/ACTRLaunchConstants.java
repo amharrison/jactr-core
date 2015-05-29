@@ -23,6 +23,9 @@ import org.jactr.eclipse.core.builder.LaunchConfigurationCleaner;
 public class ACTRLaunchConstants
 {
 
+  /**
+   * used for CR runs, does it include a BS agent to send data to
+   */
   static public final String  INCLUDE_MOCK_AGENT              = "org.commonreality.runtime.launching.includeMockAgent";
 
   static private final String ACTR                            = "org.jactr.eclipse.runtime.launching.";
@@ -96,6 +99,8 @@ public class ACTRLaunchConstants
   static public final String  ATTR_MODEL_ALIASES              = ACTR
                                                                   + "aliasesFor.";
 
+  static public final String  ATTR_USE_EMBED_CONTROLLER       = ACTR
+                                                                  + "useEmbed";
   /**
    * 
    */

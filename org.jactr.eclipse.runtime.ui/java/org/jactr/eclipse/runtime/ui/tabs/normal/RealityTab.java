@@ -53,6 +53,8 @@ public class RealityTab extends CommonExtensionDescriptorTab
 
   private Button _disconnectButton;
 
+  private Button _useEmbed;
+
   public RealityTab()
   {
     setTabDescription("CommonReality interfaces allow you to plug in different perceptual/motor control bridges to other devices. These are required for P/M modules.");
@@ -75,6 +77,48 @@ public class RealityTab extends CommonExtensionDescriptorTab
         return element.toString();
       }
     };
+  }
+
+  /**
+   * to provide a checkbox for using embed connector
+   */
+  @Override
+  protected void createHeader(Composite container)
+  {
+    Composite group = new Composite(container, SWT.BORDER);
+    group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    group.setLayout(new GridLayout(3, false));
+
+    _useEmbed = new Button(group, SWT.CHECK);
+    GridData gd = new GridData();
+    gd.horizontalSpan = 1;
+    gd.horizontalAlignment = SWT.CENTER;
+    _useEmbed.setLayoutData(gd);
+
+    Label label = new Label(group, SWT.LEFT);
+    label.setText("Use embedded connector and ThinAgents for perception.");
+    gd = new GridData();
+    gd.horizontalSpan = 2;
+    gd.horizontalAlignment = SWT.BEGINNING;
+    gd.grabExcessHorizontalSpace = true;
+    label.setLayoutData(gd);
+
+    _useEmbed.addSelectionListener(new SelectionListener() {
+
+      public void widgetDefaultSelected(SelectionEvent e)
+      {
+        widgetSelected(e);
+      }
+
+      public void widgetSelected(SelectionEvent e)
+      {
+        dirty();
+        _descriptorList.getTable().setEnabled(!_useEmbed.getSelection());
+      }
+
+    });
+
+    createVerticalSpacer(container, 1);
   }
 
   @Override
@@ -130,6 +174,7 @@ public class RealityTab extends CommonExtensionDescriptorTab
   public void setDefaults(ILaunchConfigurationWorkingCopy config)
   {
     super.setDefaults(config);
+    config.setAttribute(ACTRLaunchConstants.ATTR_USE_EMBED_CONTROLLER, false);
     config.setAttribute(ACTRLaunchConstants.ATTR_COMMON_REALITY_ACK_TIME, 2000);
     config.setAttribute(ACTRLaunchConstants.ATTR_COMMON_REALITY_DISCONNECT,
         false);
@@ -146,6 +191,10 @@ public class RealityTab extends CommonExtensionDescriptorTab
               ACTRLaunchConstants.ATTR_COMMON_REALITY_ACK_TIME, 2000));
       _disconnectButton.setSelection(config.getAttribute(
           ACTRLaunchConstants.ATTR_COMMON_REALITY_DISCONNECT, false));
+      _useEmbed.setSelection(config.getAttribute(
+          ACTRLaunchConstants.ATTR_USE_EMBED_CONTROLLER, false));
+
+      _descriptorList.getTable().setEnabled(!_useEmbed.getSelection());
     }
     catch (CoreException ce)
     {
@@ -161,6 +210,8 @@ public class RealityTab extends CommonExtensionDescriptorTab
         Integer.parseInt(_timeoutText.getText()));
     config.setAttribute(ACTRLaunchConstants.ATTR_COMMON_REALITY_DISCONNECT,
         _disconnectButton.getSelection());
+    config.setAttribute(ACTRLaunchConstants.ATTR_USE_EMBED_CONTROLLER,
+        _useEmbed.getSelection());
   }
 
   @Override
@@ -220,17 +271,6 @@ public class RealityTab extends CommonExtensionDescriptorTab
     catch (Exception e)
     {
       return Collections.EMPTY_LIST;
-      // ArrayList<SensorDescriptor> descriptors = new
-      // ArrayList<SensorDescriptor>();
-      // Collection<SensorDescriptor> installed = SensorRegistry.getRegistry()
-      // .getAllDescriptors();
-      //
-      // String sensors = config.getAttribute(
-      // ACTRLaunchConstants.ATTR_COMMON_REALITY_SENSORS, "");
-      // for (String sensor : sensors.split(","))
-      // for (SensorDescriptor desc : installed)
-      // if (desc.getClassName().equals(sensor)) descriptors.add(desc);
-      // return descriptors;
     }
   }
 

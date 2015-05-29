@@ -15,14 +15,15 @@ package org.jactr.eclipse.runtime.handlers;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.mina.core.session.IoSession;
-import org.apache.mina.handler.demux.MessageHandler;
+import org.commonreality.net.handler.IMessageHandler;
+import org.commonreality.net.session.ISessionInfo;
 import org.jactr.eclipse.runtime.RuntimePlugin;
 import org.jactr.eclipse.runtime.launching.norm.ACTRSession;
 import org.jactr.eclipse.runtime.trace.RuntimeTraceManager;
-import org.jactr.tools.tracer.transformer.ITransformedEvent;
+import org.jactr.tools.tracer.transformer.AbstractTransformedEvent;
 
-public class TransformedEventMessageHandler implements MessageHandler<ITransformedEvent>
+public class TransformedEventMessageHandler implements
+    IMessageHandler<AbstractTransformedEvent>
 {
 
   /**
@@ -41,7 +42,13 @@ public class TransformedEventMessageHandler implements MessageHandler<ITransform
     _manager = RuntimePlugin.getDefault().getRuntimeTraceManager();
   }
   
-  public void handleMessage(IoSession arg0, ITransformedEvent event) throws Exception
+  // public void handleMessage(IoSession arg0, ITransformedEvent event) throws
+  // Exception
+  // {
+  // }
+
+  @Override
+  public void accept(ISessionInfo t, AbstractTransformedEvent event)
   {
     if (LOGGER.isDebugEnabled()) LOGGER.debug("Got transformed event for "+event);
     

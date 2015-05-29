@@ -14,15 +14,13 @@
 package org.jactr.eclipse.runtime.launching.norm;
 
 import java.net.InetSocketAddress;
+import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.mina.core.session.IoSession;
-import org.apache.mina.handler.demux.ExceptionHandler;
-import org.commonreality.mina.protocol.SerializingProtocol;
-import org.commonreality.mina.service.ServerService;
-import org.commonreality.mina.transport.NIOTransportProvider;
+import org.commonreality.net.handler.IMessageHandler;
+import org.commonreality.net.provider.INetworkingProvider;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -40,13 +38,10 @@ import org.jactr.eclipse.runtime.launching.session.AbstractSession;
 import org.jactr.eclipse.runtime.launching.session.SessionTracker;
 import org.jactr.eclipse.runtime.preferences.RuntimePreferences;
 import org.jactr.tools.async.credentials.ICredentials;
-import org.jactr.tools.async.message.event.state.IModelStateEvent;
-import org.jactr.tools.async.message.event.state.IRuntimeStateEvent;
+import org.jactr.tools.async.message.event.state.ModelStateEvent;
+import org.jactr.tools.async.message.event.state.RuntimeStateEvent;
 import org.jactr.tools.async.shadow.ShadowController;
-import org.jactr.tools.async.shadow.ShadowIOHandler;
-import org.jactr.tools.async.shadow.handlers.ModelStateHandler;
-import org.jactr.tools.async.shadow.handlers.RuntimeStateMessageHandler;
-import org.jactr.tools.tracer.transformer.ITransformedEvent;
+import org.jactr.tools.tracer.transformer.AbstractTransformedEvent;
 
 public class ACTRSession extends AbstractSession
 {
@@ -114,23 +109,29 @@ public class ACTRSession extends AbstractSession
   protected void configureShadowControllerConnection(
       ShadowController controller, ILaunchConfiguration configuration)
   {
-    controller.setService(new ServerService());
-    controller.setTransportProvider(new NIOTransportProvider());
-    _shadowController.setProtocol(new SerializingProtocol());
+
+    try
+    {
+      // this could become a preference for quick testing
+      String providerName = "org.commonreality.netty.NettyNetworkingProvider";
+
+      INetworkingProvider provider = INetworkingProvider
+          .getProvider(providerName);
+      controller.setService(provider.newServer());
+      controller.setTransportProvider(provider
+          .getTransport(INetworkingProvider.NIO_TRANSPORT));
+      controller.setProtocol(provider
+          .getProtocol(INetworkingProvider.SERIALIZED_PROTOCOL));
+    }
+    catch (Exception e)
+    {
+      throw new RuntimeException("Failed to configure shadow controller", e);
+    }
 
     /**
      * we need some credentials..
      */
     String credentials = null;
-    // try
-    // {
-    // credentials = configuration.getAttribute(
-    // ACTRLaunchConstants.ATTR_CREDENTIALS, (String) null);
-    // }
-    // catch (Exception e)
-    // {
-    // // noop
-    // }
 
     if (credentials == null)
     {
@@ -153,63 +154,42 @@ public class ACTRSession extends AbstractSession
   protected void configureShadowController(ShadowController controller,
       ILaunch launch)
   {
-    ShadowIOHandler handler = controller.getHandler();
+    Map<Class<?>, IMessageHandler<?>> handlers = controller
+        .getDefaultHandlers();
 
     /*
-     * we modify the model and runtime handlers..
+     * we're going to use the existing handler for model state, plus add some
+     * logging for ourselves
      */
-    handler.removeReceivedMessageHandler(IRuntimeStateEvent.class);
-    handler.removeReceivedMessageHandler(IModelStateEvent.class);
-
-    handler.addReceivedMessageHandler(IModelStateEvent.class,
-        new ModelStateHandler() {
-          @Override
-          public void handleMessage(IoSession session, IModelStateEvent mse)
-              throws Exception
-          {
-            super.handleMessage(session, mse);
-            // log
-            if (mse.getException() != null)
-              RuntimePlugin.error(String.format(
-                  "%s terminated abnormally due to %s", mse.getModelName(), mse
-                      .getException()));
-          }
+    IMessageHandler fMSEHandler = handlers.get(ModelStateEvent.class);
+    handlers.put(
+        ModelStateEvent.class,
+        (s, m) -> {
+          fMSEHandler.accept(s, m); // original
+          ModelStateEvent mse = (ModelStateEvent) m;
+          if (mse.getException() != null)
+            RuntimePlugin.error(String.format(
+                "%s terminated abnormally due to %s", mse.getModelName(),
+                mse.getException()));
         });
 
-    handler.addReceivedMessageHandler(IRuntimeStateEvent.class,
-        new RuntimeStateMessageHandler() {
-
-          @Override
-          public void handleMessage(IoSession session,
-              IRuntimeStateEvent message) throws Exception
-          {
-            super.handleMessage(session, message);
-            // log
-            if (message.getException() != null)
-              RuntimePlugin.error(String.format(
-                  "Execution terminated abnormally due to %s", message
-                      .getException()));
-          }
+    IMessageHandler fRSEHandler = handlers.get(RuntimeStateEvent.class);
+    handlers.put(
+        RuntimeStateEvent.class,
+        (s, m) -> {
+          fRSEHandler.accept(s, m);// original
+          RuntimeStateEvent message = (RuntimeStateEvent) m;
+          if (message.getException() != null)
+            RuntimePlugin.error(String.format(
+                "Execution terminated abnormally due to %s",
+                message.getException()));
         });
 
-    handler.removeReceivedMessageHandler(ITransformedEvent.class);
+    /**
+     * to grab and route all the ITRansformedEvents..
+     */
     _eventHandler = new TransformedEventMessageHandler(this);
-    handler.addReceivedMessageHandler(ITransformedEvent.class, _eventHandler);
-
-    final ExceptionHandler<Throwable> eh = (ExceptionHandler<Throwable>) handler
-        .getExceptionHandlerMap().get(Throwable.class);
-    new ExceptionHandler<Throwable>() {
-
-      public void exceptionCaught(IoSession arg0, Throwable arg1)
-          throws Exception
-      {
-        RuntimePlugin.error(
-            "Exception caught while listening to jACT-R execution ", arg1);
-        if (eh != null) eh.exceptionCaught(arg0, arg1);
-      }
-
-    };
-    handler.addExceptionHandler(Throwable.class, eh);
+    handlers.put(AbstractTransformedEvent.class, _eventHandler);
   }
 
   private String generateRandomPassword()
@@ -229,7 +209,23 @@ public class ACTRSession extends AbstractSession
   @Override
   protected void connect() throws CoreException
   {
-    _shadowController.attach();
+    try
+    {
+      _shadowController.attach();
+    }
+    catch (Exception e)
+    {
+      throw new CoreException(new Status(IStatus.ERROR,
+          RuntimePlugin.PLUGIN_ID, "Failed to start shadow controller ", e));
+    }
+
+    if (_shadowController.getActiveSession() != null)
+      _shadowController.getActiveSession().addExceptionHandler(
+          (s, t) -> {
+            RuntimePlugin.error(
+                "Exception caught while listening to jACT-R execution ", t);
+            return false;
+          });
   }
 
   @Override
@@ -343,7 +339,7 @@ public class ACTRSession extends AbstractSession
         monitor.worked(1);
 
         monitor.setTaskName("Syncing communications");
-        _shadowController.getHandler().waitForPendingWrites();
+        _shadowController.getActiveSession().waitForPendingWrites();
         monitor.worked(1);
 
         return true;
@@ -416,7 +412,8 @@ public class ACTRSession extends AbstractSession
       try
       {
         while (!monitor.isCanceled()
-            && _shadowController.getIOHandler().isConnected()
+            && _shadowController.getActiveSession() != null
+            && _shadowController.getActiveSession().isConnected()
             && _shadowController.isRunning())
           _shadowController.waitForCompletion(1000);
       }

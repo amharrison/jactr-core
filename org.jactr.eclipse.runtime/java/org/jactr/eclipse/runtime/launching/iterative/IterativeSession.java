@@ -20,7 +20,8 @@ import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.commonreality.mina.service.ServerService;
+import org.commonreality.net.session.ISessionInfo;
+import org.commonreality.netty.service.ServerService;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -137,9 +138,10 @@ public class IterativeSession extends AbstractSession
       {
         double lastProgress = 0;
         int currentIteration = 0;
+        ISessionInfo session = _tracker.getActiveSession();
 
         while ((currentIteration = _tracker.getCurrentIteration()) <= total
-            && !monitor.isCanceled() && _tracker.getIOHandler().isConnected())
+            && !monitor.isCanceled() && session.isConnected())
         {
           double currentProgress = (double) (currentIteration - 1)
               / (double) total;
@@ -193,8 +195,8 @@ public class IterativeSession extends AbstractSession
          * wait for the connection..
          */
         long waitTime = 1000 * RuntimePlugin.getDefault()
-            .getPluginPreferences().getInt(
-                RuntimePreferences.ITERATIVE_START_WAIT_PREF);
+            .getPluginPreferences()
+            .getInt(RuntimePreferences.ITERATIVE_START_WAIT_PREF);
         int totalIterations = waitForConnection(waitTime, monitor);
         monitor.setTaskName("Will run " + totalIterations + " iterations");
         monitor.worked(1);
@@ -230,8 +232,8 @@ public class IterativeSession extends AbstractSession
         /*
          * beep to notify
          */
-        if (RuntimePlugin.getDefault().getPluginPreferences().getBoolean(
-            RuntimePreferences.ITERATIVE_BEEP_PREF))
+        if (RuntimePlugin.getDefault().getPluginPreferences()
+            .getBoolean(RuntimePreferences.ITERATIVE_BEEP_PREF))
         {
           final Display display = Display.getDefault();
 
@@ -350,7 +352,8 @@ public class IterativeSession extends AbstractSession
     try
     {
       _tracker.stop();
-      _tracker.getIOHandler().waitForDisconnect();
+      ISessionInfo session = _tracker.getActiveSession();
+      if (session != null) session.waitForDisconnect();
     }
     catch (Exception e)
     {

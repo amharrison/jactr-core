@@ -160,19 +160,16 @@ public abstract class AbstractSession
         _sessionJob = null;
       }
 
-      @SuppressWarnings("unchecked")
       public void running(IJobChangeEvent event)
       {
-        getSessionTracker().add(AbstractSession.this);
-
-        ((SessionManager) RuntimePlugin.getDefault().getSessionManager())
-            .addSession(AbstractSession.this);
-
       }
 
+      @SuppressWarnings("unchecked")
       public void scheduled(IJobChangeEvent event)
       {
-
+        getSessionTracker().add(AbstractSession.this);
+        ((SessionManager) RuntimePlugin.getDefault().getSessionManager())
+            .addSession(AbstractSession.this);
       }
 
       public void sleeping(IJobChangeEvent event)

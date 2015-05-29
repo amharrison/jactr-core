@@ -25,7 +25,10 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
 import org.jactr.eclipse.core.bundles.descriptors.CommonExtensionDescriptor;
 import org.jactr.eclipse.core.bundles.descriptors.InstrumentDescriptor;
 import org.jactr.eclipse.core.bundles.registry.InstrumentRegistry;
@@ -92,19 +95,6 @@ public class InstrumentsTab extends CommonExtensionDescriptorTab
     catch (Exception e)
     {
       return Collections.EMPTY_LIST;
-      // ArrayList<InstrumentDescriptor> descriptors = new
-      // ArrayList<InstrumentDescriptor>();
-      //
-      // Collection<InstrumentDescriptor> installed = InstrumentRegistry
-      // .getRegistry().getAllDescriptors();
-      //
-      // String instruments = config.getAttribute(
-      // ACTRLaunchConstants.ATTR_INSTRUMENTS, "");
-      // for (String instrument : instruments.split(","))
-      // for (InstrumentDescriptor desc : installed)
-      // if (desc.getClassName().equals(instrument)) descriptors.add(desc);
-      //
-      // return descriptors;
     }
   }
 
@@ -116,6 +106,28 @@ public class InstrumentsTab extends CommonExtensionDescriptorTab
       return InstrumentRegistry.getRegistry().getDescriptors(project, true);
 
     return InstrumentRegistry.getRegistry().getAllDescriptors();
+  }
+
+  @Override
+  public void createControl(Composite parent)
+  {
+    super.createControl(parent);
+    ViewerFilter filter = new ViewerFilter() {
+
+      @Override
+      public boolean select(Viewer viewer, Object parentElement, Object element)
+      {
+        /*
+         * not currently operational as the element types are strings. which is
+         * odd, since the input is a collection of intstrument descriptors.
+         */
+        // InstrumentDescriptor id = (InstrumentDescriptor) element;
+        // if (id != null && id.isHidden()) return false;
+        return true;
+      }
+
+    };
+    _descriptorList.setFilters(new ViewerFilter[] { filter });
   }
 
 }

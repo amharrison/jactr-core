@@ -68,7 +68,7 @@ public abstract class CommonExtensionDescriptorTab extends
   static private final transient Log              LOGGER           = LogFactory
                                                                        .getLog(CommonExtensionDescriptorTab.class);
 
-  private CheckboxTableViewer                     _descriptorList;
+  protected CheckboxTableViewer                   _descriptorList;
 
   private Hashtable<String, GeneralParameterPage> _propertySources = new Hashtable<String, GeneralParameterPage>();
 

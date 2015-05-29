@@ -3,13 +3,13 @@ package org.jactr.eclipse.runtime;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.commonreality.executor.InlineExecutor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.eclipse.runtime.marker.MarkerIndexSessionListener;
 import org.jactr.eclipse.runtime.marker.MarkerRuntimeTraceListener;
 import org.jactr.eclipse.runtime.production2.ConflictResolutionRuntimeTraceListener;
@@ -70,7 +70,7 @@ public class RuntimePlugin extends Plugin
 
     _sessionManager = new SessionManager();
     _sessionManager.addListener(new MarkerIndexSessionListener(),
-        InlineExecutor.get());
+        ExecutorServices.INLINE_EXECUTOR);
 
     _runtimeTraceManager = new RuntimeTraceManager();
     /*

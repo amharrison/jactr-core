@@ -49,6 +49,11 @@ public class DefaultACTRLaunchConfiguration extends
 
     if (LOGGER.isDebugEnabled()) LOGGER.debug("Created session " + session);
 
+    /*
+     * we must start before we do much of anything else
+     */
+    session.start();
+
     if (mode.equals(ILaunchManager.DEBUG_MODE))
     {
       if (LOGGER.isDebugEnabled()) LOGGER.debug("Adding debug target");
@@ -56,11 +61,6 @@ public class DefaultACTRLaunchConfiguration extends
       ACTRDebugTarget target = new ACTRDebugTarget(session);
       launch.addDebugTarget(target);
     }
-
-    /*
-     * we must start before we do much of anything else
-     */
-    session.start();
 
     InetSocketAddress addr = session.getConnectionAddress();
 

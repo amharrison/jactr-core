@@ -41,12 +41,14 @@ Require-Bundle: org.eclipse.core.runtime,
  org.jactr.eclipse.bundles,
  org.eclipse.jdt.debug.ui,
  org.jactr.tools,
- org.commonreality,
  org.eclipse.jdt.core,
  org.jactr,
  org.eclipse.ui.editors,
- org.commonreality.mina.core;bundle-version="2.0.4",
  org.eclipse.jface,
- org.eclipse.swt
+ org.eclipse.swt,
+ org.commonreality.api;bundle-version="1.0.0",
+ org.commonreality.modalities;bundle-version="1.0.0",
+ org.commonreality.net;bundle-version="1.0.0",
+ org.commonreality.core;bundle-version="1.2.8"
 Eclipse-RegisterBuddy: org.apache.log4j 
 Bundle-ActivationPolicy: lazy

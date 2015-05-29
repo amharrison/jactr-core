@@ -13,11 +13,11 @@
  */
 package org.jactr.eclipse.runtime.debug.handlers;
 
-import org.apache.mina.core.session.IoSession;
+import org.commonreality.net.session.ISessionInfo;
 import org.jactr.eclipse.runtime.debug.ACTRDebugTarget;
 import org.jactr.eclipse.runtime.debug.elements.ACTRStackFrame;
 import org.jactr.eclipse.runtime.debug.elements.ACTRThread;
-import org.jactr.tools.async.message.event.state.IModelStateEvent;
+import org.jactr.tools.async.message.event.state.ModelStateEvent;
 import org.jactr.tools.async.shadow.handlers.ModelStateHandler;
 
 public class ModelStateMessageHandler extends ModelStateHandler
@@ -31,7 +31,7 @@ public class ModelStateMessageHandler extends ModelStateHandler
   }
 
   @Override
-  public void handleMessage(IoSession arg0, IModelStateEvent message) throws Exception
+  public void accept(ISessionInfo session, ModelStateEvent message)
   {
     /*
      * here is where we deal with the model theads
@@ -60,7 +60,7 @@ public class ModelStateMessageHandler extends ModelStateHandler
         break;
     }
     
-    super.handleMessage(arg0, message);
+    super.accept(session, message);
   }
 
 }

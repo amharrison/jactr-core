@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.commonreality.net.handler.IMessageHandler;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
@@ -51,12 +52,15 @@ import org.jactr.eclipse.runtime.debug.marker.ACTRBreakpoint;
 import org.jactr.eclipse.runtime.debug.marker.IDisableProductionMarker;
 import org.jactr.eclipse.runtime.launching.ACTRLaunchConfigurationUtils;
 import org.jactr.eclipse.runtime.launching.norm.ACTRSession;
+import org.jactr.eclipse.runtime.session.ISession;
+import org.jactr.eclipse.runtime.session.ISessionListener;
+import org.jactr.eclipse.runtime.session.data.ISessionData;
+import org.jactr.eclipse.runtime.session.stream.ISessionDataStream;
 import org.jactr.tools.async.message.event.data.BreakpointReachedEvent;
 import org.jactr.tools.async.message.event.login.LoginAcknowledgedMessage;
-import org.jactr.tools.async.message.event.state.IModelStateEvent;
-import org.jactr.tools.async.message.event.state.IRuntimeStateEvent;
+import org.jactr.tools.async.message.event.state.ModelStateEvent;
+import org.jactr.tools.async.message.event.state.RuntimeStateEvent;
 import org.jactr.tools.async.shadow.ShadowController;
-import org.jactr.tools.async.shadow.ShadowIOHandler;
 
 public class ACTRDebugTarget extends ACTRDebugElement implements IDebugTarget
 {
@@ -76,12 +80,15 @@ public class ACTRDebugTarget extends ACTRDebugElement implements IDebugTarget
 
   volatile boolean                   _inStartUp = true;
 
+  ProceduralTraceListener            _procTraceListener;
+
   public ACTRDebugTarget(ACTRSession client)
   {
     _client = client;
     _launch = _client.getLaunch();
 
     _threads = new HashMap<String, ACTRThread>();
+    _procTraceListener = new ProceduralTraceListener(this);
 
     /*
      * we need to install various listeners..
@@ -91,6 +98,41 @@ public class ACTRDebugTarget extends ACTRDebugElement implements IDebugTarget
     setDebugTarget(this);
 
     DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this);
+
+    client.getSession().addListener(new ISessionListener() {
+
+      @Override
+      public void sessionClosed(ISession session)
+      {
+        /*
+         * disconnect our listeners
+         */
+        DebugPlugin.getDefault().getBreakpointManager()
+            .removeBreakpointListener(ACTRDebugTarget.this);
+        RuntimePlugin.getDefault().getRuntimeTraceManager()
+            .removeListener(_procTraceListener);
+      }
+
+      @Override
+      public void sessionDestroyed(ISession session)
+      {
+
+      }
+
+      @Override
+      public void newSessionData(ISessionData sessionData)
+      {
+
+      }
+
+      @Override
+      public void newSessionDataStream(ISessionData sessionData,
+          ISessionDataStream sessionDataStream)
+      {
+
+      }
+
+    }, null);
   }
 
   public ACTRSession getACTRSession()
@@ -413,36 +455,27 @@ public class ACTRDebugTarget extends ACTRDebugElement implements IDebugTarget
 
   protected void installListeners()
   {
-    ShadowIOHandler handler = _client.getShadowController().getHandler();
+    Map<Class<?>, IMessageHandler<?>> handlers = _client.getShadowController()
+        .getDefaultHandlers();
 
     /*
      * we need to add the handler for transformed production events which will
-     * handle the
+     * handle the conflict res info. remove on session close
      */
-    RuntimePlugin.getDefault().getRuntimeTraceManager().addListener(
-        new ProceduralTraceListener(this), null);
+    RuntimePlugin.getDefault().getRuntimeTraceManager()
+        .addListener(_procTraceListener, null);
 
-    handler.removeReceivedMessageHandler(BreakpointReachedEvent.class);
-    handler.addReceivedMessageHandler(BreakpointReachedEvent.class,
-        new BreakpointMessageHandler(this));
+    handlers.put(BreakpointReachedEvent.class, new BreakpointMessageHandler(
+        this));
 
-    handler.removeReceivedMessageHandler(IModelStateEvent.class);
-    handler.addReceivedMessageHandler(IModelStateEvent.class,
-        new ModelStateMessageHandler(this));
+    handlers.put(ModelStateEvent.class, new ModelStateMessageHandler(this));
 
-    /*
-     * we use this guy to install the break points
-     */
-    handler.removeReceivedMessageHandler(LoginAcknowledgedMessage.class);
-    handler.addReceivedMessageHandler(LoginAcknowledgedMessage.class,
-        new LoginMessageHandler(this));
+    handlers.put(LoginAcknowledgedMessage.class, new LoginMessageHandler(this));
 
     /*
      * use our own runtimestate handler to catch the suspend on stop w/ debug
      */
-    handler.removeReceivedMessageHandler(IRuntimeStateEvent.class);
-    handler.addReceivedMessageHandler(IRuntimeStateEvent.class,
-        new RuntimeStateMessageHandler());
+    handlers.put(RuntimeStateEvent.class, new RuntimeStateMessageHandler());
   }
 
 }

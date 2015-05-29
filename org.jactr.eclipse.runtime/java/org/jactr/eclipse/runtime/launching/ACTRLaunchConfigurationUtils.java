@@ -121,10 +121,10 @@ public class ACTRLaunchConfigurationUtils
     for (String modelFile : configuration.getAttribute(
         ACTRLaunchConstants.ATTR_MODEL_FILES, "").split(","))
       if (modelFile.length() > 0)
-    {
-      IResource resource = project.findMember(modelFile, false);
-      if (resource != null) resources.add(resource);
-    }
+      {
+        IResource resource = project.findMember(modelFile, false);
+        if (resource != null) resources.add(resource);
+      }
     return resources;
   }
 
@@ -141,7 +141,9 @@ public class ACTRLaunchConfigurationUtils
   static public boolean meetsCommonRealityRequirements(
       ILaunchConfiguration configuration) throws CoreException
   {
-    boolean hasSensors = getRequiredSensors(configuration).size() != 0;
+    boolean hasSensors = getRequiredSensors(configuration).size() != 0
+        || configuration.getAttribute(
+            ACTRLaunchConstants.ATTR_USE_EMBED_CONTROLLER, false);
 
     for (IResource modelFile : getModelFiles(configuration))
       for (ModuleDescriptor module : getModulesInModel(modelFile))
@@ -235,21 +237,25 @@ public class ACTRLaunchConfigurationUtils
       ILaunchConfigurationWorkingCopy workingCopy) throws CoreException
   {
 
-    workingCopy.setAttribute(org.eclipse.pde.launching.IPDELauncherConstants.AUTOMATIC_VALIDATE,
-        RuntimePlugin.getDefault().getPluginPreferences().getBoolean(
-            RuntimePreferences.VERIFY_RUN_PREF));
+    workingCopy.setAttribute(
+        org.eclipse.pde.launching.IPDELauncherConstants.AUTOMATIC_VALIDATE,
+        RuntimePlugin.getDefault().getPluginPreferences()
+            .getBoolean(RuntimePreferences.VERIFY_RUN_PREF));
 
     /*
      * First, we tell the PDE launcher that we will be running an application
      * and what that application is
      */
-    workingCopy.setAttribute(org.eclipse.pde.launching.IPDELauncherConstants.USE_PRODUCT, false);
+    workingCopy.setAttribute(
+        org.eclipse.pde.launching.IPDELauncherConstants.USE_PRODUCT, false);
 
     if (workingCopy.getAttribute(ACTRLaunchConstants.ATTR_ITERATIONS, 0) == 0)
-      workingCopy.setAttribute(org.eclipse.pde.launching.IPDELauncherConstants.APPLICATION,
+      workingCopy.setAttribute(
+          org.eclipse.pde.launching.IPDELauncherConstants.APPLICATION,
           ACTRLaunchConstants.DEFAULT_APPLICATION);
     else
-      workingCopy.setAttribute(org.eclipse.pde.launching.IPDELauncherConstants.APPLICATION,
+      workingCopy.setAttribute(
+          org.eclipse.pde.launching.IPDELauncherConstants.APPLICATION,
           ACTRLaunchConstants.ITERATIVE_APPLICATION);
 
     /*
@@ -257,30 +263,38 @@ public class ACTRLaunchConfigurationUtils
      * ${system_property:user.home}/.jactr/workspaces/${project_name} this will
      * be resolved by the launcher
      */
-    workingCopy.setAttribute(org.eclipse.pde.launching.IPDELauncherConstants.LOCATION,
+    workingCopy.setAttribute(
+        org.eclipse.pde.launching.IPDELauncherConstants.LOCATION,
         ACTRLaunchConstants.NORMAL_WORKSPACE_LOCATION);
 
     /*
      * if true, we'd load ALL the bundles that are present in the current
      * environment we only want to load the required ones that we selected above
      */
-    workingCopy.setAttribute(org.eclipse.pde.launching.IPDELauncherConstants.USE_DEFAULT, false);
+    workingCopy.setAttribute(
+        org.eclipse.pde.launching.IPDELauncherConstants.USE_DEFAULT, false);
 
     /*
      * exclude optional bundles
      */
-    workingCopy.setAttribute(org.eclipse.pde.launching.IPDELauncherConstants.INCLUDE_OPTIONAL, false);
+    workingCopy
+        .setAttribute(
+            org.eclipse.pde.launching.IPDELauncherConstants.INCLUDE_OPTIONAL,
+            false);
 
     /*
      * don't add everything in the workspace
      */
-    workingCopy.setAttribute(org.eclipse.pde.launching.IPDELauncherConstants.AUTOMATIC_ADD, false);
+    workingCopy.setAttribute(
+        org.eclipse.pde.launching.IPDELauncherConstants.AUTOMATIC_ADD, false);
 
     /*
      * 
      */
-    workingCopy.setAttribute(
-        org.eclipse.pde.launching.IPDELauncherConstants.DESELECTED_WORKSPACE_PLUGINS, (String) null);
+    workingCopy
+        .setAttribute(
+            org.eclipse.pde.launching.IPDELauncherConstants.DESELECTED_WORKSPACE_PLUGINS,
+            (String) null);
 
     if (LOGGER.isDebugEnabled())
       LOGGER.debug("Applied permanent attributes " + workingCopy);
@@ -302,9 +316,12 @@ public class ACTRLaunchConfigurationUtils
     IProject project = getProject(workingCopy);
     String configName = workingCopy.getName();
 
-    workingCopy.setAttribute(org.eclipse.pde.launching.IPDELauncherConstants.CONFIG_USE_DEFAULT_AREA,
-        false);
-    workingCopy.setAttribute(org.eclipse.pde.launching.IPDELauncherConstants.CONFIG_LOCATION,
+    workingCopy
+        .setAttribute(
+            org.eclipse.pde.launching.IPDELauncherConstants.CONFIG_USE_DEFAULT_AREA,
+            false);
+    workingCopy.setAttribute(
+        org.eclipse.pde.launching.IPDELauncherConstants.CONFIG_LOCATION,
         ACTRLaunchConstants.NORMAL_CONFIGURATION_LOCATION + project.getName()
             + "/" + configName);
 
@@ -330,13 +347,16 @@ public class ACTRLaunchConfigurationUtils
         try
         {
           URI uri = logFile.getRawLocationURI();
-          vmArg.append(uri.toURL()).append(" ").append(
-              workingCopy.getAttribute(
-                  IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, ""));
+          vmArg
+              .append(uri.toURL())
+              .append(" ")
+              .append(
+                  workingCopy.getAttribute(
+                      IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, ""));
 
           workingCopy.setAttribute(
-              IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, vmArg
-                  .toString());
+              IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
+              vmArg.toString());
         }
         catch (Exception e)
         {
@@ -348,11 +368,12 @@ public class ACTRLaunchConfigurationUtils
         logging = false;
     }
 
-    if (!logging) workingCopy.setAttribute(
-        IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
-        "-Dorg.apache.commons.logging.log=org.apache.commons.logging.impl.SimpleLog "
-            + workingCopy.getAttribute(
-                IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, ""));
+    if (!logging)
+      workingCopy.setAttribute(
+          IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
+          "-Dorg.apache.commons.logging.log=org.apache.commons.logging.impl.SimpleLog "
+              + workingCopy.getAttribute(
+                  IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, ""));
 
     if (LOGGER.isDebugEnabled())
       LOGGER.debug("Applied persistent attributes " + workingCopy);
@@ -401,11 +422,10 @@ public class ACTRLaunchConfigurationUtils
       arguments.append("-arch ").append(TargetPlatform.getOSArch()).append(" ");
     }
 
-    if (workingCopy.getType().getIdentifier().equals(
-        "org.jactr.eclipse.runtime.launching.cr"))
+    if (workingCopy.getType().getIdentifier()
+        .equals("org.jactr.eclipse.runtime.launching.cr"))
       arguments.append(ACTRLaunchConstants.DEFAULT_CR_RUN_ARG);
-    else
-    if (workingCopy.getAttribute(ACTRLaunchConstants.ATTR_ITERATIONS, 0) != 0)
+    else if (workingCopy.getAttribute(ACTRLaunchConstants.ATTR_ITERATIONS, 0) != 0)
       arguments.append(ACTRLaunchConstants.ITERATIVE_APPLICATION_ARG);
     else if (ILaunchManager.DEBUG_MODE.equals(mode))
       arguments.append(ACTRLaunchConstants.DEFAULT_APPLICATION_DEBUG_ARG);
@@ -417,13 +437,16 @@ public class ACTRLaunchConfigurationUtils
     try
     {
       URI uri = environmentFile.getRawLocationURI();
-      arguments.append(uri.toURL()).append(" ").append(
-          workingCopy.getAttribute(
-              IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, ""));
+      arguments
+          .append(uri.toURL())
+          .append(" ")
+          .append(
+              workingCopy.getAttribute(
+                  IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, ""));
 
       workingCopy.setAttribute(
-          IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, arguments
-              .toString());
+          IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
+          arguments.toString());
     }
     catch (Exception e)
     {
@@ -457,16 +480,20 @@ public class ACTRLaunchConfigurationUtils
       targetBundles.append(bundle).append(",");
 
     if (workspaceBundles.length() > 0)
-      workspaceBundles.delete(workspaceBundles.length() - 1, workspaceBundles
-          .length());
+      workspaceBundles.delete(workspaceBundles.length() - 1,
+          workspaceBundles.length());
 
     if (targetBundles.length() > 0)
       targetBundles.delete(targetBundles.length() - 1, targetBundles.length());
 
-    workingCopy.setAttribute(org.eclipse.pde.launching.IPDELauncherConstants.SELECTED_WORKSPACE_PLUGINS,
-        workspaceBundles.toString());
-    workingCopy.setAttribute(org.eclipse.pde.launching.IPDELauncherConstants.SELECTED_TARGET_PLUGINS,
-        targetBundles.toString());
+    workingCopy
+        .setAttribute(
+            org.eclipse.pde.launching.IPDELauncherConstants.SELECTED_WORKSPACE_PLUGINS,
+            workspaceBundles.toString());
+    workingCopy
+        .setAttribute(
+            org.eclipse.pde.launching.IPDELauncherConstants.SELECTED_TARGET_PLUGINS,
+            targetBundles.toString());
 
     if (LOGGER.isDebugEnabled())
       LOGGER.debug("Applied temporary attributes " + workingCopy);
@@ -545,8 +572,7 @@ public class ACTRLaunchConfigurationUtils
         if (desc.getClassName().equals(instrument)) descriptors.add(desc);
     return descriptors;
   }
-  
-  
+
   static public Collection<RuntimeTracerDescriptor> getRequiredTracers(
       ILaunchConfiguration configuration) throws CoreException
   {

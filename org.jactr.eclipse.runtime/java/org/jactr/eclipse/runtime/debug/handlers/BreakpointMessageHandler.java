@@ -13,7 +13,7 @@
  */
 package org.jactr.eclipse.runtime.debug.handlers;
 
-import org.apache.mina.core.session.IoSession;
+import org.commonreality.net.session.ISessionInfo;
 import org.jactr.eclipse.runtime.debug.ACTRDebugTarget;
 import org.jactr.eclipse.runtime.debug.elements.ACTRStackFrame;
 import org.jactr.eclipse.runtime.debug.elements.ACTRThread;
@@ -35,10 +35,9 @@ public class BreakpointMessageHandler extends
   }
 
   @Override
-  public void handleMessage(IoSession session, BreakpointReachedEvent message)
-      throws Exception
+  public void accept(ISessionInfo session, BreakpointReachedEvent message)
   {
-    super.handleMessage(session, message);
+    super.accept(session, message);
 
     /*
      * the super will set the breakpoint data for the shadow controller but we

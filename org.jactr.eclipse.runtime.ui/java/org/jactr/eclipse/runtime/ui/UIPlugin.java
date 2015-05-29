@@ -3,12 +3,12 @@ package org.jactr.eclipse.runtime.ui;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.commonreality.executor.InlineExecutor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.eclipse.core.builder.LaunchConfigurationCleaner;
 import org.jactr.eclipse.runtime.RuntimePlugin;
 import org.jactr.eclipse.runtime.ui.marker.MarkerUI;
@@ -69,7 +69,8 @@ public class UIPlugin extends AbstractUIPlugin
     RuntimePlugin
         .getDefault()
         .getSessionManager()
-        .addListener(new SynchronizationSessionListener(), InlineExecutor.get());
+        .addListener(new SynchronizationSessionListener(),
+            ExecutorServices.INLINE_EXECUTOR);
 
     initializeRegistry();
 

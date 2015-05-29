@@ -13,7 +13,7 @@
  */
 package org.jactr.eclipse.runtime.debug.handlers;
 
-import org.apache.mina.core.session.IoSession;
+import org.commonreality.net.session.ISessionInfo;
 import org.jactr.eclipse.runtime.debug.ACTRDebugTarget;
 import org.jactr.tools.async.message.event.login.LoginAcknowledgedMessage;
 
@@ -25,18 +25,17 @@ public class LoginMessageHandler extends
 
   public LoginMessageHandler(ACTRDebugTarget target)
   {
-    super(target.getACTRSession().getShadowController().getHandler());
+    super();
     _target = target;
   }
 
   @Override
-  public void handleMessage(IoSession session, LoginAcknowledgedMessage message)
-      throws Exception
+  public void accept(ISessionInfo session, LoginAcknowledgedMessage message)
   {
     /*
      * we used to do something here..
      */
-    super.handleMessage(session, message);
+    super.accept(session, message);
     session.setAttribute("actrSession", _target.getACTRSession());
   }
 }
