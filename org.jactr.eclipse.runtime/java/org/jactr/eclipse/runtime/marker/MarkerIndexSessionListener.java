@@ -5,6 +5,7 @@ package org.jactr.eclipse.runtime.marker;
  */
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.jactr.eclipse.runtime.playback.SessionArchive;
 import org.jactr.eclipse.runtime.playback.internal.ArchiveController;
@@ -33,9 +34,10 @@ public class MarkerIndexSessionListener implements ISessionManagerListener
       {
         SessionArchive archive = (SessionArchive) session;
         IResource indexFile = archive.getIndex().getIndexFile();
-        IResource markerIndex = indexFile.getParent()
+        IContainer sessionData = indexFile.getParent().getParent();
+        IResource markerIndex = sessionData
             .findMember("marker.index");
-        IResource markerTypes = indexFile.getParent()
+        IResource markerTypes = sessionData
             .findMember("marker.types");
         MarkerIndex index = new MarkerIndex(markerIndex, markerTypes);
 

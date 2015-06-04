@@ -19,6 +19,7 @@ public class RuntimeTraceManager
 {
   static private final transient Log                        LOGGER = LogFactory
                                                                        .getLog(RuntimeTraceManager.class);
+
   private GeneralEventManager<IRuntimeTraceListener, Event> _eventManager;
 
   public RuntimeTraceManager()
@@ -28,8 +29,18 @@ public class RuntimeTraceManager
 
           public void notify(IRuntimeTraceListener listener, Event event)
           {
-            if (listener.isInterestedIn(event.event, event.session))
-              listener.eventFired(event.event, event.session);
+            try
+            {
+              if (listener.isInterestedIn(event.event, event.session))
+                listener.eventFired(event.event, event.session);
+            }
+            catch (Exception e)
+            {
+              LOGGER.error(String.format(
+                  "Failed to propogate event [%s] to listener [%s] ",
+                  event.event.getClass().getName(), listener.getClass()
+                      .getName()));
+            }
           }
         });
   }
