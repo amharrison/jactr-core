@@ -46,7 +46,7 @@ public class ModelProbeData2
   private boolean                    _firstSample    = true;
 
 
-  public ModelProbeData2(String modelName, double timeWindow,
+  public ModelProbeData2(String modelName, int timeWindow,
       StringTable sessionStringTable, Function<String, IProbeData> dataSupplier)
   {
     _modelName = modelName;
@@ -88,8 +88,8 @@ public class ModelProbeData2
      */
     if (_firstSample)
     {
-      double samplingTime = event.getWindowSize();
-      _normalCapacity = (int) (_timeWindow / samplingTime);
+      // double samplingTime = event.getWindowSize();
+      _normalCapacity = (int) _timeWindow;
       _maxCapacity = (int) (1.5 * _normalCapacity);
 
       if (LOGGER.isDebugEnabled())

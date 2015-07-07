@@ -47,6 +47,7 @@ public class TransformedEventMessageHandler implements
   // {
   // }
 
+  @SuppressWarnings("rawtypes")
   @Override
   public void accept(ISessionInfo t, AbstractTransformedEvent event)
   {

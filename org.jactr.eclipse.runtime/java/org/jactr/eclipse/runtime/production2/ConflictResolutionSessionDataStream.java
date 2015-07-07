@@ -23,7 +23,7 @@ public class ConflictResolutionSessionDataStream extends
                                                 .getLog(ConflictResolutionSessionDataStream.class);
 
   public ConflictResolutionSessionDataStream(ISessionData sessionData,
-      double windowSize)
+      int windowSize)
   {
     super("conflict", sessionData, windowSize);
   }

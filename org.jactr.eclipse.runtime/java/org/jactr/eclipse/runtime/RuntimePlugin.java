@@ -73,6 +73,9 @@ public class RuntimePlugin extends Plugin
         ExecutorServices.INLINE_EXECUTOR);
 
     _runtimeTraceManager = new RuntimeTraceManager();
+
+    plugin = this;
+
     /*
      * always listen for log
      */
@@ -105,7 +108,7 @@ public class RuntimePlugin extends Plugin
 
     _runtimeTraceManager.addListener(new MarkerRuntimeTraceListener());
 
-    plugin = this;
+
   }
 
   /**

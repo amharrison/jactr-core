@@ -12,13 +12,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jactr.core.logging.Logger;
 
-
 public class LogData
 {
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory.getLog(LogData.class);
+  static private final transient Log       LOGGER = LogFactory
+                                                      .getLog(LogData.class);
 
   private final double                     _time;
 
@@ -28,28 +28,49 @@ public class LogData
 
   private final String                     _timeStream;
 
-  public LogData(double time, LogSessionDataStream stream)
+  public LogData(double time, boolean translateTime, LogSessionDataStream stream)
   {
     _time = time;
     _streamContents = new TreeMap<String, StringBuilder>();
     _logStream = stream;
 
-    double timeInSeconds = time;
-    double hours = Math.floor(timeInSeconds / 3600);
-    timeInSeconds -= hours * 3600;
-    double minutes = Math.floor(timeInSeconds / 60);
-    timeInSeconds -= minutes * 60;
+    String timeName = null;
+    try
+    {
 
-    _timeStream = String.format("%02.0f:%02.0f:%05.2f", hours, minutes,
-        timeInSeconds);
+      if (translateTime)
+      {
+        double timeInSeconds = time;
+        double hours = Math.floor(timeInSeconds / 3600);
+        timeInSeconds -= hours * 3600;
+        double minutes = Math.floor(timeInSeconds / 60);
+        timeInSeconds -= minutes * 60;
+
+        double days = Math.floor(hours / 24);
+        hours -= days * 24;
+
+        if (days > 0)
+          timeName = String.format("%02.0f:%02.0f:%02.0f:%05.3f", days, hours,
+              minutes, timeInSeconds);
+        else
+          timeName = String.format("%02.0f:%02.0f:%02.0f:%05.3f", days, hours,
+              minutes, timeInSeconds);
+      }
+    }
+    catch (Exception e)
+    {
+      timeName = null;
+    }
+
+    if (timeName == null) timeName = String.format("%.3f", _time);
+
+    _timeStream = timeName;
   }
 
   public LogSessionDataStream getDataStream()
   {
     return _logStream;
   }
-
-
 
   public double getTime()
   {

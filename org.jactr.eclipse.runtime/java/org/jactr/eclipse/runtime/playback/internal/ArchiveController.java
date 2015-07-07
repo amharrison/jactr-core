@@ -49,6 +49,9 @@ public class ArchiveController implements ISessionController2
     _currentTime = _index.getStartTime();
     _currentStepSize = RuntimePlugin.getDefault().getPreferenceStore()
         .getInt(RuntimePreferences.RUNTIME_DATA_WINDOW);
+    // currently the number of rows, assuming 50ms per row, would be /20
+    // let's give ourselves a little slop
+    _currentStepSize = _currentStepSize / 30;
     setRunForContentProvider(new DefaultRunForContentProvider());
   }
 

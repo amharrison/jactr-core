@@ -32,7 +32,8 @@ public class OpenMarkerSessionDataStream extends
   private final Set<OpenMarkers>        _knownModified;
 
   public OpenMarkerSessionDataStream(ISessionData sessionData,
-      double windowSize, MarkerSessionDataStream msds)
+ int windowSize,
+      MarkerSessionDataStream msds)
   {
     super("openMarkers", sessionData, windowSize);
     _msds = msds;

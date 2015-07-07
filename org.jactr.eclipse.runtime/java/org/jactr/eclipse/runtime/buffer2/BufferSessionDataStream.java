@@ -21,8 +21,7 @@ public class BufferSessionDataStream extends
   static private final transient Log LOGGER = LogFactory
                                                 .getLog(BufferSessionDataStream.class);
 
-  public BufferSessionDataStream(ISessionData sessionData,
-      double windowSize)
+  public BufferSessionDataStream(ISessionData sessionData, int windowSize)
   {
     super("buffer", sessionData, windowSize);
   }

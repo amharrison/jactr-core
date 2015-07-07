@@ -54,14 +54,14 @@ public abstract class AbstractRollingSessionDataStream<I, T> extends
   protected final GeneralEventManager<ILiveSessionDataStreamListener<T>, Object[]> _eventManager;
 
   public AbstractRollingSessionDataStream(String streamName,
-      ISessionData sessionData, double windowSize)
+      ISessionData sessionData, int windowSize)
   {
     super(streamName, sessionData);
     // _windowSize = windowSize;
     // _maxWindowSize = _windowSize * 1.2;
 
-    _softCapacityLimit = (int) (windowSize * 20); // tmp assumption of 50ms
-    _hardCapacityLimit = (int) (1.2 * windowSize * 20);
+    _softCapacityLimit = windowSize; // tmp assumption of 50ms
+    _hardCapacityLimit = (int) (1.2 * windowSize);
 
     // _data = new TreeMap<Double, Collection<T>>();
     _data = new ArrayList<TimedData<T>>(_hardCapacityLimit + 1); // so we don't

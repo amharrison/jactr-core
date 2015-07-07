@@ -25,7 +25,7 @@ public class ModelProbeSessionDataStream extends
 
   ModelProbeData                     _root;
 
-  public ModelProbeSessionDataStream(ISessionData sessionData, double windowSize)
+  public ModelProbeSessionDataStream(ISessionData sessionData, int windowSize)
   {
     super("probe", sessionData, windowSize);
   }

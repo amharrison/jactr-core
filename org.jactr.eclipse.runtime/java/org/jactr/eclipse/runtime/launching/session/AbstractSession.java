@@ -50,7 +50,7 @@ public abstract class AbstractSession
 
   private IPath                  _absoluteWorkingDirectory;
 
-  protected boolean              _isRunning  = false;
+  protected volatile boolean     _isRunning  = false;
 
   protected boolean              _wasStopped = false;
 

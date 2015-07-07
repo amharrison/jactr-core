@@ -34,7 +34,7 @@ public class MarkerSessionDataStream extends
 
   private Set<Long>                            _knownModifiedMarkers;
 
-  public MarkerSessionDataStream(ISessionData sessionData, double windowSize)
+  public MarkerSessionDataStream(ISessionData sessionData, int windowSize)
   {
     super("marker", sessionData, windowSize);
     _markerProperties = new TreeMap<Long, Map<String, String>>();

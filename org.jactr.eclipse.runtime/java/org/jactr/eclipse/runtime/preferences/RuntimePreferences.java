@@ -42,4 +42,6 @@ public interface RuntimePreferences
 
   public static final String PLAYBACK_BLOCKSIZE          = "playbackBlockSize";
 
+  public static final String TRANSLATE_TIME              = "translateTime";
+
 }

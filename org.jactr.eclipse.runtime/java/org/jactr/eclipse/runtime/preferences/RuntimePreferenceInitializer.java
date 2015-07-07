@@ -25,15 +25,16 @@ public class RuntimePreferenceInitializer extends AbstractPreferenceInitializer
   {
     IPreferenceStore prefs = RuntimePlugin.getDefault().getPreferenceStore();
 
-    prefs.setDefault(RuntimePreferences.RUNTIME_DATA_WINDOW, 30);
+    prefs.setDefault(RuntimePreferences.RUNTIME_DATA_WINDOW, 2400);
     prefs.setDefault(RuntimePreferences.ITERATIVE_START_WAIT_PREF, 60);
     prefs.setDefault(RuntimePreferences.NORMAL_START_WAIT_PREF, 60);
     prefs.setDefault(RuntimePreferences.ITERATIVE_BEEP_PREF, true);
     prefs.setDefault(RuntimePreferences.DEBUG_STACK_PREF, 20);
     prefs.setDefault(RuntimePreferences.VERIFY_RUN_PREF, false);
-    prefs.setDefault(RuntimePreferences.PROBE_RUNTIME_DATA_WINDOW, 60);
+    prefs.setDefault(RuntimePreferences.PROBE_RUNTIME_DATA_WINDOW, 2400);
     prefs.setDefault(RuntimePreferences.PLAYBACK_RATE, 1000);
     prefs.setDefault(RuntimePreferences.PLAYBACK_BLOCKSIZE, 200);
+    prefs.setDefault(RuntimePreferences.TRANSLATE_TIME, true);
 
     prefs.setDefault(RuntimePreferences.DONT_ASK_RUN_SWITCH, false);
     prefs.setDefault(RuntimePreferences.DONT_ASK_DEBUG_SWITCH, false);

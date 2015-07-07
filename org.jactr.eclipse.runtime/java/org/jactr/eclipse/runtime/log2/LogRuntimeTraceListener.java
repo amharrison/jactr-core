@@ -21,6 +21,14 @@ public class LogRuntimeTraceListener implements IRuntimeTraceListener
    */
   static private final transient Log LOGGER = LogFactory
                                                 .getLog(LogRuntimeTraceListener.class);
+  
+  private boolean _translateTime;
+  
+  public LogRuntimeTraceListener()
+  {
+    _translateTime = RuntimePlugin.getDefault().getPreferenceStore()
+        .getBoolean(RuntimePreferences.TRANSLATE_TIME);
+  }
 
   public boolean isInterestedIn(ITransformedEvent traceEvent, ISession session)
   {
@@ -30,6 +38,8 @@ public class LogRuntimeTraceListener implements IRuntimeTraceListener
   public void eventFired(ITransformedEvent traceEvent, ISession session)
   {
     BulkLogEvent ble = (BulkLogEvent) traceEvent;
+
+
 
     /*
      * route to the session
@@ -52,7 +62,7 @@ public class LogRuntimeTraceListener implements IRuntimeTraceListener
       /*
        * create a new one
        */
-      ld = new LogData(ble.getSimulationTime(), lsds);
+      ld = new LogData(ble.getSimulationTime(), _translateTime, lsds);
       isNew = true;
     }
 

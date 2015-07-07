@@ -23,7 +23,7 @@ public class LogSessionDataStream extends
   static private final transient Log LOGGER = LogFactory
                                                 .getLog(LogSessionDataStream.class);
 
-  public LogSessionDataStream(ISessionData sessionData, double windowSize)
+  public LogSessionDataStream(ISessionData sessionData, int windowSize)
   {
     super("log", sessionData, windowSize);
   }
