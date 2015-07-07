@@ -235,8 +235,12 @@ public abstract class AbstractRuntimeModelViewPart extends
       LOGGER.debug(String.format("(%s) session added %s", getClass().getName(),
           session));
 
-    if (session.isOpen())
-    {
+    /*
+     * it is actually possible for the session not to be fully open yet, as it
+     * waits for the runtime to connect..
+     */
+    // if (session.isOpen())
+    // {
       session.addListener(_sessionListener, null);
 
       for (String model : session.getKeys(new TreeSet<String>()))
@@ -254,8 +258,10 @@ public abstract class AbstractRuntimeModelViewPart extends
           LOGGER.debug(String.format("(%s) No data for %s, ignoring",
               getClass().getName(), model));
       }
-
-    }
+    // }
+    // else //not open? it's already closed?
+    // if (LOGGER.isWarnEnabled())
+    // LOGGER.warn(String.format("Session has already closed? %s", session));
   }
 
   protected void removeSession(ISession session)

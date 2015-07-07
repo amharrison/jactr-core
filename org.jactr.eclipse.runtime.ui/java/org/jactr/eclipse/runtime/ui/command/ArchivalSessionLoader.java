@@ -47,25 +47,32 @@ public class ArchivalSessionLoader extends AbstractHandler
           {
             Collection<IResource> modelIndices = findModelIndicies(folder);
 
-            IResource selectedResource = null;
+            Collection<IResource> selectedResources = null;
 
             // some selection
             if (modelIndices.size() > 1)
-              selectedResource = select(modelIndices);
+              selectedResources = select(modelIndices);
             else if (modelIndices.size() == 1)
-              selectedResource = modelIndices.iterator().next();
+              selectedResources = modelIndices;
             else
               return null; // nope
 
-            if (selectedResource != null)
-            {
-              SessionArchive sa = new SessionArchive(selectedResource);
-              // pump the first block of data
-              sa.getController().resume();
+            if (selectedResources != null && selectedResources.size() > 0)
+              for (IResource selectedResource : selectedResources)
+                try
+                {
+                  SessionArchive sa = new SessionArchive(selectedResource);
+                  // pump the first block of data
+                  sa.getController().resume();
 
-              ((SessionManager) RuntimePlugin.getDefault().getSessionManager())
-                  .addSession(sa);
-            }
+                  ((SessionManager) RuntimePlugin.getDefault()
+                      .getSessionManager()).addSession(sa);
+                }
+                catch (Exception e)
+                {
+                  RuntimePlugin.error(String.format("Failed to replay %s ",
+                      selectedResource.getParent().getName()), e);
+                }
             else
               RuntimePlugin
                   .error("sessionData folder does not contain sessionData.index file");
@@ -74,6 +81,7 @@ public class ArchivalSessionLoader extends AbstractHandler
         }
         catch (Exception e)
         {
+          RuntimePlugin.error("Failed to select valid session archive");
           LOGGER.error("failed to pump it up ", e);
         }
 
@@ -86,12 +94,12 @@ public class ArchivalSessionLoader extends AbstractHandler
    * @param modelIndices
    * @return
    */
-  private IResource select(Collection<IResource> modelIndices)
+  private Collection<IResource> select(Collection<IResource> modelIndices)
   {
     ListSelectionDialog lsd = new ListSelectionDialog(
         Display.getCurrent().getActiveShell(),
         "Select Model",
-        "Multiple models were run in this session. Playback is often easier with just one model at a time. Please select one.",
+        "Multiple models were run in this session. Playback is often easier with just one model at a time. Each model selected will be replayed separately.",
         modelIndices, this.new ContentProvider(), new LabelProvider() {
           @Override
           public String getText(Object element)
@@ -106,7 +114,10 @@ public class ArchivalSessionLoader extends AbstractHandler
     if (lsd.open() == Window.OK)
     {
       Object[] checked = lsd.getCheckedItems();
-      if (checked.length > 0) return (IResource) checked[0];
+      ArrayList<IResource> rtn = new ArrayList<IResource>();
+      for (Object obj : checked)
+        rtn.add((IResource) obj);
+      return rtn;
     }
 
     return null;

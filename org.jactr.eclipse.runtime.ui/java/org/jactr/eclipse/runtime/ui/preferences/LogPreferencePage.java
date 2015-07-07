@@ -5,6 +5,7 @@ package org.jactr.eclipse.runtime.ui.preferences;
  */
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FontFieldEditor;
 import org.eclipse.jface.preference.IntegerFieldEditor;
@@ -33,12 +34,18 @@ public class LogPreferencePage extends FieldEditorPreferencePage implements
   {
     addField(new LabelFieldEditor("Logging", getFieldEditorParent()));
 
+    BooleanFieldEditor bField = new BooleanFieldEditor(
+        RuntimePreferences.TRANSLATE_TIME,
+        "Translate time (hour:min:second.ms)",
+        getFieldEditorParent());
+    addField(bField);
+
     IntegerFieldEditor iField = new IntegerFieldEditor(
         RuntimePreferences.RUNTIME_DATA_WINDOW,
-        "Seconds of data to retain (memory intensive)",
+        "Samples of data to retain (20samples/s) (can be memory intensive)",
         getFieldEditorParent());
-    iField.setTextLimit(5);
-    iField.setValidRange(1, 600);
+    iField.setTextLimit(9);
+    iField.setValidRange(1, 1000000);
     iField.setEmptyStringAllowed(false);
     addField(iField);
 

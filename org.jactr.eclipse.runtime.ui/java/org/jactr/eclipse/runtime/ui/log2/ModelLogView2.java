@@ -3,11 +3,12 @@ package org.jactr.eclipse.runtime.ui.log2;
 /*
  * default logging
  */
+import static org.jactr.eclipse.runtime.ui.log2.ToggleColumnAction.TIME_COLUMN_WIDTH;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,14 +45,11 @@ import org.jactr.eclipse.runtime.log2.ILogSessionDataStream;
 import org.jactr.eclipse.runtime.log2.LogData;
 import org.jactr.eclipse.runtime.session.data.ISessionData;
 import org.jactr.eclipse.runtime.session.stream.ISessionDataStream;
-import org.jactr.eclipse.runtime.ui.UIPlugin;
 import org.jactr.eclipse.runtime.ui.log2.live.ColumnListener;
 import org.jactr.eclipse.runtime.ui.log2.live.LiveLogDataContentProvider;
 import org.jactr.eclipse.runtime.ui.misc.AbstractRuntimeModelViewPart;
 import org.jactr.eclipse.runtime.ui.selection.SessionTimeSelection;
 import org.jactr.eclipse.runtime.ui.selection.SessionTimeSelectionProvider;
-
-import static org.jactr.eclipse.runtime.ui.log2.ToggleColumnAction.*;
 
 public class ModelLogView2 extends AbstractRuntimeModelViewPart
 {
@@ -65,17 +63,11 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
                                                           .getName();
 
   static private String[]            _expectedStreams = {
-      Logger.Stream.TIME.name(),
-      "MARKERS",
-      Logger.Stream.OUTPUT.name(),
-      Logger.Stream.GOAL.name(),
-      Logger.Stream.IMAGINAL.name(),
-      Logger.Stream.RETRIEVAL.name(),
-      Logger.Stream.PROCEDURAL.name(),
-      Logger.Stream.DECLARATIVE.name(),
-      Logger.Stream.VISUAL.name(),
-      Logger.Stream.AURAL.name(),
-      Logger.Stream.MOTOR.name() };
+      Logger.Stream.TIME.name(), "MARKERS", Logger.Stream.OUTPUT.name(),
+      Logger.Stream.GOAL.name(), Logger.Stream.IMAGINAL.name(),
+      Logger.Stream.RETRIEVAL.name(), Logger.Stream.PROCEDURAL.name(),
+      Logger.Stream.DECLARATIVE.name(), Logger.Stream.VISUAL.name(),
+      Logger.Stream.AURAL.name(), Logger.Stream.MOTOR.name() };
 
   private Color                      EXCEPTION_COLOR  = new Color(
                                                           Display.getCurrent(),
@@ -128,13 +120,23 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
   protected Composite createModelComposite(String modelName, Object modelData,
       Composite parent)
   {
+    if (LOGGER.isDebugEnabled())
+      LOGGER.debug(String.format("Creating log ui for %s", modelName));
+
     ISessionData sessionData = (ISessionData) modelData;
 
     ILogSessionDataStream lsds = (ILogSessionDataStream) sessionData
         .getDataStream("log");
 
+    /*
+     * just because a session is opened, and is even expecting log data, there
+     * might not be any log data just yet.
+     */
     if (lsds == null)
     {
+      if (LOGGER.isDebugEnabled())
+        LOGGER.debug(String.format("No log data available for %s jsut yet",
+            modelName));
       if (sessionData.isOpen())
       {
         if (!wasDeferred(modelData))
@@ -146,15 +148,21 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
         else
         {
           if (LOGGER.isDebugEnabled())
-            LOGGER.debug(String.format("%s Was previous deferred, ignoring",
+            LOGGER.debug(String.format(
+                "%s Was previous deferred, assuming no data is coming.",
                 modelName));
           removeDeferred(modelData);
         }
 
       }
-      else if (LOGGER.isDebugEnabled())
-        LOGGER.debug(String.format("Session data is closed, ignoring %s",
-            modelName));
+      else
+      {
+        if (LOGGER.isDebugEnabled())
+          LOGGER.debug(String.format("Session data is closed, ignoring %s",
+              modelName));
+
+        removeDeferred(modelData);
+      }
 
       return null;
     }
@@ -213,18 +221,18 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
     viewer.setLabelProvider(new TableLabelProvider(viewer.getTable()));
 
     // if (logStream instanceof ILiveSessionDataStream)
-    LiveLogDataContentProvider contentProvider = new LiveLogDataContentProvider(viewer);
-	viewer.setContentProvider(contentProvider);
-	contentProvider.addColumnListener(new ColumnListener() {
-		@Override public void added(final TableColumn column) {
-			boolean updateActionBars = createActionForColumnOrAddColumnToExistingAction(
-					viewer.getTable(), column, column.getText());
-			if(updateActionBars)
-			{
-				getViewSite().getActionBars().updateActionBars();
-			}
-		}
-		});
+    LiveLogDataContentProvider contentProvider = new LiveLogDataContentProvider(
+        viewer);
+    viewer.setContentProvider(contentProvider);
+    contentProvider.addColumnListener(new ColumnListener() {
+      @Override
+      public void added(final TableColumn column)
+      {
+        boolean updateActionBars = createActionForColumnOrAddColumnToExistingAction(
+            viewer.getTable(), column, column.getText());
+        if (updateActionBars) getViewSite().getActionBars().updateActionBars();
+      }
+    });
 
     viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -246,6 +254,7 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
             for (String stream : row.getStreamNames())
             {
               String content = row.get(stream);
+
               StyleRange streamStyle = new StyleRange();
               streamStyle.start = sb.length();
               sb.append(stream);
@@ -266,6 +275,7 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
               }
 
               sb.append(content);
+
               sb.append("\n");
 
               ranges.add(streamStyle);
@@ -324,14 +334,11 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
       TableColumn column = new TableColumn(table, SWT.LEFT);
       column.setText(stream);
       column.setResizable(!stream.equals("TIME"));
-      if(stream.equals("TIME"))
-    	  column.setWidth(TIME_COLUMN_WIDTH);
-      updateActionBars |= createActionForColumnOrAddColumnToExistingAction(table, column, stream);
+      if (stream.equals("TIME")) column.setWidth(TIME_COLUMN_WIDTH);
+      updateActionBars |= createActionForColumnOrAddColumnToExistingAction(
+          table, column, stream);
     }
-    if(updateActionBars)
-    {
-    	getViewSite().getActionBars().updateActionBars();
-    }
+    if (updateActionBars) getViewSite().getActionBars().updateActionBars();
 
     table.addControlListener(new ControlAdapter() {
       @Override
@@ -345,40 +352,38 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
   }
 
   /**
-   * 
    * @return True, if the action bars need to be updated. False, if not.
    */
-  protected boolean createActionForColumnOrAddColumnToExistingAction(Table table, TableColumn column, String columnText)
+  protected boolean createActionForColumnOrAddColumnToExistingAction(
+      Table table, TableColumn column, String columnText)
   {
-	  boolean updateActionBars = false;
-      IToggleColumnAction action = getActionFor(columnText);
-	  if(action == null)
-	  {
-	      getViewSite().getActionBars().getMenuManager().add(new ToggleColumnAction(this, table, column));
-	      updateActionBars = true;
-      } else {
-    	  action.add(column, table);
-      }
-	  return updateActionBars;
+    boolean updateActionBars = false;
+    IToggleColumnAction action = getActionFor(columnText);
+    if (action == null)
+    {
+      getViewSite().getActionBars().getMenuManager()
+          .add(new ToggleColumnAction(this, table, column));
+      updateActionBars = true;
+    }
+    else
+      action.add(column, table);
+    return updateActionBars;
   }
-  
+
   protected void adjustColumnSizes(Table table)
   {
-	int resizableColumns = 0;
-	for(TableColumn column: table.getColumns()) {
-		if(column.getResizable())
-			resizableColumns++;
-	}
+    int resizableColumns = 0;
+    for (TableColumn column : table.getColumns())
+      if (column.getResizable()) resizableColumns++;
     /*
      * resize
      */
-    int size = (table.getClientArea().width-TIME_COLUMN_WIDTH) / resizableColumns;
+    int size = (table.getClientArea().width - TIME_COLUMN_WIDTH)
+        / resizableColumns;
 
     table.setRedraw(false);
-    for (TableColumn column : table.getColumns()) {
-    	if(column.getResizable())
-    		column.setWidth(size);
-    }
+    for (TableColumn column : table.getColumns())
+      if (column.getResizable()) column.setWidth(size);
     table.setRedraw(true);
   }
 
@@ -394,22 +399,24 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
   {
     deferAdd(sessionData.getModelName(), sessionData, 250);
   }
-  
+
   private IToggleColumnAction getActionFor(String columnName)
   {
-	Optional<IContributionItem> firstMatchingItem = Arrays.stream(getViewSite().getActionBars().getMenuManager().getItems())
-			.filter(
-				item -> {
-					IAction action = null;
-					boolean hasAction = item instanceof ActionContributionItem
-							&& (action = ((ActionContributionItem)item).getAction()) instanceof IToggleColumnAction
-							&& ((IToggleColumnAction)action).getColumnText().equals(columnName);
-					return hasAction;
-				}).findFirst();
-	if(firstMatchingItem.isPresent()) {
-		return (IToggleColumnAction)((ActionContributionItem)firstMatchingItem.get()).getAction();
-	} else {
-		return null;
-	}
+    Optional<IContributionItem> firstMatchingItem = Arrays
+        .stream(getViewSite().getActionBars().getMenuManager().getItems())
+        .filter(
+            item -> {
+              IAction action = null;
+              boolean hasAction = item instanceof ActionContributionItem
+                  && (action = ((ActionContributionItem) item).getAction()) instanceof IToggleColumnAction
+                  && ((IToggleColumnAction) action).getColumnText().equals(
+                      columnName);
+              return hasAction;
+            }).findFirst();
+    if (firstMatchingItem.isPresent())
+      return (IToggleColumnAction) ((ActionContributionItem) firstMatchingItem
+          .get()).getAction();
+    else
+      return null;
   }
 }

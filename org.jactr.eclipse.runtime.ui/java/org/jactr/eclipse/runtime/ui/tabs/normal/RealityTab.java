@@ -279,7 +279,12 @@ public class RealityTab extends CommonExtensionDescriptorTab
       IProject project)
   {
     if (project != null)
-      return SensorRegistry.getRegistry().getDescriptors(project, true);
+    {
+      Collection<? extends CommonExtensionDescriptor> descs = SensorRegistry
+          .getRegistry().getDescriptors(project, true);
+
+      return descs;
+    }
     return SensorRegistry.getRegistry().getAllDescriptors();
   }
 }
