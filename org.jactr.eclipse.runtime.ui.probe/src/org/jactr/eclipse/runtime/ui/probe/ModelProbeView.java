@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
-import org.jactr.eclipse.runtime.marker.MarkerSessionDataStream;
 import org.jactr.eclipse.runtime.probe2.ModelProbeData;
 import org.jactr.eclipse.runtime.probe3.IModelProbeSessionDataStream;
 import org.jactr.eclipse.runtime.session.ILocalSession;
@@ -44,7 +43,6 @@ import org.jactr.eclipse.runtime.session.stream.ILiveSessionDataStreamListener;
 import org.jactr.eclipse.runtime.session.stream.ISessionDataStream;
 import org.jactr.eclipse.runtime.ui.misc.AbstractRuntimeModelViewPart;
 import org.jactr.eclipse.runtime.ui.probe.components.AbstractProbeContainer;
-import org.jactr.eclipse.runtime.ui.probe.components.MarkerSupport;
 import org.jactr.eclipse.runtime.ui.probe.components.XYGraphProbeContainer;
 import org.jactr.eclipse.ui.concurrent.QueueingUIJob;
 import org.jactr.eclipse.ui.images.JACTRImages;
@@ -67,7 +65,8 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
 
   private final Map<String, Set<String>>                  _filteredProbes;
 
-  private final Map<ISessionData, MarkerSupport>          _installedMarkerSupport = new HashMap<ISessionData, MarkerSupport>();
+  // private final Map<ISessionData, MarkerSupport> _installedMarkerSupport =
+  // new HashMap<ISessionData, MarkerSupport>();
 
   @SuppressWarnings("rawtypes")
   private final Map<ISessionData, AbstractProbeContainer> _installedContainers    = new HashMap<ISessionData, AbstractProbeContainer>();
@@ -396,7 +395,7 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
   {
     content.dispose();
     _installedContainers.remove(modelData);
-    _installedMarkerSupport.remove(modelData);
+    // _installedMarkerSupport.remove(modelData);
   }
 
   @SuppressWarnings("rawtypes")
@@ -424,34 +423,35 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
       LOGGER.debug(String.format("NewDataStream for session %s, %s",
           sessionData, sessionDataStream.getClass().getSimpleName()));
 
-    if (_installedMarkerSupport.get(sessionData) == null
-        && sessionDataStream instanceof MarkerSessionDataStream)
-    {
-      /*
-       * probe data can arrive across many different ISessionData's (one for
-       * each unique set of probes), but markers are stored in the primary
-       * ISessionData for the named model. So we need to look at all of the
-       * probe/ISessionDatas looking for a match to the session
-       */
-
-      String modelRootName = sessionData.getModelName();
-
-      for (Map.Entry<ISessionData, AbstractProbeContainer> entry : _installedContainers
-          .entrySet())
-        if (entry.getKey().getModelName().startsWith(modelRootName + "."))
-        {
-          if (LOGGER.isDebugEnabled())
-            LOGGER.debug(String.format("Installing marker support"));
-          entry.getValue();
-
-          // MarkerSupport support = new MarkerSupport(apc,
-          // (MarkerSessionDataStream) sessionDataStream, RuntimePlugin
-          // .getDefault().getPreferenceStore()
-          // .getInt(RuntimePreferences.RUNTIME_DATA_WINDOW));
-          //
-          // _installedMarkerSupport.put(entry.getKey(), support);
-        }
-    }
+    // if (_installedMarkerSupport.get(sessionData) == null
+    // && sessionDataStream instanceof MarkerSessionDataStream)
+    // {
+    // /*
+    // * probe data can arrive across many different ISessionData's (one for
+    // * each unique set of probes), but markers are stored in the primary
+    // * ISessionData for the named model. So we need to look at all of the
+    // * probe/ISessionDatas looking for a match to the session
+    // */
+    //
+    // String modelRootName = sessionData.getModelName();
+    //
+    // for (Map.Entry<ISessionData, AbstractProbeContainer> entry :
+    // _installedContainers
+    // .entrySet())
+    // if (entry.getKey().getModelName().startsWith(modelRootName + "."))
+    // {
+    // if (LOGGER.isDebugEnabled())
+    // LOGGER.debug(String.format("Installing marker support"));
+    // entry.getValue();
+    //
+    // // MarkerSupport support = new MarkerSupport(apc,
+    // // (MarkerSessionDataStream) sessionDataStream, RuntimePlugin
+    // // .getDefault().getPreferenceStore()
+    // // .getInt(RuntimePreferences.RUNTIME_DATA_WINDOW));
+    // //
+    // // _installedMarkerSupport.put(entry.getKey(), support);
+    // }
+    // }
   }
 
 }

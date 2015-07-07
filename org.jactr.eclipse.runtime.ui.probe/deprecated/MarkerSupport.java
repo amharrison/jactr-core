@@ -45,7 +45,7 @@ public class MarkerSupport implements
 
   private final MarkerSessionDataStream              _msds;
 
-  private final AbstractBIRTProbeContainer               _chartContainer;
+  private final AbstractBIRTProbeContainer           _chartContainer;
 
   private final ILiveSessionDataStreamListener<Long> _markerListener;
 
