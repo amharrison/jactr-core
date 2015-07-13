@@ -25,6 +25,7 @@ public class RuntimeUIPreferenceInitializer extends
     IPreferenceStore prefs = RuntimePlugin.getDefault().getPreferenceStore();
     // Preferences prefs = UIPlugin.getDefault().getPluginPreferences();
     prefs.setDefault(RuntimePreferences.RUNTIME_DATA_WINDOW, 90);
+    prefs.setDefault(RuntimePreferences.TRANSLATE_TIME, false);
   }
 
 }

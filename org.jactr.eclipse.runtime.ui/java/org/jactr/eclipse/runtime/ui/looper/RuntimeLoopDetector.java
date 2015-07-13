@@ -5,9 +5,10 @@ package org.jactr.eclipse.runtime.ui.looper;
  */
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jactr.eclipse.runtime.launching.norm.ACTRSession;
 import org.jactr.eclipse.runtime.session.ISession;
+import org.jactr.eclipse.runtime.session.data.ISessionData;
 import org.jactr.eclipse.runtime.session.impl.Session2SessionAdapter;
+import org.jactr.eclipse.runtime.session.stream.ISessionDataStream;
 import org.jactr.eclipse.runtime.trace.IRuntimeTraceListener;
 import org.jactr.eclipse.runtime.trace.impl.RuntimeTraceDataManager;
 import org.jactr.tools.tracer.transformer.ITransformedEvent;
@@ -32,48 +33,48 @@ public class RuntimeLoopDetector extends
 
   @Override
   protected RecentProductionModelData createRuntimeTraceData(
-      ACTRSession session, String commonName, String modelName)
+ISession session,
+      String commonName, String modelName)
   {
     return new RecentProductionModelData(session, modelName, _notifier);
   }
 
   @Override
-  protected void disposeRuntimeTraceData(ACTRSession session, String modelName,
+  protected void disposeRuntimeTraceData(ISession session, String modelName,
       RecentProductionModelData data)
   {
     data.dispose();
   }
 
   @Override
-  protected void process(ACTRSession session, String modelName,
+  protected void process(ISession session, String modelName,
       RecentProductionModelData data, ITransformedEvent event)
   {
     data.process(session, (TransformedProceduralEvent) event);
   }
 
   @Override
-  public void sessionClosed(ACTRSession session, boolean normal)
+  public void sessionClosed(ISession session, boolean normal)
   {
     _notifier.clear(session);
   }
 
   @Override
-  public void sessionDestroyed(ACTRSession session)
+  public void sessionDestroyed(ISession session)
   {
 
   }
 
   @Override
-  public void sessionOpened(ACTRSession session)
+  public void sessionOpened(ISession session)
   {
     // so that we only do this for debug
-    if (session.isDebugSession()) _notifier.add(session);
+    // if (session.isDebugSession()) _notifier.add(session);
   }
 
   public void eventFired(ITransformedEvent traceEvent, ISession session)
   {
-    Session2SessionAdapter nsw = (Session2SessionAdapter) session;
-    process(traceEvent, (ACTRSession) nsw.getOldSession());
+    process(traceEvent, session);
   }
 
   public boolean isInterestedIn(ITransformedEvent traceEvent,
@@ -82,6 +83,28 @@ public class RuntimeLoopDetector extends
     Session2SessionAdapter nsw = (Session2SessionAdapter) session;
     return nsw.getOldSession().isDebugSession()
         && traceEvent instanceof TransformedProceduralEvent;
+  }
+
+  @Override
+  public void sessionClosed(ISession session)
+  {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void newSessionData(ISessionData sessionData)
+  {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void newSessionDataStream(ISessionData sessionData,
+      ISessionDataStream sessionDataStream)
+  {
+    // TODO Auto-generated method stub
+
   }
 
 }

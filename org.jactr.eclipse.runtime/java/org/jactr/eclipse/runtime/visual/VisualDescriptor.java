@@ -12,7 +12,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.commonreality.identifier.IIdentifier;
-import org.jactr.eclipse.runtime.launching.norm.ACTRSession;
+import org.jactr.eclipse.runtime.session.ISession;
 import org.jactr.tools.tracer.transformer.visual.TransformedVisualEvent;
 
 public class VisualDescriptor
@@ -40,10 +40,10 @@ public class VisualDescriptor
 
   private double[]                              _fov;
 
-  final private ACTRSession                     _session;
+  final private ISession                        _session;
 
   public VisualDescriptor(String commonName, String modelName,
-      ACTRSession session)
+ ISession session)
   {
     _commonName = commonName;
     _modelName = modelName;
@@ -52,7 +52,7 @@ public class VisualDescriptor
     _session = session;
   }
 
-  public ACTRSession getSession()
+  public ISession getSession()
   {
     return _session;
   }

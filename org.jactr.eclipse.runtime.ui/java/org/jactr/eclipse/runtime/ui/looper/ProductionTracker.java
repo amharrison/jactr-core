@@ -5,8 +5,9 @@ package org.jactr.eclipse.runtime.ui.looper;
  */
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jactr.eclipse.runtime.launching.norm.ACTRSession;
-import org.jactr.eclipse.runtime.launching.session.AbstractSession;
+import org.jactr.eclipse.runtime.session.ISession;
+import org.jactr.eclipse.runtime.session.data.ISessionData;
+import org.jactr.eclipse.runtime.session.stream.ISessionDataStream;
 import org.jactr.eclipse.runtime.trace.impl.RuntimeTraceDataManager;
 import org.jactr.tools.tracer.transformer.ITransformedEvent;
 
@@ -19,7 +20,7 @@ public class ProductionTracker extends RuntimeTraceDataManager
                                                 .getLog(ProductionTracker.class);
 
   @Override
-  protected Object createRuntimeTraceData(ACTRSession session,
+  protected Object createRuntimeTraceData(ISession session,
       String commonName, String modelName)
   {
     // TODO Auto-generated method stub
@@ -27,7 +28,7 @@ public class ProductionTracker extends RuntimeTraceDataManager
   }
 
   @Override
-  protected void disposeRuntimeTraceData(ACTRSession session, String modelName,
+  protected void disposeRuntimeTraceData(ISession session, String modelName,
       Object data)
   {
     // TODO Auto-generated method stub
@@ -35,26 +36,51 @@ public class ProductionTracker extends RuntimeTraceDataManager
   }
 
   @Override
-  protected void process(ACTRSession session, String modelName, Object data,
+  protected void process(ISession session, String modelName, Object data,
       ITransformedEvent event)
   {
     // TODO Auto-generated method stub
 
   }
 
-  public void sessionClosed(AbstractSession session, boolean normal)
+  @Override
+  public void sessionClosed(ISession session, boolean normal)
   {
     // TODO Auto-generated method stub
 
   }
 
-  public void sessionDestroyed(AbstractSession session)
+  @Override
+  public void sessionDestroyed(ISession session)
   {
     // TODO Auto-generated method stub
 
   }
 
-  public void sessionOpened(AbstractSession session)
+  @Override
+  public void sessionOpened(ISession session)
+  {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void sessionClosed(ISession session)
+  {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void newSessionData(ISessionData sessionData)
+  {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void newSessionDataStream(ISessionData sessionData,
+      ISessionDataStream sessionDataStream)
   {
     // TODO Auto-generated method stub
 

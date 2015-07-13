@@ -3,8 +3,6 @@ package org.jactr.eclipse.runtime.ui.log2;
 /*
  * default logging
  */
-import static org.jactr.eclipse.runtime.ui.log2.ToggleColumnAction.TIME_COLUMN_WIDTH;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -325,6 +323,7 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
     table.setLinesVisible(true);
     table.setHeaderVisible(true);
 
+
     /*
      * populate the column headers & pack
      */
@@ -333,8 +332,9 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
     {
       TableColumn column = new TableColumn(table, SWT.LEFT);
       column.setText(stream);
-      column.setResizable(!stream.equals("TIME"));
-      if (stream.equals("TIME")) column.setWidth(TIME_COLUMN_WIDTH);
+      column.setMoveable(true);
+      // column.setResizable(!stream.equals("TIME"));
+      // if (stream.equals("TIME")) column.setWidth(TIME_COLUMN_WIDTH);
       updateActionBars |= createActionForColumnOrAddColumnToExistingAction(
           table, column, stream);
     }
@@ -373,17 +373,33 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
   protected void adjustColumnSizes(Table table)
   {
     int resizableColumns = 0;
+    int timeWidth = 0;
     for (TableColumn column : table.getColumns())
+      if (column.getText().equals("TIME"))
+      {
+        timeWidth = column.getWidth();
+        if (timeWidth <= 15)
+        {
+          timeWidth = 0; // effectively.
+          resizableColumns++;
+        }
+      }
+      else
       if (column.getResizable()) resizableColumns++;
     /*
      * resize
      */
-    int size = (table.getClientArea().width - TIME_COLUMN_WIDTH)
+    // int size = (table.getClientArea().width - TIME_COLUMN_WIDTH)
+    // / resizableColumns;
+    int size = (table.getClientArea().width - timeWidth)
         / resizableColumns;
 
     table.setRedraw(false);
     for (TableColumn column : table.getColumns())
-      if (column.getResizable()) column.setWidth(size);
+      if (column.getResizable()
+          && (!column.getText().equals("TIME") || timeWidth == 0))
+        column.setWidth(size);
+
     table.setRedraw(true);
   }
 

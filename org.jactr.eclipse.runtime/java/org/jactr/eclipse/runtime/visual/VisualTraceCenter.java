@@ -5,9 +5,9 @@ package org.jactr.eclipse.runtime.visual;
  */
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jactr.eclipse.runtime.launching.norm.ACTRSession;
 import org.jactr.eclipse.runtime.session.ISession;
-import org.jactr.eclipse.runtime.session.impl.Session2SessionAdapter;
+import org.jactr.eclipse.runtime.session.data.ISessionData;
+import org.jactr.eclipse.runtime.session.stream.ISessionDataStream;
 import org.jactr.eclipse.runtime.trace.IRuntimeTraceListener;
 import org.jactr.eclipse.runtime.trace.impl.GeneralEventManager;
 import org.jactr.eclipse.runtime.trace.impl.RuntimeTraceDataManager;
@@ -50,11 +50,8 @@ public class VisualTraceCenter extends
 
       public void eventFired(ITransformedEvent traceEvent, ISession session)
       {
-        // short term patch
-        Session2SessionAdapter nsw = (Session2SessionAdapter) session;
 
-        VisualTraceCenter.get().process(traceEvent,
-            (ACTRSession) nsw.getOldSession());
+        VisualTraceCenter.get().process(traceEvent, session);
       }
 
       public boolean isInterestedIn(ITransformedEvent traceEvent,
@@ -82,15 +79,14 @@ public class VisualTraceCenter extends
   }
 
   @Override
-  protected VisualDescriptor createRuntimeTraceData(ACTRSession session,
-      String commonName,
-      String modelName)
+  protected VisualDescriptor createRuntimeTraceData(ISession session,
+      String commonName, String modelName)
   {
     return new VisualDescriptor(commonName, modelName, session);
   }
 
   @Override
-  protected void modelAdded(ACTRSession session, VisualDescriptor data,
+  protected void modelAdded(ISession session, VisualDescriptor data,
       String modelName)
   {
     super.modelAdded(session, data, modelName);
@@ -98,7 +94,7 @@ public class VisualTraceCenter extends
   }
 
   @Override
-  protected void disposeRuntimeTraceData(ACTRSession session, String modelName,
+  protected void disposeRuntimeTraceData(ISession session, String modelName,
       VisualDescriptor data)
   {
     // noop
@@ -106,7 +102,7 @@ public class VisualTraceCenter extends
   }
 
   @Override
-  protected void modelRemoved(ACTRSession session, VisualDescriptor data,
+  protected void modelRemoved(ISession session, VisualDescriptor data,
       String modelName)
   {
     super.modelRemoved(session, data, modelName);
@@ -114,7 +110,7 @@ public class VisualTraceCenter extends
   }
 
   @Override
-  protected void process(ACTRSession session, String modelName,
+  protected void process(ISession session, String modelName,
       VisualDescriptor data, ITransformedEvent event)
   {
     try
@@ -142,6 +138,28 @@ public class VisualTraceCenter extends
       _modelName = modelName;
       _descriptor = data;
     }
+  }
+
+  @Override
+  public void sessionClosed(ISession session)
+  {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void newSessionData(ISessionData sessionData)
+  {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void newSessionDataStream(ISessionData sessionData,
+      ISessionDataStream sessionDataStream)
+  {
+    // TODO Auto-generated method stub
+
   }
 
 }

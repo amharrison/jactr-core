@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
@@ -22,7 +21,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.jactr.eclipse.runtime.launching.norm.ACTRSession;
+import org.jactr.eclipse.runtime.session.ISession;
 import org.jactr.eclipse.ui.UIPlugin;
 
 public class LoopNotifier implements ILoopListener
@@ -35,18 +34,18 @@ public class LoopNotifier implements ILoopListener
 
   private volatile LoopDialog                 _dialog;
 
-  private Map<ACTRSession, Set<List<String>>> _ignorePatterns;
+  private Map<ISession, Set<List<String>>> _ignorePatterns;
 
   private List<String>                        _notifyingProductionLoop;
 
-  private ACTRSession                         _notifyingSession;
+  private ISession                         _notifyingSession;
 
   public LoopNotifier()
   {
-    _ignorePatterns = new HashMap<ACTRSession, Set<List<String>>>();
+    _ignorePatterns = new HashMap<ISession, Set<List<String>>>();
   }
 
-  public void loopDetected(final ACTRSession session, final String modelName,
+  public void loopDetected(final ISession session, final String modelName,
       final List<String> productionLoop, final int iterations)
   {
     if (iterations <= 1) return;
@@ -71,12 +70,12 @@ public class LoopNotifier implements ILoopListener
     });
   }
 
-  synchronized public void add(ACTRSession session)
+  synchronized public void add(ISession session)
   {
     _ignorePatterns.put(session, new HashSet<List<String>>());
   }
 
-  synchronized public void clear(ACTRSession session)
+  synchronized public void clear(ISession session)
   {
     Set<List<String>> ignore = _ignorePatterns.remove(session);
     if (ignore != null) ignore.clear();
@@ -84,19 +83,19 @@ public class LoopNotifier implements ILoopListener
     if (_dialog != null && _notifyingSession == session) _dialog.close();
   }
 
-  synchronized protected void ignore(ACTRSession session, List<String> pattern)
+  synchronized protected void ignore(ISession session, List<String> pattern)
   {
     Set<List<String>> ignore = _ignorePatterns.get(session);
     if (ignore != null) ignore.add(pattern);
   }
 
-  private void notifyUser(ACTRSession session, String modelName,
+  private void notifyUser(ISession session, String modelName,
       List<String> productionLoop, int iterations)
   {
     _notifyingProductionLoop = productionLoop;
     _notifyingSession = session;
 
-    if (!session.isActive() || session.isDestroyed())
+    if (!session.isOpen() || session.hasBeenDestroyed())
     {
       if (_dialog != null) _dialog.close();
       return;
@@ -123,18 +122,18 @@ public class LoopNotifier implements ILoopListener
     _dialog.setMessage(message);
   }
 
-  protected void terminate(ACTRSession session)
+  protected void terminate(ISession session)
   {
-    if (session.isDestroyed() || !session.isActive()) return;
+    if (session.hasBeenDestroyed() || !session.isOpen()) return;
 
     try
     {
-      session.stop();
+      session.close();
     }
-    catch (CoreException ce)
+    catch (Exception ce)
     {
       // should probably do something witht his..
-      UIPlugin.log(ce.getStatus());
+      UIPlugin.log(ce);
     }
   }
 

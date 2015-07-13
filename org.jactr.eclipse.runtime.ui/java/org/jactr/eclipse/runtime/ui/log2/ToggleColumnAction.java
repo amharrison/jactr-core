@@ -35,8 +35,7 @@ public class ToggleColumnAction extends Action implements IToggleColumnAction {
     // this.lastWidth =
     // column.getText().equals("TIME")?TIME_COLUMN_WIDTH:column.getWidth();
     // I appreciate the frustration of resizing time all the time, but fixed is
-    // worse if you ever
-    // run longer..
+    // worse if you ever run for long periods
     this.lastWidth = column.getWidth();
 		column.addControlListener(new ControlAdapter() {
 			@Override

@@ -35,7 +35,7 @@ public class VisiconComponent extends Canvas
   static private final transient Log LOGGER = LogFactory
                                                 .getLog(VisiconComponent.class);
 
-  public static final float DEFAULT_MAGNIFICATION = 1.25f;
+  public static final float          DEFAULT_MAGNIFICATION = 1f;
   
   /*
    * for rendering the visicon
@@ -144,7 +144,7 @@ public class VisiconComponent extends Canvas
   }
   
   void setMagnification(float magnification) {
-	  System.err.println("magnification="+magnification);
+    // System.err.println("magnification="+magnification);
 	  _magnification = magnification;
 	  updateTransform();
 	  redraw();

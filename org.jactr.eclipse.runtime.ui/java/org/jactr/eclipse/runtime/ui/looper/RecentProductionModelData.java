@@ -16,7 +16,7 @@ import java.util.TreeMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jactr.core.module.procedural.event.ProceduralModuleEvent;
-import org.jactr.eclipse.runtime.launching.norm.ACTRSession;
+import org.jactr.eclipse.runtime.session.ISession;
 import org.jactr.io.antlr3.misc.ASTSupport;
 import org.jactr.tools.tracer.transformer.procedural.TransformedProceduralEvent;
 
@@ -28,7 +28,7 @@ public class RecentProductionModelData
   static private final transient Log      LOGGER           = LogFactory
                                                                .getLog(RecentProductionModelData.class);
 
-  private final ACTRSession               _session;
+  private final ISession                  _session;
 
   private final String                    _modelName;
 
@@ -51,7 +51,7 @@ public class RecentProductionModelData
   private ILoopListener                   _loopListener;
 
   @SuppressWarnings("serial")
-  public RecentProductionModelData(ACTRSession session, String modelName,
+  public RecentProductionModelData(ISession session, String modelName,
       ILoopListener loopListener)
   {
     _modelName = modelName;
@@ -94,7 +94,7 @@ public class RecentProductionModelData
     _available.clear();
   }
 
-  public void process(ACTRSession session, TransformedProceduralEvent event)
+  public void process(ISession session, TransformedProceduralEvent event)
   {
     if (event.getType() != ProceduralModuleEvent.Type.PRODUCTION_FIRED) return;
 
@@ -105,7 +105,7 @@ public class RecentProductionModelData
     search(session);
   }
 
-  private void search(ACTRSession session)
+  private void search(ISession session)
   {
     new LinkedHashMap<List<String>, Integer>();
     List<String> productionSequence = new ArrayList<String>();

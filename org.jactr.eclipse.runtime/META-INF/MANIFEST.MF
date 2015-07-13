@@ -58,8 +58,10 @@ Require-Bundle: org.eclipse.debug.core,
  org.commonreality.net;bundle-version="1.0.0",
  org.commonreality.netty;bundle-version="1.0.0",
  org.commonreality.api;bundle-version="1.0.0",
- org.commonreality.core;bundle-version="1.2.8"
+ org.commonreality.core;bundle-version="1.2.8",
+ org.commonreality.modalities;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Eclipse-RegisterBuddy: org.commonreality.mina.core, org.apache.log4j
 Plugin-Class: org.jactr.eclipse.runtime.RuntimePlugin
 Bundle-ClassPath: .
+Import-Package: org.jactr.eclipse.runtime.session

@@ -11,12 +11,12 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jactr.eclipse.runtime.launching.norm.ACTRSession;
-import org.jactr.eclipse.runtime.launching.session.ISessionListener;
+import org.jactr.eclipse.runtime.session.ISession;
+import org.jactr.eclipse.runtime.session.ISessionListener;
 import org.jactr.tools.tracer.transformer.ITransformedEvent;
 
 public abstract class RuntimeTraceDataManager<T> implements
-    ISessionListener<ACTRSession>
+ ISessionListener
 {
   /**
    * Logger definition
@@ -24,20 +24,22 @@ public abstract class RuntimeTraceDataManager<T> implements
   static private final transient Log            LOGGER = LogFactory
                                                            .getLog(RuntimeTraceDataManager.class);
 
-  private Map<ACTRSession, Map<String, T>>      _data;
+  private Map<ISession, Map<String, T>>      _data;
 
-  private Map<ACTRSession, Map<String, String>> _commonModelNameMap;
+  private Map<ISession, Map<String, String>> _commonModelNameMap;
 
   private int                                   _executedSessions;
 
   protected RuntimeTraceDataManager()
   {
-    _data = new HashMap<ACTRSession, Map<String, T>>();
-    _commonModelNameMap = new HashMap<ACTRSession, Map<String, String>>();
-    ACTRSession.getACTRSessionTracker().addListener(this);
+    _data = new HashMap<ISession, Map<String, T>>();
+    _commonModelNameMap = new HashMap<ISession, Map<String, String>>();
+
+    // ACTRSession.getACTRSessionTracker().addListener(this);
+    // RuntimePlugin.getDefault().getSessionManager().addListener(this, null);
   }
 
-  protected T getRuntimeTraceData(ACTRSession session, String modelName,
+  protected T getRuntimeTraceData(ISession session, String modelName,
       boolean create)
   {
     boolean added = false;
@@ -90,7 +92,7 @@ public abstract class RuntimeTraceDataManager<T> implements
    * @param data
    * @param modelName
    */
-  protected void modelAdded(ACTRSession session, T data, String commonName)
+  protected void modelAdded(ISession session, T data, String commonName)
   {
 
   }
@@ -102,12 +104,12 @@ public abstract class RuntimeTraceDataManager<T> implements
    * @param data
    * @param modelName
    */
-  protected void modelRemoved(ACTRSession session, T data, String modelName)
+  protected void modelRemoved(ISession session, T data, String modelName)
   {
 
   }
 
-  public T getRuntimeTraceData(ACTRSession session, String modelName)
+  public T getRuntimeTraceData(ISession session, String modelName)
   {
     return getRuntimeTraceData(session, modelName, false);
   }
@@ -123,7 +125,7 @@ public abstract class RuntimeTraceDataManager<T> implements
     return container;
   }
 
-  public Collection<T> getAllRuntimeTraceData(ACTRSession session,
+  public Collection<T> getAllRuntimeTraceData(ISession session,
       Collection<T> container)
   {
     if (container == null) container = new ArrayList<T>();
@@ -138,13 +140,13 @@ public abstract class RuntimeTraceDataManager<T> implements
     return container;
   }
 
-  abstract protected T createRuntimeTraceData(ACTRSession session,
+  abstract protected T createRuntimeTraceData(ISession session,
       String commonModelName, String trueName);
 
-  abstract protected void disposeRuntimeTraceData(ACTRSession session,
+  abstract protected void disposeRuntimeTraceData(ISession session,
       String commonModelName, T data);
 
-  public void process(ITransformedEvent event, ACTRSession session)
+  public void process(ITransformedEvent event, ISession session)
   {
 
     String modelName = event.getModelName();
@@ -152,20 +154,20 @@ public abstract class RuntimeTraceDataManager<T> implements
     process(session, modelName, data, event);
   }
 
-  abstract protected void process(ACTRSession session, String modelName,
+  abstract protected void process(ISession session, String modelName,
       T data, ITransformedEvent event);
 
-  public void sessionOpened(ACTRSession session)
+  public void sessionOpened(ISession session)
   {
     // noop
   }
 
-  public void sessionClosed(ACTRSession session, boolean normal)
+  public void sessionClosed(ISession session, boolean normal)
   {
     // noop
   }
 
-  public void sessionDestroyed(ACTRSession session)
+  public void sessionDestroyed(ISession session)
   {
     Map<String, T> container = null;
     synchronized (_data)

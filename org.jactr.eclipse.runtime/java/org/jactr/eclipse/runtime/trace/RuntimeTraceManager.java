@@ -39,7 +39,7 @@ public class RuntimeTraceManager
               LOGGER.error(String.format(
                   "Failed to propogate event [%s] to listener [%s] ",
                   event.event.getClass().getName(), listener.getClass()
-                      .getName()));
+                      .getName()), e);
             }
           }
         });

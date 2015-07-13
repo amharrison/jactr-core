@@ -172,9 +172,10 @@ protected void configureModelControl() {
 }
 
   private void createZoomSlider() {
-	  zoomSlider = new ZoomSliderContribution(getTabFolder(), VisiconComponent.DEFAULT_MAGNIFICATION);
-	  getViewSite().getActionBars().getToolBarManager().add(zoomSlider);
-	  getViewSite().getActionBars().updateActionBars();
+    zoomSlider = new ZoomSliderContribution(getTabFolder(),
+        VisiconComponent.DEFAULT_MAGNIFICATION);
+    getViewSite().getActionBars().getToolBarManager().add(zoomSlider);
+    getViewSite().getActionBars().updateActionBars();
   }
 
   @Override

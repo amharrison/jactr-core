@@ -5,12 +5,12 @@ package org.jactr.eclipse.runtime.ui.looper;
  */
 import java.util.List;
 
-import org.jactr.eclipse.runtime.launching.norm.ACTRSession;
+import org.jactr.eclipse.runtime.session.ISession;
 
 public interface ILoopListener
 {
 
-  public void loopDetected(ACTRSession session, String modelName,
+  public void loopDetected(ISession session, String modelName,
       List<String> productionLoop,
       int interations);
 }
