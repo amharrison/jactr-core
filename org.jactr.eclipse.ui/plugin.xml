@@ -199,7 +199,7 @@
       <include file="templates/jactr-templates.xml"> </include>
       <include file="templates/lisp-templates.xml"> </include>
       </extension>
-   
+   <!--
     <extension
           point="org.eclipse.pde.ui.pluginContent">
        <wizard
@@ -247,6 +247,8 @@
              id="wizards.templates.DefaultACTRContributorTemplate"
              name="jACT-R Configuration"/>
     </extension>
+    
+    -->
     <extension
           point="org.eclipse.ui.commands">
        <command
@@ -262,9 +264,9 @@
        </command>
        <command
              defaultHandler="org.jactr.eclipse.ui.commands.UseTools"
-             description="Use Tools"
+             description="Dependency Tools"
              id="org.jactr.eclipse.ui.command.useTools"
-             name="UseTools">
+             name="Dependency Tools">
        </command>
        <command
              categoryId="org.eclipse.ui.category.textEditor"
