@@ -77,8 +77,8 @@ public class LayoutModifier implements ISessionManagerListener
 
   public void sessionAdded(ISession session)
   {
-    if (!RuntimePlugin.getDefault().getPreferenceStore()
-        .getBoolean(ENABLE_AUTO_LAYOUT_PREF)) return;
+    // if (!RuntimePlugin.getDefault().getPreferenceStore()
+    // .getBoolean(ENABLE_AUTO_LAYOUT_PREF)) return;
 
     if (hasDebugTarget(session))
       switchToDebugView(false);
