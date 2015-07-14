@@ -19,18 +19,17 @@ public class ArchivalIndex
   /**
    * Logger definition
    */
-  static private final transient Log     LOGGER = LogFactory
-                                                    .getLog(ArchivalIndex.class);
+  static private final transient Log   LOGGER = LogFactory
+                                                  .getLog(ArchivalIndex.class);
 
-  final private IResource                _indexFile;
+  final private IResource              _indexFile;
 
-  final private SortedMap<Double, Index> _timeIndex;
+  final private TreeMap<Double, Index> _timeIndex;
 
-  private double                         _readRecordRange;
+  private double                       _readRecordRange;
 
-  final private double[]                 _span  = { Double.MAX_VALUE,
-      Double.MIN_VALUE                         };
-
+  final private double[]               _span  = { Double.MAX_VALUE,
+      Double.MIN_VALUE                       };
 
   public ArchivalIndex(IResource resource)
   {
@@ -53,6 +52,13 @@ public class ArchivalIndex
     _timeIndex.clear();
   }
 
+  /**
+   * pump out all the events from startTime to endTime.
+   * 
+   * @param startTime
+   * @param endTime
+   * @param pumper
+   */
   public void pump(double startTime, double endTime, EventPumper pumper)
   {
     double min = Math.max(startTime, _span[0]);
@@ -70,12 +76,25 @@ public class ArchivalIndex
     /*
      * we need to grow the range
      */
-    if (min < subset.firstKey()) subset = _timeIndex.tailMap(min - _readRecordRange);
+    if (min < subset.firstKey())
+      subset = _timeIndex.tailMap(min - _readRecordRange);
 
     if (LOGGER.isDebugEnabled())
       LOGGER.debug(String.format("tailSubset : %s", subset.keySet()));
 
-    subset = subset.headMap(max + _readRecordRange);
+    /*
+     * constraining at the max end doesn't quite work. Let's say you've pumped
+     * events up to 5s. But there is a large cycle skip from 5-100s. Any pump
+     * request in that range will be ignored by this constraint. We need to go
+     * the the next key. Instead we want the next larger end time.
+     */
+    Double nextHigherKey = _timeIndex.ceilingKey(max + _readRecordRange / 2);
+    if (nextHigherKey != null)
+    {
+      nextHigherKey += 0.05;
+      subset = subset.headMap(nextHigherKey);
+      max = nextHigherKey;
+    }
 
     if (LOGGER.isDebugEnabled())
       LOGGER.debug(String.format("headSubset : %s", subset.keySet()));
@@ -87,7 +106,12 @@ public class ArchivalIndex
       idx._span[0] = Math.max(min, index._span[0]);
       idx._span[1] = Math.min(max, index._span[1]);
 
-      if (idx._span[0] > idx._span[1]) continue;
+      if (idx._span[0] > idx._span[1])
+      {
+        if (LOGGER.isDebugEnabled())
+          LOGGER.debug(String.format("Span invert?"));
+        continue;
+      }
 
       idx._data = index._data;
 

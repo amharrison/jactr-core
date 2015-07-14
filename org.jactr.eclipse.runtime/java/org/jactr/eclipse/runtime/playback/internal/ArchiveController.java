@@ -134,8 +134,6 @@ public class ArchiveController implements ISessionController2
     ACTRDebugElement.fireResumeEvent(_session, 0);
     _index.pump(startTime, endTime, _pumper);
 
-
-
     return true;
   }
 
