@@ -16,10 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
@@ -44,7 +41,6 @@ import org.jactr.eclipse.runtime.session.stream.ISessionDataStream;
 import org.jactr.eclipse.runtime.ui.misc.AbstractRuntimeModelViewPart;
 import org.jactr.eclipse.runtime.ui.probe.components.AbstractProbeContainer;
 import org.jactr.eclipse.runtime.ui.probe.components.XYGraphProbeContainer;
-import org.jactr.eclipse.ui.concurrent.QueueingUIJob;
 import org.jactr.eclipse.ui.images.JACTRImages;
 
 public class ModelProbeView extends AbstractRuntimeModelViewPart
@@ -59,7 +55,7 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
 
   private Action                                          _filterAction;
 
-  private boolean                                         _useAWT                 = false;
+  // private boolean _useAWT = false;
 
   private IPath                                           _lastSaveTo;
 
@@ -71,29 +67,29 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
   @SuppressWarnings("rawtypes")
   private final Map<ISessionData, AbstractProbeContainer> _installedContainers    = new HashMap<ISessionData, AbstractProbeContainer>();
 
-  private QueueingUIJob                                   _updater;
+  // private QueueingUIJob _updater;
 
   public ModelProbeView()
   {
     /*
      * sanity check. There seen to be some crash issues w/ cocoa & birt on Mac.
      */
-    String os = System.getProperty("os.name");
-    if (os.equalsIgnoreCase("mac os x")) _useAWT = true;
+    // String os = System.getProperty("os.name");
+    // if (os.equalsIgnoreCase("mac os x")) _useAWT = true;
     _filteredProbes = new TreeMap<String, Set<String>>();
 
-    _updater = new QueueingUIJob("Log Populator") {
-
-      @Override
-      public IStatus runInUIThread(IProgressMonitor monitor)
-      {
-        LOGGER.warn("This should be calling the graph display update");
-        return Status.OK_STATUS;
-      }
-    };
-
-    // hide it from the user
-    _updater.setSystem(true);
+    // _updater = new QueueingUIJob("Probe Populator") {
+    //
+    // @Override
+    // public IStatus runInUIThread(IProgressMonitor monitor)
+    // {
+    // LOGGER.warn("This should be calling the graph display update");
+    // return Status.OK_STATUS;
+    // }
+    // };
+    //
+    // // hide it from the user
+    // _updater.setSystem(true);
   }
 
   @Override
@@ -319,36 +315,13 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
 
     removeDeferred(modelData);
 
-    AbstractProbeContainer container = null;
+    final XYGraphProbeContainer container = new XYGraphProbeContainer(parent,
+        lsds.getRoot());
 
-    // if (_useAWT)
-    // container = new AWTProbeContainer(parent, lsds.getRoot());
-    // else
-    // container = new SWTProbeContainer(parent, lsds.getRoot());
-    container = new XYGraphProbeContainer(parent, lsds.getRoot());
 
     _installedContainers.put(sessionData, container);
 
-    /*
-     * probe's come in as "modelName.probeSet", the marker stream, if it exists,
-     * is under the "modelName" sessionData.
-     */
-    String rootModelName = modelName.substring(0, modelName.lastIndexOf('.'));
-    ISessionData rootSessionData = sessionData.getSession().getData(
-        rootModelName);
-    /*
-     * install marker support if possible
-     */
-    if (rootSessionData.getDataStream("marker") != null)
-      if (LOGGER.isDebugEnabled())
-        LOGGER.debug(String.format("Installing marker support"));
-    /*
-     * MarkerSupport support = new MarkerSupport(container,
-     * (MarkerSessionDataStream) rootSessionData.getDataStream("marker"),
-     * RuntimePlugin.getDefault().getPreferenceStore()
-     * .getInt(RuntimePreferences.RUNTIME_DATA_WINDOW));
-     * _installedMarkerSupport.put(sessionData, support);
-     */
+    // modelName.substring(0, modelName.lastIndexOf('.'));
 
     /*
      * if we've already got filters, apply them
@@ -368,13 +341,7 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
             Collection<ModelProbeData> modified,
             Collection<ModelProbeData> removed)
         {
-          // this is how we update..
-          // fContainer.refresh();
-          /*
-           * instead of updating in this thread, we queue up a gui update..
-           */
-          // _updater.queue(MINIMUM_RESPONSIVENESS);
-          LOGGER.warn("probeview is not currently upating rendering correctly");
+          container.refresh();
         }
 
       };
@@ -383,6 +350,10 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
 
       container.setData("liveSessionListener", listener);
       container.setData("sessionData", sessionData);
+
+      // force display update, just incase all the data
+      // comes in before we are finished building - and therefor get no updates
+      container.refresh();
     }
 
     return container;
