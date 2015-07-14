@@ -26,25 +26,24 @@ public class ModelProbeData2
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER          = LogFactory
-                                                         .getLog(ModelProbeData2.class);
+  static private final transient Log   LOGGER          = LogFactory
+                                                           .getLog(ModelProbeData2.class);
 
-  private final String               _modelName;
+  private final String                 _modelName;
 
-  private final StringTable          _stringTable;
+  private final StringTable            _stringTable;
 
-  private final double               _timeWindow;
+  private final double                 _timeWindow;
 
-  private int                        _maxCapacity    = 0;
+  private int                          _maxCapacity    = 0;
 
-  private int                        _normalCapacity = 0;
+  private int                          _normalCapacity = 0;
 
-  private Map<String, IProbeData>    _probeData;
+  private Map<String, IProbeData>      _probeData;
 
   private Function<String, IProbeData> _probeDataProvider;
 
-  private boolean                    _firstSample    = true;
-
+  private boolean                      _firstSample    = true;
 
   public ModelProbeData2(String modelName, int timeWindow,
       StringTable sessionStringTable, Function<String, IProbeData> dataSupplier)
@@ -127,6 +126,9 @@ public class ModelProbeData2
 
       // must be on gui thread..
       // we shift the value..
+      if (LOGGER.isDebugEnabled())
+        LOGGER.debug(String.format("%s.%s added %.4f @ %.3f", _modelName,
+            probeName, value, sampleTime));
       pd.addSample(sampleTime, value);
     }
 

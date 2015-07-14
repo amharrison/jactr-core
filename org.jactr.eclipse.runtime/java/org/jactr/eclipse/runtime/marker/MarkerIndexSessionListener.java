@@ -51,7 +51,7 @@ public class MarkerIndexSessionListener implements ISessionManagerListener
     catch (Exception e)
     {
       if (LOGGER.isWarnEnabled())
-        LOGGER.warn(String.format("Failed to install marker index"));
+        LOGGER.warn(String.format("Failed to install marker index"), e);
     }
   }
 

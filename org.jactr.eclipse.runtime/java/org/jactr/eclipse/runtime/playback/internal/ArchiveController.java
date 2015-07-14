@@ -131,6 +131,10 @@ public class ArchiveController implements ISessionController2
     double startTime = _currentTime;
     double endTime = _currentTime + windowSize;
 
+    if (LOGGER.isDebugEnabled())
+      LOGGER.debug(String.format("Resuming @ %.2f for %.2f", startTime,
+          windowSize));
+
     ACTRDebugElement.fireResumeEvent(_session, 0);
     _index.pump(startTime, endTime, _pumper);
 

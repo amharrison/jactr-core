@@ -73,6 +73,13 @@ public class ArchivalIndex
      */
     SortedMap<Double, Index> subset = _timeIndex.tailMap(min);
 
+    if (subset.size() == 0)
+    {
+      if (LOGGER.isDebugEnabled())
+        LOGGER.debug(String.format("No data available to pump"));
+      return;
+    }
+
     /*
      * we need to grow the range
      */
