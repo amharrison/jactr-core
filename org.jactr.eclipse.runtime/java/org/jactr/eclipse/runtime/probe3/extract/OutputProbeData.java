@@ -24,14 +24,16 @@ public class OutputProbeData implements IProbeData
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(OutputProbeData.class);
+  static private final transient Log LOGGER         = LogFactory
+                                                        .getLog(OutputProbeData.class);
 
   private final String               _probeName;
 
   private final IResource            _outputFile;
 
   private PrintWriter                _outputWriter;
+
+  private double                     _lastTimeStamp = Double.MIN_VALUE;
 
   public OutputProbeData(String probeName, IFolder outputDir)
   {
@@ -77,8 +79,15 @@ public class OutputProbeData implements IProbeData
   @Override
   public void addSample(double time, double value)
   {
-    if (_outputWriter != null)
+    if (_lastTimeStamp >= time)
+      LOGGER.error(String.format(
+          "Time regression in probe data (%s)? last: %.3f  now: %.3f ",
+          getName(), _lastTimeStamp, time), new RuntimeException());
+
+    if (_outputWriter != null /* && _lastTimeStamp < time */)
       _outputWriter.println(String.format("%.3f\t%.3f", time, value));
+
+    _lastTimeStamp = time;
   }
 
   @Override
