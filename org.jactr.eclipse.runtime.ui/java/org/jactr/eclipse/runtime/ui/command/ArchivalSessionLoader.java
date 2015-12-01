@@ -39,51 +39,51 @@ public class ArchivalSessionLoader extends AbstractHandler
         .getCurrentSelection(event);
 
     for (Object selected : selection.toArray())
-      if (selected instanceof IFolder)
-        try
+      if (selected instanceof IFolder) try
+      {
+        IFolder folder = (IFolder) selected;
+        if (folder.getName().equalsIgnoreCase("sessionData"))
         {
-          IFolder folder = (IFolder) selected;
-          if (folder.getName().equalsIgnoreCase("sessionData"))
-          {
-            Collection<IResource> modelIndices = findModelIndicies(folder);
+          Collection<IResource> modelIndices = findModelIndicies(folder);
 
-            Collection<IResource> selectedResources = null;
+          Collection<IResource> selectedResources = null;
 
-            // some selection
-            if (modelIndices.size() > 1)
-              selectedResources = select(modelIndices);
-            else if (modelIndices.size() == 1)
-              selectedResources = modelIndices;
-            else
-              return null; // nope
+          // some selection
+        if (modelIndices.size() > 1)
+          selectedResources = select(modelIndices);
+        else if (modelIndices.size() == 1)
+          selectedResources = modelIndices;
+        else
+          return null; // nope
 
-            if (selectedResources != null && selectedResources.size() > 0)
-              for (IResource selectedResource : selectedResources)
-                try
-                {
-                  SessionArchive sa = new SessionArchive(selectedResource);
-                  // pump the first block of data
-                  sa.getController().resume();
+        if (selectedResources != null && selectedResources.size() > 0)
+          for (IResource selectedResource : selectedResources)
+            try
+            {
+              SessionArchive sa = new SessionArchive(selectedResource);
 
-                  ((SessionManager) RuntimePlugin.getDefault()
-                      .getSessionManager()).addSession(sa);
-                }
-                catch (Exception e)
-                {
-                  RuntimePlugin.error(String.format("Failed to replay %s ",
-                      selectedResource.getParent().getName()), e);
-                }
-            else
-              RuntimePlugin
-                  .error("sessionData folder does not contain sessionData.index file");
-          }
+              ((SessionManager) RuntimePlugin.getDefault().getSessionManager())
+                  .addSession(sa);
 
-        }
-        catch (Exception e)
-        {
-          RuntimePlugin.error("Failed to select valid session archive");
-          LOGGER.error("failed to pump it up ", e);
-        }
+              // pump the first block of data
+        sa.getController().resume();
+      }
+      catch (Exception e)
+      {
+        RuntimePlugin.error(String.format("Failed to replay %s ",
+            selectedResource.getParent().getName()), e);
+      }
+  else
+    RuntimePlugin
+        .error("sessionData folder does not contain sessionData.index file");
+}
+
+}
+catch (Exception e)
+{
+RuntimePlugin.error("Failed to select valid session archive");
+LOGGER.error("failed to pump it up ", e);
+}
 
     return null;
   }

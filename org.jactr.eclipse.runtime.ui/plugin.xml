@@ -154,6 +154,12 @@
              id="org.jactr.eclipse.runtime.ui.command.playback"
              name="Playback">
        </command>
+       <command
+             defaultHandler="org.jactr.eclipse.runtime.ui.command.ExtractProbeData"
+             description="Extract probe data from session"
+             id="org.jactr.eclipse.runtime.ui.command.extractProbeData"
+             name="Playback">
+       </command>
    </extension>
    <extension
           point="org.eclipse.ui.bindings">
@@ -183,6 +189,28 @@
                commandId="org.jactr.eclipse.runtime.ui.command.playback"
                helpContextId="Playback archived session data"
                label="Playback"
+               style="push">
+            <visibleWhen
+                   checkEnabled="false">
+                <iterate
+                      ifEmpty="false"
+                      operator="and">
+                   <adapt
+                         type="org.eclipse.core.resources.IFolder">
+                    <test property="org.eclipse.core.resources.name"
+                         value="sessionData"/>
+                   </adapt>
+                </iterate>
+             </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="true"
+            locationURI="popup:org.jactr.eclipse.ui.menu?after=org.jactr.eclipse.ui.menu.convert">
+         <command
+               commandId="org.jactr.eclipse.runtime.ui.command.extractProbeData"
+               helpContextId="Extract archived session probe data"
+               label="Extract probes"
                style="push">
             <visibleWhen
                    checkEnabled="false">
