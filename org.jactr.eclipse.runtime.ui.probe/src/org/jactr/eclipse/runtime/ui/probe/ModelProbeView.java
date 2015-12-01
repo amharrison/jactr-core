@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
 import org.jactr.eclipse.runtime.probe2.ModelProbeData;
 import org.jactr.eclipse.runtime.probe3.IModelProbeSessionDataStream;
+import org.jactr.eclipse.runtime.probe3.ModelProbeData2;
 import org.jactr.eclipse.runtime.session.ILocalSession;
 import org.jactr.eclipse.runtime.session.ISession;
 import org.jactr.eclipse.runtime.session.data.ISessionData;
@@ -334,12 +335,12 @@ public class ModelProbeView extends AbstractRuntimeModelViewPart
       if (LOGGER.isDebugEnabled())
         LOGGER.debug(String.format("Is a live stream, listening"));
 
-      ILiveSessionDataStreamListener<ModelProbeData> listener = new ILiveSessionDataStreamListener<ModelProbeData>() {
+      ILiveSessionDataStreamListener<ModelProbeData2> listener = new ILiveSessionDataStreamListener<ModelProbeData2>() {
 
         public void dataChanged(ILiveSessionDataStream stream,
-            Collection<ModelProbeData> added,
-            Collection<ModelProbeData> modified,
-            Collection<ModelProbeData> removed)
+            Collection<ModelProbeData2> added,
+            Collection<ModelProbeData2> modified,
+            Collection<ModelProbeData2> removed)
         {
           container.refresh();
         }
