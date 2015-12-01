@@ -65,7 +65,7 @@ public class ModelProbeData2
     return _timeWindow;
   }
 
-  void process(ITransformedEvent event)
+  public void process(ITransformedEvent event)
   {
     if (event instanceof StringTableMessage)
     {

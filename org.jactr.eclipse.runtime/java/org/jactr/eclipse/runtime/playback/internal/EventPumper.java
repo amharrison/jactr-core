@@ -214,6 +214,7 @@ public class EventPumper extends QueueingJob
     {
       for (ArchivalIndex.Index index : indices)
       {
+        if (monitor.isCanceled()) break;
 
         /*
          * file & stream management so we only open any one file, once
@@ -277,7 +278,6 @@ public class EventPumper extends QueueingJob
       if (inputStream != null) try
       {
         inputStream.close();
-
       }
       catch (Exception e)
       {

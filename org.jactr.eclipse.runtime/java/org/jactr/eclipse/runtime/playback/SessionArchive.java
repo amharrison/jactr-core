@@ -11,7 +11,6 @@ import org.eclipse.core.resources.IResource;
 import org.jactr.eclipse.runtime.playback.internal.ArchivalIndex;
 import org.jactr.eclipse.runtime.playback.internal.ArchiveController;
 import org.jactr.eclipse.runtime.playback.internal.EventPumper;
-import org.jactr.eclipse.runtime.session.control.ISessionController;
 import org.jactr.eclipse.runtime.session.impl.AbstractSession;
 
 public class SessionArchive extends AbstractSession
@@ -44,7 +43,7 @@ public class SessionArchive extends AbstractSession
   }
 
   @Override
-  public ISessionController getController()
+  public ArchiveController getController()
   {
     return _controller;
   }

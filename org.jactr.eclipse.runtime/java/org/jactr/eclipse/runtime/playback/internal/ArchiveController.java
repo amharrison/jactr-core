@@ -123,6 +123,16 @@ public class ArchiveController implements ISessionController2
     return isSuspended();
   }
 
+  public void runFully() throws Exception
+  {
+    if (!canResume()) throw new RuntimeException("Must be suspended first");
+
+    double startTime = _currentTime;
+
+    ACTRDebugElement.fireResumeEvent(_session, 0);
+    _index.pump(startTime, _index.getEndTime(), _pumper);
+  }
+
   public boolean resume() throws Exception
   {
     if (!canResume()) throw new RuntimeException("Must be suspended first");
