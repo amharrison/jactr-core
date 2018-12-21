@@ -17,10 +17,10 @@ public class DefaultVocalParticipant implements Consumer<IModel>
       IChunkType command = model.getDeclarativeModule().getChunkType("command")
           .get();
 
-      IChunkType vocalCommand = FluentChunkType.from(command)
+      IChunkType vocalCommand = FluentChunkType.fromParent(command)
           .named("vocal-command").slot("string")
           .encode();
-      FluentChunkType.from(vocalCommand).types("speak", "subvocalize");
+      FluentChunkType.fromParent(vocalCommand).types("speak", "subvocalize");
     }
     catch (Exception e)
     {

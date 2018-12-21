@@ -55,7 +55,7 @@ public class FluentAural implements Supplier<IModel>
       IChunkType goalType = FluentChunkType.from(model).named("goal")
           .slot("status", definedChunks.get("starting")).slot("kind").encode();
 
-      IChunkType aTestType = FluentChunkType.from(goalType)
+      IChunkType aTestType = FluentChunkType.fromParent(goalType)
           .named("attending-test").slot("testValue").encode();
 
       IChunk goalChunk = FluentChunk.from(aTestType).slot("testValue", "a")

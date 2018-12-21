@@ -21,8 +21,8 @@ public class DefaultAuralParticipant implements Consumer<IModel>
       IChunkType sound = FluentChunkType.from(model).named("sound")
           .slots("content", "event", "kind").encode();
 
-      FluentChunkType.from(sound).named("tone").slot("pitch").encode();
-      FluentChunkType.from(sound).types("digit", "speech", "word");
+      FluentChunkType.fromParent(sound).named("tone").slot("pitch").encode();
+      FluentChunkType.fromParent(sound).types("digit", "speech", "word");
 
       IChunkType chunk = model.getDeclarativeModule().getChunkType("chunk")
           .get();
@@ -30,7 +30,9 @@ public class DefaultAuralParticipant implements Consumer<IModel>
       FluentChunk.from(chunk).chunks("external", "internal");
 
       FluentChunkType
-          .from(model.getDeclarativeModule().getChunkType("command").get())
+          .fromParent(
+              model.getDeclarativeModule().getChunkType("command").get())
+          .named("aural-command")
           .encode();
     }
     catch (Exception e)

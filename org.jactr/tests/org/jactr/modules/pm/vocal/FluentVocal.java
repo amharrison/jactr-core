@@ -61,7 +61,7 @@ public class FluentVocal implements Supplier<IModel>
       IChunkType goalType = FluentChunkType.from(model).named("goal")
           .slot("status", definedChunks.get("starting")).slot("stage").encode();
 
-      IChunkType testType = FluentChunkType.from(goalType)
+      IChunkType testType = FluentChunkType.fromParent(goalType)
           .named("attending-test").slot("testValue").encode();
 
       IChunk goalChunk = FluentChunk.from(testType).slot("testValue", "center")

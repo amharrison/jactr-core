@@ -34,21 +34,22 @@ public class DefaultVisualParticipant implements Consumer<IModel>
             "nearest", "value")
         .encode();
 
-    FluentChunkType.from(visLoc).named("set-default-visual-search");
+    FluentChunkType.fromParent(visLoc).named("set-default-visual-search");
 
     IChunkType visObj = FluentChunkType.from(model).named("visual-object")
         .slots("screen-pos", "value", "height", "width", "token", "type",
             "status", "color")
         .encode();
 
-    FluentChunkType.from(visObj).named("gui").slots("text", "enabled").encode();
-    FluentChunkType.from(visObj).named("text").encode();
-    FluentChunkType.from(visObj).named("empty-space").encode();
-    FluentChunkType.from(visObj).named("cursor").encode();
-    FluentChunkType.from(visObj).named("oval").encode();
-    FluentChunkType.from(visObj).named("phrase").slots("objects", "words")
+    FluentChunkType.fromParent(visObj).named("gui").slots("text", "enabled")
         .encode();
-    FluentChunkType.from(visObj).named("line")
+    FluentChunkType.fromParent(visObj).named("text").encode();
+    FluentChunkType.fromParent(visObj).named("empty-space").encode();
+    FluentChunkType.fromParent(visObj).named("cursor").encode();
+    FluentChunkType.fromParent(visObj).named("oval").encode();
+    FluentChunkType.fromParent(visObj).named("phrase").slots("objects", "words")
+        .encode();
+    FluentChunkType.fromParent(visObj).named("line")
         .slots("other-pos", "end1-x", "end1-y", "end2-x", "end2-y").encode();
 
     try
@@ -57,12 +58,12 @@ public class DefaultVisualParticipant implements Consumer<IModel>
           .childOf(model.getDeclarativeModule().getChunkType("command").get())
           .named("vision-command").encode();
 
-      FluentChunkType.from(visCom).named("move-attention")
+      FluentChunkType.fromParent(visCom).named("move-attention")
           .slots("screen-pos", "scale").encode();
 
-      FluentChunkType.from(visCom).named("start-tracking").encode();
+      FluentChunkType.fromParent(visCom).named("start-tracking").encode();
 
-      FluentChunkType.from(visCom).named("assign-finst")
+      FluentChunkType.fromParent(visCom).named("assign-finst")
           .slots("object", "location").encode();
 
     }

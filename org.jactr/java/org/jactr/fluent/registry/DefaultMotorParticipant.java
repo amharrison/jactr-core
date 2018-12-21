@@ -27,15 +27,15 @@ public class DefaultMotorParticipant implements Consumer<IModel>
       IChunkType command = model.getDeclarativeModule().getChunkType("command")
           .get();
 
-      IChunkType motorCommand = FluentChunkType.from(command)
+      IChunkType motorCommand = FluentChunkType.fromParent(command)
           .named("motor-command").slot("muscle").encode();
 
-      FluentChunkType.from(motorCommand).named("compound-motor-command")
+      FluentChunkType.fromParent(motorCommand).named("compound-motor-command")
           .slot("state").encode();
 
-      IChunkType handCommand = FluentChunkType.from(motorCommand)
+      IChunkType handCommand = FluentChunkType.fromParent(motorCommand)
           .named("hand-command").slot("hand").encode();
-      IChunkType fingerCommand = FluentChunkType.from(handCommand)
+      IChunkType fingerCommand = FluentChunkType.fromParent(handCommand)
           .named("finger-command").slot("finger").encode();
 
       IChunkType constant = FluentChunkType.from(model).named("motor-constant")
@@ -44,24 +44,25 @@ public class DefaultMotorParticipant implements Consumer<IModel>
           "right", "left", "index", "middle", "ring", "thumb", "pinkie",
           "mouse", "joystick1", "joystick2", "aborting");
 
-      IChunkType peck = FluentChunkType.from(fingerCommand).named("peck")
+      IChunkType peck = FluentChunkType.fromParent(fingerCommand).named("peck")
           .slots("r", "theta").encode();
-      FluentChunkType.from(peck).named("peck-recoil").encode();
+      FluentChunkType.fromParent(peck).named("peck-recoil").encode();
 
-      FluentChunkType.from(fingerCommand).named("punch").encode();
-      FluentChunkType.from(handCommand).named("point-hand-at-key")
+      FluentChunkType.fromParent(fingerCommand).named("punch").encode();
+      FluentChunkType.fromParent(handCommand).named("point-hand-at-key")
           .slot("to-key").encode();
-      FluentChunkType.from(motorCommand).named("press-key").slot("key")
+      FluentChunkType.fromParent(motorCommand).named("press-key").slot("key")
           .encode();
-      FluentChunkType.from(motorCommand).named("click-mouse").encode();
-      FluentChunkType.from(handCommand).named("hand-to-mouse")
+      FluentChunkType.fromParent(motorCommand).named("click-mouse").encode();
+      FluentChunkType.fromParent(handCommand).named("hand-to-mouse")
           .slot("hand", definedChunks.get("right")).encode();
-      FluentChunkType.from(handCommand).named("hand-to-home")
+      FluentChunkType.fromParent(handCommand).named("hand-to-home")
           .slot("hand", definedChunks.get("right")).encode();
-      FluentChunkType.from(motorCommand).named("move-cursor")
+      FluentChunkType.fromParent(motorCommand).named("move-cursor")
           .slots("object", "loc", "device").encode();
       FluentChunkType
-          .from(model.getDeclarativeModule().getChunkType("clear").get())
+          .fromParent(model.getDeclarativeModule().getChunkType("clear").get())
+          .named("motor-clear")
           .slot("muscle").encode();
 
       /*

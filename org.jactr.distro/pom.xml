@@ -75,7 +75,6 @@
 		<module>../org.jactr.io</module>
 		<module>../org.jactr.modules.threaded</module>
 		<module>../org.jactr.modules.timing</module>
-		<module>../org.jactr.modules.versioned</module>
 		<module>../org.jactr.tools</module>
 		<module>../org.jactr.tools.experiment</module>
 
