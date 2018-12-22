@@ -2,16 +2,16 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>org.jactr.modules.timing</artifactId>
+	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>org.jactr</groupId>
 		<artifactId>org.jactr.distro</artifactId>
-		<version>2.5.0-SNAPSHOT</version>
-		<relativePath>../org.jactr.distro/pom.xml</relativePath>
+		<version>1.0</version>
 	</parent>
 
 	<build>
-		<sourceDirectory>src</sourceDirectory>
+
 		<resources>
 			<resource>
 				<directory>src</directory>
@@ -33,19 +33,19 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>org.commonreality.time</groupId>
+			<groupId>org.jactr</groupId>
 			<artifactId>org.commonreality.time</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jactr</groupId>
 			<artifactId>org.jactr.core</artifactId>
-			<version>2.5.0-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jactr</groupId>
 			<artifactId>org.jactr.io</artifactId>
-			<version>2.5.0-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 	</dependencies>
 </project>

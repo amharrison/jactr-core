@@ -1,3 +1,0 @@
-- XML format:
-  <comment>..</comment> must now be formatted as <comment><![CDATA[ ... ]]></comment>
-  <output>...</output> must now be formatted as <output>".."</output>

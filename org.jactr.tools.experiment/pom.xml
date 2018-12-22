@@ -2,15 +2,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>org.jactr.tools.experiment</artifactId>
+	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>org.jactr</groupId>
 		<artifactId>org.jactr.distro</artifactId>
-		<version>2.5.0-SNAPSHOT</version>
-		<relativePath>../org.jactr.distro/pom.xml</relativePath>
+		<version>1.0</version>
 	</parent>
 	<build>
-		<sourceDirectory>src/</sourceDirectory>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -23,25 +22,16 @@
 		</plugins>
 	</build>
 	<dependencies>
-		<dependency>
-			<groupId>org.commonreality.time</groupId>
-			<artifactId>org.commonreality.time</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.commonreality.sensors.xml</groupId>
-			<artifactId>org.commonreality.sensors.xml</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jactr</groupId>
-			<artifactId>org.jactr.core</artifactId>
-			<version>2.5.0-SNAPSHOT</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.jactr</groupId>
 			<artifactId>org.jactr.tools</artifactId>
-			<version>2.5.0-SNAPSHOT</version>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jactr</groupId>
+			<artifactId>org.commonreality.sensors.xml</artifactId>
+			<version>1.0</version>
 		</dependency>
 	</dependencies>
 </project>
