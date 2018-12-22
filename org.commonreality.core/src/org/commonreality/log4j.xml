@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+ 
+     <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender"> 
+         <param name="Target" value="System.err"/>
+         <layout class="org.apache.log4j.PatternLayout"> 
+             <param name="ConversionPattern" value="%n%-5p %d{ABSOLUTE}(%t) [%c.%M] %m"/> 
+         </layout> 
+     </appender> 
+
+<!-- 
+	<logger name="org.commonreality.sensors.swing"><level value="debug"/></logger>
+
+    <logger name="org.commonreality.participant.impl.AbstractParticipant"><level value="debug"/></logger>
+ -->
+     
+	<root>
+		<level value="error"/>
+        <appender-ref ref="CONSOLE"/>
+	</root>
+</log4j:configuration>

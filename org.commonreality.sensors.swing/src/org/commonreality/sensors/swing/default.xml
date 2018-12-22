@@ -1,0 +1,17 @@
+<swing>
+	<creator class="org.commonreality.sensors.swing.creators.LabelCreator" />
+	<creator class="org.commonreality.sensors.swing.creators.ButtonCreator" />
+	<creator class="org.commonreality.sensors.swing.creators.TextFieldCreator" />
+
+	<processor
+		class="org.commonreality.sensors.swing.processors.SizeAndLocationProcessor">
+		<!-- physical size of the screen in meters -->
+		<option name="ScreenWidth" value="0.3" />
+		<option name="ScreenHeight" value="0.25"/>
+		<option name="ViewerDistance" value="0.7"/>
+	</processor>
+	
+	<processor
+		class="org.commonreality.sensors.swing.processors.VisibilityProcessor" />
+	<processor class="org.commonreality.sensors.swing.processors.ColorProcessor" />
+</swing>

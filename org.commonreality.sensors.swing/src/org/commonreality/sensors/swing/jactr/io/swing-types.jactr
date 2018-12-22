@@ -1,0 +1,16 @@
+<actr>
+  <model name="swing core">
+    <declarative-memory>
+  
+      <chunk-type name="label" parent="gui" />
+      <chunk-type name="button" parent="gui" />
+      <chunk-type name="textfield" parent="gui" />
+    
+     
+
+    </declarative-memory>
+  
+    <procedural-memory>
+    </procedural-memory>
+  </model>
+</actr>

@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Swing Plug-in
+Bundle-SymbolicName: org.commonreality.sensors.swing;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Eclipse-BuddyPolicy: registered
+Eclipse-RegisterBuddy: org.commonreality.core, org.jactr.io, org.jactr, org.jactr.tools, org.apache.log4j, org.apache.commons.logging 
+Import-Package: junit.framework;resolution:=optional
+Export-Package: org.commonreality.sensors.swing,
+ org.commonreality.sensors.swing.creators,
+ org.commonreality.sensors.swing.jactr,
+ org.commonreality.sensors.swing.jactr.encoders,
+ org.commonreality.sensors.swing.jactr.io,
+ org.commonreality.sensors.swing.key,
+ org.commonreality.sensors.swing.processors
+Bundle-ClassPath: .
