@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
+import org.jactr.io2.compilation.ICompilationUnit;
 
 public class ChunkParameterModifier extends AbstractParameterModifier
 {
@@ -27,7 +28,17 @@ public class ChunkParameterModifier extends AbstractParameterModifier
 
   private Pattern              _chunkType        = Pattern.compile(".*");
 
+
   @Override
+  protected void setParameter(ICompilationUnit compilationUnit,
+      String parameter, String value)
+  {
+    if (compilationUnit.getAST() instanceof CommonTree)
+      setParameter((CommonTree) compilationUnit.getAST(), parameter, value);
+    else
+      throw new RuntimeException("not implemented yet");
+  }
+
   protected void setParameter(CommonTree modelDescriptor, String parameter,
       String value)
   {

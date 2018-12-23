@@ -24,7 +24,7 @@ public class GoalModuleParticipant extends BasicASTParticipant
   public GoalModuleParticipant()
   {
     super(GoalModuleParticipant.class.getClassLoader().getResource(
-        "org/jactr/io/include/goal.jactr"));
+        "org/jactr/io/include/goal.jactrx"));
     setInstallableClass(DefaultGoalModule6.class);
   }
 }

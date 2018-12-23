@@ -13,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
+import org.jactr.io2.compilation.ICompilationUnit;
 
 public class ChunkSlotModifier extends AbstractParameterModifier
 {
@@ -82,9 +83,16 @@ public class ChunkSlotModifier extends AbstractParameterModifier
       super.setParameter(key, value);
   }
   
-  
-
   @Override
+  protected void setParameter(ICompilationUnit modelDescriptor,
+      String parameter, String value)
+  {
+    if (modelDescriptor.getAST() instanceof CommonTree)
+      setParameter((CommonTree) modelDescriptor.getAST(), parameter, value);
+    else
+      throw new RuntimeException("not implemented yet");
+  }
+  
   protected void setParameter(CommonTree modelDescriptor, String parameter,
       String value)
   {
@@ -121,7 +129,7 @@ public class ChunkSlotModifier extends AbstractParameterModifier
               slotDesc.addChild(support.create(JACTRBuilder.STRING, value));
             }
           }
-      }    
+      }
   }
 
 }

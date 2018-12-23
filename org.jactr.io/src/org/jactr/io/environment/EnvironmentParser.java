@@ -19,13 +19,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.commonreality.parser.RealityParser;
@@ -37,9 +35,9 @@ import org.jactr.core.runtime.controller.IController;
 import org.jactr.core.utils.IInstallable;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.instrument.IInstrument;
-import org.jactr.io.IOUtilities;
-import org.jactr.io.antlr3.builder.JACTRBuilder;
-import org.jactr.io.antlr3.misc.ASTSupport;
+import org.jactr.io.io2.CommonTreeCompilationUnitProvider;
+import org.jactr.io2.compilation.CompilationUnitManager;
+import org.jactr.io2.compilation.ICompilationUnit;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -87,8 +85,17 @@ public class EnvironmentParser
    */
   static public final Log LOGGER = LogFactory.getLog(EnvironmentParser.class);
 
-  public void parse(URL input) throws IOException, SAXException,
-      ParserConfigurationException
+  /**
+   * @BUG this is a hack during the transition from old io to io2
+   */
+  static
+  {
+    CompilationUnitManager.get()
+        .addProvider(new CommonTreeCompilationUnitProvider());
+  }
+
+  public void parse(URL input)
+      throws IOException, SAXException, ParserConfigurationException
   {
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder parser = factory.newDocumentBuilder();
@@ -102,7 +109,8 @@ public class EnvironmentParser
    * @param document
    * @param modelDescriptors
    */
-  public void process(Document document, Collection<CommonTree> modelDescriptors)
+  public void process(Document document,
+      Collection<ICompilationUnit> modelDescriptors)
   {
     ACTRRuntime runtime = ACTRRuntime.getRuntime();
 
@@ -133,26 +141,18 @@ public class EnvironmentParser
    * @return
    */
   protected Collection<IModel> buildModels(
-      Collection<CommonTree> modelDescriptors)
+      Collection<ICompilationUnit> modelDescriptors)
   {
     Collection<IModel> models = new ArrayList<IModel>();
-    for (CommonTree modelDescriptor : modelDescriptors)
-    {
-      Collection<Exception> warnings = new HashSet<Exception>();
-      Collection<Exception> errors = new HashSet<Exception>();
-
-      if (LOGGER.isDebugEnabled())
-        LOGGER.debug("Building " + ASTSupport.getName(modelDescriptor));
-
-      IModel model = IOUtilities.constructModel(modelDescriptor, warnings,
-          errors);
-
-      if (errors.size() != 0)
-        throw new RuntimeException("Failed to build "
-            + ASTSupport.getName(modelDescriptor), errors.iterator().next());
-
-      models.add(model);
-    }
+    for (ICompilationUnit modelDescriptor : modelDescriptors)
+      try
+      {
+        models.add(modelDescriptor.build());
+      }
+      catch (Exception e)
+      {
+        throw new RuntimeException(e);
+      }
     return models;
   }
 
@@ -162,60 +162,36 @@ public class EnvironmentParser
    * @param document
    * @return
    */
-  public Collection<CommonTree> getModelDescriptors(Document document, URL root)
+  public Collection<ICompilationUnit> getModelDescriptors(Document document,
+      URL root)
   {
-    Collection<CommonTree> models = new ArrayList<CommonTree>();
+    Collection<ICompilationUnit> models = new ArrayList<ICompilationUnit>();
 
     NodeList nl = document.getElementsByTagName("model");
     for (int i = 0; i < nl.getLength(); i++)
     {
       Element modelElement = (Element) nl.item(i);
-      String modelName = modelElement.getAttribute("alias");
+      modelElement.getAttribute("alias");
       String location = modelElement.getAttribute("url");
 
       URL modelLocation = resolveURLLocation(root, location);
 
       if (modelLocation != null)
-      {
-        Collection<Exception> warnings = new HashSet<Exception>();
-        Collection<Exception> errors = new HashSet<Exception>();
-        CommonTree modelDescriptor = null;
         try
         {
-          if (LOGGER.isDebugEnabled())
-            LOGGER.debug("Loading " + modelLocation);
-          modelDescriptor = IOUtilities.loadModelFile(modelLocation, warnings,
-              errors);
+          ICompilationUnit modelDescriptor = CompilationUnitManager.get()
+              .get(modelLocation.toURI());
+
+          models.add(modelDescriptor);
         }
         catch (Exception e)
         {
-          throw new RuntimeException("Failed to load " + modelLocation, e);
+          throw new RuntimeException(e);
         }
-
-        if (errors.size() != 0)
-          throw new RuntimeException("Parsing error on " + modelLocation,
-              errors.iterator().next());
-
-        IOUtilities.compileModelDescriptor(modelDescriptor, warnings, errors);
-
-        if (errors.size() != 0)
-          throw new RuntimeException("Compilation error on " + modelLocation,
-              errors.iterator().next());
-
-        /*
-         * set the model name
-         */
-        ASTSupport.getFirstDescendantWithType(modelDescriptor,
-            JACTRBuilder.NAME).getToken().setText(modelName);
-
-        models.add(modelDescriptor);
-      }
       else
-        throw new RuntimeException(
-            String
-                .format(
-                    "Could not load model from %s. If this was working a second ago, check out %s.",
-                    location, "http://jact-r.org/node/148"));
+        throw new RuntimeException(String.format(
+            "Could not load model from %s. If this was working a second ago, check out %s.",
+            location, "http://jact-r.org/node/148"));
     }
 
     return models;
@@ -239,8 +215,8 @@ public class EnvironmentParser
     String className = element.getAttribute("class");
     try
     {
-      Object rtn = EnvironmentParser.class.getClassLoader()
-          .loadClass(className).newInstance();
+      Object rtn = EnvironmentParser.class.getClassLoader().loadClass(className)
+          .newInstance();
 
       if (rtn instanceof IParameterized)
       {
@@ -253,8 +229,8 @@ public class EnvironmentParser
     }
     catch (Exception e)
     {
-      String message = new String("Could not instantiate " + objectType
-          + " from " + className);
+      String message = new String(
+          "Could not instantiate " + objectType + " from " + className);
       LOGGER.error(message, e);
       throw new RuntimeException(message, e);
     }
@@ -287,9 +263,9 @@ public class EnvironmentParser
           for (IModel model : models)
             if (model.getName().equals(modelName))
               if (installable instanceof IInstrument)
-                model.install((IInstrument) installable);
+              model.install((IInstrument) installable);
               else
-                installable.install(model);
+              installable.install(model);
       }
     }
     return attachments;
@@ -358,9 +334,8 @@ public class EnvironmentParser
   protected void instantiateOnStartStop(Document env, ACTRRuntime runtime)
   {
     NodeList nl = env.getElementsByTagName("onstart");
-    if (nl.getLength() == 1)
-      runtime
-          .setOnStart((Runnable) instantiate((Element) nl.item(0), "onstart"));
+    if (nl.getLength() == 1) runtime
+        .setOnStart((Runnable) instantiate((Element) nl.item(0), "onstart"));
 
     nl = env.getElementsByTagName("onstop");
     if (nl.getLength() == 1)
@@ -374,8 +349,7 @@ public class EnvironmentParser
     try
     {
       url = new URL(location);
-      if (LOGGER.isDebugEnabled())
-        LOGGER.debug("Loading from full url " + url);
+      if (LOGGER.isDebugEnabled()) LOGGER.debug("Loading from full url " + url);
     }
     catch (MalformedURLException e)
     {
@@ -383,24 +357,23 @@ public class EnvironmentParser
         LOGGER.debug(location + " is not a valid url, trying to resolve it");
     }
 
-    if (url == null)
-      try
+    if (url == null) try
+    {
+      url = enviromentLocation.toURI().resolve(location).toURL();
+      File fp = new File(url.toURI());
+      if (!fp.exists())
       {
-        url = enviromentLocation.toURI().resolve(location).toURL();
-        File fp = new File(url.toURI());
-        if (!fp.exists())
-        {
-          url = null;
-          if (LOGGER.isDebugEnabled()) LOGGER.debug("No file found at " + url);
-        }
-        else if (LOGGER.isDebugEnabled())
-          LOGGER.debug("Loading from relative URL " + url);
+        url = null;
+        if (LOGGER.isDebugEnabled()) LOGGER.debug("No file found at " + url);
       }
-      catch (Exception e)
-      {
-        if (LOGGER.isDebugEnabled())
-          LOGGER.debug("Could not resolve url from " + location, e);
-      }
+      else if (LOGGER.isDebugEnabled())
+        LOGGER.debug("Loading from relative URL " + url);
+    }
+    catch (Exception e)
+    {
+      if (LOGGER.isDebugEnabled())
+        LOGGER.debug("Could not resolve url from " + location, e);
+    }
 
     if (url == null) url = getClass().getClassLoader().getResource(location);
     if (LOGGER.isDebugEnabled()) LOGGER.debug("Loading " + url);

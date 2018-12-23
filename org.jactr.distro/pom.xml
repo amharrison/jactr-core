@@ -78,6 +78,7 @@
 		<module>../org.jactr.tools</module>
 		<module>../org.jactr.tools.experiment</module>
 
+		<module>org.jactr.io2</module>
 	</modules>
 
 	<build>

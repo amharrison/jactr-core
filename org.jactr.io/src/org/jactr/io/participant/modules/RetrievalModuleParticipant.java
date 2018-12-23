@@ -30,7 +30,7 @@ public class RetrievalModuleParticipant extends BasicASTParticipant
   public RetrievalModuleParticipant()
   {
     super(RetrievalModuleParticipant.class.getClassLoader().getResource(
-        "org/jactr/io/include/retrieval.jactr"));
+        "org/jactr/io/include/retrieval.jactrx"));
     setInstallableClass(DefaultRetrievalModule6.class);
     Map<String, String> parameters = new TreeMap<String, String>();
     parameters.put(IRetrievalModule.RETRIEVAL_THRESHOLD, "0");

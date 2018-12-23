@@ -20,6 +20,7 @@ import org.jactr.core.model.IModel;
 import org.jactr.io.generator.CodeGeneratorFactory;
 import org.jactr.io.generator.ICodeGenerator;
 import org.jactr.io.resolver.ASTResolver;
+import org.jactr.io2.compilation.ICompilationUnit;
 import org.jactr.tools.itr.ortho.ISlice;
 import org.jactr.tools.itr.ortho.ISliceListener;
 
@@ -128,7 +129,7 @@ public class LongitudinalParameterSetModifier extends ParameterSetModifier
   }
 
   @Override
-  public void setParameter(CommonTree modelDescriptor, int parameterValueIndex)
+  public void setParameter(ICompilationUnit modelDescriptor, int parameterValueIndex)
   {
     super.setParameter(modelDescriptor, parameterValueIndex);
 

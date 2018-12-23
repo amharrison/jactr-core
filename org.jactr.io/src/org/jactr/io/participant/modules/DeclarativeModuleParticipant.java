@@ -40,7 +40,7 @@ public class DeclarativeModuleParticipant extends BasicASTParticipant
   public DeclarativeModuleParticipant()
   {
     super(DeclarativeModuleParticipant.class.getClassLoader().getResource(
-        "org/jactr/io/include/declarative.jactr"));
+        "org/jactr/io/include/declarative.jactrx"));
     setInstallableClass(DefaultDeclarativeModule6.class);
 
     Map<String, String> parameters = new TreeMap<String, String>();

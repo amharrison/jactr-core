@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.antlr.runtime.tree.CommonTree;
+import org.jactr.io2.compilation.ICompilationUnit;
 
 public class SystemPropertyModifier implements IParameterModifier
 {
@@ -39,12 +39,12 @@ public class SystemPropertyModifier implements IParameterModifier
     return Collections.unmodifiableList(_propertyValues);
   }
   
-  public void setParameter(CommonTree modelDescriptor, String parameterValue)
+  public void setParameter(ICompilationUnit modelDescriptor, String parameterValue)
   {
     System.setProperty(_propertyName, parameterValue);
   }
 
-  public void setParameter(CommonTree modelDescriptor, int parameterValueIndex)
+  public void setParameter(ICompilationUnit modelDescriptor, int parameterValueIndex)
   {
     setParameter(modelDescriptor, _propertyValues.get(parameterValueIndex));
   }

@@ -31,7 +31,7 @@ public class AuralModuleParticipant extends BasicASTParticipant
   public AuralModuleParticipant()
   {
     super(AuralModuleParticipant.class.getClassLoader().getResource(
-        "org/jactr/modules/pm/aural/aural.jactr"));
+        "org/jactr/modules/pm/aural/aural.jactrx"));
     setInstallableClass(DefaultAuralModule6.class);
     Map<String, String> parameters = new TreeMap<String, String>();
     parameters.put(IAsynchronousModule.STRICT_SYNCHRONIZATION_PARAM, "true");

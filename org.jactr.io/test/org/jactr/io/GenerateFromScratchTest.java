@@ -13,8 +13,6 @@
  */
 package org.jactr.io;
 
-import junit.framework.TestCase;
-
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,6 +20,8 @@ import org.jactr.core.model.IModel;
 import org.jactr.io.generator.CodeGeneratorFactory;
 import org.jactr.io.generator.ICodeGenerator;
 import org.jactr.io.resolver.ASTResolver;
+
+import junit.framework.TestCase;
 
 public class GenerateFromScratchTest extends TestCase
 {
@@ -47,7 +47,7 @@ public class GenerateFromScratchTest extends TestCase
   {
     CommonTree ct = IOUtilities.createModelDescriptor("raw-test", true);
 
-    ICodeGenerator cg = CodeGeneratorFactory.getCodeGenerator("jactr");
+    ICodeGenerator cg = CodeGeneratorFactory.getCodeGenerator("jactrx");
     LOGGER.debug("Raw");
     for (StringBuilder line : cg.generate(ct, true))
       LOGGER.debug(line.toString());

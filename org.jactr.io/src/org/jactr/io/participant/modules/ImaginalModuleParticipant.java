@@ -26,7 +26,7 @@ public class ImaginalModuleParticipant extends BasicASTParticipant
 {
   public ImaginalModuleParticipant()
   {
-    super("org/jactr/io/include/imaginal.jactr");
+    super("org/jactr/io/include/imaginal.jactrx");
     setInstallableClass(DefaultImaginalModule6.class);
     TreeMap<String, String> parameters = new TreeMap<String,String>();
     parameters.put(IImaginalModule.IMAGINAL_ADD_DELAY_PARAM, "0.2");

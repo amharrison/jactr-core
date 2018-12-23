@@ -2,8 +2,8 @@ package org.jactr.tools.itr;
 
 import java.util.List;
 
-import org.antlr.runtime.tree.CommonTree;
 import org.jactr.core.utils.parameter.IParameterized;
+import org.jactr.io2.compilation.ICompilationUnit;
 
 
 /**
@@ -23,7 +23,7 @@ public interface IParameterModifier extends IParameterized
   
   public String getParameterDisplayName();
 
-  public void setParameter(CommonTree modelDescriptor, int parameterValueIndex);
+  public void setParameter(ICompilationUnit modelDescriptor, int parameterValueIndex);
   
-  public void setParameter(CommonTree modelDescriptor, String parameterValue);
+  public void setParameter(ICompilationUnit modelDescriptor, String parameterValue);
 }

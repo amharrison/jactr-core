@@ -28,7 +28,7 @@ public class VocalModuleParticipant extends BasicASTParticipant
   public VocalModuleParticipant()
   {
     super(VocalModuleParticipant.class.getClassLoader().getResource(
-        "org/jactr/modules/pm/vocal/vocal.jactr"));
+        "org/jactr/modules/pm/vocal/vocal.jactrx"));
     setInstallableClass(DefaultVocalModule6.class);
     
     Map<String, String> parameters = new TreeMap<String, String>();

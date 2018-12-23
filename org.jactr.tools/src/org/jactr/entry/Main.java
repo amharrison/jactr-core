@@ -36,10 +36,11 @@ import org.jactr.core.model.IModel;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.runtime.controller.DefaultController;
 import org.jactr.core.runtime.controller.IController;
-import org.jactr.io.IOUtilities;
 import org.jactr.io.antlr3.compiler.CompilationWarning;
 import org.jactr.io.antlr3.misc.CommonTreeException;
 import org.jactr.io.environment.EnvironmentParser;
+import org.jactr.io2.compilation.CompilationUnitManager;
+import org.jactr.io2.compilation.ICompilationUnit;
 
 /**
  * jACT-R start up application Usage: jactr --compile modelFile.jactr execution:
@@ -273,20 +274,11 @@ public class Main
     {
       String[] sourceModelFiles = cmd.getOptionValues('c');
       for (String source : sourceModelFiles)
-      {
-        ArrayList<Exception> warnings = new ArrayList<Exception>();
-        ArrayList<Exception> errors = new ArrayList<Exception>();
-        CommonTree md = null;
-
         try
         {
           URL url = new File(source).toURL();
-          md = IOUtilities.loadModelFile(url, warnings, errors);
-          // compile
-          error = !IOUtilities.compileModelDescriptor(md, warnings, errors);
-
-          dumpExceptions(source, warnings);
-          dumpExceptions(source, errors);
+          
+          CompilationUnitManager.get().get(url.toURI());      
         }
         catch (Exception e)
         {
@@ -295,7 +287,6 @@ public class Main
           e.printStackTrace(System.err);
           error = true;
         }
-      }
     }
 
     if (error) System.exit(-2);
@@ -343,29 +334,10 @@ public class Main
         try
         {
           URL url = new File(modelFile).toURL();
-          Collection<Exception> warnings = new ArrayList<Exception>();
-          Collection<Exception> errors = new ArrayList<Exception>();
 
-          CommonTree md = IOUtilities.loadModelFile(url, warnings, errors);
-          // compile
-          IOUtilities.compileModelDescriptor(md, warnings, errors);
+          ICompilationUnit comp = CompilationUnitManager.get().get(url.toURI());
 
-          // construct
-          IModel model = IOUtilities.constructModel(md, warnings, errors);
-
-          if (warnings.size() != 0)
-          {
-            System.err.println(modelFile + " has warnings");
-            dumpExceptions(modelFile, warnings);
-          }
-
-          if (errors.size() == 0)
-            runtime.addModel(model);
-          else
-          {
-            System.err.println(modelFile + " has errors");
-            dumpExceptions(modelFile, errors);
-          }
+          runtime.addModel(comp.build());
         }
         catch (Exception e)
         {

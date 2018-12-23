@@ -33,7 +33,7 @@ public class MotorModuleParticipant extends BasicASTParticipant
   public MotorModuleParticipant()
   {
     super(MotorModuleParticipant.class.getClassLoader().getResource(
-        "org/jactr/modules/pm/motor/motor.jactr"));
+        "org/jactr/modules/pm/motor/motor.jactrx"));
     setInstallableClass(DefaultMotorModule6.class);
     Map<String, String> parameters = new TreeMap<String, String>();
     parameters.put(IAsynchronousModule.STRICT_SYNCHRONIZATION_PARAM, "true");

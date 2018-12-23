@@ -15,13 +15,13 @@ package org.jactr.tools.async.iterative.listener;
 
 import java.util.Collection;
 
-import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.entry.iterative.IIterativeRunListener;
 import org.jactr.entry.iterative.TerminateIterativeRunException;
+import org.jactr.io2.compilation.ICompilationUnit;
 import org.jactr.tools.async.common.NetworkedEndpoint;
 import org.jactr.tools.async.iterative.message.DeadLockMessage;
 import org.jactr.tools.async.iterative.message.ExceptionMessage;
@@ -102,10 +102,10 @@ public class NetworkedIterativeRunListener extends NetworkedEndpoint implements
 
   /**
    * @see org.jactr.entry.iterative.IIterativeRunListener#preBuild(int, int,
-   *      java.util.Collection)
+   *      Collection)
    */
   public void preBuild(int currentRunIndex, int totalRuns,
-      Collection<CommonTree> modelDescriptors)
+      Collection<ICompilationUnit> modelDescriptors)
       throws TerminateIterativeRunException
   {
     // noop

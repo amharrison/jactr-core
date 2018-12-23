@@ -15,7 +15,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jactr.core.concurrent.ExecutorServices;
@@ -24,6 +23,7 @@ import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.entry.iterative.IIterativeRunListener;
 import org.jactr.entry.iterative.TerminateIterativeRunException;
+import org.jactr.io2.compilation.ICompilationUnit;
 
 /**
  * dump the output of an iterative run to a zip archive
@@ -128,7 +128,7 @@ public class ZipDataListener implements IIterativeRunListener, IParameterized
   }
 
   public void preBuild(int currentRunIndex, int totalRuns,
-      Collection<CommonTree> modelDescriptors)
+      Collection<ICompilationUnit> modelDescriptors)
       throws TerminateIterativeRunException
   {
     // NoOp

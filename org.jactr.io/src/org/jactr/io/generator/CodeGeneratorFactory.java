@@ -30,7 +30,7 @@ public class CodeGeneratorFactory
   static
   {
     _generatorMap = new HashMap<String, ICodeGenerator>();
-    addCodeGenerator("jactr", new JACTRCodeGenerator());
+    addCodeGenerator("jactrx", new JACTRCodeGenerator());
     addCodeGenerator("lisp", new LispCodeGenerator());
   }
 

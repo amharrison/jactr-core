@@ -22,19 +22,19 @@ public class JACTRIOTest extends TestCase
   @Test
   public void testSemantic() throws Exception
   {
-    testModel("org/jactr/io/antlr3/semantic-full.jactr");
+    testModel("org/jactr/io/antlr3/semantic-full.jactrx");
   }
 
   @Test
   public void testCount() throws Exception
   {
-    testModel("org/jactr/io/antlr3/count.jactr");
+    testModel("org/jactr/io/antlr3/count.jactrx");
   }
 
   @Test
   public void testAddition() throws Exception
   {
-    testModel("org/jactr/io/antlr3/addition.jactr");
+    testModel("org/jactr/io/antlr3/addition.jactrx");
   }
 
   protected void testModel(String modelFile) throws Exception

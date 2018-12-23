@@ -18,6 +18,7 @@ import java.util.TreeMap;
 
 import org.jactr.core.module.asynch.IAsynchronousModule;
 import org.jactr.io.participant.impl.BasicASTParticipant;
+import org.jactr.modules.pm.common.memory.IPerceptualMemory;
 import org.jactr.modules.pm.visual.AbstractVisualModule;
 import org.jactr.modules.pm.visual.memory.IVisualMemory;
 import org.jactr.modules.pm.visual.memory.impl.DefaultVisualMemory;
@@ -33,7 +34,7 @@ public class VisualModuleParticipant extends BasicASTParticipant
   public VisualModuleParticipant()
   {
     super(VisualModuleParticipant.class.getClassLoader().getResource(
-        "org/jactr/modules/pm/visual/visual.jactr"));
+        "org/jactr/modules/pm/visual/visual.jactrx"));
     setInstallableClass(DefaultVisualModule6.class);
     Map<String, String> parameters = new TreeMap<String, String>();
     parameters.put(IAsynchronousModule.STRICT_SYNCHRONIZATION_PARAM, "true");
@@ -43,9 +44,9 @@ public class VisualModuleParticipant extends BasicASTParticipant
         "160");
     parameters.put(IVisualMemory.VISUAL_FIELD_VERTICAL_RESOLUTION_PARAM, "120");
     parameters.put(IVisualMemory.VISUAL_FIELD_HEIGHT_PARAM, "120");
-    parameters.put(IVisualMemory.NEW_FINST_ONSET_DURATION_TIME_PARAM, "0.5");
-    parameters.put(IVisualMemory.FINST_DURATION_TIME_PARAM, "3");
-    parameters.put(IVisualMemory.NUMBER_OF_FINSTS_PARAM, "4");
+    parameters.put(IPerceptualMemory.NEW_FINST_ONSET_DURATION_TIME_PARAM, "0.5");
+    parameters.put(IPerceptualMemory.FINST_DURATION_TIME_PARAM, "3");
+    parameters.put(IPerceptualMemory.NUMBER_OF_FINSTS_PARAM, "4");
     parameters.put(IVisualMemory.MOVEMENT_TOLERANCE_PARAM, "0.5");
     parameters.put(IVisualMemory.STICKY_ATTENTION_PARAM, "false");
     parameters.put(DefaultVisualMemory.VISUAL_PESISTENCE_DELAY_PARAM, "0");

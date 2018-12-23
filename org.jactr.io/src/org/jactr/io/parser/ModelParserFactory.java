@@ -38,7 +38,7 @@ public class ModelParserFactory
   {
     _parsers = new HashMap<String, Class< ? extends IModelParser>>();
     addParser("lisp", org.jactr.io.antlr3.parser.lisp.LispModelParser.class);
-    addParser("jactr", org.jactr.io.antlr3.parser.xml.JACTRModelParser.class);
+    addParser("jactrx", org.jactr.io.antlr3.parser.xml.JACTRModelParser.class);
   }
 
   /**

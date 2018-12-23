@@ -15,8 +15,8 @@ package org.jactr.entry.iterative;
 
 import java.util.Collection;
 
-import org.antlr.runtime.tree.CommonTree;
 import org.jactr.core.model.IModel;
+import org.jactr.io2.compilation.ICompilationUnit;
 
 /**
  * A handler to interact with the IterativeMain entry point. If the iterative
@@ -50,7 +50,7 @@ public interface IIterativeRunListener
    *           TODO
    */
   public void preBuild(int currentRunIndex, int totalRuns,
-      Collection<CommonTree> modelDescriptors)
+      Collection<ICompilationUnit> modelDescriptors)
       throws TerminateIterativeRunException;
 
   /**

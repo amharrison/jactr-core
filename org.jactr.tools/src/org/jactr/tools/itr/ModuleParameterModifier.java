@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.antlr.runtime.tree.CommonTree;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
+import org.jactr.io2.compilation.ICompilationUnit;
 
 public class ModuleParameterModifier extends AbstractParameterModifier
 {
@@ -32,13 +33,24 @@ public class ModuleParameterModifier extends AbstractParameterModifier
     }
   }
   
+
   @Override
+  protected void setParameter(ICompilationUnit modelDescriptor,
+      String parameter, String value)
+  {
+    if (modelDescriptor.getAST() instanceof CommonTree)
+      setParameter((CommonTree) modelDescriptor.getAST(), parameter, value);
+    else
+      throw new RuntimeException("not implemented yet");
+  }
+
   protected void setParameter(CommonTree modelDescriptor, String parameter,
       String value)
   {
     setModuleParameter(modelDescriptor, _moduleClassName, parameter,value);
   }
 
+  @Override
   public Collection<String> getSetableParameters()
   {
     ArrayList<String> rtn = new ArrayList<String>(super.getSetableParameters());
@@ -46,6 +58,7 @@ public class ModuleParameterModifier extends AbstractParameterModifier
     return rtn;
   }
 
+  @Override
   public void setParameter(String key, String value)
   {
     if(MODULE_CLASS.equalsIgnoreCase(key))

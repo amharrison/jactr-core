@@ -30,7 +30,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jactr.core.concurrent.ExecutorServices;
@@ -41,6 +40,7 @@ import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.runtime.controller.IController;
 import org.jactr.core.runtime.event.IACTRRuntimeListener;
 import org.jactr.io.environment.EnvironmentParser;
+import org.jactr.io2.compilation.ICompilationUnit;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -129,7 +129,8 @@ public class IterativeMain
      * first we use the environment to load all the model descriptors
      */
     EnvironmentParser ep = new EnvironmentParser();
-    Collection<CommonTree> modelDescriptors = ep.getModelDescriptors(
+    Collection<ICompilationUnit> modelDescriptors = ep
+        .getModelDescriptors(
         environment, envURL);
 
     for (IIterativeRunListener listener : listeners)

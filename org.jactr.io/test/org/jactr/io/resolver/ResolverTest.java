@@ -16,13 +16,13 @@
 
 package org.jactr.io.resolver;
 
-import junit.framework.TestCase;
-
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.io.CommonIO;
+
+import junit.framework.TestCase;
 
 
 public class ResolverTest extends TestCase
@@ -35,13 +35,16 @@ public class ResolverTest extends TestCase
   static private final transient Log LOGGER = LogFactory
                                                 .getLog(ResolverTest.class);
   
-  String[] _cleanModels = {"org/jactr/io/resolver/addition.jactr"};
+  String[]                           _cleanModels = {
+      "org/jactr/io/resolver/addition.jactrx" };
   
+  @Override
   protected void setUp() throws Exception
   {
     super.setUp();
   }
 
+  @Override
   protected void tearDown() throws Exception
   {
     super.tearDown();
@@ -49,10 +52,8 @@ public class ResolverTest extends TestCase
   
   public void testGenerator()
   {
-    for(int i=0;i<_cleanModels.length;i++)
-    {
-      resolverTest(_cleanModels[i]);
-    }
+    for (String _cleanModel : _cleanModels)
+      resolverTest(_cleanModel);
       
   }
 
@@ -78,7 +79,7 @@ public class ResolverTest extends TestCase
     CommonIO.compilerTest(newMD, true, true);
     
     //now lets generate..
-    for(StringBuilder line : CommonIO.generateSource(newMD,"jactr"))
+    for (StringBuilder line : CommonIO.generateSource(newMD, "jactrx"))
       LOGGER.debug(line.toString());
     
     LOGGER.info("Destroying model "+fileName);
@@ -90,6 +91,6 @@ public class ResolverTest extends TestCase
     {
        LOGGER.error("Could not dispose of model ",e);
        fail(e.getMessage());
-    } 
+    }
   }
 }

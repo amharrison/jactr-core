@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
+import org.jactr.io2.compilation.ICompilationUnit;
 
 public class ProductionParameterModifier extends AbstractParameterModifier
 {
@@ -24,6 +25,15 @@ public class ProductionParameterModifier extends AbstractParameterModifier
   private Pattern              _production;
 
   @Override
+  protected void setParameter(ICompilationUnit modelDescriptor,
+      String parameter, String value)
+  {
+    if (modelDescriptor.getAST() instanceof CommonTree)
+      setParameter((CommonTree) modelDescriptor.getAST(), parameter, value);
+    else
+      throw new RuntimeException("not implemented yet");
+  }
+
   protected void setParameter(CommonTree modelDescriptor, String parameter,
       String value)
   {
