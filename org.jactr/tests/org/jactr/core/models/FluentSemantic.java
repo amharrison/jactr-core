@@ -90,17 +90,15 @@ public class FluentSemantic implements Supplier<IModel>
        */
 
       /*
-       * initial-retrieval. Notice we can't use :state shortcut in match and
-       * must use a query instead. However, we can use :recently-retrieved in
-       * add.
+       * initial-retrieval.
        */
+
       FluentProduction.from(model).named("initial-retrieval")
           .condition(
               FluentCondition.match("goal", isMember).slot("object", "=obj")
-                  .slot("category", "=cat").slot("judgement", null).build())
-          .condition(FluentCondition.query("retrieval")
-              .slot("state", model.getDeclarativeModule().getFreeChunk())
-              .build())
+                  .slot("category", "=cat").slot("judgement", null)
+                  .slot(":state", model.getDeclarativeModule().getFreeChunk())
+                  .build())
           .action(FluentAction.modify("goal")
               .slot("judgement", definedChunks.get("pending")).build())
           .action(

@@ -215,7 +215,8 @@ public class EnvironmentParser
     String className = element.getAttribute("class");
     try
     {
-      Object rtn = EnvironmentParser.class.getClassLoader().loadClass(className)
+      // force jactr.core's classloader
+      Object rtn = IModel.class.getClassLoader().loadClass(className)
           .newInstance();
 
       if (rtn instanceof IParameterized)
@@ -375,7 +376,8 @@ public class EnvironmentParser
         LOGGER.debug("Could not resolve url from " + location, e);
     }
 
-    if (url == null) url = getClass().getClassLoader().getResource(location);
+    // force it to use jactr.core's classloader
+    if (url == null) url = IModel.class.getClassLoader().getResource(location);
     if (LOGGER.isDebugEnabled()) LOGGER.debug("Loading " + url);
 
     return url;

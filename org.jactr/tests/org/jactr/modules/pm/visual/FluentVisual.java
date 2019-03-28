@@ -65,9 +65,9 @@ public class FluentVisual implements Supplier<IModel>
       FluentProduction.from(model).named("search-kind")
           .condition(FluentCondition.match("goal", testType)
               .slot("status", definedChunks.get("starting"))
-              .slot("stage", definedChunks.get("test-kind")).build())
-          .condition(FluentCondition.query("visual-location")
-              .slot("state", free).build())
+              .slot("stage", definedChunks.get("test-kind"))
+              .slot(":state", free).build())
+
           .action(FluentAction.add("visual-location", visLoc)
               .slot(":attended", null)
               .slot("nearest",

@@ -93,7 +93,9 @@ public class ChunkCondition extends ChunkTypeCondition
 
     try
     {
-      return getRequest().bind(testChunk, model, variableBindings, isIterative);
+      return getRequest().bind(testChunk,
+          model.getActivationBuffer(getBufferName()), variableBindings,
+          isIterative);
     }
     catch (CannotMatchException cme)
     {
