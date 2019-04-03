@@ -3,8 +3,8 @@ package org.jactr.modules.pm.motor.command.translators;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.efferent.ICompoundCommand;
 import org.commonreality.efferent.IEfferentCommand;
@@ -22,8 +22,8 @@ public class PeckRecoilTranslator extends PeckTranslator
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(PeckRecoilTranslator.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(PeckRecoilTranslator.class);
 
   @Override
   public boolean handles(ChunkTypeRequest request)

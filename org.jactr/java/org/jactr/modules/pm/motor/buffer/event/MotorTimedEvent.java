@@ -8,22 +8,21 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.efferent.IEfferentCommand;
 import org.commonreality.identifier.IIdentifier;
 import org.jactr.core.queue.timedevents.AbstractTimedEvent;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.modules.pm.motor.IMotorModule;
 import org.jactr.modules.pm.motor.command.IMovement;
+import org.slf4j.LoggerFactory;
 
 public class MotorTimedEvent extends AbstractTimedEvent
 {
   /**
    * Logger definition
    */
-  static private final transient Log        LOGGER       = LogFactory
-                                                             .getLog(MotorTimedEvent.class);
+  static private final transient org.slf4j.Logger LOGGER       = LoggerFactory
+                                                             .getLogger(MotorTimedEvent.class);
 
   private IMovement                         _movement;
 

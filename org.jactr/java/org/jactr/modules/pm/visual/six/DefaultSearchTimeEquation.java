@@ -13,8 +13,8 @@
  */
 package org.jactr.modules.pm.visual.six;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.production.condition.ChunkPattern;
 import org.jactr.modules.pm.visual.IVisualModule;
@@ -30,8 +30,8 @@ public class DefaultSearchTimeEquation implements IVisualSearchTimeEquation
   /**
    * logger definition
    */
-  static public final Log LOGGER = LogFactory
-                                     .getLog(DefaultSearchTimeEquation.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory
+                                     .getLogger(DefaultSearchTimeEquation.class);
 
   /**
    * instantanious search

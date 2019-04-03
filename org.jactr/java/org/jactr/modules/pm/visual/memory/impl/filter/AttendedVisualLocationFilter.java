@@ -5,8 +5,8 @@ package org.jactr.modules.pm.visual.memory.impl.filter;
  */
 import java.util.Comparator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.modules.pm.common.memory.filter.AbstractIndexFilter;
@@ -19,8 +19,8 @@ public class AttendedVisualLocationFilter extends
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(AttendedVisualLocationFilter.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(AttendedVisualLocationFilter.class);
 
   @Override
   protected Boolean compute(ChunkTypeRequest request)

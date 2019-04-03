@@ -5,8 +5,8 @@ package org.jactr.tools.marker;
  */
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.production.CannotInstantiateException;
 import org.jactr.core.production.IInstantiation;
 import org.jactr.core.production.VariableBindings;
@@ -26,8 +26,8 @@ public class PointMarkerAction extends DefaultSlotAction
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(PointMarkerAction.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(PointMarkerAction.class);
 
   static public final String         NAME        = "name";
 

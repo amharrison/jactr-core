@@ -3,8 +3,8 @@ package org.jactr.core.chunk.link;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 
 /**
@@ -18,8 +18,8 @@ public class DefaultAssociativeLinkEquation implements IAssociativeLinkEquation
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(DefaultAssociativeLinkEquation.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DefaultAssociativeLinkEquation.class);
 
   public double computeLearnedStrength(IAssociativeLink link)
   {

@@ -3,8 +3,8 @@ package org.jactr.modules.pm.common.symbol;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.modalities.aural.DefaultAuralPropertyHandler;
 import org.commonreality.modalities.aural.IAuralPropertyHandler;
 import org.commonreality.modalities.visual.DefaultVisualPropertyHandler;
@@ -25,8 +25,8 @@ public class DefaultStringSymbolGrounder implements ISymbolGrounder
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER                 = LogFactory
-                                                                .getLog(DefaultStringSymbolGrounder.class);
+  static private final transient org.slf4j.Logger LOGGER                 = LoggerFactory
+                                                                .getLogger(DefaultStringSymbolGrounder.class);
 
   private IVisualPropertyHandler     _visualPropertyHandler = new DefaultVisualPropertyHandler();
 

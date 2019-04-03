@@ -3,8 +3,8 @@ package org.jactr.scripting.condition;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.production.condition.match.AbstractMatchFailure;
 import org.jactr.core.production.condition.match.IMatchFailure;
 
@@ -20,8 +20,8 @@ public class ScriptExecutionFailure extends AbstractMatchFailure
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ScriptExecutionFailure.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ScriptExecutionFailure.class);
 
   private final String               _message;
 

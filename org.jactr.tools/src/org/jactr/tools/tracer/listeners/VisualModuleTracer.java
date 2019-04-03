@@ -15,8 +15,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.event.IParameterEvent;
@@ -35,14 +33,15 @@ import org.jactr.modules.pm.visual.event.IVisualModuleListener;
 import org.jactr.modules.pm.visual.event.VisualModuleEvent;
 import org.jactr.tools.tracer.transformer.visual.TransformedVisualEvent;
 import org.jactr.tools.tracer.transformer.visual.VisualEventTransformer;
+import org.slf4j.LoggerFactory;
 
 public class VisualModuleTracer extends BaseTraceListener
 {
   /**
    * Logger definition
    */
-  static private final transient Log                         LOGGER = LogFactory
-                                                                        .getLog(VisualModuleTracer.class);
+  static private final transient org.slf4j.Logger            LOGGER = LoggerFactory
+                                                                        .getLogger(VisualModuleTracer.class);
 
   private IModelListener                                     _outputListener;
 

@@ -10,8 +10,8 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.runtime.ACTRRuntime;
 
@@ -20,8 +20,8 @@ public class VariableResolver
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(VariableResolver.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(VariableResolver.class);
 
   private Collection<IResolver>      _resolvers;
 

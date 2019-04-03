@@ -6,8 +6,8 @@ import java.util.ArrayList;
  */
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 
 /**
@@ -20,8 +20,8 @@ public class ChainedChunkConfigurator implements IChunkConfigurator
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ChainedChunkConfigurator.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ChainedChunkConfigurator.class);
 
   private List<IChunkConfigurator>   _configurators = new ArrayList<IChunkConfigurator>();
 

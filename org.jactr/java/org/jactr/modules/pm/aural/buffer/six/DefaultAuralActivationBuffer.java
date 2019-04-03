@@ -13,8 +13,8 @@
  */
 package org.jactr.modules.pm.aural.buffer.six;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.delegate.AddChunkRequestDelegate;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
@@ -36,8 +36,8 @@ public class DefaultAuralActivationBuffer extends AbstractPMActivationBuffer6
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory
-                                      .getLog(DefaultAuralActivationBuffer.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+                                      .getLogger(DefaultAuralActivationBuffer.class);
 
   private IAuralLocationBuffer _locationBuffer;
 

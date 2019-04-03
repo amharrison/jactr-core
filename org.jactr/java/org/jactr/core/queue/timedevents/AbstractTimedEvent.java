@@ -13,8 +13,8 @@
 
 package org.jactr.core.queue.timedevents;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.time.impl.BasicClock;
 import org.jactr.core.queue.ITimedEvent;
 
@@ -26,8 +26,8 @@ import org.jactr.core.queue.ITimedEvent;
  */
 public class AbstractTimedEvent implements ITimedEvent
 {
-  static private transient final Log LOGGER                = LogFactory
-                                                               .getLog(AbstractTimedEvent.class
+  static private transient final org.slf4j.Logger LOGGER                = LoggerFactory
+                                                               .getLogger(AbstractTimedEvent.class
                                                                    .getName());
 
   protected boolean                  _hasAborted           = false;

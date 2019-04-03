@@ -1,22 +1,23 @@
 package org.jactr.modules.pm.aural.memory.impl.map;
 
-/*
- * default logging
- */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.modalities.aural.DefaultAuralPropertyHandler;
 import org.commonreality.modalities.aural.IAuralPropertyHandler;
 import org.commonreality.object.IAfferentObject;
 import org.jactr.modules.pm.common.memory.map.AbstractFeatureMap;
+
+/*
+ * default logging
+ */
+ 
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractAuralFeatureMap<T> extends AbstractFeatureMap<T>
 {
   /**
    * Logger definition
    */
-  static private final transient Log                LOGGER           = LogFactory
-                                                                         .getLog(AbstractAuralFeatureMap.class);
+  static private final transient org.slf4j.Logger  LOGGER           = LoggerFactory
+                                                                         .getLogger(AbstractAuralFeatureMap.class);
 
   static private final DefaultAuralPropertyHandler _propertyHandler = new DefaultAuralPropertyHandler();
 

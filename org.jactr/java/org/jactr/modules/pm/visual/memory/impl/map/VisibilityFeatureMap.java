@@ -5,8 +5,8 @@ package org.jactr.modules.pm.visual.memory.impl.map;
  */
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.commonreality.modalities.visual.IVisualPropertyHandler;
 import org.commonreality.object.IAfferentObject;
@@ -23,8 +23,8 @@ public class VisibilityFeatureMap extends
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(VisibilityFeatureMap.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(VisibilityFeatureMap.class);
 
   public VisibilityFeatureMap()
   {

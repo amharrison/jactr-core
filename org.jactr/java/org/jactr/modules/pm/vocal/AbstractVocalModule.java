@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.identifier.IIdentifier;
 import org.commonreality.modalities.vocal.VocalConstants;
@@ -31,6 +29,7 @@ import org.jactr.modules.pm.vocal.delegate.VocalCommandManager;
 import org.jactr.modules.pm.vocal.delegate.VocalManagementDelegate;
 import org.jactr.modules.pm.vocal.event.IVocalModuleListener;
 import org.jactr.modules.pm.vocal.event.VocalModuleEvent;
+import org.slf4j.LoggerFactory;
 
 /**
  * abstract implementation that
@@ -44,8 +43,8 @@ public class AbstractVocalModule extends AbstractPerceptualModule implements
   /**
    * Logger definition
    */
-  static private final transient Log                                    LOGGER                = LogFactory
-                                                                                                  .getLog(AbstractVocalModule.class);
+  static private final transient org.slf4j.Logger                       LOGGER                = LoggerFactory
+                                                                                                  .getLogger(AbstractVocalModule.class);
 
   private String                                                        _preparedVocalization = null;
 

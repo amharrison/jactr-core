@@ -6,8 +6,8 @@ package org.jactr.tools.throttle;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.core.utils.parameter.ParameterHandler;
@@ -24,8 +24,8 @@ public class RuntimeThrottler implements IInstrument, IParameterized
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(RuntimeThrottler.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(RuntimeThrottler.class);
 
   static public final String         MINIMUM_CYCLE_TIME = "MinimumCycleRealTime";
 

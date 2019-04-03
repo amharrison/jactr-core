@@ -7,8 +7,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.tools.experiment.IExperiment;
 import org.jactr.tools.experiment.actions.AbstractAction;
@@ -23,8 +23,8 @@ public class ProxyAction implements IAction
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ProxyAction.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ProxyAction.class);
 
   private AbstractAction             _actualAction;
 

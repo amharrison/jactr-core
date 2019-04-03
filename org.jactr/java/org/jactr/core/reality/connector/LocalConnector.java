@@ -16,8 +16,8 @@ package org.jactr.core.reality.connector;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.time.IClock;
 import org.commonreality.time.impl.BasicClock;
@@ -37,8 +37,8 @@ public class LocalConnector implements IConnector
   /**
    * logger definition
    */
-  static private final Log     LOGGER                        = LogFactory
-                                                                 .getLog(LocalConnector.class);
+  static private final transient org.slf4j.Logger     LOGGER                        = LoggerFactory
+                                                                 .getLogger(LocalConnector.class);
 
   static private final boolean _enableIndependentClocks      = Boolean
                                                                  .getBoolean("connector.independentClocks");

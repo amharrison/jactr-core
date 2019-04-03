@@ -4,8 +4,8 @@ package org.jactr.tools.experiment.actions;
  * default logging
  */
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.tools.experiment.IExperiment;
 import org.jactr.tools.experiment.impl.IVariableContext;
@@ -24,8 +24,8 @@ public abstract class AbstractAction implements IAction
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(AbstractAction.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(AbstractAction.class);
 
   protected final IExperiment _experiment;
   

@@ -9,8 +9,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.commonreality.object.IAfferentObject;
 import org.commonreality.object.delta.IObjectDelta;
@@ -21,14 +19,15 @@ import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.slot.BasicSlot;
 import org.jactr.core.slot.ISlot;
 import org.jactr.modules.pm.common.memory.IPerceptualMemory;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractFeatureMap<T> implements IFeatureMap<T>
 {
   /**
    * Logger definition
    */
-  static private final transient Log                            LOGGER      = LogFactory
-                                                                                .getLog(AbstractFeatureMap.class);
+  static private final transient org.slf4j.Logger               LOGGER      = LoggerFactory
+                                                                                .getLogger(AbstractFeatureMap.class);
 
   @SuppressWarnings("unchecked")
   private ACTREventDispatcher<IFeatureMap, IFeatureMapListener> _dispatcher = new ACTREventDispatcher<IFeatureMap, IFeatureMapListener>();

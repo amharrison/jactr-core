@@ -15,8 +15,8 @@ package org.jactr.tools.async.iterative.listener;
 
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.entry.iterative.IIterativeRunListener;
@@ -38,8 +38,8 @@ public class NetworkedIterativeRunListener extends NetworkedEndpoint implements
   /**
    * logger definition
    */
-  static private final Log   LOGGER                 = LogFactory
-                                                        .getLog(NetworkedIterativeRunListener.class);
+  static private final transient org.slf4j.Logger   LOGGER                 = LoggerFactory
+                                                        .getLogger(NetworkedIterativeRunListener.class);
 
   static public final String DEADLOCK_TIMEOUT_PARAM = "DeadlockTimeout";
 

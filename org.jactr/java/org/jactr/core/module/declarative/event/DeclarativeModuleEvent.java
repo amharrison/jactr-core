@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.event.AbstractACTREvent;
@@ -33,8 +33,8 @@ public class DeclarativeModuleEvent extends
   /**
    * logger definition
    */
-  static public final Log LOGGER = LogFactory
-                                     .getLog(DeclarativeModuleEvent.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory
+                                     .getLogger(DeclarativeModuleEvent.class);
 
   static public enum Type {
     CHUNK_TYPE_CREATED, CHUNK_TYPE_ADDED, CHUNK_TYPES_MERGED, CHUNK_CREATED, CHUNK_ADDED, CHUNKS_MERGED, CHUNK_REMOVED, CHUNK_TYPE_REMOVED, CHUNK_DISPOSED, CHUNK_TYPE_DISPOSED, PARAMETER_CHANGED

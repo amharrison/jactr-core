@@ -7,8 +7,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
@@ -58,8 +58,8 @@ public class DefaultTemporalModule6 extends AbstractModule implements
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER                = LogFactory
-                                                               .getLog(DefaultTemporalModule6.class);
+  static private final transient org.slf4j.Logger LOGGER                = LoggerFactory
+                                                               .getLogger(DefaultTemporalModule6.class);
 
   static public final String         TIME_MULTIPLIER_PARAM = "TemporalMultiplier";
 

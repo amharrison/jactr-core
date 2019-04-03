@@ -26,8 +26,8 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.function.Predicate;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.ISubsymbolicChunk;
@@ -74,8 +74,8 @@ public class ASTResolver
    * Logger definition
    */
 
-  static private final transient Log LOGGER   = LogFactory
-                                                  .getLog(ASTResolver.class);
+  static private final transient org.slf4j.Logger LOGGER   = LoggerFactory
+                                                  .getLogger(ASTResolver.class);
 
   static private ASTSupport          _support = new ASTSupport();
 

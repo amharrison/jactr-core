@@ -20,8 +20,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.tools.tracer.ITraceSink;
 import org.jactr.tools.tracer.transformer.ITransformedEvent;
@@ -34,8 +34,8 @@ public class FileSink implements ITraceSink
   /**
    * logger definition
    */
-  static private final Log             LOGGER = LogFactory
-                                                  .getLog(FileSink.class);
+  static private final transient org.slf4j.Logger             LOGGER = LoggerFactory
+                                                  .getLogger(FileSink.class);
 
   private ArrayList<ITransformedEvent> _queue;
 

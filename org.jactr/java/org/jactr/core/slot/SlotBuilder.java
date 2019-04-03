@@ -6,8 +6,8 @@ package org.jactr.core.slot;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility for building slots quickly with a builder pattern. Start with the
@@ -46,8 +46,8 @@ public class SlotBuilder<T>
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER     = LogFactory
-                                                    .getLog(SlotBuilder.class);
+  static private final transient org.slf4j.Logger LOGGER     = LoggerFactory
+                                                    .getLogger(SlotBuilder.class);
 
   private String                     _slotName;
 

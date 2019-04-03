@@ -15,8 +15,6 @@ package org.jactr.core.module.declarative.four.associative;
 
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.event.ChunkEvent;
 import org.jactr.core.chunk.event.ChunkListenerAdaptor;
@@ -27,6 +25,7 @@ import org.jactr.core.module.declarative.associative.IAssociativeLinkContainer;
 import org.jactr.core.module.declarative.basic.chunk.IChunkFactory;
 import org.jactr.core.module.declarative.basic.chunk.ISubsymbolicChunkFactory;
 import org.jactr.core.utils.collections.FastCollectionFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * Chunk listener that handles associative links. This does three things. 1) it
@@ -41,8 +40,8 @@ public class ChunkListener extends ChunkListenerAdaptor
   /**
    * logger definition
    */
-  static private final Log                       LOGGER           = LogFactory
-                                                                      .getLog(ChunkListener.class);
+  static private final org.slf4j.Logger          LOGGER = LoggerFactory
+                                                                      .getLogger(ChunkListener.class);
 
 
   private final DefaultAssociativeLinkageSystem4 _linkageSystem;

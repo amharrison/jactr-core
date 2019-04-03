@@ -3,8 +3,8 @@ package org.jactr.modules.pm.motor.buffer.processor;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.modalities.motor.MotorUtilities;
 import org.commonreality.object.IEfferentObject;
 import org.jactr.core.buffer.IActivationBuffer;
@@ -25,8 +25,8 @@ public class AbortRequestDelegate extends SimpleRequestDelegate
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(AbortRequestDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(AbortRequestDelegate.class);
 
   public AbortRequestDelegate(IChunkType chunkType)
   {

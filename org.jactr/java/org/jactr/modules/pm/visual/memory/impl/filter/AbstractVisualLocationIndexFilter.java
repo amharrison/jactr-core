@@ -6,8 +6,8 @@ package org.jactr.modules.pm.visual.memory.impl.filter;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.production.request.ChunkTypeRequest;
@@ -22,8 +22,8 @@ public abstract class AbstractVisualLocationIndexFilter<T> implements IIndexFilt
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(AbstractVisualLocationIndexFilter.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(AbstractVisualLocationIndexFilter.class);
 
   private IVisualMemory              _visualMemory;
 

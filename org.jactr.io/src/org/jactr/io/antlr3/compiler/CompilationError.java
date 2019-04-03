@@ -14,15 +14,15 @@
 package org.jactr.io.antlr3.compiler;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.io.antlr3.misc.CommonTreeException;
 public class CompilationError extends CommonTreeException
 {
   /**
    logger definition
    */
-  static public final Log LOGGER = LogFactory.getLog(CompilationError.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CompilationError.class);
 
   
   

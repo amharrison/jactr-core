@@ -15,8 +15,8 @@ package org.jactr.core.utils.references;
 
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.eclipse.collections.api.list.primitive.MutableDoubleList;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.primitive.DoubleLists;
@@ -26,7 +26,7 @@ public class DefaultReferences implements IOptimizedReferences
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory.getLog(DefaultReferences.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(DefaultReferences.class);
 
   private MutableDoubleList _arrayOfDoubles;
 

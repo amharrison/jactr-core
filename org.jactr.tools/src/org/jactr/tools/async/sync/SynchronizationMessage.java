@@ -5,8 +5,8 @@ package org.jactr.tools.async.sync;
  */
 import java.io.Serializable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.async.controller.RemoteInterface;
 import org.jactr.tools.async.message.BaseMessage;
 import org.jactr.tools.async.shadow.ShadowController;
@@ -33,8 +33,8 @@ public class SynchronizationMessage extends BaseMessage implements Serializable
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(SynchronizationMessage.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(SynchronizationMessage.class);
 
   /**
    * the id we are replying to, if this is a response.

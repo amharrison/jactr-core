@@ -3,16 +3,16 @@ package org.jactr.core.utils.parameter;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public class ReadOnlyParameterException extends ParameterException
 {
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ReadOnlyParameterException.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ReadOnlyParameterException.class);
 
 
   public ReadOnlyParameterException(String arg0)

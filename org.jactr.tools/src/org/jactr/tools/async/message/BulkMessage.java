@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 /**
  * @author developer
@@ -34,8 +34,8 @@ public class BulkMessage extends BaseMessage implements Serializable
   /**
    * logger definition
    */
-  static private final transient Log LOGGER           = LogFactory
-                                                          .getLog(BulkMessage.class);
+  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
+                                                          .getLogger(BulkMessage.class);
 
   Collection<IMessage>     _messages;
 

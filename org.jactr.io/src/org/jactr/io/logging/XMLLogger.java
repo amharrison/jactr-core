@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.logging.ILogger;
 import org.jactr.core.logging.LogEvent;
 import org.jactr.core.logging.Logger;
@@ -38,7 +38,7 @@ public class XMLLogger implements IInstrument, ILogger, IParameterized
   /**
    * logger definition
    */
-  static private final Log   LOGGER    = LogFactory.getLog(XMLLogger.class);
+  static private final transient org.slf4j.Logger   LOGGER    = LoggerFactory.getLogger(XMLLogger.class);
 
   static public final String FILE_NAME = "FileName";
 

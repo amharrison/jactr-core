@@ -6,8 +6,8 @@ package org.jactr.tools.grapher.core.selector;
 import java.util.Collection;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.chunktype.event.ChunkTypeEvent;
@@ -22,8 +22,8 @@ public class ChunkTypeSelector extends AbstractNameSelector<IChunkType>
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ChunkTypeSelector.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ChunkTypeSelector.class);
 
   private Collection<ChunkSelector>  _chunkSelectors;
 

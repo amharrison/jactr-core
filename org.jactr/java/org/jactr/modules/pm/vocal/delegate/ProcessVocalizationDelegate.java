@@ -5,8 +5,8 @@ package org.jactr.modules.pm.vocal.delegate;
  */
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.efferent.IEfferentCommand;
 import org.commonreality.identifier.IIdentifier;
@@ -31,8 +31,8 @@ public class ProcessVocalizationDelegate extends AbstractVocalDelegate
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ProcessVocalizationDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ProcessVocalizationDelegate.class);
 
   public ProcessVocalizationDelegate(AbstractVocalModule module,
       double minimumProcessingTime, IChunk cantProcessResult)

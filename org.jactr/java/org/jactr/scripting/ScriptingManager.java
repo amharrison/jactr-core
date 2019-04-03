@@ -6,8 +6,8 @@ package org.jactr.scripting;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.IInstantiation;
 import org.jactr.core.production.VariableBindings;
@@ -23,8 +23,8 @@ public class ScriptingManager
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ScriptingManager.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ScriptingManager.class);
 
   static private final Collection<IScriptableFactory> _factories = new ArrayList<IScriptableFactory>();
 

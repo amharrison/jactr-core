@@ -27,8 +27,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.PosixParser;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.logging.Logger;
 import org.jactr.core.logging.impl.DefaultModelLogger;
@@ -41,6 +39,7 @@ import org.jactr.io.antlr3.misc.CommonTreeException;
 import org.jactr.io.environment.EnvironmentParser;
 import org.jactr.io2.compilation.CompilationUnitManager;
 import org.jactr.io2.compilation.ICompilationUnit;
+import org.slf4j.LoggerFactory;
 
 /**
  * jACT-R start up application Usage: jactr --compile modelFile.jactr execution:
@@ -54,7 +53,7 @@ import org.jactr.io2.compilation.ICompilationUnit;
 public class Main
 {
 
-  static private final Log LOGGER = LogFactory.getLog(Main.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
   /**
    * @param cmd
@@ -149,7 +148,7 @@ public class Main
     }
     catch (InterruptedException ie)
     {
-      LOGGER.error(ie);
+      LOGGER.error("", ie);
     }
     catch (ExecutionException e)
     {
@@ -278,7 +277,7 @@ public class Main
         {
           URL url = new File(source).toURL();
           
-          CompilationUnitManager.get().get(url.toURI());      
+          CompilationUnitManager.get().get(url.toURI());
         }
         catch (Exception e)
         {

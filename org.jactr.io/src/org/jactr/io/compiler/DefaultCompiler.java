@@ -23,11 +23,10 @@ import java.util.Map;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.antlr.runtime.tree.TreeNodeStream;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.io.antlr3.compiler.CompilationWarning;
 import org.jactr.io.antlr3.compiler.JACTRCompiler;
 import org.jactr.io.parser.CanceledException;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author developer TODO To change the template for this generated type comment
@@ -39,8 +38,8 @@ public class DefaultCompiler
    * Logger definition
    */
 
-  static private transient Log                    LOGGER = LogFactory
-                                                             .getLog(DefaultCompiler.class);
+  static private transient org.slf4j.Logger       LOGGER = LoggerFactory
+                                                             .getLogger(DefaultCompiler.class);
 
   private Map<Integer, Collection<IUnitCompiler>> _unitCompilerMap;
 

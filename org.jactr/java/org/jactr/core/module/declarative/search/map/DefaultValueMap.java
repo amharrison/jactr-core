@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.commons.collections.collection.CompositeCollection;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.eclipse.collections.impl.factory.Maps;
 import org.jactr.core.utils.collections.CompositeCollectionFactory;
 
@@ -30,8 +30,8 @@ public class DefaultValueMap<V, I> implements IValueMap<V, I>
   /**
    * logger definition
    */
-  static public final Log        LOGGER = LogFactory
-                                            .getLog(DefaultValueMap.class);
+  static public final transient org.slf4j.Logger        LOGGER = LoggerFactory
+                                            .getLogger(DefaultValueMap.class);
 
   private ReentrantReadWriteLock _lock;
 

@@ -6,8 +6,6 @@ package org.jactr.modules.pm.motor.command.translators;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.object.IEfferentObject;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.model.IModel;
@@ -16,6 +14,7 @@ import org.jactr.core.slot.DefaultMutableSlot;
 import org.jactr.core.slot.IMutableSlot;
 import org.jactr.core.slot.ISlot;
 import org.jactr.modules.pm.motor.IMotorModule;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractManualTranslator extends AbstractTranslator
 {
@@ -31,8 +30,8 @@ public abstract class AbstractManualTranslator extends AbstractTranslator
   /**
    * Logger definition
    */
-  static final transient Log                LOGGER                 = LogFactory
-                                                                       .getLog(AbstractManualTranslator.class);
+  static final transient org.slf4j.Logger LOGGER                 = LoggerFactory
+                                                                       .getLogger(AbstractManualTranslator.class);
 
   private double                            _motorBurstTime        = Double.NaN;
 

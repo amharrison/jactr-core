@@ -20,8 +20,8 @@ import java.net.URL;
 
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.io.antlr3.misc.DetailedCommonTree;
 import org.jactr.io.antlr3.misc.DetailedCommonTreeAdaptor;
 
@@ -30,8 +30,8 @@ public class Serializer
   /**
    * logger definition
    */
-  static public final Log                  LOGGER   = LogFactory
-                                                        .getLog(Serializer.class);
+  static public final transient org.slf4j.Logger                  LOGGER   = LoggerFactory
+                                                        .getLogger(Serializer.class);
 
   static private DetailedCommonTreeAdaptor _adaptor = new DetailedCommonTreeAdaptor();
 

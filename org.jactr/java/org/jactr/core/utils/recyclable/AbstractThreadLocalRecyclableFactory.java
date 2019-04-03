@@ -6,8 +6,8 @@ package org.jactr.core.utils.recyclable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractThreadLocalRecyclableFactory<T> implements
     RecyclableFactory<T>
@@ -15,8 +15,8 @@ public abstract class AbstractThreadLocalRecyclableFactory<T> implements
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(AbstractThreadLocalRecyclableFactory.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(AbstractThreadLocalRecyclableFactory.class);
 
   private int                        _size  = 10;
 

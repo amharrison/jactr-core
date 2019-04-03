@@ -13,8 +13,8 @@
 
 package org.jactr.core.module.procedural.four.learning;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.procedural.four.IProceduralModule4;
 import org.jactr.core.production.IProduction;
@@ -30,8 +30,8 @@ import org.jactr.core.utils.references.IReferences;
 public class DefaultCostEquation implements ICostEquation
 {
 
-  static private transient Log LOGGER   = LogFactory
-                                            .getLog(ICostEquation.class);
+  static private transient org.slf4j.Logger LOGGER   = LoggerFactory
+                                            .getLogger(ICostEquation.class);
 
   private IProceduralModule4 _pm4;
   private IProceduralLearningModule4 _plm4;

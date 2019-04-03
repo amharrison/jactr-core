@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.procedural.four.learning.ICostEquation;
 import org.jactr.core.module.procedural.four.learning.IProbabilityEquation;
@@ -39,8 +39,8 @@ public class BasicSubsymbolicProduction extends DefaultAdaptable implements
    * Logger definition
    */
 
-  protected static final transient Log LOGGER          = LogFactory
-                                                           .getLog(BasicSubsymbolicProduction.class);
+  protected static final transient org.slf4j.Logger LOGGER          = LoggerFactory
+                                                           .getLogger(BasicSubsymbolicProduction.class);
 
   protected double                     _creationTime;
 

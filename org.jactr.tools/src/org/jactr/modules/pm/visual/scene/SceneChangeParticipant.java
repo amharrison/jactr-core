@@ -5,8 +5,8 @@ package org.jactr.modules.pm.visual.scene;
  */
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.io.participant.impl.BasicASTParticipant;
 
 /**
@@ -22,8 +22,8 @@ public class SceneChangeParticipant extends BasicASTParticipant
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(SceneChangeParticipant.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(SceneChangeParticipant.class);
 
   public SceneChangeParticipant()
   {

@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.tools.tracer.ITraceSink;
@@ -19,8 +19,8 @@ public class ChainedSink implements ITraceSink, IParameterized
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ChainedSink.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ChainedSink.class);
 
   private Collection<ITraceSink>     _sinks = FastListFactory.newInstance();
 

@@ -22,10 +22,9 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.TreeNodeStream;
 import org.antlr.runtime.tree.TreeParser;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.io.antlr3.misc.ASTSupport;
 import org.jactr.io.compiler.IUnitCompiler;
+import org.slf4j.LoggerFactory;
 
 public class JACTRCompiler extends TreeParser
 {
@@ -219,8 +218,8 @@ public class JACTRCompiler extends TreeParser
     return "/Users/harrison/Archive/Development/workspaces/jactr-env-dev/org.jactr.io/src/org/jactr/io/antlr3/compiler/JACTRCompiler.g";
   }
 
-  static private final transient Log              LOGGER    = LogFactory
-                                                                .getLog(JACTRCompiler.class);
+  static private final transient org.slf4j.Logger LOGGER    = LoggerFactory
+                                                                .getLogger(JACTRCompiler.class);
 
   private Collection<Exception>                   _warnings = new ArrayList<Exception>();
 

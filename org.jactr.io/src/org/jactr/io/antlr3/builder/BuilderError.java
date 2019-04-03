@@ -14,15 +14,15 @@
 package org.jactr.io.antlr3.builder;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.io.antlr3.misc.CommonTreeException;
 public class BuilderError extends CommonTreeException
 {
   /**
    logger definition
    */
-  static public final Log LOGGER = LogFactory.getLog(BuilderError.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BuilderError.class);
 
   public BuilderError(String message, CommonTree node)
   {

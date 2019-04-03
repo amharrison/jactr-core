@@ -17,8 +17,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.modalities.visual.Color;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.ISymbolicChunk;
@@ -36,7 +36,7 @@ public class ColorChunkCache implements IChunkTypeListener
   /**
    * logger definition
    */
-  static public final Log LOGGER = LogFactory.getLog(ColorChunkCache.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ColorChunkCache.class);
 
   private IModel          _model;
 

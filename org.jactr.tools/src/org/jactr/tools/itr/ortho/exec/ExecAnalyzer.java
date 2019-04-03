@@ -11,8 +11,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.tools.itr.ortho.ISliceAnalysis;
 import org.jactr.tools.itr.ortho.ISliceAnalyzer;
@@ -49,8 +49,8 @@ public class ExecAnalyzer implements ISliceAnalyzer, IParameterized
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER                   = LogFactory
-                                                                  .getLog(ExecAnalyzer.class);
+  static private final transient org.slf4j.Logger LOGGER                   = LoggerFactory
+                                                                  .getLogger(ExecAnalyzer.class);
 
   static public final String         SCRIPT                   = "AnalysisScript";
 

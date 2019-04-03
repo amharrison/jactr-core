@@ -6,8 +6,8 @@ package org.jactr.tools.async.shadow.handlers;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.net.transform.IMessageTransfromer;
 import org.jactr.tools.async.message.BulkMessage;
 
@@ -21,8 +21,8 @@ public class BulkMessageTransformer implements IMessageTransfromer
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(BulkMessageTransformer.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(BulkMessageTransformer.class);
 
   public BulkMessageTransformer()
   {

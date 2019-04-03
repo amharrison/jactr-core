@@ -16,8 +16,8 @@ package org.jactr.io.participant.modules;
 import java.net.URL;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.module.random.IRandomModule;
 import org.jactr.core.module.random.six.DefaultRandomModule;
 import org.jactr.io.participant.impl.BasicASTParticipant;
@@ -30,8 +30,8 @@ public class RandomModuleParticipant extends BasicASTParticipant
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory
-                                      .getLog(RandomModuleParticipant.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+                                      .getLogger(RandomModuleParticipant.class);
 
   public RandomModuleParticipant()
   {

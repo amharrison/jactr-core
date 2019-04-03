@@ -3,8 +3,8 @@ package org.jactr.core.module.declarative.basic.type;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.chunktype.ISubsymbolicChunkType;
 import org.jactr.core.chunktype.ISymbolicChunkType;
@@ -16,8 +16,8 @@ public class DefaultChunkTypeFactory implements IChunkTypeFactory
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(DefaultChunkTypeFactory.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DefaultChunkTypeFactory.class);
 
   public IChunkType newChunkType(IModel model)
   {

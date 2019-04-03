@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.tools.experiment.dc.data.ISubjectDataProvider;
 import org.jactr.tools.experiment.dc.data.SubjectData;
@@ -25,8 +25,8 @@ public class DataCollector
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(DataCollector.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DataCollector.class);
 
   static private DataCollector       _default;
 

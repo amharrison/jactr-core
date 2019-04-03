@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.eclipse.collections.impl.factory.Lists;
 import org.jactr.core.module.procedural.five.learning.ICompilableBuffer;
 import org.jactr.core.module.procedural.five.learning.ICompilableContext;
@@ -29,7 +29,7 @@ import org.jactr.core.slot.ISlot;
 import org.jactr.core.slot.ISlotContainer;
 
 public class ProductionCompilerEvaluator {
-	static private final transient Log LOGGER = LogFactory.getLog(ProductionCompilerEvaluator.class);
+	static private final transient org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ProductionCompilerEvaluator.class);
 
 	public static Integer empty = 0;
 	public static Integer match = 8;

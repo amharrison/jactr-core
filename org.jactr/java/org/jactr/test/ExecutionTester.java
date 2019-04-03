@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.model.IModel;
 import org.jactr.core.model.event.IModelListener;
@@ -45,8 +45,8 @@ public class ExecutionTester implements IInstrument, IParameterized
   /**
    * logger definition
    */
-  static private final Log          LOGGER = LogFactory
-      .getLog(ExecutionTester.class);
+  static private final transient org.slf4j.Logger          LOGGER = LoggerFactory
+      .getLogger(ExecutionTester.class);
 
   private Iterator<String>          _productionSequence;
 

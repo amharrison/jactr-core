@@ -6,8 +6,8 @@ package org.jactr.tools.experiment.misc;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.concurrent.ModelCycleExecutor;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.procedural.six.learning.IProceduralLearningModule6;
@@ -17,8 +17,8 @@ import org.jactr.core.runtime.controller.IController;
 
 public class ModelUtilities
 {
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ModelUtilities.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ModelUtilities.class);
 
   /**
    * reward/punish the model using {@link #executeLater(IModel, Runnable)}

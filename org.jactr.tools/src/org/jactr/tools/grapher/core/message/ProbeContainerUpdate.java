@@ -6,8 +6,8 @@ package org.jactr.tools.grapher.core.message;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.tracer.transformer.AbstractTransformedEvent;
 
 public class ProbeContainerUpdate extends AbstractTransformedEvent
@@ -20,8 +20,8 @@ public class ProbeContainerUpdate extends AbstractTransformedEvent
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER           = LogFactory
-                                                          .getLog(ProbeContainerUpdate.class);
+  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
+                                                          .getLogger(ProbeContainerUpdate.class);
 
   private final Map<Long, Number>    _data;
 

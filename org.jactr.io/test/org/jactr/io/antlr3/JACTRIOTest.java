@@ -4,8 +4,8 @@ import org.antlr.runtime.tree.CommonTree;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.io.CommonIO;
 import org.junit.Test;
 
@@ -16,8 +16,8 @@ public class JACTRIOTest extends TestCase
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-      .getLog(JACTRIOTest.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(JACTRIOTest.class);
 
   @Test
   public void testSemantic() throws Exception

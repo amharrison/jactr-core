@@ -20,8 +20,8 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.time.IAuthoritativeClock;
 import org.commonreality.time.IClock;
 import org.commonreality.time.impl.BasicClock;
@@ -47,8 +47,8 @@ public class DefaultModelRunner implements Runnable
   /**
    * logger definition
    */
-  static private final Log  LOGGER = LogFactory
-                                       .getLog(DefaultModelRunner.class);
+  static private final transient org.slf4j.Logger  LOGGER = LoggerFactory
+                                       .getLogger(DefaultModelRunner.class);
 
   static boolean            _enableTimeDiagnostics = Boolean
                                                        .getBoolean("jactr.enableTimeDiagnostics");

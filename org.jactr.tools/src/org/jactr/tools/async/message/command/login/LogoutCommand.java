@@ -13,8 +13,8 @@
  */
 package org.jactr.tools.async.message.command.login;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.async.message.BaseMessage;
 import org.jactr.tools.async.message.command.ICommand;
 
@@ -30,6 +30,6 @@ public class LogoutCommand extends BaseMessage implements ICommand
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory.getLog(LogoutCommand.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(LogoutCommand.class);
 
 }

@@ -21,8 +21,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.event.ACTREventDispatcher;
 import org.jactr.core.logging.Logger;
 import org.jactr.core.model.IModel;
@@ -30,6 +28,7 @@ import org.jactr.core.queue.collection.IPrioritizer;
 import org.jactr.core.queue.collection.PrioritizedQueue;
 import org.jactr.core.queue.event.ITimedEventListener;
 import org.jactr.core.queue.event.TimedEventEvent;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tracks TimedEvents within the model. A TimedEvent is any event that must
@@ -43,8 +42,8 @@ import org.jactr.core.queue.event.TimedEventEvent;
 public class TimedEventQueue
 {
 
-  private static transient Log                              LOGGER  = LogFactory
-                                                                        .getLog(TimedEventQueue.class
+  private static transient org.slf4j.Logger                 LOGGER  = LoggerFactory
+                                                                        .getLogger(TimedEventQueue.class
                                                                             .getName());
 
   private static Comparator<ITimedEvent>                    _sorter = new Comparator<ITimedEvent>() {

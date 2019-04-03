@@ -18,8 +18,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.eclipse.collections.impl.factory.Lists;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.basic.AbstractSubsymbolicChunk;
@@ -42,8 +42,8 @@ public class DefaultSubsymbolicChunk4 extends AbstractSubsymbolicChunk
   /**
    * logger definition
    */
-  static private final Log                LOGGER = LogFactory
-      .getLog(DefaultSubsymbolicChunk4.class);
+  static private final transient org.slf4j.Logger                LOGGER = LoggerFactory
+      .getLogger(DefaultSubsymbolicChunk4.class);
 
   protected long                          _creationCycle;
 

@@ -6,8 +6,8 @@ package org.jactr.tools.experiment.actions.common;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.experiment.IExperiment;
 import org.jactr.tools.experiment.actions.IAction;
 import org.jactr.tools.experiment.actions.ICompositeAction;
@@ -19,8 +19,8 @@ public class SimpleConditionalAction implements ICompositeAction
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER  = LogFactory
-                                                 .getLog(SimpleConditionalAction.class);
+  static private final transient org.slf4j.Logger LOGGER  = LoggerFactory
+                                                 .getLogger(SimpleConditionalAction.class);
   static private enum ComparisonType {EQUAL, NOT, CONTAIN, NOT_CONTAIN};
 
   private Collection<IAction>        _actions;

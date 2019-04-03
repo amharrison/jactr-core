@@ -14,8 +14,8 @@
 package org.jactr.core.production.action;
 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.ModelTerminatedException;
 import org.jactr.core.production.CannotInstantiateException;
 import org.jactr.core.production.IInstantiation;
@@ -26,7 +26,7 @@ public class StopAction extends DefaultAction
   /**
    * logger definition
    */
-  static public final Log LOGGER = LogFactory.getLog(StopAction.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(StopAction.class);
 
   public StopAction()
   {

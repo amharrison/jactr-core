@@ -5,8 +5,8 @@ import java.util.function.Consumer;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.production.action.AddAction;
@@ -30,8 +30,8 @@ public class FluentAction
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-      .getLog(FluentAction.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(FluentAction.class);
 
   private ISlotContainer             _slotContainer;
 

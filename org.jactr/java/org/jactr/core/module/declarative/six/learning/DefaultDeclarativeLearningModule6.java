@@ -5,8 +5,8 @@ package org.jactr.core.module.declarative.six.learning;
  */
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.module.declarative.basic.DefaultAssociativeLinkageSystem;
 import org.jactr.core.module.declarative.four.learning.DefaultDeclarativeLearningModule4;
 import org.jactr.core.module.declarative.six.associative.DefaultAssociativeLinkageSystem6;
@@ -26,8 +26,8 @@ public class DefaultDeclarativeLearningModule6 extends
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER                 = LogFactory
-                                                                .getLog(DefaultDeclarativeLearningModule6.class);
+  static private final transient org.slf4j.Logger LOGGER                 = LoggerFactory
+                                                                .getLogger(DefaultDeclarativeLearningModule6.class);
 
 
 

@@ -6,16 +6,16 @@ package org.jactr.core.utils.parameter;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public class BooleanParameterProcessor extends ParameterProcessor<Boolean>
 {
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(BooleanParameterProcessor.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(BooleanParameterProcessor.class);
 
   public BooleanParameterProcessor(String parameterName,
       Consumer<Boolean> setFunction, Supplier<Boolean> getFunction)

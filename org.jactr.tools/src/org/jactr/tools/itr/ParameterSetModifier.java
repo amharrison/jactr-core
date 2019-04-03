@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.io2.compilation.ICompilationUnit;
 
@@ -19,8 +19,8 @@ public class ParameterSetModifier implements IParameterSetModifier
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ParameterSetModifier.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ParameterSetModifier.class);
 
   private final List<IParameterModifier> _modifiers;
 

@@ -18,8 +18,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.compiler.CompilationError;
 import org.jactr.io.antlr3.misc.ASTSupport;
@@ -28,6 +26,7 @@ import org.jactr.io.participant.IASTInjector;
 import org.jactr.io.participant.IASTParticipant;
 import org.jactr.io.participant.impl.BasicASTInjector;
 import org.jactr.io.participant.impl.BasicASTParticipant;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author developer
@@ -35,8 +34,8 @@ import org.jactr.io.participant.impl.BasicASTParticipant;
 public class DefaultParserImportDelegate implements IParserImportDelegate
 {
 
-  static private final transient Log LOGGER         = LogFactory
-                                                        .getLog(DefaultParserImportDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER         = LoggerFactory
+                                                        .getLogger(DefaultParserImportDelegate.class);
 
   private Set<URL>                   _importSources = new HashSet<URL>();
 
@@ -95,7 +94,7 @@ public class DefaultParserImportDelegate implements IParserImportDelegate
       // throw new CompilationWarning("Could not find IASTParticipant for "
       // + className, null);
       if (LOGGER.isDebugEnabled())
-        LOGGER.debug("Could not find IASTParticipant for " + className, null);
+        LOGGER.debug("Could not find IASTParticipant for " + className);
 
       if (injector != null)
         injector.inject(modelDescriptor, true);
@@ -103,7 +102,7 @@ public class DefaultParserImportDelegate implements IParserImportDelegate
       // throw new CompilationWarning("Could not find IASTInjector for "
       // + className, null);
       if (LOGGER.isDebugEnabled())
-        LOGGER.debug("Could not find IASTInjector for " + className, null);
+        LOGGER.debug("Could not find IASTInjector for " + className);
 
       if (injector instanceof BasicASTInjector)
         ((BasicASTInjector) injector).injectParameters(classBasedNode);

@@ -9,16 +9,16 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public class UniqueSlotContainer implements IUniqueSlotContainer
 {
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER      = LogFactory
-                                                     .getLog(UniqueSlotContainer.class);
+  static private final transient org.slf4j.Logger LOGGER      = LoggerFactory
+                                                     .getLogger(UniqueSlotContainer.class);
 
   private Map<String, ISlot>         _slotMap;
 

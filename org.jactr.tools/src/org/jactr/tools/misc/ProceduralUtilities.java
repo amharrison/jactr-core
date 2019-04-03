@@ -5,8 +5,8 @@ package org.jactr.tools.misc;
  */
 import java.util.concurrent.Future;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.procedural.six.learning.IProceduralLearningModule6;
 
@@ -15,8 +15,8 @@ public class ProceduralUtilities
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ProceduralUtilities.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ProceduralUtilities.class);
 
   /**
    * reward/punish the model using {@link #executeLater(IModel, Runnable)}. This

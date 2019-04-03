@@ -23,8 +23,8 @@ import java.util.HashMap;
 import org.jactr.io.participant.*;
 import org.jactr.io.antlr3.builder.*;
 import org.jactr.io.antlr3.misc.*;
-import org.apache.commons.logging.Log; 
-import org.apache.commons.logging.LogFactory;
+  
+import org.slf4j.LoggerFactory;
 
 
 import org.antlr.runtime.*;
@@ -110,7 +110,7 @@ public class JACTRGenerator extends TreeParser {
 
 
     //LOGGER
-    static private transient Log LOGGER = LogFactory.getLog(JACTRGenerator.class);
+    static private transient org.slf4j.Logger LOGGER = LoggerFactory.getLogger(JACTRGenerator.class);
 
 
     private Collection<IASTTrimmer> _trimmers = new ArrayList<IASTTrimmer>();

@@ -16,8 +16,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.model.ModelTerminatedException;
 import org.jactr.core.model.event.ModelEvent;
@@ -39,8 +39,8 @@ public class StartModelExperiments implements Runnable
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER             = LogFactory
-                                                            .getLog(StartModelExperiments.class);
+  static private final transient org.slf4j.Logger LOGGER             = LoggerFactory
+                                                            .getLogger(StartModelExperiments.class);
 
   static public final String         CLASS_ATTR         = "class";
 

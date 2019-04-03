@@ -3,8 +3,8 @@ package org.jactr.modules.pm.aural.memory.impl.encoder;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.modalities.aural.DefaultAuralPropertyHandler;
 import org.commonreality.modalities.aural.IAuralPropertyHandler;
 import org.commonreality.object.IAfferentObject;
@@ -26,8 +26,8 @@ public abstract class AbstractAuralEncoder implements IPerceptualEncoder
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(AbstractAuralEncoder.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(AbstractAuralEncoder.class);
 
   static public IChunk getAudioEvent(IAfferentObject afferent,
       IAuralMemory memory)

@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.logging.ILogger;
 import org.jactr.core.logging.LogEvent;
 import org.jactr.core.logging.Logger;
@@ -27,8 +27,8 @@ public class LogTracer extends BaseTraceListener implements ILogger
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(LogTracer.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(LogTracer.class);
 
   private IModelListener                          _modelListener;
 

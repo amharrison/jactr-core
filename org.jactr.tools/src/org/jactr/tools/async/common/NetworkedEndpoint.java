@@ -24,8 +24,6 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.net.handler.IMessageHandler;
 import org.commonreality.net.protocol.IProtocolConfiguration;
 import org.commonreality.net.service.INetworkService;
@@ -39,6 +37,7 @@ import org.jactr.core.concurrent.GeneralThreadFactory;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.tools.async.credentials.ICredentials;
 import org.jactr.tools.async.credentials.PlainTextCredentials;
+import org.slf4j.LoggerFactory;
 
 /**
  * Both RemoteInterface and ShadowControll rely on this common substrate that
@@ -53,8 +52,8 @@ public abstract class NetworkedEndpoint implements IParameterized
    * Logger definition
    */
 
-  static private final transient Log          LOGGER            = LogFactory
-                                                                    .getLog(NetworkedEndpoint.class);
+  static private final transient org.slf4j.Logger LOGGER            = LoggerFactory
+                                                                    .getLogger(NetworkedEndpoint.class);
 
   public static final String                  TRANSPORT_CLASS   = "transportClass";
 

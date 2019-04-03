@@ -3,8 +3,8 @@ package org.jactr.core.queue.timedevents;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.delegate.IRequestDelegate;
 import org.jactr.core.chunk.IChunk;
@@ -17,8 +17,8 @@ public class DelayedIndirectBufferRequestTimedEvent extends AbstractTimedEvent
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(DelayedIndirectBufferRequestTimedEvent.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DelayedIndirectBufferRequestTimedEvent.class);
 
   IRequest                           _request;
 

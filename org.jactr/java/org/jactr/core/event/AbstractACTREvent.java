@@ -13,8 +13,8 @@
  */
 package org.jactr.core.event;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 /**
  * describes an event from a source (S) that can be caught by a listener (L)
@@ -28,7 +28,7 @@ public abstract class AbstractACTREvent<S, L> implements IACTREvent<S, L>
   /**
    * logger definition
    */
-  static public final Log LOGGER = LogFactory.getLog(AbstractACTREvent.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AbstractACTREvent.class);
 
   private S               _source;
 

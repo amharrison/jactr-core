@@ -15,8 +15,8 @@ package org.jactr.modules.pm.visual.buffer.six;
 
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IllegalActivationBufferStateException;
 import org.jactr.core.buffer.delegate.ExpandChunkRequestDelegate;
 import org.jactr.core.chunk.IChunk;
@@ -53,8 +53,8 @@ public class DefaultVisualLocationBuffer6 extends AbstractPMActivationBuffer6
   /**
    * logger definition
    */
-  static public final Log               LOGGER = LogFactory
-                                                   .getLog(DefaultVisualLocationBuffer6.class);
+  static public final transient org.slf4j.Logger               LOGGER = LoggerFactory
+                                                   .getLogger(DefaultVisualLocationBuffer6.class);
 
   protected IChunk                      _currentVisualLocation;
 

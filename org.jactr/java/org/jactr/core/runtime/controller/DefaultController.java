@@ -15,8 +15,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.concurrent.GeneralThreadFactory;
 import org.jactr.core.model.IModel;
@@ -33,8 +33,8 @@ public class DefaultController implements IController
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER         = LogFactory
-                                                        .getLog(DefaultController.class);
+  static private final transient org.slf4j.Logger LOGGER         = LoggerFactory
+                                                        .getLogger(DefaultController.class);
 
   final private RuntimeState         _state;
 

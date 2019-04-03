@@ -3,8 +3,8 @@ package org.jactr.modules.temporal.buffer.processor;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.delegate.AsynchronousRequestDelegate;
 import org.jactr.core.chunktype.IChunkType;
@@ -18,8 +18,8 @@ public class TimeRequestDelegate extends AsynchronousRequestDelegate
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(TimeRequestDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(TimeRequestDelegate.class);
 
   private IChunkType                 _timeChunkType;
 

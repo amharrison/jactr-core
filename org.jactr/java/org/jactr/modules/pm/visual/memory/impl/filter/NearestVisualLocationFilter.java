@@ -5,8 +5,8 @@ package org.jactr.modules.pm.visual.memory.impl.filter;
  */
 import java.util.Comparator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.IConditionalSlot;
@@ -25,8 +25,8 @@ public class NearestVisualLocationFilter extends
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(NearestVisualLocationFilter.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(NearestVisualLocationFilter.class);
 
   private final double[]             _referenceLocation;
 

@@ -19,8 +19,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.procedural.event.IProceduralModuleListener;
@@ -43,8 +43,8 @@ public class UtilityTracker implements IInstrument, IParameterized
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER                     = LogFactory
-                                                                    .getLog(UtilityTracker.class);
+  static private final transient org.slf4j.Logger LOGGER                     = LoggerFactory
+                                                                    .getLogger(UtilityTracker.class);
 
   static public final String         FILE_NAME_PARAM            = "FileName";
 

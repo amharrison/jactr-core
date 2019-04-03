@@ -6,8 +6,8 @@ import java.util.function.Supplier;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.model.IModel;
@@ -23,8 +23,8 @@ public class FluentSemantic implements Supplier<IModel>
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-      .getLog(FluentSemantic.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(FluentSemantic.class);
 
   @Override
   public IModel get()

@@ -20,16 +20,16 @@ import java.util.EnumSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public class ArchivalSupport
 {
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-      .getLog(ArchivalSupport.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(ArchivalSupport.class);
 
   static public boolean delete(Path targetDirectory)
   {

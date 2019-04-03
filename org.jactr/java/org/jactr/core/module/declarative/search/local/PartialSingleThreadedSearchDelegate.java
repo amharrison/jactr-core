@@ -8,8 +8,8 @@ import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.module.declarative.search.filter.AcceptAllFilter;
@@ -28,8 +28,8 @@ public class PartialSingleThreadedSearchDelegate implements ISearchDelegate
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(PartialSingleThreadedSearchDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(PartialSingleThreadedSearchDelegate.class);
 
   public PartialSingleThreadedSearchDelegate()
   {

@@ -6,8 +6,8 @@ package org.jactr.core.module.asynch;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.module.AbstractModule;
 import org.jactr.core.queue.timedevents.BlockingTimedEvent;
 import org.jactr.core.utils.parameter.IParameterized;
@@ -24,8 +24,8 @@ public abstract class AbstractAsynchronousModule extends AbstractModule
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER                 = LogFactory
-                                                                .getLog(AbstractAsynchronousModule.class);
+  static private final transient org.slf4j.Logger LOGGER                 = LoggerFactory
+                                                                .getLogger(AbstractAsynchronousModule.class);
 
   private boolean                    _strictSynchronization = true;
 

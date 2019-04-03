@@ -6,8 +6,8 @@ import java.util.Collection;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.six.IStatusBuffer;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.slot.IUniqueSlotContainer;
@@ -17,8 +17,8 @@ public class StatusBufferUniqueSlotContainer implements IUniqueSlotContainer
   /**
   * Logger definition
   */
-  static private final transient Log LOGGER = LogFactory
-      .getLog(StatusBufferUniqueSlotContainer.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(StatusBufferUniqueSlotContainer.class);
 
   private IStatusBuffer              _buffer;
 

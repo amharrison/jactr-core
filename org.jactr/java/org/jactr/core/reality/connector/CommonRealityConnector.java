@@ -16,8 +16,8 @@ package org.jactr.core.reality.connector;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.participant.IParticipant.State;
 import org.commonreality.reality.CommonReality;
@@ -44,8 +44,8 @@ public class CommonRealityConnector implements IConnector
   /**
    * logger definition
    */
-  static private final Log         LOGGER = LogFactory
-                                              .getLog(CommonRealityConnector.class);
+  static private final transient org.slf4j.Logger         LOGGER = LoggerFactory
+                                              .getLogger(CommonRealityConnector.class);
 
   protected Map<IModel, ACTRAgent> _agentInterfaces;
 

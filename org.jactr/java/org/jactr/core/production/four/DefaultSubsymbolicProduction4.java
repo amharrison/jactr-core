@@ -18,8 +18,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.TreeSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.procedural.IProceduralModule;
@@ -39,8 +39,8 @@ public class DefaultSubsymbolicProduction4 extends BasicSubsymbolicProduction
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory
-                                      .getLog(DefaultSubsymbolicProduction4.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+                                      .getLogger(DefaultSubsymbolicProduction4.class);
 
   protected int            _creationCycle;
 

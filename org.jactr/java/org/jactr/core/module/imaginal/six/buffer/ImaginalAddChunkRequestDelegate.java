@@ -3,8 +3,8 @@ package org.jactr.core.module.imaginal.six.buffer;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.delegate.AddChunkRequestDelegate;
 import org.jactr.core.buffer.six.AbstractActivationBuffer6;
@@ -29,8 +29,8 @@ public class ImaginalAddChunkRequestDelegate extends AddChunkRequestDelegate
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ImaginalAddChunkRequestDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ImaginalAddChunkRequestDelegate.class);
   
   public ImaginalAddChunkRequestDelegate()
   {

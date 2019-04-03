@@ -21,8 +21,6 @@ import java.util.concurrent.RejectedExecutionException;
 
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.net.session.ISessionInfo;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.model.IModel;
@@ -61,6 +59,7 @@ import org.jactr.tools.async.message.event.login.LoginAcknowledgedMessage;
 import org.jactr.tools.async.message.event.state.IStateEvent;
 import org.jactr.tools.async.message.event.state.ModelStateEvent;
 import org.jactr.tools.async.message.event.state.RuntimeStateEvent;
+import org.slf4j.LoggerFactory;
 
 /**
  * An instrument that permits the remote control of a runtime. The remote
@@ -78,8 +77,8 @@ public class RemoteInterface extends NetworkedEndpoint implements IInstrument,
   /**
    * logger definition
    */
-  static final Log               LOGGER                      = LogFactory
-                                                                 .getLog(RemoteInterface.class);
+  static final transient org.slf4j.Logger               LOGGER                      = LoggerFactory
+                                                                 .getLogger(RemoteInterface.class);
 
   static public final String     EXECUTOR_PARAM              = "Executor";
 
@@ -293,7 +292,7 @@ public class RemoteInterface extends NetworkedEndpoint implements IInstrument,
           }
           catch (Exception e)
           {
-            if (LOGGER.isDebugEnabled()) LOGGER.debug(e);
+            if (LOGGER.isDebugEnabled()) LOGGER.debug("", e);
           }
 
         }

@@ -8,8 +8,8 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.object.ISimulationObject;
 
 /**
@@ -23,8 +23,8 @@ public class AdaptableTypeInvocationHandler implements InvocationHandler
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(AdaptableTypeInvocationHandler.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(AdaptableTypeInvocationHandler.class);
 
   private final ISimulationObject    _proxied;
 

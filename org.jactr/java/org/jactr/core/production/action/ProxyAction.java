@@ -7,8 +7,8 @@ package org.jactr.core.production.action;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.production.CannotInstantiateException;
 import org.jactr.core.production.IInstantiation;
 import org.jactr.core.production.VariableBindings;
@@ -26,8 +26,8 @@ public class ProxyAction extends AddAction
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ProxyAction.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ProxyAction.class);
 
   String                             _className;
 

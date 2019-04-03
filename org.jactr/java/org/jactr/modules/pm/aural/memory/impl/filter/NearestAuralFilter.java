@@ -5,8 +5,8 @@ package org.jactr.modules.pm.aural.memory.impl.filter;
  */
 import java.util.Comparator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.IConditionalSlot;
@@ -27,8 +27,8 @@ public class NearestAuralFilter extends
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(NearestAuralFilter.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(NearestAuralFilter.class);
 
   private final double[]             _referenceLocation;
   final private IAuralModule _auralModule;

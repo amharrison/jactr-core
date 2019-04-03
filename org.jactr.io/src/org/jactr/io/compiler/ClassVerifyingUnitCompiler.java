@@ -17,8 +17,8 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.extensions.IExtension;
 import org.jactr.core.module.IModule;
 import org.jactr.core.production.action.IAction;
@@ -40,8 +40,8 @@ public class ClassVerifyingUnitCompiler implements IUnitCompiler
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory
-                                      .getLog(ClassVerifyingUnitCompiler.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+                                      .getLogger(ClassVerifyingUnitCompiler.class);
 
   /**
    * @see org.jactr.io.compiler.IUnitCompiler#compile(org.antlr.runtime.tree.CommonTree,

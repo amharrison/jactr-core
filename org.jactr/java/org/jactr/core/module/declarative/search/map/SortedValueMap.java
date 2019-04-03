@@ -20,8 +20,8 @@ import java.util.TreeSet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.commons.collections.collection.CompositeCollection;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 /**
  * extends default value map to provide sortable values
@@ -36,7 +36,7 @@ public class SortedValueMap<V extends Comparable<V>, I> extends
   /**
    * logger definition
    */
-  static public final Log LOGGER = LogFactory.getLog(SortedValueMap.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SortedValueMap.class);
 
   private SortedSet<V>    _sortedValues;
 

@@ -9,8 +9,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.experiment.IExperiment;
 import org.jactr.tools.experiment.trial.ITrial;
 import org.jactr.tools.experiment.triggers.ITrigger;
@@ -20,8 +20,8 @@ public class Trial implements ITrial, Runnable
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER            = LogFactory
-                                                           .getLog(Trial.class);
+  static private final transient org.slf4j.Logger LOGGER            = LoggerFactory
+                                                           .getLogger(Trial.class);
 
   private final String               _id;
 

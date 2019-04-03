@@ -33,14 +33,13 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenSource;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.io.antlr3.compiler.CompilationWarning;
 import org.jactr.io.parser.CanceledException;
 import org.jactr.io.parser.IModelParser;
 import org.jactr.io.parser.IParserImportDelegate;
 import org.jactr.io.parser.ITreeTracker;
 import org.jactr.io.parser.ParserImportDelegateFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author developer
@@ -48,8 +47,8 @@ import org.jactr.io.parser.ParserImportDelegateFactory;
 public abstract class AbstractModelParser implements IModelParser
 {
 
-  static private final transient Log               LOGGER            = LogFactory
-                                                                         .getLog(AbstractModelParser.class);
+  static private final transient org.slf4j.Logger  LOGGER            = LoggerFactory
+                                                                         .getLogger(AbstractModelParser.class);
 
   static protected TokenStream                     NULL_TOKEN_STREAM = new TokenStream() {
 

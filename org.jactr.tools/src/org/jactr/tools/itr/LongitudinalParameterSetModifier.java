@@ -14,8 +14,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.io.generator.CodeGeneratorFactory;
 import org.jactr.io.generator.ICodeGenerator;
@@ -36,8 +36,8 @@ public class LongitudinalParameterSetModifier extends ParameterSetModifier
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER         = LogFactory
-                                                        .getLog(LongitudinalParameterSetModifier.class);
+  static private final transient org.slf4j.Logger LOGGER         = LoggerFactory
+                                                        .getLogger(LongitudinalParameterSetModifier.class);
 
   static private String              TEMP_DIRECTORY = ".longitudinal";
 

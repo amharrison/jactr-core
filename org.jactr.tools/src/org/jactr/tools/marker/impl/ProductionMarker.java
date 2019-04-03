@@ -3,8 +3,8 @@ package org.jactr.tools.marker.impl;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.production.IProduction;
 
 public class ProductionMarker extends DefaultMarker
@@ -13,8 +13,8 @@ public class ProductionMarker extends DefaultMarker
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ProductionMarker.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ProductionMarker.class);
 
   static public final String         TYPE            = ProductionMarker.class
                                                          .getName();

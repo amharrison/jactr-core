@@ -5,8 +5,8 @@ import java.util.function.Consumer;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.model.IModel;
 import org.jactr.fluent.FluentChunk;
@@ -17,8 +17,8 @@ public class DefaultDeclarativeParticipant implements Consumer<IModel>
   /**
   * Logger definition
   */
-  static private final transient Log LOGGER = LogFactory
-      .getLog(DefaultDeclarativeParticipant.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(DefaultDeclarativeParticipant.class);
 
   @Override
   public void accept(IModel model)

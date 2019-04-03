@@ -16,8 +16,8 @@ package org.jactr.modules.pm.common.buffer;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.delegate.DefaultDelegatedRequestableBuffer6;
 import org.jactr.core.buffer.delegate.IDelegatedRequestableBuffer;
 import org.jactr.core.buffer.delegate.IRequestDelegate;
@@ -46,8 +46,8 @@ public abstract class AbstractPMActivationBuffer6 extends
   /**
    * logger definition
    */
-  static private final Log          LOGGER = LogFactory
-                                               .getLog(AbstractPMActivationBuffer6.class);
+  static private final transient org.slf4j.Logger          LOGGER = LoggerFactory
+                                               .getLogger(AbstractPMActivationBuffer6.class);
 
   /**
    * we track all timed events used for this buffer so that if a clear comes in,

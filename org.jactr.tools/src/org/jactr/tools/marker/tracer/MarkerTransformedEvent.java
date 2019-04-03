@@ -6,8 +6,8 @@ package org.jactr.tools.marker.tracer;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.marker.impl.MarkerEvent;
 import org.jactr.tools.marker.impl.MarkerEvent.Type;
 import org.jactr.tools.tracer.transformer.AbstractTransformedEvent;
@@ -22,8 +22,8 @@ public class MarkerTransformedEvent extends AbstractTransformedEvent
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER           = LogFactory
-                                                          .getLog(MarkerTransformedEvent.class);
+  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
+                                                          .getLogger(MarkerTransformedEvent.class);
 
   private final Map<String, String>  _properties      = new TreeMap<String, String>();
 

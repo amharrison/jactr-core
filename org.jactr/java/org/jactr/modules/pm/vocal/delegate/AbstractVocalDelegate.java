@@ -6,15 +6,12 @@ package org.jactr.modules.pm.vocal.delegate;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.efferent.IEfferentCommand;
 import org.commonreality.identifier.IIdentifier;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.asynch.delegate.AbstractAsynchronousModuleDelegate;
-import org.jactr.core.production.condition.ChunkPattern;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.production.request.IRequest;
 import org.jactr.core.queue.ITimedEvent;
@@ -22,6 +19,7 @@ import org.jactr.core.queue.timedevents.AbstractTimedEvent;
 import org.jactr.core.queue.timedevents.BlockingTimedEvent;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.modules.pm.vocal.AbstractVocalModule;
+import org.slf4j.LoggerFactory;
 
 @Deprecated
 public abstract class AbstractVocalDelegate extends
@@ -31,8 +29,8 @@ public abstract class AbstractVocalDelegate extends
   /**
    * Logger definition
    */
-  static private final transient Log        LOGGER = LogFactory
-                                                       .getLog(AbstractVocalDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                       .getLogger(AbstractVocalDelegate.class);
 
   private Set<IEfferentCommand.ActualState> _driftStates;
 
@@ -65,6 +63,7 @@ public abstract class AbstractVocalDelegate extends
       _earlyTerminationStates.add(state);
   }
 
+  @Override
   protected void blockingTimedEventCreated(BlockingTimedEvent bte)
   {
     _currentBlockingTimedEvent = bte;
@@ -129,7 +128,7 @@ public abstract class AbstractVocalDelegate extends
     synchronized (vte)
     {
       if (LOGGER.isDebugEnabled()) LOGGER.debug("TimedEvent is supposed to fire at "+vte.getEndTime());
-      if ((!vte.hasFired() && !vte.hasAborted()) || callingFromFinalize)
+      if (!vte.hasFired() && !vte.hasAborted() || callingFromFinalize)
       {
         if (isDrift)
         {
@@ -158,6 +157,7 @@ public abstract class AbstractVocalDelegate extends
     return false;
   }
 
+  @Override
   final protected void finalizeProcessing(IRequest request, IChunk result,
       Object... parameters)
   {
@@ -168,17 +168,14 @@ public abstract class AbstractVocalDelegate extends
     IEfferentCommand vocalizationCommand = agent.getEfferentCommandManager()
         .get(getCommandIdentifier());
 
-    if (vocalizationCommand != null)
-    {
-      /*
-       * it is possible that we will not have heard back from CR on the command
-       * by the time the timed event fires. so, we should check again to see if
-       * we need to drift. if so, return. and let the drifted timed event fire
-       * us later
-       */
-      if (commandStateChanged(getCommandIdentifier(), vocalizationCommand
-          .getActualState(), true)) return;
-    }
+    if (vocalizationCommand != null) /*
+     * it is possible that we will not have heard back from CR on the command
+     * by the time the timed event fires. so, we should check again to see if
+     * we need to drift. if so, return. and let the drifted timed event fire
+     * us later
+     */
+    if (commandStateChanged(getCommandIdentifier(), vocalizationCommand
+        .getActualState(), true)) return;
 
     if (LOGGER.isDebugEnabled())
       LOGGER.debug(getClass().getSimpleName() + " Finalizing");
@@ -192,6 +189,7 @@ public abstract class AbstractVocalDelegate extends
   abstract protected void finalizeProcessingInternal(ChunkTypeRequest pattern,
       IChunk result, Object... parameters);
 
+  @Override
   final protected void enqueue(ITimedEvent timedEvent)
   {
     setCurrentTimedEvent(timedEvent);
@@ -213,6 +211,7 @@ public abstract class AbstractVocalDelegate extends
     return _currentCommandIdentifier;
   }
 
+  @Override
   final protected ITimedEvent createHarvestTimedEvent(double start, double end,
       IRequest request, IChunk result, Object... parameters)
   {
@@ -242,6 +241,7 @@ public abstract class AbstractVocalDelegate extends
           _parameters);
     }
 
+    @Override
     public void fire(double currentTime)
     {
       super.fire(currentTime);

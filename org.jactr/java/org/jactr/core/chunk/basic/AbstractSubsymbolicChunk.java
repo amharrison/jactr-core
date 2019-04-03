@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Sets;
 import org.jactr.core.buffer.IActivationBuffer;
@@ -45,8 +45,8 @@ public abstract class AbstractSubsymbolicChunk extends DefaultAdaptable
   /**
    * logger definition
    */
-  static private final Log                   LOGGER                         = LogFactory
-      .getLog(AbstractSubsymbolicChunk.class);
+  static private final transient org.slf4j.Logger                   LOGGER                         = LoggerFactory
+      .getLogger(AbstractSubsymbolicChunk.class);
 
   protected IChunk                           _parentChunk;
 

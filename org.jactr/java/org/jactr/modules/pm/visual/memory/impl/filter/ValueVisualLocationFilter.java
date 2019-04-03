@@ -8,14 +8,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.modules.pm.common.memory.filter.AbstractIndexFilter;
 import org.jactr.modules.pm.common.memory.filter.IIndexFilter;
 import org.jactr.modules.pm.visual.IVisualModule;
+import org.slf4j.LoggerFactory;
 
 public class ValueVisualLocationFilter extends
     AbstractIndexFilter<Object>
@@ -23,8 +22,8 @@ public class ValueVisualLocationFilter extends
   /**
    * Logger definition
    */
-  static private final transient Log   LOGGER = LogFactory
-                                                  .getLog(ValueVisualLocationFilter.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                  .getLogger(ValueVisualLocationFilter.class);
 
   private Collection<IConditionalSlot> _conditionals;
 

@@ -10,8 +10,8 @@ import java.util.List;
 
 import javax.naming.OperationNotSupportedException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 /**
  * @author harrison To change the template for this generated type comment go to
@@ -21,8 +21,8 @@ public class CollectionParameterHandler<T> extends
     ParameterHandler<Collection<T>>
 {
 
-  static private transient final Log LOGGER       = LogFactory
-                                                      .getLog(CollectionParameterHandler.class);
+  static private transient final org.slf4j.Logger LOGGER       = LoggerFactory
+                                                      .getLogger(CollectionParameterHandler.class);
 
   IParameterHandler<T>               _secondaryHandler;
 

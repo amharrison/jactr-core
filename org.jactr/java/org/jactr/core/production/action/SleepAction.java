@@ -17,8 +17,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.event.ActivationBufferEvent;
 import org.jactr.core.buffer.event.ActivationBufferListenerAdaptor;
@@ -39,7 +39,7 @@ public class SleepAction implements IAction
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory.getLog(SleepAction.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SleepAction.class);
 
   /**
    * @see org.jactr.core.production.action.IAction#bind(VariableBindings)

@@ -19,8 +19,6 @@ import java.util.Collection;
 import java.util.concurrent.Executor;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.event.ActivationBufferEvent;
 import org.jactr.core.buffer.event.IActivationBufferListener;
 import org.jactr.core.buffer.six.DefaultSourceActivationSpreader;
@@ -38,6 +36,7 @@ import org.jactr.core.utils.DefaultAdaptable;
 import org.jactr.core.utils.collections.FastCollectionFactory;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.core.utils.parameter.ParameterHandler;
+import org.slf4j.LoggerFactory;
 
 /**
  * basic implementation of an activation buffer that handles the spreading of
@@ -53,8 +52,8 @@ public abstract class AbstractActivationBuffer extends DefaultAdaptable
    * Logger definition
    */
 
-  static private final transient Log                                              LOGGER                   = LogFactory
-                                                                                                               .getLog(AbstractActivationBuffer.class);
+  static private final transient org.slf4j.Logger                                 LOGGER                   = LoggerFactory
+                                                                                                               .getLogger(AbstractActivationBuffer.class);
 
   final private IModel                                                            _model;
 

@@ -9,22 +9,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.slot.INotifyingSlotContainer;
 import org.jactr.core.slot.event.ISlotContainerListener;
 import org.jactr.core.slot.event.SlotEvent;
 import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.extensions.cached.procedural.invalidators.IInvalidator;
 import org.jactr.extensions.cached.procedural.invalidators.SlotInvalidator;
+import org.slf4j.LoggerFactory;
 
 public class SlotListener implements ISlotContainerListener
 {
   /**
    * Logger definition
    */
-  static private final transient Log                              LOGGER = LogFactory
-                                                                             .getLog(SlotListener.class);
+  static private final transient org.slf4j.Logger             LOGGER = LoggerFactory
+                                                                             .getLogger(SlotListener.class);
 
   private final INotifyingSlotContainer                           _container;
 

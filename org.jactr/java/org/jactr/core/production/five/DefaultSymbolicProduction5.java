@@ -12,8 +12,8 @@
  */
 package org.jactr.core.production.five;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.basic.AbstractProduction;
 import org.jactr.core.production.basic.BasicSymbolicProduction;
@@ -34,8 +34,8 @@ public class DefaultSymbolicProduction5 extends BasicSymbolicProduction
     implements ISymbolicProduction4
 {
 
-  private static transient Log LOGGER      = LogFactory
-                                               .getLog(DefaultSymbolicProduction5.class
+  private static transient org.slf4j.Logger LOGGER      = LoggerFactory
+                                               .getLogger(DefaultSymbolicProduction5.class
                                                    .getName());
 
   /**

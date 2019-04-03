@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
@@ -28,14 +26,15 @@ import org.jactr.core.production.IProduction;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.instrument.IInstrument;
 import org.jactr.tools.grapher.core.container.IProbeContainer;
+import org.slf4j.LoggerFactory;
 
 public class ModelSelector extends AbstractNameSelector<IModel>
 {
   /**
    * Logger definition
    */
-  static private final transient Log     LOGGER = LogFactory
-                                                    .getLog(ModelSelector.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                    .getLogger(ModelSelector.class);
 
   private IProceduralModuleListener      _proceduralListener;
 

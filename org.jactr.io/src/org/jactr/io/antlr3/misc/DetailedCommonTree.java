@@ -19,8 +19,8 @@ import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.Tree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 /**
  * @author developer
@@ -30,8 +30,8 @@ public class DetailedCommonTree extends CommonTree
   /**
    * logger definition
    */
-  static private final Log LOGGER       = LogFactory
-                                            .getLog(DetailedCommonTree.class);
+  static private final org.slf4j.Logger LOGGER       = LoggerFactory
+                                            .getLogger(DetailedCommonTree.class);
 
   private int              _endOffset   = -1;
 

@@ -3,8 +3,8 @@ package org.jactr.modules.pm.vocal.event;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.modalities.vocal.VocalizationCommand;
 import org.jactr.core.event.AbstractACTREvent;
 import org.jactr.core.runtime.ACTRRuntime;
@@ -15,8 +15,8 @@ public class VocalModuleEvent extends AbstractACTREvent<IVocalModule, IVocalModu
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(VocalModuleEvent.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(VocalModuleEvent.class);
   
   public enum Type {PREPARED, STARTED, COMPLETED, RESET};
   

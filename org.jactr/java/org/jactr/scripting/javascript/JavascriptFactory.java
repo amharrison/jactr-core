@@ -5,8 +5,8 @@ import javax.script.ScriptContext;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.scripting.IScriptableFactory;
 import org.jactr.scripting.action.IActionScript;
 import org.jactr.scripting.condition.IConditionScript;
@@ -16,8 +16,8 @@ public class JavascriptFactory implements IScriptableFactory
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(JavascriptFactory.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(JavascriptFactory.class);
 
   public IActionScript createActionScript(String script) throws Exception
   {

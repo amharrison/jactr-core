@@ -6,16 +6,16 @@ package org.jactr.core.utils.parameter;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public class ClassNameParameterProcessor extends ParameterProcessor<Class>
 {
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ClassNameParameterProcessor.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ClassNameParameterProcessor.class);
 
   public ClassNameParameterProcessor(String parameterName,
       Consumer<Class> setFunction, Supplier<Class> getFunction,

@@ -6,8 +6,8 @@ package org.jactr.extensions.search.performance;
 import java.util.Comparator;
 import java.util.SortedSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math.stat.descriptive.StatisticalSummary;
 import org.apache.commons.math.stat.descriptive.SummaryStatistics;
@@ -22,8 +22,8 @@ public class ProfiledSearchDelegate implements ISearchDelegate
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER            = LogFactory
-                                                           .getLog(ProfiledSearchDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER            = LoggerFactory
+                                                           .getLogger(ProfiledSearchDelegate.class);
 
   private final ISearchDelegate      _delegate;
 

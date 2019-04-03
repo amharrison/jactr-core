@@ -8,8 +8,8 @@ import org.antlr.runtime.tree.CommonTree;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.io.IOUtilities;
 import org.jactr.io2.compilation.ICompilationUnit;
@@ -19,8 +19,8 @@ public class CommonTreeCompilationUnit implements ICompilationUnit
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-      .getLog(CommonTreeCompilationUnit.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(CommonTreeCompilationUnit.class);
 
   private final URI                  _uri;
 

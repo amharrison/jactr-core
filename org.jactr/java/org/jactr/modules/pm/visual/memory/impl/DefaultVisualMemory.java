@@ -8,8 +8,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.agents.IAgent;
 import org.jactr.core.buffer.six.IStatusBuffer;
 import org.jactr.core.chunk.IChunk;
@@ -63,8 +63,8 @@ public class DefaultVisualMemory extends AbstractPerceptualMemory implements
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER                        = LogFactory
-                                                                       .getLog(DefaultVisualMemory.class);
+  static private final transient org.slf4j.Logger LOGGER                        = LoggerFactory
+                                                                       .getLogger(DefaultVisualMemory.class);
 
   static public final String         VISUAL_PESISTENCE_DELAY_PARAM = "VisualPersistenceDelay";
 

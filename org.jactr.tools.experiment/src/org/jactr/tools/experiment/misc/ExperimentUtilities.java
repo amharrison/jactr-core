@@ -3,8 +3,8 @@ package org.jactr.tools.experiment.misc;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.tools.experiment.IExperiment;
@@ -17,8 +17,8 @@ public class ExperimentUtilities
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ExperimentUtilities.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ExperimentUtilities.class);
 
   static public IExperiment getModelsExperiment(IModel model)
   {

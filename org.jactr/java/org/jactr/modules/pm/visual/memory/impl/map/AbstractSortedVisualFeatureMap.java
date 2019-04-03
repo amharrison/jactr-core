@@ -1,14 +1,15 @@
 package org.jactr.modules.pm.visual.memory.impl.map;
 
-/*
- * default logging
- */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.modalities.visual.DefaultVisualPropertyHandler;
 import org.commonreality.modalities.visual.IVisualPropertyHandler;
 import org.commonreality.object.IAfferentObject;
 import org.jactr.modules.pm.common.memory.map.AbstractSortedFeatureMap;
+
+/*
+ * default logging
+ */
+ 
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractSortedVisualFeatureMap<T> extends
     AbstractSortedFeatureMap<T>
@@ -17,8 +18,8 @@ public abstract class AbstractSortedVisualFeatureMap<T> extends
   /**
    * Logger definition
    */
-  static private final transient Log     LOGGER = LogFactory
-                                                    .getLog(AbstractSortedVisualFeatureMap.class);
+  static private final transient org.slf4j.Logger   LOGGER           = LoggerFactory
+                                                    .getLogger(AbstractSortedVisualFeatureMap.class);
 
   static private final DefaultVisualPropertyHandler _propertyHandler = new DefaultVisualPropertyHandler();
 

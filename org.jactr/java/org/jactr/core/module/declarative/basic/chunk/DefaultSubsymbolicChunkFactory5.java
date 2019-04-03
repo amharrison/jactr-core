@@ -3,8 +3,8 @@ package org.jactr.core.module.declarative.basic.chunk;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.ISubsymbolicChunk;
 import org.jactr.core.chunk.event.IChunkListener;
@@ -20,8 +20,8 @@ public class DefaultSubsymbolicChunkFactory5 implements
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER              = LogFactory
-                                                             .getLog(DefaultSubsymbolicChunkFactory5.class);
+  static private final transient org.slf4j.Logger LOGGER              = LoggerFactory
+                                                             .getLogger(DefaultSubsymbolicChunkFactory5.class);
 
   static private boolean             _warnedAboutMerging = false;
 

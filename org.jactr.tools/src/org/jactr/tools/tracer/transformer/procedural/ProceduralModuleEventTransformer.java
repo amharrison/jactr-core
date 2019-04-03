@@ -14,8 +14,8 @@
 package org.jactr.tools.tracer.transformer.procedural;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.event.IACTREvent;
 import org.jactr.core.module.procedural.event.ProceduralModuleEvent;
 import org.jactr.core.production.IProduction;
@@ -33,8 +33,8 @@ public class ProceduralModuleEventTransformer implements IEventTransformer
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory
-                                      .getLog(ProceduralModuleEventTransformer.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+                                      .getLogger(ProceduralModuleEventTransformer.class);
 
   /**
    * @see org.jactr.tools.tracer.transformer.IEventTransformer#transform(org.jactr.core.event.IACTREvent)

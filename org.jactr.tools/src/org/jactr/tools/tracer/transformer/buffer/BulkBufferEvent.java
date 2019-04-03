@@ -4,8 +4,8 @@ package org.jactr.tools.tracer.transformer.buffer;
  * default logging
  */
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.tracer.transformer.AbstractTransformedEvent;
 
 public class BulkBufferEvent extends AbstractTransformedEvent
@@ -18,8 +18,8 @@ public class BulkBufferEvent extends AbstractTransformedEvent
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(BulkBufferEvent.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(BulkBufferEvent.class);
 
   private boolean                    _isPostConflict  = false;
 

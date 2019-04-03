@@ -3,8 +3,8 @@ package org.jactr.entry.iterative;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public class TerminateIterativeRunException extends Exception
 {
@@ -16,8 +16,8 @@ public class TerminateIterativeRunException extends Exception
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(TerminateIterativeRunException.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(TerminateIterativeRunException.class);
 
   public TerminateIterativeRunException(String message)
   {

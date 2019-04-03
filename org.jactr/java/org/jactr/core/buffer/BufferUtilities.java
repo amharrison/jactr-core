@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.model.IModel;
 
@@ -17,8 +17,8 @@ public class BufferUtilities
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER                   = LogFactory
-                                                                  .getLog(BufferUtilities.class);
+  static private final transient org.slf4j.Logger LOGGER                   = LoggerFactory
+                                                                  .getLogger(BufferUtilities.class);
 
   static private final String        CONTAINMENT_MAP_META_KEY = BufferUtilities.class
                                                                   + ".containmentMap";

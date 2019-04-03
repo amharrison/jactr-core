@@ -6,8 +6,8 @@ package org.jactr.core.module.declarative.search.filter;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 
 /**
@@ -20,8 +20,8 @@ public class DelegatedFilter implements IChunkFilter
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(DelegatedFilter.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DelegatedFilter.class);
 
   private final Collection<IChunkFilter> _filters;
 

@@ -6,8 +6,8 @@ import java.util.Collection;
  */
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.event.IChunkListener;
 import org.jactr.core.chunk.four.AssociativeLinkEquation4;
@@ -41,8 +41,8 @@ public class DefaultAssociativeLinkageSystem4 extends
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(DefaultAssociativeLinkageSystem4.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DefaultAssociativeLinkageSystem4.class);
 
   private IChunkListener             _chunkListener;
 

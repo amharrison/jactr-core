@@ -15,8 +15,8 @@ package org.jactr.core.production.action;
 
 import java.lang.reflect.Method;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.production.IInstantiation;
 import org.jactr.core.production.VariableBindings;
 import org.jactr.core.utils.ModelerException;
@@ -34,7 +34,7 @@ public class ExecuteAction extends DefaultAction
 {
 
   // logger class
-  private static transient Log LOGGER = LogFactory.getLog(ExecuteAction.class
+  private static transient org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ExecuteAction.class
                                           .getName());
 
   /*

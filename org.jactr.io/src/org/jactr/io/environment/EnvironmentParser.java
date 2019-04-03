@@ -19,15 +19,18 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.parser.RealityParser;
 import org.jactr.core.model.IModel;
+import org.jactr.core.model.basic.BasicModel;
 import org.jactr.core.reality.connector.IConnector;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.runtime.controller.DefaultController;
@@ -83,7 +86,7 @@ public class EnvironmentParser
   /**
    * logger definition
    */
-  static public final Log LOGGER = LogFactory.getLog(EnvironmentParser.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(EnvironmentParser.class);
 
   /**
    * @BUG this is a hack during the transition from old io to io2
@@ -110,7 +113,7 @@ public class EnvironmentParser
    * @param modelDescriptors
    */
   public void process(Document document,
-      Collection<ICompilationUnit> modelDescriptors)
+      Map<String, ICompilationUnit> modelDescriptors)
   {
     ACTRRuntime runtime = ACTRRuntime.getRuntime();
 
@@ -141,13 +144,16 @@ public class EnvironmentParser
    * @return
    */
   protected Collection<IModel> buildModels(
-      Collection<ICompilationUnit> modelDescriptors)
+      Map<String, ICompilationUnit> modelDescriptors)
   {
     Collection<IModel> models = new ArrayList<IModel>();
-    for (ICompilationUnit modelDescriptor : modelDescriptors)
+    for (String alias : modelDescriptors.keySet())
       try
       {
-        models.add(modelDescriptor.build());
+        IModel model = modelDescriptors.get(alias).build();
+        if (model instanceof BasicModel) ((BasicModel) model).setName(alias);
+
+        models.add(model);
       }
       catch (Exception e)
       {
@@ -162,16 +168,16 @@ public class EnvironmentParser
    * @param document
    * @return
    */
-  public Collection<ICompilationUnit> getModelDescriptors(Document document,
+  public Map<String, ICompilationUnit> getModelDescriptors(Document document,
       URL root)
   {
-    Collection<ICompilationUnit> models = new ArrayList<ICompilationUnit>();
+    Map<String, ICompilationUnit> models = new TreeMap<>();
 
     NodeList nl = document.getElementsByTagName("model");
     for (int i = 0; i < nl.getLength(); i++)
     {
       Element modelElement = (Element) nl.item(i);
-      modelElement.getAttribute("alias");
+      String alias = modelElement.getAttribute("alias");
       String location = modelElement.getAttribute("url");
 
       URL modelLocation = resolveURLLocation(root, location);
@@ -182,7 +188,7 @@ public class EnvironmentParser
           ICompilationUnit modelDescriptor = CompilationUnitManager.get()
               .get(modelLocation.toURI());
 
-          models.add(modelDescriptor);
+          models.put(alias, modelDescriptor);
         }
         catch (Exception e)
         {

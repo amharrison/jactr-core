@@ -5,8 +5,8 @@ package org.jactr.modules.pm.aural.memory.impl.filter;
  */
 import java.util.Comparator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.modules.pm.aural.IAuralModule;
@@ -19,8 +19,8 @@ public class AttendedAudioEventFilter extends
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(AttendedAudioEventFilter.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(AttendedAudioEventFilter.class);
 
   @Override
   protected Boolean compute(ChunkTypeRequest request)

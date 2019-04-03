@@ -19,8 +19,8 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.tools.async.controller.RemoteInterface;
@@ -37,8 +37,8 @@ public class NetworkedSink implements ITraceSink
   /**
    * logger definition
    */
-  static private final Log     LOGGER              = LogFactory
-                                                       .getLog(NetworkedSink.class);
+  static private final transient org.slf4j.Logger     LOGGER              = LoggerFactory
+                                                       .getLogger(NetworkedSink.class);
 
   private long                 _maximumDelay       = 500;                           // ms
 

@@ -11,13 +11,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.model.event.ModelEvent;
 import org.jactr.core.model.event.ModelListenerAdaptor;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.instrument.IInstrument;
+import org.slf4j.LoggerFactory;
 
 /**
  * locking mechanism, that when closed, will block all the models it is
@@ -31,8 +30,8 @@ public class ModelsLock extends ModelListenerAdaptor implements IInstrument
   /**
    * Logger definition
    */
-  static private final transient Log          LOGGER         = LogFactory
-                                                                 .getLog(ModelsLock.class);
+  static private final transient org.slf4j.Logger LOGGER         = LoggerFactory
+                                                                 .getLogger(ModelsLock.class);
 
   private ReentrantLock                       _lock          = new ReentrantLock();
 

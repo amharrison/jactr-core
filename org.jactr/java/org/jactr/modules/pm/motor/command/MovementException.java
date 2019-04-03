@@ -3,8 +3,8 @@ package org.jactr.modules.pm.motor.command;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public class MovementException extends RuntimeException
 {
@@ -16,8 +16,8 @@ public class MovementException extends RuntimeException
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(MovementException.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(MovementException.class);
 
   final transient private IMovement  _movement;
 

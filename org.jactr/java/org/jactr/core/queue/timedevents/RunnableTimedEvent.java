@@ -3,16 +3,16 @@ package org.jactr.core.queue.timedevents;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public class RunnableTimedEvent extends AbstractTimedEvent
 {
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(RunnableTimedEvent.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(RunnableTimedEvent.class);
 
   private final Runnable _onFire;
   private final Runnable _onAbort;

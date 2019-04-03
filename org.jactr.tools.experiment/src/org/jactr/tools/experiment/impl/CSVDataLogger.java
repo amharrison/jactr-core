@@ -10,8 +10,8 @@ import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.experiment.IDataLogger;
 import org.jactr.tools.experiment.IExperiment;
 
@@ -20,8 +20,8 @@ public class CSVDataLogger implements IDataLogger
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(CSVDataLogger.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(CSVDataLogger.class);
 
   private IExperiment                _experiment;
 

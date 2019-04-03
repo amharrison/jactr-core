@@ -3,8 +3,8 @@ package org.jactr.modules.pm.motor.six;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.modules.pm.motor.IMotorModule;
 import org.jactr.modules.pm.motor.command.IMotorTimeEquation;
 import org.jactr.modules.pm.motor.command.IMovement;
@@ -21,8 +21,8 @@ public class DefaultProcessingTimeEquation implements
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(DefaultProcessingTimeEquation.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DefaultProcessingTimeEquation.class);
   
   static public final String PROCESSING_TIME = "DefaultProcessingTime";
 

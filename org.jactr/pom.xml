@@ -33,35 +33,35 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.commonreality.api</groupId>
+			<groupId>org.commonreality</groupId>
 			<artifactId>org.commonreality.api</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.5.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.commonreality.core</groupId>
+			<groupId>org.commonreality</groupId>
 			<artifactId>org.commonreality.core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.5.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.commonreality.modalities</groupId>
+			<groupId>org.commonreality</groupId>
 			<artifactId>org.commonreality.modalities</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.5.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.commonreality.sensors</groupId>
+			<groupId>org.commonreality</groupId>
 			<artifactId>org.commonreality.sensors</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.5.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.commonreality.sensors.xml</groupId>
+			<groupId>org.commonreality</groupId>
 			<artifactId>org.commonreality.sensors.xml</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.5.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.commonreality.netty</groupId>
+			<groupId>org.commonreality</groupId>
 			<artifactId>org.commonreality.netty</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.5.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

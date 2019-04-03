@@ -29,8 +29,8 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.event.ActivationBufferEvent;
 import org.jactr.core.buffer.event.IActivationBufferListener;
@@ -89,8 +89,8 @@ public class DefaultProceduralModule6 extends AbstractModule implements
   /**
    * logger definition
    */
-  static public final Log                                                   LOGGER                               = LogFactory
-                                                                                                                     .getLog(DefaultProceduralModule6.class);
+  static public final transient org.slf4j.Logger                                                   LOGGER                               = LoggerFactory
+                                                                                                                     .getLogger(DefaultProceduralModule6.class);
 
   private ACTREventDispatcher<IProceduralModule, IProceduralModuleListener> _eventDispatcher;
 

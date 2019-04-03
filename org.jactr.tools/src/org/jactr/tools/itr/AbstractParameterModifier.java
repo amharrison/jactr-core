@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.entry.iterative.IIterativeRunListener;
@@ -25,8 +25,8 @@ public abstract class AbstractParameterModifier
   /**
    * Logger definition
    */
-  static private transient Log LOGGER = LogFactory
-      .getLog(AbstractParameterModifier.class);
+  static private transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(AbstractParameterModifier.class);
 
   private String               _parameterName;
 

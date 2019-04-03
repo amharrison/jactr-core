@@ -18,8 +18,6 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.four.ISubsymbolicChunk4;
@@ -32,6 +30,7 @@ import org.jactr.core.production.condition.IBufferCondition;
 import org.jactr.core.production.condition.ICondition;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.utils.collections.FastCollectionFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * we use a proceduralmodule listener to track the chunks that are accessed in
@@ -47,8 +46,8 @@ public class ProceduralModuleListener extends ProceduralModuleListenerAdaptor
   /**
    * logger definition
    */
-  static private final Log                  LOGGER     = LogFactory
-                                                           .getLog(ProceduralModuleListener.class);
+  static private final org.slf4j.Logger     LOGGER     = LoggerFactory
+                                                           .getLogger(ProceduralModuleListener.class);
 
   static private final String               BOUND_GOAL = "="
                                                            + IActivationBuffer.GOAL;

@@ -5,11 +5,10 @@ package org.jactr.core.slot;
  */
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.event.ACTREventDispatcher;
 import org.jactr.core.slot.event.ISlotContainerListener;
 import org.jactr.core.slot.event.SlotEvent;
+import org.slf4j.LoggerFactory;
 
 /**
  * generic unique slot container that can be listened to
@@ -22,8 +21,8 @@ public class NotifyingSlotContainer extends UniqueSlotContainer implements
   /**
    * Logger definition
    */
-  static private final transient Log                                           LOGGER      = LogFactory
-                                                                                               .getLog(NotifyingSlotContainer.class);
+  static private final transient org.slf4j.Logger                              LOGGER      = LoggerFactory
+                                                                                               .getLogger(NotifyingSlotContainer.class);
 
   private ACTREventDispatcher<INotifyingSlotContainer, ISlotContainerListener> _dispatcher = new ACTREventDispatcher<INotifyingSlotContainer, ISlotContainerListener>();
 

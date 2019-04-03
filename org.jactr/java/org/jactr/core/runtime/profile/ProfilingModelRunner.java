@@ -15,8 +15,8 @@ package org.jactr.core.runtime.profile;
 
 import java.util.concurrent.ExecutorService;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.ICycleProcessor;
 import org.jactr.core.model.IModel;
 import org.jactr.core.runtime.ACTRRuntime;
@@ -31,8 +31,8 @@ public class ProfilingModelRunner extends DefaultModelRunner
   /**
    logger definition
    */
-  static private final Log LOGGER = LogFactory
-  .getLog(ProfilingModelRunner.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+  .getLogger(ProfilingModelRunner.class);
  
   
   private long _totalActualCycles = 0;

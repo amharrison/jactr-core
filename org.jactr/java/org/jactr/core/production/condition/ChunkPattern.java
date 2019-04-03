@@ -16,8 +16,8 @@ package org.jactr.core.production.condition;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.VariableBindings;
@@ -34,7 +34,7 @@ public class ChunkPattern extends AbstractSlotCondition
   /**
    * Logger definition
    */
-  static private transient Log LOGGER = LogFactory.getLog(ChunkPattern.class);
+  static private transient org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ChunkPattern.class);
 
   private IChunkType           _chunkType;
 

@@ -15,8 +15,8 @@ package org.jactr.tools.async.message.command.breakpoint;
 
 import java.io.Serializable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.runtime.controller.debug.BreakpointType;
 import org.jactr.tools.async.message.BaseMessage;
 
@@ -33,8 +33,8 @@ public class BreakpointCommand extends BaseMessage implements IBreakpointCommand
   /**
    * logger definition
    */
-  static private final transient Log LOGGER           = LogFactory
-                                                          .getLog(BreakpointCommand.class);
+  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
+                                                          .getLogger(BreakpointCommand.class);
 
   Action                   _action;
 

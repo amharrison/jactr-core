@@ -13,8 +13,8 @@
  */
 package org.jactr.tools.async.shadow.handlers;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.net.handler.IMessageHandler;
 import org.commonreality.net.session.ISessionInfo;
 import org.jactr.tools.async.message.event.data.ModelDataEvent;
@@ -28,8 +28,8 @@ public class ModelDataMessageHandler implements IMessageHandler<ModelDataEvent>
   /**
    logger definition
    */
-  static private final Log LOGGER = LogFactory
-                                      .getLog(ModelDataMessageHandler.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+                                      .getLogger(ModelDataMessageHandler.class);
 
   //
   // /**

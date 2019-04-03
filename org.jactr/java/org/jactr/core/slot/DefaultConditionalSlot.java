@@ -15,8 +15,8 @@ package org.jactr.core.slot;
 
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 /**
  * @author harrison TODO To change the template for this generated type comment
@@ -30,8 +30,8 @@ public class DefaultConditionalSlot extends DefaultMutableSlot implements
    * Logger definition
    */
 
-  static private final transient Log LOGGER     = LogFactory
-                                                    .getLog(DefaultConditionalSlot.class);
+  static private final transient org.slf4j.Logger LOGGER     = LoggerFactory
+                                                    .getLogger(DefaultConditionalSlot.class);
 
   static public final double         EPSILON    = 0.0001;
 

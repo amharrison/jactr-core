@@ -4,8 +4,8 @@ package org.jactr.tools.experiment.actions.jactr;
  * default logging
  */
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.model.ModelTerminatedException;
 import org.jactr.core.queue.timedevents.RunnableTimedEvent;
@@ -19,8 +19,8 @@ public class StopModelAction extends AbstractAction
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(StopModelAction.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(StopModelAction.class);
 
   public StopModelAction(IExperiment experiment)
   {

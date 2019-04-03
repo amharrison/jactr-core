@@ -13,8 +13,8 @@
  */
 package org.jactr.core.chunk.event;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.event.AbstractACTREvent;
 import org.jactr.core.event.IACTREvent;
@@ -27,7 +27,7 @@ public class ChunkEvent extends AbstractACTREvent<IChunk, IChunkListener>
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory.getLog(ChunkEvent.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ChunkEvent.class);
 
   static public enum Type {
     ENCODED, ACCESSED, MERGING_WITH, MERGING_INTO, SIMILARITY_CHANGED, SLOT_VALUE_CHANGED

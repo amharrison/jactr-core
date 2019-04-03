@@ -3,8 +3,8 @@ package org.jactr.modules.pm.vocal.delegate;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.efferent.IEfferentCommand;
 import org.commonreality.efferent.IEfferentCommandTemplate;
 import org.commonreality.modalities.vocal.VocalizationCommand;
@@ -19,8 +19,8 @@ public class VocalCommandManager extends EfferentCommandManager<VocalizationComm
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(VocalCommandManager.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(VocalCommandManager.class);
 
 
   private final IVocalModule _module;

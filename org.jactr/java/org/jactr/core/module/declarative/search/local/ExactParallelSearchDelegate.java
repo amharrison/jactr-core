@@ -18,8 +18,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.concurrent.ExecutorServices;
@@ -44,8 +44,8 @@ public class ExactParallelSearchDelegate implements ISearchDelegate
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER            = LogFactory
-                                                           .getLog(ExactParallelSearchDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER            = LoggerFactory
+                                                           .getLogger(ExactParallelSearchDelegate.class);
 
   protected final boolean            _enableNotFilters = Boolean
                                                            .getBoolean("jactr.search.enableNotFilters");

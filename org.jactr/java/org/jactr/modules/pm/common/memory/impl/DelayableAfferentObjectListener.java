@@ -7,8 +7,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.object.IAfferentObject;
 import org.jactr.core.model.IModel;
@@ -27,8 +27,8 @@ public class DelayableAfferentObjectListener extends
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER           = LogFactory
-                                                          .getLog(DelayableAfferentObjectListener.class);
+  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
+                                                          .getLogger(DelayableAfferentObjectListener.class);
 
   private double                     _perceptualDelay = 0;
 

@@ -3,8 +3,8 @@ package org.jactr.modules.pm.motor.managers;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.jactr.core.buffer.six.IStatusBuffer;
 import org.jactr.core.production.request.ChunkTypeRequest;
@@ -17,7 +17,7 @@ public class Movement implements IMovement
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory.getLog(Movement.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Movement.class);
 
   final private AbstractMotorModule  _module;
 

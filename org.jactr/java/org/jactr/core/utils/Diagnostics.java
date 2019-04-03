@@ -5,10 +5,9 @@ package org.jactr.core.utils;
  */
 import java.util.function.BiConsumer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.time.impl.BasicClock;
 import org.jactr.core.model.ModelTerminatedException;
+import org.slf4j.LoggerFactory;
 
 /**
  * static class with various diagnostic tools. Exposes the following system
@@ -22,8 +21,8 @@ public class Diagnostics
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(Diagnostics.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(Diagnostics.class);
 
   static enum TimeWindow {
     DAY(86400.0), WEEK(604800.0), MONTH(2628000.0), YEAR(31536000.0), ADULTHOOD(
@@ -176,7 +175,7 @@ public class Diagnostics
     if (delta > BasicClock.getPrecision())
     {
       LOGGER
-          .fatal(String
+          .error(String
               .format(
                   "Precision violation, minimum increment : %.5f, requested precision: %.5f.",
                   delta, BasicClock.getPrecision()));

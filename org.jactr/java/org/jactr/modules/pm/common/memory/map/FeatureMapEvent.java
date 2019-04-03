@@ -8,8 +8,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.jactr.core.event.AbstractACTREvent;
 
@@ -19,8 +19,8 @@ public class FeatureMapEvent extends
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(FeatureMapEvent.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(FeatureMapEvent.class);
 
   static public enum Type {
     ADDED, REMOVED, UPDATED

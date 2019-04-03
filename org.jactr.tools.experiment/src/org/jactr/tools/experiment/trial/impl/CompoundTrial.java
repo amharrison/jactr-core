@@ -9,8 +9,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.experiment.IExperiment;
 import org.jactr.tools.experiment.trial.ICompoundTrial;
 import org.jactr.tools.experiment.trial.ITrial;
@@ -20,8 +20,8 @@ public class CompoundTrial extends Trial implements ICompoundTrial
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER   = LogFactory
-                                                  .getLog(CompoundTrial.class);
+  static private final transient org.slf4j.Logger LOGGER   = LoggerFactory
+                                                  .getLogger(CompoundTrial.class);
 
   private final List<ITrial>         _trials;
 

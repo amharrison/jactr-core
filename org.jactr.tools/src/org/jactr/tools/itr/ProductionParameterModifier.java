@@ -6,8 +6,8 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
 import org.jactr.io2.compilation.ICompilationUnit;
@@ -17,8 +17,8 @@ public class ProductionParameterModifier extends AbstractParameterModifier
   /**
    * Logger definition
    */
-  static private transient Log LOGGER             = LogFactory
-                                                      .getLog(ProductionParameterModifier.class);
+  static private transient org.slf4j.Logger LOGGER             = LoggerFactory
+                                                      .getLogger(ProductionParameterModifier.class);
 
   static public final String   PRODUCTION_PATTERN = "ProductionPattern";
 

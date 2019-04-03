@@ -5,17 +5,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-/*
- * default logging
- */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.declarative.six.DefaultDeclarativeModule6;
 import org.jactr.modules.pm.aural.six.DefaultAuralModule6;
 import org.jactr.modules.pm.motor.six.DefaultMotorModule6;
 import org.jactr.modules.pm.visual.six.DefaultVisualModule6;
 import org.jactr.modules.pm.vocal.six.DefaultVocalModule6;
+
+/*
+ * default logging
+ */
+ 
+import org.slf4j.LoggerFactory;
 
 /**
  * @author harrison
@@ -25,8 +26,8 @@ public class FluentParticipantRegistry
   /**
    * Logger definition
    */
-  static private final transient Log      LOGGER             = LogFactory
-      .getLog(FluentParticipantRegistry.class);
+  static private final transient org.slf4j.Logger LOGGER             = LoggerFactory
+      .getLogger(FluentParticipantRegistry.class);
 
   private Map<Class<?>, Consumer<IModel>> _classParticipants = new HashMap<>();
 

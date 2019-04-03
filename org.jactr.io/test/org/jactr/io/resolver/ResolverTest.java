@@ -17,8 +17,8 @@
 package org.jactr.io.resolver;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.io.CommonIO;
 
@@ -32,8 +32,8 @@ public class ResolverTest extends TestCase
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ResolverTest.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ResolverTest.class);
   
   String[]                           _cleanModels = {
       "org/jactr/io/resolver/addition.jactrx" };

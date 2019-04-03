@@ -10,8 +10,8 @@ import java.util.TreeSet;
 import java.util.concurrent.Executor;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.BufferUtilities;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.event.ActivationBufferEvent;
@@ -52,8 +52,8 @@ public class BufferTracer extends BaseTraceListener
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(BufferTracer.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(BufferTracer.class);
 
   private Map<IModel, Set<String>>   _dirtyBuffers;
 

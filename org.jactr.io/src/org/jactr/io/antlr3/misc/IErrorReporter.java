@@ -4,8 +4,8 @@ package org.jactr.io.antlr3.misc;
  * default logging
  */
 import org.antlr.runtime.RecognitionException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public interface IErrorReporter
 {

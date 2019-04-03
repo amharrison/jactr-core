@@ -8,8 +8,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.identifier.IIdentifier;
 import org.commonreality.object.IAfferentObject;
@@ -34,8 +34,8 @@ public class OffsetFeatureMap extends AbstractAuralFeatureMap<Double> implements
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(OffsetFeatureMap.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(OffsetFeatureMap.class);
 
   /**
    * used to record the actual end time of a sound

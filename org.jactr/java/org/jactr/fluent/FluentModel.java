@@ -3,11 +3,6 @@ package org.jactr.fluent;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/*
- * default logging
- */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.model.basic.BasicModel;
 import org.jactr.core.module.IModule;
@@ -22,6 +17,12 @@ import org.jactr.modules.pm.motor.six.DefaultMotorModule6;
 import org.jactr.modules.pm.visual.six.DefaultVisualModule6;
 import org.jactr.modules.pm.vocal.six.DefaultVocalModule6;
 
+/*
+ * default logging
+ */
+ 
+import org.slf4j.LoggerFactory;
+
 /**
  * fluent model builder for API construction. After {@link #build()}ing, chunks,
  * types, productions can be added. Finally, the model must be
@@ -34,8 +35,8 @@ public class FluentModel
   /**
    * Logger definition
    */
-  static private final transient Log           LOGGER   = LogFactory
-      .getLog(FluentModel.class);
+  static private final transient org.slf4j.Logger LOGGER   = LoggerFactory
+      .getLogger(FluentModel.class);
 
   private String                               _name;
 

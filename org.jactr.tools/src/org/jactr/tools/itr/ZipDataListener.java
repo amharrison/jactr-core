@@ -15,8 +15,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.model.IModel;
 import org.jactr.core.runtime.ACTRRuntime;
@@ -35,8 +35,8 @@ public class ZipDataListener implements IIterativeRunListener, IParameterized
   /**
    * Logger definition
    */
-  static private transient Log LOGGER         = LogFactory
-                                                  .getLog(ZipDataListener.class);
+  static private transient org.slf4j.Logger LOGGER         = LoggerFactory
+                                                  .getLogger(ZipDataListener.class);
 
   static public final String   IGNORE_ROOT    = "IgnoreRootDir";
 

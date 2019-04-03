@@ -1,17 +1,12 @@
 package org.jactr.tools.track.chunktype;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.event.ActivationBufferEvent;
 import org.jactr.core.buffer.event.ActivationBufferListenerAdaptor;
@@ -32,14 +27,15 @@ import org.jactr.core.utils.StringUtilities;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.core.utils.parameter.ParameterHandler;
 import org.jactr.instrument.IInstrument;
+import org.slf4j.LoggerFactory;
 
 public class ChunkTypeProductionTracker implements IInstrument, IParameterized
 {
   /**
    * Logger definition
    */
-  static private transient Log      LOGGER        = LogFactory
-                                                      .getLog(ChunkTypeProductionTracker.class);
+  static private transient org.slf4j.Logger LOGGER        = LoggerFactory
+                                                      .getLogger(ChunkTypeProductionTracker.class);
 
   static public final String        FILENAME      = "FileName";
 
@@ -124,6 +120,7 @@ public class ChunkTypeProductionTracker implements IInstrument, IParameterized
     };
 
     _modelListener = new ModelListenerAdaptor() {
+      @Override
       public void exceptionThrown(ModelEvent me)
       {
         if (_currentSequence != null) dump(_currentSequence);

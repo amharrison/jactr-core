@@ -3,8 +3,8 @@ package org.jactr.modules.pm.aural.memory.impl.map;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.modalities.aural.IAuralPropertyHandler;
 import org.commonreality.object.IAfferentObject;
 import org.jactr.core.runtime.ACTRRuntime;
@@ -16,8 +16,8 @@ public class OnsetFeatureMap extends AbstractSortedAuralFeatureMap<Double>
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(OnsetFeatureMap.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(OnsetFeatureMap.class);
 
   public OnsetFeatureMap()
   {

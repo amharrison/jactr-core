@@ -5,8 +5,8 @@ package org.jactr.modules.pm.aural.memory.impl.map;
  */
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.commonreality.modalities.aural.IAuralPropertyHandler;
 import org.commonreality.object.IAfferentObject;
@@ -20,8 +20,8 @@ public class AudibleFeatureMap extends
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(AudibleFeatureMap.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(AudibleFeatureMap.class);
 
   public AudibleFeatureMap()
   {

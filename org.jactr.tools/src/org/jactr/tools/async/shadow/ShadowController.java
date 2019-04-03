@@ -25,8 +25,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.net.session.ISessionInfo;
 import org.jactr.core.runtime.controller.debug.BreakpointType;
 import org.jactr.tools.async.common.NetworkedEndpoint;
@@ -66,8 +66,8 @@ public class ShadowController extends NetworkedEndpoint
   /**
    * logger definition
    */
-  static private final Log        LOGGER          = LogFactory
-                                                      .getLog(ShadowController.class);
+  static private final transient org.slf4j.Logger        LOGGER          = LoggerFactory
+                                                      .getLogger(ShadowController.class);
 
   private Set<String>             _runningModels;
 

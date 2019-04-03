@@ -2,8 +2,8 @@ package org.jactr.core.module.declarative.basic;
 
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.event.IChunkListener;
 import org.jactr.core.chunk.four.ISubsymbolicChunk4;
@@ -32,8 +32,8 @@ public class DefaultAssociativeLinkageSystem
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-      .getLog(DefaultAssociativeLinkageSystem.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(DefaultAssociativeLinkageSystem.class);
 
   private IAssociativeLinkEquation   _equation;
 

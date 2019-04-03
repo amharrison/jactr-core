@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.ISubsymbolicChunk;
 import org.jactr.core.chunk.event.ChunkEvent;
@@ -31,8 +31,8 @@ public class ChunkSelector extends AbstractNameSelector<IChunk>
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ChunkSelector.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ChunkSelector.class);
 
   private Collection<LinkSelector>   _linkSelectors;
 

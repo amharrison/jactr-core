@@ -1,21 +1,22 @@
 package org.jactr.core.logging.impl;
 
-/*
- * default logging
- */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.logging.IMessageBuilder;
 import org.jactr.core.utils.recyclable.AbstractThreadLocalRecyclableFactory;
 import org.jactr.core.utils.recyclable.RecyclableFactory;
+
+/*
+ * default logging
+ */
+ 
+import org.slf4j.LoggerFactory;
 
 public class MessageBuilderFactory
 {
   /**
    * Logger definition
    */
-  static private final transient Log             LOGGER   = LogFactory
-                                                              .getLog(MessageBuilderFactory.class);
+  static private final transient org.slf4j.Logger   LOGGER   = LoggerFactory
+                                                              .getLogger(MessageBuilderFactory.class);
 
   static private RecyclableFactory<IMessageBuilder> _factory = new AbstractThreadLocalRecyclableFactory<IMessageBuilder>() {
 

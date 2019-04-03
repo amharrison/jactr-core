@@ -6,8 +6,8 @@ package org.jactr.extensions.cached.procedural.listeners;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.event.ActivationBufferEvent;
 import org.jactr.core.buffer.event.ActivationBufferListenerAdaptor;
@@ -19,8 +19,8 @@ public class BufferListener extends ActivationBufferListenerAdaptor
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(BufferListener.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(BufferListener.class);
 
   private final IActivationBuffer    _buffer;
 

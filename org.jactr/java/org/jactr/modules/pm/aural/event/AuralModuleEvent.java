@@ -13,8 +13,8 @@
  */
 package org.jactr.modules.pm.aural.event;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.event.AbstractACTREvent;
 import org.jactr.core.event.IParameterEvent;
@@ -30,7 +30,7 @@ public class AuralModuleEvent extends
   /**
    * logger definition
    */
-  static public final Log LOGGER = LogFactory.getLog(AuralModuleEvent.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AuralModuleEvent.class);
 
   static public enum Type {
     ENCODED, SEARCHED, RESET, PARAMETER_CHANGED

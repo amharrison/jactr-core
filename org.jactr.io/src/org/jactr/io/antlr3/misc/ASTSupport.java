@@ -22,8 +22,8 @@ import java.util.Map;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.antlr.runtime.tree.Tree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ILogicalSlot;
 import org.jactr.core.utils.parameter.IParameterized;
@@ -45,7 +45,7 @@ public class ASTSupport
   /**
    * logger definition
    */
-  static public final Log LOGGER = LogFactory.getLog(ASTSupport.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ASTSupport.class);
 
   CommonTreeAdaptor       _treeAdaptor;
 

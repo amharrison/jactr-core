@@ -20,8 +20,8 @@ import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.net.session.ISessionInfo;
 import org.jactr.tools.async.common.NetworkedEndpoint;
 import org.jactr.tools.async.iterative.listener.NetworkedIterativeRunListener;
@@ -40,8 +40,8 @@ public class IterativeRunTracker extends NetworkedEndpoint
   /**
    * logger definition
    */
-  static private final Log  LOGGER               = LogFactory
-                                                     .getLog(IterativeRunTracker.class);
+  static private final transient org.slf4j.Logger  LOGGER               = LoggerFactory
+                                                     .getLogger(IterativeRunTracker.class);
 
   private int               _totalIterations;
 

@@ -17,8 +17,8 @@ import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.io.parser.IModelParser;
 
 /**
@@ -32,8 +32,8 @@ public class DetailedCommonTreeAdaptor extends CommonTreeAdaptor
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory
-                                      .getLog(DetailedCommonTreeAdaptor.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+                                      .getLogger(DetailedCommonTreeAdaptor.class);
 
   IModelParser             _modelParser;
 

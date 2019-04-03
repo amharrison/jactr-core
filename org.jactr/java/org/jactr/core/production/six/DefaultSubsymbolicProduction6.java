@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.procedural.six.learning.DefaultProceduralLearningModule6;
 import org.jactr.core.production.IProduction;
@@ -22,8 +22,8 @@ public class DefaultSubsymbolicProduction6 extends BasicSubsymbolicProduction
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER           = LogFactory
-                                                          .getLog(DefaultSubsymbolicProduction6.class);
+  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
+                                                          .getLogger(DefaultSubsymbolicProduction6.class);
 
   private double                     _reward          = Double.NaN;
 

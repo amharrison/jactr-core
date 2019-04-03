@@ -17,8 +17,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.Future;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.model.IModel;
@@ -37,8 +37,8 @@ public class DeclarativeModuleTest extends TestCase
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory
-                                      .getLog(DeclarativeModuleTest.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+                                      .getLogger(DeclarativeModuleTest.class);
 
   private IModel           _model;
 

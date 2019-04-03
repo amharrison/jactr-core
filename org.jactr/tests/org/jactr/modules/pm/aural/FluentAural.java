@@ -3,11 +3,6 @@ package org.jactr.modules.pm.aural;
 import java.util.Map;
 import java.util.function.Supplier;
 
-/*
- * default logging
- */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.model.IModel;
@@ -20,13 +15,19 @@ import org.jactr.fluent.FluentProduction;
 import org.jactr.modules.pm.aural.six.DefaultAuralModule6;
 import org.jactr.modules.pm.visual.six.DefaultVisualModule6;
 
+/*
+ * default logging
+ */
+ 
+import org.slf4j.LoggerFactory;
+
 public class FluentAural implements Supplier<IModel>
 {
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-      .getLog(FluentAural.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(FluentAural.class);
 
   @Override
   public IModel get()
@@ -210,14 +211,14 @@ public class FluentAural implements Supplier<IModel>
       }
       catch (Exception e2)
       {
-        LOGGER.error(e2);
+        LOGGER.error("", e2);
         e2.printStackTrace();
       }
       return model;
     }
     catch (Exception e)
     {
-      LOGGER.error(e);
+      LOGGER.error("", e);
       throw new RuntimeException(e);
     }
   }

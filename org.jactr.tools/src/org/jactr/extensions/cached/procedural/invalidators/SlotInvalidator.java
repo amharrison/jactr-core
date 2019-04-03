@@ -3,8 +3,8 @@ package org.jactr.extensions.cached.procedural.invalidators;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.production.IProduction;
 import org.jactr.core.slot.INotifyingSlotContainer;
 import org.jactr.extensions.cached.procedural.internal.InstantiationCache;
@@ -15,8 +15,8 @@ public class SlotInvalidator extends AbstractInvalidator
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(SlotInvalidator.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(SlotInvalidator.class);
   
   private final INotifyingSlotContainer _container;
   private final String _slotName;

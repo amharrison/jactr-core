@@ -7,16 +7,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Future;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 public class FutureManager<K, C>
 {
   /**
    * Logger definition
    */
-  static private final transient Log   LOGGER = LogFactory
-                                                  .getLog(FutureManager.class);
+  static private final transient org.slf4j.Logger     LOGGER = LoggerFactory
+                                                  .getLogger(FutureManager.class);
 
   final private ConcurrentMap<K, ListenableFuture<C>> _map;
 

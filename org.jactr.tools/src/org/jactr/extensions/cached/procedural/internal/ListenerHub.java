@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.model.IModel;
 import org.jactr.core.model.event.IModelListener;
@@ -19,6 +17,7 @@ import org.jactr.core.model.event.ModelListenerAdaptor;
 import org.jactr.core.slot.INotifyingSlotContainer;
 import org.jactr.extensions.cached.procedural.listeners.BufferListener;
 import org.jactr.extensions.cached.procedural.listeners.SlotListener;
+import org.slf4j.LoggerFactory;
 
 /**
  * central point for the listeners used to track the buffers and the chunk
@@ -31,8 +30,8 @@ public class ListenerHub
   /**
    * Logger definition
    */
-  static private final transient Log                       LOGGER = LogFactory
-                                                                      .getLog(ListenerHub.class);
+  static private final transient org.slf4j.Logger          LOGGER = LoggerFactory
+                                                                      .getLogger(ListenerHub.class);
 
   private final Map<String, BufferListener>                _bufferListeners;
 

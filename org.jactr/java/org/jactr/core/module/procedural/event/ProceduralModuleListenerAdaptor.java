@@ -13,8 +13,8 @@
  */
 package org.jactr.core.module.procedural.event;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.event.IParameterEvent;
 /**
  * @author developer
@@ -26,8 +26,8 @@ public class ProceduralModuleListenerAdaptor implements
   /**
    logger definition
    */
-  static private final Log LOGGER = LogFactory
-                                      .getLog(ProceduralModuleListenerAdaptor.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+                                      .getLogger(ProceduralModuleListenerAdaptor.class);
 
   /** 
    * @see org.jactr.core.module.procedural.event.IProceduralModuleListener#conflictSetAssembled(org.jactr.core.module.procedural.event.ProceduralModuleEvent)

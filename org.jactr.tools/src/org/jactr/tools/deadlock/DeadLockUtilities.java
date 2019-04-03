@@ -13,8 +13,8 @@ import java.util.Arrays;
 
 import javax.management.MBeanServer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.time.impl.ClockInterrogator;
 import org.commonreality.util.LockUtilities;
 
@@ -23,8 +23,8 @@ public class DeadLockUtilities
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(DeadLockUtilities.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DeadLockUtilities.class);
 
   /**
    * Attempt to dump the heap to file

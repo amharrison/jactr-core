@@ -13,8 +13,8 @@
  */
 package org.jactr.core.chunktype.event;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.event.AbstractACTREvent;
@@ -29,7 +29,7 @@ public class ChunkTypeEvent extends
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory.getLog(ChunkTypeEvent.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ChunkTypeEvent.class);
 
   static public enum Type {
     ENCODED, SLOT_ADDED, SLOT_REMOVED, SLOT_CHANGED, PARAMETER_CHANGED, CHUNK_ADDED, CHILD_ADDED

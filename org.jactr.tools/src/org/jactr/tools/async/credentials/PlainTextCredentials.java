@@ -15,8 +15,8 @@ package org.jactr.tools.async.credentials;
 
 import java.io.Serializable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 /**
  * @author developer
@@ -31,8 +31,8 @@ public class PlainTextCredentials implements ICredentials, Serializable
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory
-                                      .getLog(PlainTextCredentials.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+                                      .getLogger(PlainTextCredentials.class);
 
   private String           _user;
 

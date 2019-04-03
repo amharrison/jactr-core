@@ -15,8 +15,6 @@ package org.jactr.core.module.retrieval.time;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.five.ISubsymbolicChunk5;
 import org.jactr.core.logging.Logger;
@@ -29,6 +27,7 @@ import org.jactr.core.module.retrieval.six.DefaultRetrievalModule6;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.utils.collections.FastListFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * 4.0 retrieval time equation. Added an override system parameter to deal with
@@ -46,8 +45,8 @@ import org.jactr.core.utils.collections.FastListFactory;
 public class DefaultRetrievalTimeEquation implements IRetrievalTimeEquation
 {
 
-  private static transient Log LOGGER                      = LogFactory
-                                                               .getLog(DefaultRetrievalTimeEquation.class
+  private static transient org.slf4j.Logger LOGGER                      = LoggerFactory
+                                                               .getLogger(DefaultRetrievalTimeEquation.class
                                                                    .getName());
 
   IRetrievalModule4            _retrievalModule;
@@ -131,7 +130,7 @@ public class DefaultRetrievalTimeEquation implements IRetrievalTimeEquation
               "since retrieval threshold is not active, retrieval errors can take an infinite time. Returning in ");
           msg.append(retrievalTime).append("s instead.");
 
-          if (LOGGER.isWarnEnabled()) LOGGER.warn(msg);
+          if (LOGGER.isWarnEnabled()) LOGGER.warn(msg.toString());
           msg.insert(0, "Warning ");
           if (Logger.hasLoggers(_retrievalModule.getModel()))
             Logger.log(_retrievalModule.getModel(), Logger.Stream.RETRIEVAL,

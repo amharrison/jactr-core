@@ -3,8 +3,8 @@ package org.jactr.tools.async.message.command.breakpoint;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.async.message.BaseMessage;
 
 public class ProductionCommand extends BaseMessage implements
@@ -17,8 +17,8 @@ public class ProductionCommand extends BaseMessage implements
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ProductionCommand.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ProductionCommand.class);
 
   private final Action _action;
   private final String _modelName;

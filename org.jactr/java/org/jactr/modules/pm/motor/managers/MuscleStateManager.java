@@ -7,8 +7,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.identifier.IIdentifier;
 import org.commonreality.modalities.motor.MotorConstants;
@@ -21,14 +19,15 @@ import org.commonreality.object.manager.event.IObjectEvent;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.modules.pm.motor.IMotorModule;
 import org.jactr.modules.pm.motor.event.MotorModuleEvent;
+import org.slf4j.LoggerFactory;
 
 public class MuscleStateManager implements IEfferentListener
 {
   /**
    * Logger definition
    */
-  static private final transient Log          LOGGER = LogFactory
-                                                         .getLog(MuscleStateManager.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                         .getLogger(MuscleStateManager.class);
 
   final private IMotorModule                  _motor;
 

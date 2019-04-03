@@ -1,7 +1,7 @@
 package org.jactr.core.module.declarative.search.filter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.ISubsymbolicChunk;
 import org.jactr.core.chunk.five.ISubsymbolicChunk5;
@@ -22,8 +22,8 @@ public class PartialMatchActivationFilter implements ILoggedChunkFilter
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER                = LogFactory
-                                                               .getLog(PartialMatchActivationFilter.class);
+  static private final transient org.slf4j.Logger LOGGER                = LoggerFactory
+                                                               .getLogger(PartialMatchActivationFilter.class);
 
   private final double               _activationThreshold;
 

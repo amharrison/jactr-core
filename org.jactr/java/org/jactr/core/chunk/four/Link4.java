@@ -16,13 +16,12 @@ package org.jactr.core.chunk.four;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.link.AbstractAssociativeLink;
 import org.jactr.core.chunk.link.IAssociativeLink;
 import org.jactr.core.chunk.link.IAssociativeLinkEquation;
 import org.jactr.core.utils.parameter.ParameterHandler;
+import org.slf4j.LoggerFactory;
 
 /**
  * A Link represents a subsymbolic associative link between two chunks J and I.
@@ -46,7 +45,8 @@ public class Link4 extends AbstractAssociativeLink
 
   static public final String       FNICJ_PARAM = "FNiCj";
 
-  private static transient Log     LOGGER      = LogFactory.getLog(Link4.class
+  private static transient org.slf4j.Logger LOGGER      = LoggerFactory
+      .getLogger(Link4.class
                                                    .getName());
 
   /**

@@ -5,8 +5,8 @@ import java.util.function.Consumer;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.slot.DefaultConditionalSlot;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ISlot;
@@ -24,8 +24,8 @@ public class ConditionalSlotBuilder<R>
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER            = LogFactory
-      .getLog(ConditionalSlotBuilder.class);
+  static private final transient org.slf4j.Logger LOGGER            = LoggerFactory
+      .getLogger(ConditionalSlotBuilder.class);
 
   private String                     _currentSlotName;
 

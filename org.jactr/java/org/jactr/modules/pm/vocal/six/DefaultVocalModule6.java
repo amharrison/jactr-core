@@ -6,8 +6,8 @@ package org.jactr.modules.pm.vocal.six;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.utils.parameter.NumericParameterHandler;
 import org.jactr.core.utils.parameter.ParameterHandler;
 import org.jactr.modules.pm.vocal.AbstractVocalModule;
@@ -21,8 +21,8 @@ public class DefaultVocalModule6 extends AbstractVocalModule
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER                           = LogFactory
-                                                                          .getLog(DefaultVocalModule6.class);
+  static private final transient org.slf4j.Logger LOGGER                           = LoggerFactory
+                                                                          .getLogger(DefaultVocalModule6.class);
 
   static public final String         SYLLABLE_RATE_PARAM              = "SyllableRate";
 

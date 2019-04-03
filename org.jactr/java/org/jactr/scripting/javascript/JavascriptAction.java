@@ -10,8 +10,8 @@ import javax.script.ScriptException;
  * default logging
  */
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.CannotInstantiateException;
 import org.jactr.core.production.IInstantiation;
@@ -27,8 +27,8 @@ public class JavascriptAction implements IActionScript
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(JavascriptAction.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(JavascriptAction.class);
 
   private final IScriptableFactory   _factory;
 

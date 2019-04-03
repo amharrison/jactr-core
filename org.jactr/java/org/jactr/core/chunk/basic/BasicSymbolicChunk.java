@@ -15,8 +15,6 @@ package org.jactr.core.chunk.basic;
 
 import java.util.concurrent.locks.Lock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.ISymbolicChunk;
 import org.jactr.core.chunk.IllegalChunkStateException;
@@ -27,6 +25,7 @@ import org.jactr.core.slot.IMutableSlot;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.slot.NotifyingSlotContainer;
 import org.jactr.core.utils.IAdaptable;
+import org.slf4j.LoggerFactory;
 
 /**
  * default symbolic chunk implementation
@@ -38,8 +37,8 @@ public class BasicSymbolicChunk extends NotifyingSlotContainer implements
     ISymbolicChunk, IAdaptable
 {
 
-  private static transient Log     LOGGER      = LogFactory
-                                                   .getLog(BasicSymbolicChunk.class
+  private static transient org.slf4j.Logger LOGGER      = LoggerFactory
+                                                   .getLogger(BasicSymbolicChunk.class
                                                        .getName());
 
   protected IChunkType             _chunkType;

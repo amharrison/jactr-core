@@ -6,8 +6,8 @@ package org.jactr.core.module.procedural.six.learning;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.extensions.IExtension;
 import org.jactr.core.model.IModel;
@@ -22,8 +22,8 @@ public class UtilityNoiseLearningExtension implements IExtension,
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER                            = LogFactory
-                                                                           .getLog(UtilityNoiseLearningExtension.class);
+  static private final transient org.slf4j.Logger LOGGER                            = LoggerFactory
+                                                                           .getLogger(UtilityNoiseLearningExtension.class);
 
   static public final String         UTILITY_NOISE_LEARNING_RATE_PARAM = "UtilityNoiseLearningRate";
 

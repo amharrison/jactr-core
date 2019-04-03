@@ -9,8 +9,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.six.BasicBuffer6;
 import org.jactr.core.module.AbstractModule;
@@ -25,8 +25,8 @@ public class GeneralBufferModule extends AbstractModule implements
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER               = LogFactory
-                                                              .getLog(GeneralBufferModule.class);
+  static private final transient org.slf4j.Logger LOGGER               = LoggerFactory
+                                                              .getLogger(GeneralBufferModule.class);
 
   private Set<String>                _buffersToContribute = new HashSet<String>();
 

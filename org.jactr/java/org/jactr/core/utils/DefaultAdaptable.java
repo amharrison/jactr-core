@@ -7,8 +7,7 @@ import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * default impl of IAdaptable that will handle the object's class heirarchhy,
@@ -22,8 +21,8 @@ public class DefaultAdaptable implements IAdaptable
   /**
    * Logger definition
    */
-  static private final transient Log             LOGGER    = LogFactory
-                                                               .getLog(DefaultAdaptable.class);
+  static private final transient org.slf4j.Logger LOGGER    = LoggerFactory
+                                                               .getLogger(DefaultAdaptable.class);
 
   final private Map<Class<?>, IAdaptableFactory> _adapters = new HashMap<Class<?>, IAdaptableFactory>();
 

@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.module.AbstractModule;
 import org.jactr.core.module.random.IRandomModule;
 import org.jactr.core.utils.parameter.IParameterized;
@@ -37,8 +37,8 @@ public class DefaultRandomModule extends AbstractModule implements
   /**
    * logger definition
    */
-  static private final Log     LOGGER   = LogFactory
-                                            .getLog(DefaultRandomModule.class);
+  static private final transient org.slf4j.Logger     LOGGER   = LoggerFactory
+                                            .getLogger(DefaultRandomModule.class);
 
   static private IRandomModule _default = new DefaultRandomModule();
 

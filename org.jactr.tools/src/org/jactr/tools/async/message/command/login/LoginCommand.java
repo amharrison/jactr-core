@@ -15,8 +15,8 @@ package org.jactr.tools.async.message.command.login;
 
 import java.io.Serializable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.async.credentials.ICredentials;
 import org.jactr.tools.async.message.BaseMessage;
 import org.jactr.tools.async.message.command.ICommand;
@@ -34,8 +34,8 @@ public class LoginCommand extends BaseMessage implements ICommand, Serializable
   /**
    logger definition
    */
-  static transient private final Log LOGGER           = LogFactory
-                                                          .getLog(LoginCommand.class);
+  static transient private final org.slf4j.Logger LOGGER           = LoggerFactory
+                                                          .getLogger(LoginCommand.class);
 
   ICredentials _credentials;
   

@@ -3,8 +3,8 @@ package org.jactr.core.production.condition.match;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.production.condition.ICondition;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ILogicalSlot;
@@ -21,8 +21,8 @@ public class LogicMatchFailure extends AbstractMatchFailure
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER                       = LogFactory
-                                                                      .getLog(LogicMatchFailure.class);
+  static private final transient org.slf4j.Logger LOGGER                       = LoggerFactory
+                                                                      .getLogger(LogicMatchFailure.class);
 
   private final IUniqueSlotContainer _container;
 

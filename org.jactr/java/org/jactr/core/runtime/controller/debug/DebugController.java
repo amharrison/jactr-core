@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.event.ACTREventDispatcher;
 import org.jactr.core.model.IModel;
@@ -62,8 +62,8 @@ public class DebugController extends DefaultController implements
   /**
    * logger definition
    */
-  static private final Log                                     LOGGER = LogFactory
-                                                                          .getLog(DebugController.class);
+  static private final transient org.slf4j.Logger                                     LOGGER = LoggerFactory
+                                                                          .getLogger(DebugController.class);
 
   private Map<IModel, Map<BreakpointType, Collection<Object>>> _breakpoints;
 

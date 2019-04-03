@@ -6,8 +6,8 @@ package org.jactr.core.production.request;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.misc.StatusBufferUniqueSlotContainer;
 import org.jactr.core.buffer.six.IStatusBuffer;
@@ -31,8 +31,8 @@ public class ChunkTypeRequest extends SlotBasedRequest
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER    = LogFactory
-      .getLog(ChunkTypeRequest.class);
+  static private final transient org.slf4j.Logger LOGGER    = LoggerFactory
+      .getLogger(ChunkTypeRequest.class);
 
   private IChunkType                 _chunkType;
 

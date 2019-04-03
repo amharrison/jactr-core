@@ -3,8 +3,8 @@ package org.jactr.io.cl;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 /**
  * class loader that first uses its own class loader (and probably the
@@ -18,7 +18,7 @@ public class Loader
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory.getLog(Loader.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Loader.class);
 
   static public Class<?> getClass(String className, ClassLoader optionalLoader)
       throws ClassNotFoundException

@@ -3,8 +3,8 @@ package org.jactr.core.production.condition.match;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.production.condition.ICondition;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ISlot;
@@ -20,8 +20,8 @@ public class SlotMatchFailure extends AbstractMatchFailure
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER                       = LogFactory
-                                                                      .getLog(SlotMatchFailure.class);
+  static private final transient org.slf4j.Logger LOGGER                       = LoggerFactory
+                                                                      .getLogger(SlotMatchFailure.class);
 
   static private final String        NO_SLOT_IN_CONTAINER_MESSAGE = "%s does not exist in %s";
 

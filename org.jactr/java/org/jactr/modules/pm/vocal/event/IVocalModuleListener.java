@@ -5,8 +5,8 @@ package org.jactr.modules.pm.vocal.event;
  */
 import java.util.EventListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public interface IVocalModuleListener extends EventListener
 {

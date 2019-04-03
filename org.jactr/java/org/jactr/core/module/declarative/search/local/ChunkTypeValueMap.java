@@ -13,8 +13,8 @@
  */
 package org.jactr.core.module.declarative.search.local;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.module.declarative.search.map.AbstractTypeValueMap;
 import org.jactr.core.module.declarative.search.map.DefaultValueMap;
@@ -24,8 +24,8 @@ import org.jactr.core.module.declarative.search.map.IValueMap;
 public class ChunkTypeValueMap<I> extends AbstractTypeValueMap<IChunk, I>
     implements ITypeValueMap<IChunk, I>
 {
-  static public final Log            LOGGER    = LogFactory
-                                                   .getLog(ChunkTypeValueMap.class);
+  static public final transient org.slf4j.Logger            LOGGER    = LoggerFactory
+                                                   .getLogger(ChunkTypeValueMap.class);
 
   private DefaultValueMap<IChunk, I> _valueMap = new DefaultValueMap<IChunk, I>();
 

@@ -8,8 +8,8 @@ import java.util.Collection;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.time.IClock;
 import org.jactr.tools.experiment.IExperiment;
 import org.jactr.tools.experiment.actions.IAction;
@@ -25,8 +25,8 @@ public class TimeTrigger implements ITrigger
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER        = LogFactory
-                                                       .getLog(TimeTrigger.class);
+  static private final transient org.slf4j.Logger LOGGER        = LoggerFactory
+                                                       .getLogger(TimeTrigger.class);
 
   static public final String         RELATIVE_ATTR = "relative";
 

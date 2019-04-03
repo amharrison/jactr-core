@@ -3,8 +3,8 @@ package org.jactr.tools.instantiation;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.instrument.IInstrument;
 
@@ -14,8 +14,8 @@ public class InstantiationTracker implements IInstrument
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(InstantiationTracker.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(InstantiationTracker.class);
 
   public void initialize()
   {

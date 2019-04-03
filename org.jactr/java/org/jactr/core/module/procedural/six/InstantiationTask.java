@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.logging.Logger;
@@ -29,6 +27,7 @@ import org.jactr.core.production.condition.QueryCondition;
 import org.jactr.core.production.six.ISubsymbolicProduction6;
 import org.jactr.core.utils.collections.FastCollectionFactory;
 import org.jactr.core.utils.collections.FastListFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * delegate task to actually do the instantiation and evaluation of the
@@ -42,8 +41,8 @@ public class InstantiationTask implements Callable<Collection<IInstantiation>>
   /**
    * Logger definition
    */
-  static private final transient Log    LOGGER = LogFactory
-                                                   .getLog(InstantiationTask.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                   .getLogger(InstantiationTask.class);
 
   private final List<IProduction>       _productionsToInstantiate;
 

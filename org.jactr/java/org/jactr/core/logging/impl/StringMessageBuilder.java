@@ -3,8 +3,8 @@ package org.jactr.core.logging.impl;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.logging.IMessageBuilder;
 
 public class StringMessageBuilder implements IMessageBuilder
@@ -12,8 +12,8 @@ public class StringMessageBuilder implements IMessageBuilder
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(StringMessageBuilder.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(StringMessageBuilder.class);
 
   private StringBuilder              _internal = new StringBuilder();
 

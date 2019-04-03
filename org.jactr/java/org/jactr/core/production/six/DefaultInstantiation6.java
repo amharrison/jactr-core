@@ -14,8 +14,8 @@ package org.jactr.core.production.six;
 
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.CannotInstantiateException;
 import org.jactr.core.production.ISubsymbolicProduction;
@@ -39,8 +39,8 @@ import org.jactr.core.production.condition.ICondition;
 public class DefaultInstantiation6 extends AbstractInstantiation
 {
 
-  private static transient Log LOGGER = LogFactory
-                                          .getLog(DefaultInstantiation6.class
+  private static transient org.slf4j.Logger LOGGER = LoggerFactory
+                                          .getLogger(DefaultInstantiation6.class
                                               .getName());
 
   public DefaultInstantiation6(AbstractProduction parent,

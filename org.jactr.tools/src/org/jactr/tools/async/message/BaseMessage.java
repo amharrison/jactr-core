@@ -15,8 +15,8 @@ package org.jactr.tools.async.message;
 
 import java.io.Serializable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 /**
  * @author developer
  *
@@ -31,8 +31,8 @@ public class BaseMessage implements IMessage, Serializable
   /**
    logger definition
    */
-  static private final transient Log LOGGER           = LogFactory
-                                                          .getLog(BaseMessage.class);
+  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
+                                                          .getLogger(BaseMessage.class);
 
   static private transient long      LAST_ID          = 0;
   

@@ -13,8 +13,8 @@
  */
 package org.jactr.tools.tracer.listeners;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.event.IACTREvent;
 import org.jactr.tools.tracer.ITraceSink;
 import org.jactr.tools.tracer.transformer.IEventTransformer;
@@ -30,8 +30,8 @@ public abstract class BaseTraceListener implements ITraceListener
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(BaseTraceListener.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(BaseTraceListener.class);
 
   ITraceSink                         _sink;
 

@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.ICapacityBuffer;
 import org.jactr.core.buffer.IllegalActivationBufferStateException;
 import org.jactr.core.chunk.IChunk;
@@ -21,6 +19,7 @@ import org.jactr.core.logging.impl.MessageBuilderFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.IModule;
 import org.jactr.core.runtime.ACTRRuntime;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractCapacityBuffer6 extends
     AbstractRequestableBuffer6 implements ICapacityBuffer
@@ -29,8 +28,8 @@ public abstract class AbstractCapacityBuffer6 extends
   /**
    * Logger definition
    */
-  static private transient Log            LOGGER       = LogFactory
-                                                           .getLog(AbstractCapacityBuffer6.class);
+  static private transient org.slf4j.Logger LOGGER       = LoggerFactory
+                                                           .getLogger(AbstractCapacityBuffer6.class);
 
   private boolean                         _initialized = false;
 

@@ -6,20 +6,19 @@ package org.jactr.tools.experiment.actions.common;
 
 import java.util.function.Consumer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.tools.experiment.IExperiment;
 import org.jactr.tools.experiment.actions.IAction;
 import org.jactr.tools.experiment.impl.IVariableContext;
 import org.jactr.tools.experiment.impl.VariableResolver;
+import org.slf4j.LoggerFactory;
 
 public class LogAction implements IAction
 {
   /**
    * Logger definition
    */
-  static private final transient Log   LOGGER    = LogFactory
-                                                     .getLog(LogAction.class);
+  static private final transient org.slf4j.Logger LOGGER    = LoggerFactory
+                                                     .getLogger(LogAction.class);
 
   private final String                 _message;
 

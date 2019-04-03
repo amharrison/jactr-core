@@ -13,14 +13,14 @@
  */
 package org.jactr.core.module.declarative.six;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 public class Pair
 {
   /**
    logger definition
    */
-  static private final Log LOGGER = LogFactory.getLog(Pair.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Pair.class);
 
   private Object _one;
   private Object _two;

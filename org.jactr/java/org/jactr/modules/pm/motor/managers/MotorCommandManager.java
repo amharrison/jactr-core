@@ -10,8 +10,6 @@ import java.util.TreeMap;
 
 import javax.naming.OperationNotSupportedException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.efferent.IEfferentCommand;
 import org.commonreality.identifier.IIdentifier;
 import org.commonreality.modalities.motor.MotorUtilities;
@@ -39,14 +37,15 @@ import org.jactr.modules.pm.motor.buffer.processor.MotorRequestDelegate;
 import org.jactr.modules.pm.motor.command.IMovement;
 import org.jactr.modules.pm.motor.command.IMovement.State;
 import org.jactr.modules.pm.motor.event.MotorModuleEvent;
+import org.slf4j.LoggerFactory;
 
 public class MotorCommandManager extends EfferentCommandManager<MovementCommand>
 {
   /**
    * Logger definition
    */
-  static private final transient Log        LOGGER       = LogFactory
-      .getLog(MotorCommandManager.class);
+  static private final transient org.slf4j.Logger LOGGER       = LoggerFactory
+      .getLogger(MotorCommandManager.class);
 
   static private final String               PREPARE_ONLY = ":prepare-only";
 

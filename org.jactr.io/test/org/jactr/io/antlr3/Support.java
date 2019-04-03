@@ -14,8 +14,8 @@
 package org.jactr.io.antlr3;
 
 import org.antlr.runtime.tree.Tree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 
 public class Support
@@ -23,7 +23,7 @@ public class Support
   /**
    * logger definition
    */
-  static public final Log LOGGER = LogFactory.getLog(Support.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Support.class);
 
   static public String outputTree(Tree tree)
   {

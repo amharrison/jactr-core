@@ -16,8 +16,8 @@ package org.jactr.tools.tracer.transformer.buffer;
 import java.io.Serializable;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.event.ActivationBufferEvent;
 import org.jactr.tools.tracer.transformer.AbstractTransformedEvent;
 
@@ -35,8 +35,8 @@ public class TransformedBufferEvent extends AbstractTransformedEvent implements
   /**
    * logger definition
    */
-  static private final Log           LOGGER           = LogFactory
-                                                          .getLog(TransformedBufferEvent.class);
+  static private final transient org.slf4j.Logger           LOGGER           = LoggerFactory
+                                                          .getLogger(TransformedBufferEvent.class);
 
   private ActivationBufferEvent.Type _type;
 

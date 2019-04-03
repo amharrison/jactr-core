@@ -3,8 +3,8 @@ package org.jactr.modules.pm.visual.memory.impl.encoder;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.object.IAfferentObject;
 import org.commonreality.object.UnknownPropertyNameException;
 import org.jactr.core.chunk.IChunk;
@@ -19,8 +19,8 @@ public class BasicTextEncoder extends AbstractVisualEncoder
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(BasicTextEncoder.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(BasicTextEncoder.class);
 
   private final String               _commonTypeName;
 

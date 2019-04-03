@@ -6,8 +6,8 @@ package org.jactr.core.module.declarative.search.local;
 import java.util.Comparator;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.slot.ISlot;
 
 public class PatternComparator implements Comparator<ISlot>
@@ -15,8 +15,8 @@ public class PatternComparator implements Comparator<ISlot>
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(PatternComparator.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(PatternComparator.class);
 
   private final Map<ISlot, Long>     _sizeMap;
 

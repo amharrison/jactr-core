@@ -16,8 +16,8 @@ package org.jactr.io.antlr3.misc;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.ISubsymbolicChunk;
 import org.jactr.core.chunk.five.ISubsymbolicChunk5;
 import org.jactr.core.chunk.four.ISubsymbolicChunk4;
@@ -38,8 +38,8 @@ public class ParameterMap
   /**
    * logger definition
    */
-  static public final Log            LOGGER       = LogFactory
-                                                      .getLog(ParameterMap.class);
+  static public final transient org.slf4j.Logger            LOGGER       = LoggerFactory
+                                                      .getLogger(ParameterMap.class);
 
   static private Map<String, Pair>   _lispToJactr = new HashMap<String, Pair>();
 

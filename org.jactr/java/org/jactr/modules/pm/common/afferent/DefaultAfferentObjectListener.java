@@ -22,8 +22,6 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.identifier.IIdentifier;
 import org.commonreality.object.IAfferentObject;
@@ -38,6 +36,7 @@ import org.eclipse.collections.impl.factory.Sets;
 import org.jactr.core.utils.collections.CachedCollection;
 import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.core.utils.collections.FastMapFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * default afferent listener that instead of routing events directly, queues
@@ -52,8 +51,8 @@ public class DefaultAfferentObjectListener implements IAfferentListener,
     Runnable
 {
 
-  static private transient Log                LOGGER          = LogFactory
-                                                                  .getLog(DefaultAfferentObjectListener.class);
+  static private transient org.slf4j.Logger   LOGGER          = LoggerFactory
+                                                                  .getLogger(DefaultAfferentObjectListener.class);
 
   private Executor                            _executor;
 

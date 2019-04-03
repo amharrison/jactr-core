@@ -18,8 +18,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.ISymbolicChunk;
 import org.jactr.core.chunk.event.ChunkEvent;
@@ -34,6 +32,7 @@ import org.jactr.core.utils.parameter.ACTRParameterHandler;
 import org.jactr.core.utils.parameter.CollectionParameterHandler;
 import org.jactr.core.utils.parameter.ParameterHandler;
 import org.jactr.core.utils.parameter.SimilarityParameterHandler;
+import org.slf4j.LoggerFactory;
 
 /**
  * default implementation of ISubsymbolicChunk
@@ -53,8 +52,8 @@ public class DefaultSubsymbolicChunk5 extends DefaultSubsymbolicChunk4
    */
   public final static String                          SIMILARITY_ACTIVATION = "SimilarityActivation";
 
-  private static transient Log                        LOGGER                = LogFactory
-                                                                                .getLog(DefaultSubsymbolicChunk5.class
+  private static transient org.slf4j.Logger           LOGGER                = LoggerFactory
+                                                                                .getLogger(DefaultSubsymbolicChunk5.class
                                                                                     .getName());
 
   protected double                                    _similarityActivation;

@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.utils.IInstallable;
 import org.jactr.io.IOUtilities;
 import org.jactr.io.parser.IParserImportDelegate;
@@ -44,8 +44,8 @@ public class BasicASTParticipant implements IASTParticipant
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(BasicASTParticipant.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(BasicASTParticipant.class);
 
   private URL                        _modelDescriptorURL;
 

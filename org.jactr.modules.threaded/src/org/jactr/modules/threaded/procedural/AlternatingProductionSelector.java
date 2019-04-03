@@ -5,8 +5,8 @@ package org.jactr.modules.threaded.procedural;
  */
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.module.procedural.six.DefaultProductionSelector;
 import org.jactr.core.production.IInstantiation;
@@ -22,8 +22,8 @@ public class AlternatingProductionSelector extends DefaultProductionSelector
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(AlternatingProductionSelector.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(AlternatingProductionSelector.class);
 
   private IChunk                     _previousGoal;
 

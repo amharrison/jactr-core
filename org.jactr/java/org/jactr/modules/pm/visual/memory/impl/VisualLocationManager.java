@@ -10,8 +10,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.slot.BasicSlot;
 import org.jactr.core.slot.ISlot;
@@ -24,8 +24,8 @@ public class VisualLocationManager implements IIndexManager
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(VisualLocationManager.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(VisualLocationManager.class);
 
   private SortedMap<Integer, IChunk> _sparseVisualLocations;
 

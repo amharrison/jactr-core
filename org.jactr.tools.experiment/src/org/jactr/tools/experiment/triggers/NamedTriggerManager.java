@@ -9,18 +9,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.tools.experiment.impl.IVariableContext;
+import org.slf4j.LoggerFactory;
 
 public class NamedTriggerManager
 {
   /**
    * Logger definition
    */
-  static private final transient Log            LOGGER    = LogFactory
-                                                              .getLog(NamedTriggerManager.class);
+  static private final transient org.slf4j.Logger LOGGER    = LoggerFactory
+                                                              .getLogger(NamedTriggerManager.class);
 
   private Map<String, Collection<NamedTrigger>> _triggers = new TreeMap<String, Collection<NamedTrigger>>();
 

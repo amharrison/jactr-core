@@ -5,8 +5,8 @@ package org.jactr.tools.grapher.core.probe;
  */
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.event.IParameterEvent;
 import org.jactr.core.event.IParameterListener;
 import org.jactr.core.model.IModel;
@@ -18,8 +18,8 @@ public class ModelProbe extends AbstractParameterizedProbe<IModel>
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ModelProbe.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ModelProbe.class);
   
   private IParameterListener         _listener;
 

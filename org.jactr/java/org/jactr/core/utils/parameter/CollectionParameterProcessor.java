@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public class CollectionParameterProcessor<T>
     extends ParameterProcessor<Collection<T>>
@@ -18,8 +18,8 @@ public class CollectionParameterProcessor<T>
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-      .getLog(CollectionParameterProcessor.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(CollectionParameterProcessor.class);
 
 
   public CollectionParameterProcessor(String parameterName,

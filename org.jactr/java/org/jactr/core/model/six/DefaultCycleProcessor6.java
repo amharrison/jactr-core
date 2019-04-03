@@ -18,8 +18,8 @@ import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.time.impl.BasicClock;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.model.ICycleProcessor;
@@ -42,8 +42,8 @@ public class DefaultCycleProcessor6 implements ICycleProcessor
   /**
    * logger definition
    */
-  static private final Log     LOGGER                            = LogFactory
-      .getLog(DefaultCycleProcessor6.class);
+  static private final transient org.slf4j.Logger     LOGGER                            = LoggerFactory
+      .getLogger(DefaultCycleProcessor6.class);
 
   private double               _nextPossibleProductionFiringTime = 0;
 

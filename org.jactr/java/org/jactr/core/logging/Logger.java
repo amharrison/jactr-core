@@ -16,12 +16,11 @@ package org.jactr.core.logging;
 import java.util.WeakHashMap;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.event.ACTREventDispatcher;
 import org.jactr.core.logging.impl.MessageBuilderFactory;
 import org.jactr.core.model.IModel;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author developer
@@ -31,7 +30,8 @@ public class Logger
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory.getLog(Logger.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(Logger.class);
 
   static public enum Stream {
     TIME, OUPUT, GOAL, IMAGINAL, RETRIEVAL, PROCEDURAL, DECLARATIVE, BUFFER, EXACT_MATCH, OUTPUT, PARTIAL_MATCH, VISUAL, AURAL, MOTOR, VOCAL, EVENT, EXCEPTION, ACTIVATION

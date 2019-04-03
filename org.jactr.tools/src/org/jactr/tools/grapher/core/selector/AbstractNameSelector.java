@@ -11,21 +11,20 @@ import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.tools.grapher.core.container.IProbeContainer;
 import org.jactr.tools.grapher.core.container.ProbeContainer;
 import org.jactr.tools.grapher.core.probe.IProbe;
 import org.jactr.tools.marker.markerof.IMarkerOf;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractNameSelector<T> implements ISelector<T>
 {
   /**
    * Logger definition
    */
-  static private final transient Log   LOGGER = LogFactory
-                                                  .getLog(AbstractNameSelector.class);
+  static private final transient org.slf4j.Logger LOGGER   = LoggerFactory
+                                                  .getLogger(AbstractNameSelector.class);
 
   private Matcher                      _patternMatcher;
 

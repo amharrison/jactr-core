@@ -3,8 +3,8 @@ package org.jactr.core.module.retrieval.six;
 import java.util.List;
 
 import org.apache.commons.collections.map.LRUMap;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.module.retrieval.IRetrievalModule;
@@ -19,8 +19,8 @@ public class DeclarativeFINSTManager
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER                 = LogFactory
-                                                                .getLog(DeclarativeFINSTManager.class);
+  static private final transient org.slf4j.Logger LOGGER                 = LoggerFactory
+                                                                .getLogger(DeclarativeFINSTManager.class);
 
   static public final String         NUMBER_OF_FINSTS_PARAM = "NumberOfFINSTs";
 

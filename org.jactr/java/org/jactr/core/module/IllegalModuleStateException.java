@@ -13,8 +13,8 @@
  */
 package org.jactr.core.module;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public class IllegalModuleStateException extends RuntimeException
 {
@@ -26,8 +26,8 @@ public class IllegalModuleStateException extends RuntimeException
   /**
    * logger definition
    */
-  static private final Log  LOGGER           = LogFactory
-                                                 .getLog(IllegalModuleStateException.class);
+  static private final transient org.slf4j.Logger  LOGGER           = LoggerFactory
+                                                 .getLogger(IllegalModuleStateException.class);
 
   public IllegalModuleStateException()
   {

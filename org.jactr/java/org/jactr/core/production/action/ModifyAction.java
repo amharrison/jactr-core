@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.logging.Logger;
@@ -31,6 +29,7 @@ import org.jactr.core.slot.DefaultVariableConditionalSlot;
 import org.jactr.core.slot.IMutableSlot;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.utils.StringUtilities;
+import org.slf4j.LoggerFactory;
 
 /**
  * The ModifyAction is used to modify the slot values of a chunk residing within
@@ -45,8 +44,8 @@ public class ModifyAction extends DefaultAction implements IBufferAction,
 {
 
   // logging mechanism
-  private static transient Log     LOGGER = LogFactory
-                                              .getLog(ModifyAction.class
+  private static transient org.slf4j.Logger LOGGER = LoggerFactory
+                                              .getLogger(ModifyAction.class
                                                   .getName());
 
   /**

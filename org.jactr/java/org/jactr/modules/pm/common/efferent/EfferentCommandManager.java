@@ -15,8 +15,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.efferent.IEfferentCommand;
 import org.commonreality.efferent.event.IEfferentCommandListener;
@@ -34,6 +32,7 @@ import org.commonreality.object.manager.event.IObjectEvent;
 import org.eclipse.collections.impl.list.mutable.FastList;
 import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.core.utils.collections.FastSetFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * abstract class used to manage specific efferent commands.Extending this class
@@ -55,8 +54,8 @@ public abstract class EfferentCommandManager<C extends IEfferentCommand>
   /**
    * Logger definition
    */
-  static private final transient Log                          LOGGER             = LogFactory
-                                                                                     .getLog(EfferentCommandManager.class);
+  static private final transient org.slf4j.Logger             LOGGER             = LoggerFactory
+                                                                                     .getLogger(EfferentCommandManager.class);
 
   private IAgent                                              _agent;
 

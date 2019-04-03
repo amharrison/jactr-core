@@ -15,8 +15,8 @@ package org.jactr.core.module.retrieval.buffer;
 
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IllegalActivationBufferStateException;
 import org.jactr.core.buffer.delegate.DefaultDelegatedRequestableBuffer6;
 import org.jactr.core.chunk.IChunk;
@@ -39,8 +39,8 @@ public class DefaultRetrievalBuffer6 extends DefaultDelegatedRequestableBuffer6
   /**
    * logger definition
    */
-  static private final Log           LOGGER = LogFactory
-                                                .getLog(DefaultRetrievalBuffer6.class);
+  static private final transient org.slf4j.Logger           LOGGER = LoggerFactory
+                                                .getLogger(DefaultRetrievalBuffer6.class);
 
   ICompilableContext _compilableContext = new DefaultCompilableContext(false, false, false, true);
 

@@ -19,8 +19,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.time.IClock;
 import org.commonreality.time.impl.BasicClock;
 import org.jactr.core.event.ACTREventDispatcher;
@@ -36,8 +36,8 @@ public class ACTRRuntime
   /**
    * logger definition
    */
-  static public final Log                                LOGGER      = LogFactory
-      .getLog(ACTRRuntime.class);
+  static public final transient org.slf4j.Logger                                LOGGER      = LoggerFactory
+      .getLogger(ACTRRuntime.class);
 
   static private ACTRRuntime                             _instance;
 

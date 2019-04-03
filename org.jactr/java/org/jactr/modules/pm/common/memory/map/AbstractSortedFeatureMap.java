@@ -10,8 +10,6 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.production.request.ChunkTypeRequest;
@@ -19,6 +17,7 @@ import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.utils.collections.FastSetFactory;
 import org.jactr.modules.pm.IPerceptualModule;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractSortedFeatureMap<T> extends AbstractFeatureMap<T>
 {
@@ -26,8 +25,8 @@ public abstract class AbstractSortedFeatureMap<T> extends AbstractFeatureMap<T>
   /**
    * Logger definition
    */
-  static private final transient Log     LOGGER = LogFactory
-                                                    .getLog(AbstractSortedFeatureMap.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                    .getLogger(AbstractSortedFeatureMap.class);
 
   private SortedMap<T, Set<IIdentifier>> _valueMap;
 

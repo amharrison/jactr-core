@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.CannotInstantiateException;
@@ -31,6 +29,7 @@ import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.extensions.cached.procedural.invalidators.BufferInvalidator;
 import org.jactr.extensions.cached.procedural.invalidators.IInvalidator;
 import org.jactr.extensions.cached.procedural.invalidators.SlotInvalidator;
+import org.slf4j.LoggerFactory;
 
 /**
  * stores productions that cannot be instantiated given the current state, the
@@ -43,8 +42,8 @@ public class InstantiationCache
   /**
    * Logger definition
    */
-  static private final transient Log                   LOGGER = LogFactory
-                                                                  .getLog(InstantiationCache.class);
+  static private final transient org.slf4j.Logger      LOGGER = LoggerFactory
+                                                                  .getLogger(InstantiationCache.class);
 
   private Map<IProduction, CannotInstantiateException> _failedProductions;
 

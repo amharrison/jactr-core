@@ -5,8 +5,8 @@ package org.jactr.modules.pm.common.memory.filter;
  */
 import java.util.Comparator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.IConditionalSlot;
 
@@ -15,8 +15,8 @@ public class NumericIndexFilter extends AbstractIndexFilter<Double>
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(NumericIndexFilter.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(NumericIndexFilter.class);
 
   private final String               _slotName;
 

@@ -6,8 +6,8 @@ package org.jactr.tools.itr;
 import java.util.Map;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
 import org.jactr.io2.compilation.ICompilationUnit;
@@ -17,8 +17,8 @@ public class ChunkTypeSlotModifier extends AbstractParameterModifier
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ChunkTypeSlotModifier.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ChunkTypeSlotModifier.class);
 
   static public final String         CHUNK_TYPE = "ChunkType";
 

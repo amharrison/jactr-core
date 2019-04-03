@@ -15,8 +15,8 @@ package org.jactr.core.production.action;
 
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.ISymbolicChunk;
 import org.jactr.core.production.CannotInstantiateException;
@@ -36,7 +36,7 @@ import org.jactr.core.slot.ISlot;
 public abstract class DefaultAction implements IAction
 {
 
-  private static transient Log LOGGER = LogFactory.getLog(DefaultAction.class
+  private static transient org.slf4j.Logger LOGGER = LoggerFactory.getLogger(DefaultAction.class
                                           .getName());
 
   /**

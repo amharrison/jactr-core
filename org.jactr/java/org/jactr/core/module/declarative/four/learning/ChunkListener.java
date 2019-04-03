@@ -13,8 +13,8 @@
  */
 package org.jactr.core.module.declarative.four.learning;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.event.ChunkEvent;
 import org.jactr.core.chunk.event.ChunkListenerAdaptor;
@@ -33,7 +33,7 @@ public class ChunkListener extends ChunkListenerAdaptor
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory.getLog(ChunkListener.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ChunkListener.class);
 
   public ChunkListener()
   {

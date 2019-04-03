@@ -1,7 +1,7 @@
 package org.jactr.modules.threaded.procedural;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.module.procedural.IProductionSelector;
 import org.jactr.core.module.procedural.six.DefaultProceduralModule6;
 
@@ -17,8 +17,8 @@ public class DefaultThreadedProceduralModule6 extends DefaultProceduralModule6
   /**
    * Logger definition
    */
-  static private transient Log LOGGER = LogFactory
-                                          .getLog(DefaultThreadedProceduralModule6.class);
+  static private transient org.slf4j.Logger LOGGER = LoggerFactory
+                                          .getLogger(DefaultThreadedProceduralModule6.class);
 
 
   public DefaultThreadedProceduralModule6()

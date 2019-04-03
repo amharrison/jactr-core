@@ -9,8 +9,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.ISourceActivationSpreader;
 import org.jactr.core.chunk.IChunk;
@@ -23,6 +21,7 @@ import org.jactr.core.logging.Logger;
 import org.jactr.core.logging.Logger.Stream;
 import org.jactr.core.model.IModel;
 import org.jactr.core.utils.collections.FastCollectionFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * default activation spreader. this is not thread safe and assumes that
@@ -36,8 +35,8 @@ public class DefaultSourceActivationSpreader implements
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(DefaultSourceActivationSpreader.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DefaultSourceActivationSpreader.class);
 
   private final IActivationBuffer    _buffer;
 

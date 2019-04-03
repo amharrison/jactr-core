@@ -13,8 +13,8 @@
  */
 package org.jactr.io.antlr3.writer.xml;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.io.generator.CodeGeneratorFactory;
 import org.jactr.io.writer.CodeGeneratorWriter;
 
@@ -26,7 +26,7 @@ public class JACTRModelWriter extends CodeGeneratorWriter
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory.getLog(JACTRModelWriter.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(JACTRModelWriter.class);
 
   /**
    * @param codeGenerator

@@ -13,8 +13,8 @@
  */
 package org.jactr.core.model;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 /**
  * used to force the model to terminate and exit cleanly. primarily used by
@@ -32,8 +32,8 @@ public class ModelTerminatedException extends RuntimeException
   /**
    * logger definition
    */
-  static private final Log  LOGGER           = LogFactory
-                                                 .getLog(ModelTerminatedException.class);
+  static private final transient org.slf4j.Logger  LOGGER           = LoggerFactory
+                                                 .getLogger(ModelTerminatedException.class);
 
   public ModelTerminatedException()
   {

@@ -13,8 +13,8 @@
  */
 package org.jactr.tools.async.controller.handlers;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.net.handler.IMessageHandler;
 import org.commonreality.net.session.ISessionInfo;
 import org.jactr.core.model.IModel;
@@ -34,8 +34,8 @@ public class ModelStateHandler implements IMessageHandler<ModelStateCommand>
   /**
    * logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ModelStateHandler.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ModelStateHandler.class);
 
 
   public ModelStateHandler()

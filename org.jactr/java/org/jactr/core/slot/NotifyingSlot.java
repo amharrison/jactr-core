@@ -13,8 +13,8 @@
  */
 package org.jactr.core.slot;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 /**
  * slot that is aware of its parent container and can pass on change
@@ -27,8 +27,8 @@ public class NotifyingSlot extends DefaultMutableSlot
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(NotifyingSlot.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(NotifyingSlot.class);
 
   private INotifyingSlotContainer    _container;
 

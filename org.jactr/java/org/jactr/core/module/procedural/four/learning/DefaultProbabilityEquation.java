@@ -13,13 +13,13 @@
 
 package org.jactr.core.module.procedural.four.learning;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.procedural.four.IProceduralModule4;
 import org.jactr.core.production.IProduction;
 import org.jactr.core.production.four.ISubsymbolicProduction4;
 import org.jactr.core.utils.references.IReferences;
+import org.slf4j.LoggerFactory;
 
 /**
  * Description of the Class
@@ -30,8 +30,8 @@ import org.jactr.core.utils.references.IReferences;
 public class DefaultProbabilityEquation implements IProbabilityEquation
 {
 
-  static private transient Log       LOGGER   = LogFactory
-                                                  .getLog(IProbabilityEquation.class);
+  static private transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                  .getLogger(IProbabilityEquation.class);
 
 
   IProceduralModule4 _pm4;
@@ -60,7 +60,7 @@ public class DefaultProbabilityEquation implements IProbabilityEquation
      
     
     double prob = 0.0;
-    ISubsymbolicProduction4 ssp = (ISubsymbolicProduction4) prod
+    ISubsymbolicProduction4 ssp = prod
         .getSubsymbolicProduction().getAdapter(ISubsymbolicProduction4.class);
     IReferences successes = ssp.getSuccesses();
     IReferences failures = ssp.getFailures();

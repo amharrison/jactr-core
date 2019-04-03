@@ -16,8 +16,8 @@ package org.jactr.core.production.condition;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.model.IModel;
@@ -37,7 +37,7 @@ public class ChunkTypeCondition extends AbstractBufferCondition
   /**
    * Logger definition
    */
-  static private final Log LOGGER = LogFactory.getLog(ChunkTypeCondition.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ChunkTypeCondition.class);
 
   private IChunkType       _chunkType;
 

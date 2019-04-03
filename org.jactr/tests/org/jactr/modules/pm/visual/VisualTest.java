@@ -5,11 +5,6 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.Collections;
 
-/*
- * default logging
- */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.fluent.RealityConfigurator;
 import org.commonreality.net.message.credentials.ICredentials;
@@ -31,13 +26,19 @@ import org.jactr.core.utils.StringUtilities;
 import org.jactr.test.ExecutionTester;
 import org.junit.Test;
 
+/*
+ * default logging
+ */
+ 
+import org.slf4j.LoggerFactory;
+
 public class VisualTest
 {
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-      .getLog(VisualTest.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(VisualTest.class);
 
   protected void interrogateCR()
   {
@@ -78,7 +79,7 @@ public class VisualTest
     }
     catch (Exception e)
     {
-      LOGGER.error(e);
+      LOGGER.error("", e);
       e.printStackTrace();
       throw new RuntimeException(e);
     }

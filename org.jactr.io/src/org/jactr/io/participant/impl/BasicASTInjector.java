@@ -18,8 +18,8 @@ import java.util.Map;
 
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.utils.IInstallable;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
@@ -34,8 +34,8 @@ public class BasicASTInjector implements IASTInjector
   /**
    * logger definition
    */
-  static private final Log                    LOGGER = LogFactory
-                                                         .getLog(BasicASTInjector.class);
+  static private final transient org.slf4j.Logger                    LOGGER = LoggerFactory
+                                                         .getLogger(BasicASTInjector.class);
 
   final private CommonTree                    _modelDescriptor;
 

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.production.CannotInstantiateException;
 
 public class DefaultLogicalSlot extends BasicSlot implements ILogicalSlot,
@@ -15,8 +15,8 @@ public class DefaultLogicalSlot extends BasicSlot implements ILogicalSlot,
   /**
    * Logger definition
    */
-  static private final Log  LOGGER    = LogFactory
-                                          .getLog(DefaultLogicalSlot.class);
+  static private final transient org.slf4j.Logger  LOGGER    = LoggerFactory
+                                          .getLogger(DefaultLogicalSlot.class);
 
   // protected ISlot _slot1;
   // private ISlot _value2 = null;

@@ -3,8 +3,8 @@ package org.jactr.tools.experiment.actions.common;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.experiment.IExperiment;
 import org.jactr.tools.experiment.actions.IAction;
 import org.jactr.tools.experiment.impl.IVariableContext;
@@ -14,8 +14,8 @@ public class FireAction implements IAction
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(FireAction.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(FireAction.class);
   private String _triggerName;
   private IExperiment _experiment;
   

@@ -13,8 +13,8 @@
  */
 package org.jactr.tools.async.shadow.handlers;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.net.handler.IMessageHandler;
 import org.commonreality.net.session.ISessionInfo;
 import org.jactr.tools.async.message.IMessage;
@@ -27,8 +27,8 @@ public class UnknownMessageHandler implements IMessageHandler<IMessage>
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory
-                                      .getLog(UnknownMessageHandler.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+                                      .getLogger(UnknownMessageHandler.class);
 
   // /**
   // * @see

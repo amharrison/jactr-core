@@ -13,8 +13,8 @@
  */
 package org.jactr.modules.pm.common.buffer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.delegate.AsynchronousRequestDelegate;
 import org.jactr.core.buffer.six.IStatusBuffer;
@@ -39,8 +39,8 @@ public abstract class AbstractRequestDelegate extends AsynchronousRequestDelegat
   /**
    * logger definition
    */
-  static public final Log LOGGER = LogFactory
-                                     .getLog(AbstractRequestDelegate.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory
+                                     .getLogger(AbstractRequestDelegate.class);
 
   protected IChunkType    _chunkType;
 

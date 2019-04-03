@@ -17,8 +17,8 @@ import org.antlr.runtime.Lexer;
 import org.antlr.runtime.Parser;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.io.antlr3.misc.DetailedCommonTreeAdaptor;
 import org.jactr.io.antlr3.parser.AbstractModelParser;
 import org.jactr.io.parser.IModelParser;
@@ -29,7 +29,7 @@ public class LispModelParser extends AbstractModelParser implements
   /**
    * logger definition
    */
-  static public final Log LOGGER = LogFactory.getLog(LispModelParser.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(LispModelParser.class);
 
   /**
    * @see org.jactr.io.antlr3.parser.AbstractModelParser#createLexer()

@@ -6,8 +6,6 @@ import java.util.ArrayList;
  */
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.ISubsymbolicChunk;
 import org.jactr.core.chunk.basic.AbstractSubsymbolicChunk;
@@ -17,6 +15,7 @@ import org.jactr.core.chunk.link.IAssociativeLink;
 import org.jactr.core.logging.Logger;
 import org.jactr.core.logging.Logger.Stream;
 import org.jactr.core.model.IModel;
+import org.slf4j.LoggerFactory;
 
 public class DefaultSpreadingActivationEquation implements
     ISpreadingActivationEquation
@@ -24,8 +23,8 @@ public class DefaultSpreadingActivationEquation implements
   /**
    * Logger definition
    */
-  static private final transient Log                LOGGER          = LogFactory
-                                                                        .getLog(DefaultSpreadingActivationEquation.class);
+  static private final transient org.slf4j.Logger   LOGGER          = LoggerFactory
+                                                                        .getLogger(DefaultSpreadingActivationEquation.class);
 
   private ThreadLocal<Collection<IAssociativeLink>> _linkCollection = new ThreadLocal<Collection<IAssociativeLink>>();
 

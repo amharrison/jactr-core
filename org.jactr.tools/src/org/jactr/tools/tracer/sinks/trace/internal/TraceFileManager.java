@@ -12,8 +12,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.ModelTerminatedException;
 import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.tools.tracer.transformer.ITransformedEvent;
@@ -23,8 +23,8 @@ public class TraceFileManager
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER            = LogFactory
-                                                           .getLog(TraceFileManager.class);
+  static private final transient org.slf4j.Logger LOGGER            = LoggerFactory
+                                                           .getLogger(TraceFileManager.class);
 
   private File                       _outputDirectory;
 

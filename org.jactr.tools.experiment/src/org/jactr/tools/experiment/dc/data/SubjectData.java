@@ -6,8 +6,7 @@ package org.jactr.tools.experiment.dc.data;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * base class for the data collected for a given subject. The generic T
@@ -23,8 +22,8 @@ public class SubjectData<T>
   /**
    * Logger definition
    */
-  static private final transient Log    LOGGER = LogFactory
-                                                   .getLog(SubjectData.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                   .getLogger(SubjectData.class);
 
   final private T                       _data;
 

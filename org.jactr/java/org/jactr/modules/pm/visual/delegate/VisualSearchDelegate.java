@@ -3,8 +3,8 @@ package org.jactr.modules.pm.visual.delegate;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.module.asynch.delegate.BasicAsynchronousModuleDelegate;
 import org.jactr.core.production.request.ChunkTypeRequest;
@@ -22,8 +22,8 @@ public class VisualSearchDelegate
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(VisualSearchDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(VisualSearchDelegate.class);
 
   public VisualSearchDelegate(AbstractVisualModule module)
   {

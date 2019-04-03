@@ -13,8 +13,8 @@
  */
 package org.jactr.core.model.event;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.event.AbstractACTREvent;
 import org.jactr.core.extensions.IExtension;
@@ -30,8 +30,8 @@ public class ModelEvent extends AbstractACTREvent<IModel, IModelListener>
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ModelEvent.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ModelEvent.class);
 
   static public enum Type {
     MODULE_INSTALLED, EXTENSION_INSTALLED, INSTRUMENT_INSTALLED, BUFFER_INSTALLED, INITIALIZED, CONNECTED, DISCONNECTED, STARTED, SUSPENDED, RESUMED, STOPPED, CYCLE_STARTED, CYCLE_STOPPED, EXCEPTION

@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.ISymbolicChunk;
 import org.jactr.core.chunktype.IChunkType;
@@ -41,8 +41,8 @@ public class SlotBasedRequest implements IRequest, ISlotContainer
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER  = LogFactory
-      .getLog(SlotBasedRequest.class);
+  static private final transient org.slf4j.Logger LOGGER  = LoggerFactory
+      .getLogger(SlotBasedRequest.class);
 
   protected Collection<ISlot>        _slots;
 

@@ -10,8 +10,6 @@ import java.util.TreeMap;
 
 import javax.naming.OperationNotSupportedException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.efferent.IEfferentCommand;
 import org.commonreality.identifier.IIdentifier;
@@ -22,14 +20,15 @@ import org.commonreality.object.manager.IEfferentObjectManager;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.runtime.ACTRRuntime;
+import org.slf4j.LoggerFactory;
 
 public class DefaultCommandTranslator implements ICommandTranslator
 {
   /**
    * Logger definition
    */
-  static private final transient Log             LOGGER = LogFactory
-                                                            .getLog(DefaultCommandTranslator.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                            .getLogger(DefaultCommandTranslator.class);
 
   private Collection<ICommandTranslatorDelegate> _delegates;
 

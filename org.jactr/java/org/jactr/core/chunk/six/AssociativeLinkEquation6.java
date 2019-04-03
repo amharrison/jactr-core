@@ -2,8 +2,6 @@ package org.jactr.core.chunk.six;
 
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.four.Link4;
 import org.jactr.core.chunk.link.IAssociativeLink;
@@ -12,14 +10,15 @@ import org.jactr.core.model.IModel;
 import org.jactr.core.module.declarative.associative.IAssociativeLinkContainer;
 import org.jactr.core.module.declarative.six.learning.IDeclarativeLearningModule6;
 import org.jactr.core.utils.collections.FastCollectionFactory;
+import org.slf4j.LoggerFactory;
 
 public class AssociativeLinkEquation6 implements IAssociativeLinkEquation
 {
   /**
    * Logger definition
    */
-  static private final transient Log  LOGGER = LogFactory
-      .getLog(AssociativeLinkEquation6.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(AssociativeLinkEquation6.class);
 
   private IDeclarativeLearningModule6 _declarativeLearningModule;
 

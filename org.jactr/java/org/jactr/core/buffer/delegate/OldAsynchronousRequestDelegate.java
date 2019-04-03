@@ -3,8 +3,8 @@ package org.jactr.core.buffer.delegate;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.production.request.IRequest;
 import org.jactr.core.queue.timedevents.BlockingTimedEvent;
@@ -21,8 +21,8 @@ import org.jactr.core.queue.timedevents.BlockingTimedEvent;
 public abstract class OldAsynchronousRequestDelegate extends
     AsynchronousRequestDelegate
 {
-  static private transient final Log LOGGER = LogFactory
-                                                .getLog(OldAsynchronousRequestDelegate.class);
+  static private transient final org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(OldAsynchronousRequestDelegate.class);
 
   private BlockingTimedEvent         _previousBlockingTimedEvent;
 

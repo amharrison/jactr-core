@@ -16,8 +16,8 @@ package org.jactr.tools.async.message.event.data;
 import java.io.Serializable;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.runtime.controller.debug.BreakpointType;
 import org.jactr.tools.async.message.ast.BaseASTMessage;
 import org.jactr.tools.async.message.event.IEvent;
@@ -35,8 +35,8 @@ public class BreakpointReachedEvent extends BaseASTMessage implements IEvent, Se
   /**
    * logger definition
    */
-  static private final transient Log LOGGER           = LogFactory
-                                      .getLog(BreakpointReachedEvent.class);
+  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
+                                      .getLogger(BreakpointReachedEvent.class);
 
   BreakpointType _type;
   String _modelName;

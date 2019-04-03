@@ -2,8 +2,8 @@ package org.jactr.modules.pm.visual.memory;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.jactr.core.buffer.BufferUtilities;
 import org.jactr.core.buffer.IActivationBuffer;
@@ -17,8 +17,8 @@ public class VisualUtilities
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(VisualUtilities.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(VisualUtilities.class);
 
   
   /**

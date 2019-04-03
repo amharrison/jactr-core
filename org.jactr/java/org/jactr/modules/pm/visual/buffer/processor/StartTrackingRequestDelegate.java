@@ -13,8 +13,8 @@
  */
 package org.jactr.modules.pm.visual.buffer.processor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.six.IStatusBuffer;
 import org.jactr.core.chunk.IChunk;
@@ -30,8 +30,8 @@ public class StartTrackingRequestDelegate extends AbstractRequestDelegate
   /**
    * logger definition
    */
-  static public final Log LOGGER = LogFactory
-                                     .getLog(StartTrackingRequestDelegate.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory
+                                     .getLogger(StartTrackingRequestDelegate.class);
 
   public StartTrackingRequestDelegate(IChunkType chunkType)
   {

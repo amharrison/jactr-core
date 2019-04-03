@@ -24,8 +24,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.event.ActivationBufferEvent;
 import org.jactr.core.buffer.event.IActivationBufferListener;
@@ -72,6 +70,7 @@ import org.jactr.core.utils.collections.SkipListSetFactory;
 import org.jactr.core.utils.parameter.ClassNameParameterHandler;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.core.utils.parameter.ParameterHandler;
+import org.slf4j.LoggerFactory;
 
 /**
  * default declarative module that incorporates many useful features. This
@@ -103,8 +102,8 @@ public class DefaultDeclarativeModule extends AbstractDeclarativeModule
   /**
    * logger definition
    */
-  static final Log                    LOGGER                               = LogFactory
-      .getLog(DefaultDeclarativeModule.class);
+  static final org.slf4j.Logger       LOGGER                               = LoggerFactory
+      .getLogger(DefaultDeclarativeModule.class);
 
   static public final String          CHUNK_FACTORY_PARAM                  = "ChunkFactoryClass";
 

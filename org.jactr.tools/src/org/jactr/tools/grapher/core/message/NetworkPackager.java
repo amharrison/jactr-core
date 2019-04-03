@@ -10,17 +10,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.tools.tracer.transformer.ITransformedEvent;
+import org.slf4j.LoggerFactory;
 
 public class NetworkPackager
 {
   /**
    * Logger definition
    */
-  static private final transient Log     LOGGER = LogFactory
-                                                    .getLog(NetworkPackager.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                    .getLogger(NetworkPackager.class);
 
   private Map<String, Map<String, Long>> _stringTables;
 

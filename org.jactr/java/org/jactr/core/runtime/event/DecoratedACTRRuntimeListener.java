@@ -13,8 +13,8 @@
  */
 package org.jactr.core.runtime.event;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 /**
  * @author developer
  *
@@ -24,8 +24,8 @@ public class DecoratedACTRRuntimeListener implements IACTRRuntimeListener
   /**
    logger definition
    */
-  static private final Log LOGGER = LogFactory
-                                      .getLog(DecoratedACTRRuntimeListener.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+                                      .getLogger(DecoratedACTRRuntimeListener.class);
 
   
   private IACTRRuntimeListener _listener;

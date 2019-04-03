@@ -6,8 +6,8 @@ package org.jactr.core.module.asynch.delegate;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.module.AbstractModule;
 import org.jactr.core.module.asynch.IAsynchronousModule;
 import org.jactr.core.production.condition.ChunkPattern;
@@ -29,8 +29,8 @@ public abstract class BasicAsynchronousModuleDelegate<M extends IAsynchronousMod
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(BasicAsynchronousModuleDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(BasicAsynchronousModuleDelegate.class);
 
   private M                          _module;
 

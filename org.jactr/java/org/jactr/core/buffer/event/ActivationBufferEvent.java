@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.event.AbstractACTREvent;
@@ -33,8 +33,8 @@ public class ActivationBufferEvent extends
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory
-                                      .getLog(ActivationBufferEvent.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+                                      .getLogger(ActivationBufferEvent.class);
 
   static public enum Type {
     SOURCE_ADDED, SOURCE_REMOVED, SOURCE_CLEARED, REQUEST_ACCEPTED, PARAMETER_CHANGED, STATUS_SLOT_CHANGED, CHUNK_MATCHED

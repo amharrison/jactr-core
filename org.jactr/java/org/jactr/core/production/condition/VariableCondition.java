@@ -14,8 +14,8 @@
 package org.jactr.core.production.condition;
 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.VariableBindings;
@@ -31,8 +31,8 @@ public class VariableCondition extends AbstractBufferCondition
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(VariableCondition.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(VariableCondition.class);
 
   private String                     _variableName;
 

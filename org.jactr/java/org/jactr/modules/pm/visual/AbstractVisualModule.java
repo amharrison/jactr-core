@@ -21,8 +21,6 @@ import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
@@ -49,6 +47,7 @@ import org.jactr.modules.pm.visual.event.VisualModuleEvent;
 import org.jactr.modules.pm.visual.memory.IVisualMemory;
 import org.jactr.modules.pm.visual.six.DefaultEncodingTimeEquation;
 import org.jactr.modules.pm.visual.six.DefaultSearchTimeEquation;
+import org.slf4j.LoggerFactory;
 
 /**
  * abstract impl that address most of the trivial details. Clients must provide
@@ -65,8 +64,8 @@ public abstract class AbstractVisualModule extends AbstractPerceptualModule
    * Logger definition
    */
 
-  static private final transient Log                                LOGGER                        = LogFactory
-                                                                                                      .getLog(AbstractVisualModule.class);
+  static private final transient org.slf4j.Logger LOGGER                        = LoggerFactory
+                                                                                                      .getLogger(AbstractVisualModule.class);
 
   static final public String                                        ENCODING_TIME_EQUATION_PARAM  = "VisualEncodingTimeEquationClass";
 

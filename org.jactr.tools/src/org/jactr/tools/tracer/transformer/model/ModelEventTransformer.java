@@ -14,8 +14,8 @@
 package org.jactr.tools.tracer.transformer.model;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.event.IACTREvent;
 import org.jactr.core.model.event.ModelEvent;
 import org.jactr.io.resolver.ASTResolver;
@@ -30,8 +30,8 @@ public class ModelEventTransformer implements IEventTransformer
   /**
    logger definition
    */
-  static private final Log LOGGER = LogFactory
-                                      .getLog(ModelEventTransformer.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+                                      .getLogger(ModelEventTransformer.class);
 
   /** 
    * @see org.jactr.tools.tracer.transformer.IEventTransformer#transform(IACTREvent)

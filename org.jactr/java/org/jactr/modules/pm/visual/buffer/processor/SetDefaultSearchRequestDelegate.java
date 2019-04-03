@@ -3,8 +3,8 @@ package org.jactr.modules.pm.visual.buffer.processor;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.delegate.SimpleRequestDelegate;
 import org.jactr.core.chunktype.IChunkType;
@@ -23,8 +23,8 @@ public class SetDefaultSearchRequestDelegate extends SimpleRequestDelegate
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(SetDefaultSearchRequestDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(SetDefaultSearchRequestDelegate.class);
 
   public SetDefaultSearchRequestDelegate(IChunkType chunkType)
   {

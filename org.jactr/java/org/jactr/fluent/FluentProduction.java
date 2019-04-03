@@ -7,8 +7,8 @@ import java.util.concurrent.ExecutionException;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.IProduction;
 import org.jactr.core.production.ISymbolicProduction;
@@ -25,8 +25,8 @@ public class FluentProduction
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-      .getLog(FluentProduction.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(FluentProduction.class);
 
   private IModel                     _model;
 

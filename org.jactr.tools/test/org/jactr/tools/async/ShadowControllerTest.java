@@ -18,8 +18,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.net.protocol.IProtocolConfiguration;
 import org.commonreality.net.transport.ITransportProvider;
 import org.commonreality.netty.protocol.NOOPProtocol;
@@ -54,7 +54,7 @@ public class ShadowControllerTest extends TestCase
   /**
    * logger definition
    */
-  static private final Log   LOGGER         = LogFactory.getLog(ShadowControllerTest.class);
+  static private final transient org.slf4j.Logger   LOGGER         = LoggerFactory.getLogger(ShadowControllerTest.class);
 
 
   protected IModel           _model;

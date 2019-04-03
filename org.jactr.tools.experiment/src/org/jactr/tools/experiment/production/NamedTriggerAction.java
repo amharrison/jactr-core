@@ -3,8 +3,8 @@ package org.jactr.tools.experiment.production;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.CannotInstantiateException;
 import org.jactr.core.production.IInstantiation;
@@ -21,8 +21,8 @@ public class NamedTriggerAction implements IAction
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(NamedTriggerAction.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(NamedTriggerAction.class);
 
   public IAction bind(VariableBindings variableBindings)
       throws CannotInstantiateException

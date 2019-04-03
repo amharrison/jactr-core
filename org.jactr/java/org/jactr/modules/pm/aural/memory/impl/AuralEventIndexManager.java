@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.commonreality.modalities.aural.DefaultAuralPropertyHandler;
 import org.commonreality.modalities.aural.IAuralPropertyHandler;
@@ -26,6 +24,7 @@ import org.jactr.modules.pm.common.afferent.DefaultAfferentObjectListener;
 import org.jactr.modules.pm.common.afferent.IAfferentObjectListener;
 import org.jactr.modules.pm.common.memory.IPerceptualEncoder;
 import org.jactr.modules.pm.common.memory.impl.IIndexManager;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author harrison
@@ -35,8 +34,8 @@ public class AuralEventIndexManager implements IIndexManager
   /**
    * Logger definition
    */
-  static private final transient Log     LOGGER                = LogFactory
-                                                                   .getLog(AuralEventIndexManager.class);
+  static private final transient org.slf4j.Logger LOGGER                = LoggerFactory
+                                                                   .getLogger(AuralEventIndexManager.class);
 
   final private IAuralModule             _module;
 

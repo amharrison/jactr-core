@@ -17,8 +17,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.io.generator.ICodeGenerator;
 
 /**
@@ -29,8 +29,8 @@ public class CodeGeneratorWriter implements IModelWriter
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory
-                                      .getLog(CodeGeneratorWriter.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+                                      .getLogger(CodeGeneratorWriter.class);
 
   private ICodeGenerator   _codeGenerator;
 

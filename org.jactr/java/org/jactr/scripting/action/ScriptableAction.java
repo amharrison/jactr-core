@@ -13,8 +13,8 @@
 
 package org.jactr.scripting.action;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.production.CannotInstantiateException;
 import org.jactr.core.production.IInstantiation;
 import org.jactr.core.production.VariableBindings;
@@ -35,8 +35,8 @@ import org.jactr.scripting.ScriptingManager;
 public class ScriptableAction extends DefaultAction
 {
 
-  static private transient Log LOGGER = LogFactory
-                                          .getLog(ScriptableAction.class);
+  static private transient org.slf4j.Logger LOGGER = LoggerFactory
+                                          .getLogger(ScriptableAction.class);
 
   private final IActionScript  _script;
 

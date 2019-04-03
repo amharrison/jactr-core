@@ -7,8 +7,8 @@ import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.declarative.IDeclarativeModule;
@@ -18,8 +18,8 @@ public class ChunkTypeUtilities
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ChunkTypeUtilities.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ChunkTypeUtilities.class);
 
   /**
    * will fetch the named chunk type, if it exists. If not, it will be created,

@@ -3,8 +3,8 @@ package org.jactr.io.parser;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public class CanceledException extends RuntimeException
 {
@@ -15,7 +15,7 @@ public class CanceledException extends RuntimeException
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(CanceledException.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(CanceledException.class);
 
 }

@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.tools.marker.IMarkerListener;
@@ -25,8 +25,8 @@ public class MarkerTraceListener extends BaseTraceListener
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER           = LogFactory
-                                                          .getLog(MarkerTraceListener.class);
+  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
+                                                          .getLogger(MarkerTraceListener.class);
 
   private final IMarkerListener      _markerListener;
 

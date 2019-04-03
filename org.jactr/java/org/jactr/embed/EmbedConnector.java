@@ -7,8 +7,8 @@ import java.util.concurrent.locks.Lock;
  */
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.agents.ThinAgent;
 import org.commonreality.time.IClock;
@@ -21,8 +21,8 @@ public class EmbedConnector extends LocalConnector
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER          = LogFactory
-                                                         .getLog(EmbedConnector.class);
+  static private final transient org.slf4j.Logger LOGGER          = LoggerFactory
+                                                         .getLogger(EmbedConnector.class);
 
   static private final String        EMBED_AGENT_KEY = "embedConnector.thinAgent";
 

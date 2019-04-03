@@ -3,8 +3,8 @@ package org.jactr.modules.pm.common.memory;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.production.request.ChunkTypeRequest;
@@ -14,8 +14,8 @@ public class PerceptualSearchResult
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(PerceptualSearchResult.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(PerceptualSearchResult.class);
 
   private final IChunk _indexChunk;
   private final ChunkTypeRequest _originalRequest;

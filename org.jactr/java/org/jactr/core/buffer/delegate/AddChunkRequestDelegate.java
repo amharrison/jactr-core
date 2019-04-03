@@ -7,8 +7,8 @@ import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.BufferUtilities;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
@@ -37,8 +37,8 @@ public class AddChunkRequestDelegate extends AsynchronousRequestDelegate
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER             = LogFactory
-                                                            .getLog(AddChunkRequestDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER             = LoggerFactory
+                                                            .getLogger(AddChunkRequestDelegate.class);
 
   private boolean                    _copyEncodedChunks = true;
 

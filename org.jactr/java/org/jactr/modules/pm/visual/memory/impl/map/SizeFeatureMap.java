@@ -3,8 +3,8 @@ package org.jactr.modules.pm.visual.memory.impl.map;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.commonreality.modalities.visual.IVisualPropertyHandler;
 import org.commonreality.modalities.visual.geom.Dimension2D;
@@ -22,8 +22,8 @@ public class SizeFeatureMap extends AbstractSortedVisualFeatureMap<Double>
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(SizeFeatureMap.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(SizeFeatureMap.class);
 
   public SizeFeatureMap()
   {

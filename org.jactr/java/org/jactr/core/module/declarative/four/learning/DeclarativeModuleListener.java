@@ -13,8 +13,8 @@
  */
 package org.jactr.core.module.declarative.four.learning;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.event.IChunkListener;
 import org.jactr.core.module.declarative.basic.DefaultAssociativeLinkageSystem;
@@ -32,8 +32,8 @@ public class DeclarativeModuleListener extends DeclarativeModuleListenerAdaptor
   /**
    * logger definition
    */
-  static private final Log          LOGGER = LogFactory
-                                               .getLog(DeclarativeModuleListener.class);
+  static private final transient org.slf4j.Logger          LOGGER = LoggerFactory
+                                               .getLogger(DeclarativeModuleListener.class);
 
   DefaultDeclarativeLearningModule4 _learningModule;
 

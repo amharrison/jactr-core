@@ -6,16 +6,15 @@ package org.jactr.core.concurrent;
 import java.util.WeakHashMap;
 import java.util.concurrent.ThreadFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 public class GeneralThreadFactory implements ThreadFactory
 {
   /**
    * Logger definition
    */
-  static private final transient Log   LOGGER           = LogFactory
-                                                            .getLog(GeneralThreadFactory.class);
+  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
+                                                            .getLogger(GeneralThreadFactory.class);
 
   private int                          _count           = 0;
 

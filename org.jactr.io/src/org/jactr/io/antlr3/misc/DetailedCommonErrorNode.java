@@ -7,16 +7,16 @@ import java.net.URL;
 
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public class DetailedCommonErrorNode extends DetailedCommonTree
 {
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(DetailedCommonErrorNode.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DetailedCommonErrorNode.class);
 
   public DetailedCommonErrorNode(CommonTree arg0, URL source)
   {

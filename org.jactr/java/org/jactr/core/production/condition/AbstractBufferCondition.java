@@ -13,8 +13,8 @@
  */
 package org.jactr.core.production.condition;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.model.IModel;
 import org.jactr.core.utils.ModelerException;
@@ -29,8 +29,8 @@ public abstract class AbstractBufferCondition extends AbstractSlotCondition
   /**
    * Logger definition
    */
-  static final private Log LOGGER = LogFactory
-                                      .getLog(AbstractBufferCondition.class);
+  static final private org.slf4j.Logger LOGGER = LoggerFactory
+                                      .getLogger(AbstractBufferCondition.class);
 
   private String           _bufferName;
 

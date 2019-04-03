@@ -3,8 +3,8 @@ package org.jactr.tools.marker.tracer;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.event.IACTREvent;
 import org.jactr.tools.marker.impl.MarkerEvent;
 import org.jactr.tools.tracer.transformer.IEventTransformer;
@@ -15,8 +15,8 @@ public class MarkerEventTransformer implements IEventTransformer
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(MarkerEventTransformer.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(MarkerEventTransformer.class);
 
   public ITransformedEvent transform(IACTREvent actrEvent)
   {

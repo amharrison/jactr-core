@@ -3,8 +3,8 @@ package org.jactr.tools.marker.impl;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.event.AbstractACTREvent;
 import org.jactr.tools.marker.IMarker;
 import org.jactr.tools.marker.IMarkerListener;
@@ -16,8 +16,8 @@ public class MarkerEvent extends
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(MarkerEvent.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(MarkerEvent.class);
 
   static public enum Type {
     OPENED, CLOSED

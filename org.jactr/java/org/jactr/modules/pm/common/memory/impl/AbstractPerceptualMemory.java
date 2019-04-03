@@ -18,8 +18,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.identifier.IIdentifier;
 import org.commonreality.object.manager.IAfferentObjectManager;
@@ -48,14 +46,15 @@ import org.jactr.modules.pm.common.memory.event.ActivePerceptEvent;
 import org.jactr.modules.pm.common.memory.filter.IIndexFilter;
 import org.jactr.modules.pm.common.memory.map.IFINSTFeatureMap;
 import org.jactr.modules.pm.common.memory.map.IFeatureMap;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractPerceptualMemory implements IPerceptualMemory
 {
   /**
    * Logger definition
    */
-  static private final transient Log                                           LOGGER             = LogFactory
-                                                                                                      .getLog(AbstractPerceptualMemory.class);
+  static private final transient org.slf4j.Logger                              LOGGER             = LoggerFactory
+                                                                                                      .getLogger(AbstractPerceptualMemory.class);
 
   static public final String                                                   PRECODE_ONSET_TIME = ":precode-onset";
 

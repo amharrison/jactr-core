@@ -12,8 +12,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.grapher.core.probe.ChunkProbe;
 import org.jactr.tools.grapher.core.probe.LinkParameterProbe;
 import org.jactr.tools.grapher.core.probe.ModelProbe;
@@ -40,8 +40,8 @@ public class Parser
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER           = LogFactory
-                                                          .getLog(Parser.class);
+  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
+                                                          .getLogger(Parser.class);
 
   static public final String         PROBE_TAG        = "probe";
 

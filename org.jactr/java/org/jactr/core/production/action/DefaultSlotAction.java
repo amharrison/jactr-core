@@ -5,8 +5,8 @@ package org.jactr.core.production.action;
  */
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.production.CannotInstantiateException;
 import org.jactr.core.production.VariableBindings;
 import org.jactr.core.slot.ISlot;
@@ -19,8 +19,8 @@ public abstract class DefaultSlotAction extends DefaultAction implements
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(DefaultSlotAction.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DefaultSlotAction.class);
 
   private UniqueSlotContainer        _slotContainer;
 

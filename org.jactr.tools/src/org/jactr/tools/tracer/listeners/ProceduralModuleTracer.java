@@ -15,8 +15,8 @@ package org.jactr.tools.tracer.listeners;
 
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.event.IParameterEvent;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.procedural.event.IProceduralModuleListener;
@@ -32,8 +32,8 @@ public class ProceduralModuleTracer extends BaseTraceListener implements
   /**
    * logger definition
    */
-  static private final Log LOGGER             = LogFactory
-                                                  .getLog(ProceduralModuleTracer.class);
+  static private final org.slf4j.Logger LOGGER             = LoggerFactory
+                                                  .getLogger(ProceduralModuleTracer.class);
 
   /**
    * these ignore flags are in place temporarily until the IDE side of things

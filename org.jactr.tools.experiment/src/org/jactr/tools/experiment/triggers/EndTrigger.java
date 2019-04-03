@@ -3,8 +3,8 @@ package org.jactr.tools.experiment.triggers;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.experiment.IExperiment;
 
 public class EndTrigger extends ImmediateTrigger
@@ -18,7 +18,7 @@ public class EndTrigger extends ImmediateTrigger
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(EndTrigger.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(EndTrigger.class);
 
 }

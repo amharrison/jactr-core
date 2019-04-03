@@ -3,8 +3,8 @@ package org.jactr.tools.loop;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.module.procedural.event.ProceduralModuleEvent;
 import org.jactr.core.module.procedural.event.ProceduralModuleListenerAdaptor;
 import org.jactr.core.production.IInstantiation;
@@ -14,8 +14,8 @@ public class FiringSequenceListener extends ProceduralModuleListenerAdaptor
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(FiringSequenceListener.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(FiringSequenceListener.class);
 
   private final ProductionLoopDetector _pld;
 

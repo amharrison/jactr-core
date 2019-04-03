@@ -2,8 +2,6 @@ package org.jactr.core.chunk.four;
 
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.link.IAssociativeLink;
 import org.jactr.core.chunk.link.IAssociativeLinkEquation;
@@ -11,6 +9,7 @@ import org.jactr.core.model.IModel;
 import org.jactr.core.module.declarative.associative.IAssociativeLinkContainer;
 import org.jactr.core.module.declarative.four.learning.IDeclarativeLearningModule4;
 import org.jactr.core.utils.collections.FastCollectionFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * uses the ACT-R 4 equations for the learning and setting of associative link
@@ -23,8 +22,8 @@ public class AssociativeLinkEquation4 implements IAssociativeLinkEquation
   /**
    * Logger definition
    */
-  static private final transient Log        LOGGER = LogFactory
-      .getLog(AssociativeLinkEquation4.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(AssociativeLinkEquation4.class);
 
   final private IDeclarativeLearningModule4 _declarativeLearningModule;
 

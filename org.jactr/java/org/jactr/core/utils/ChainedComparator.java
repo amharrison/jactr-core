@@ -18,8 +18,8 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 /**
  * Description of the Class
@@ -29,8 +29,8 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ChainedComparator<T> implements Comparator<T>
 {
-  static private final transient Log LOGGER            = LogFactory
-                                                           .getLog(ChainedComparator.class);
+  static private final transient org.slf4j.Logger LOGGER            = LoggerFactory
+                                                           .getLogger(ChainedComparator.class);
 
   List<Comparator<T>>                _comparators;
 

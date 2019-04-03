@@ -7,8 +7,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.delegate.AsynchronousRequestDelegate;
 import org.jactr.core.chunk.IChunk;
@@ -35,8 +35,8 @@ public class RetrievalRequestDelegate extends AsynchronousRequestDelegate
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(RetrievalRequestDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(RetrievalRequestDelegate.class);
 
   private IRetrievalModule           _retrievalModule;
 

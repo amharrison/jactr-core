@@ -16,8 +16,8 @@ package org.jactr.tools.tracer.transformer.model;
 import java.io.Serializable;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.event.ModelEvent;
 import org.jactr.tools.tracer.transformer.AbstractTransformedEvent;
 
@@ -34,8 +34,8 @@ public class TransformedModelEvent extends AbstractTransformedEvent implements S
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory
-                                      .getLog(TransformedModelEvent.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+                                      .getLogger(TransformedModelEvent.class);
 
   private ModelEvent.Type _type;
   /**

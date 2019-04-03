@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.delegate.IDelegatedRequestableBuffer;
 import org.jactr.core.buffer.delegate.IRequestDelegate;
 import org.jactr.core.buffer.six.AbstractCapacityBuffer6;
@@ -48,8 +48,8 @@ public abstract class AbstractCapacityPMActivationBuffer6 extends
   /**
    * logger definition
    */
-  static private final Log                     LOGGER = LogFactory
-                                                          .getLog(AbstractCapacityPMActivationBuffer6.class);
+  static private final transient org.slf4j.Logger                     LOGGER = LoggerFactory
+                                                          .getLogger(AbstractCapacityPMActivationBuffer6.class);
 
   protected Collection<IRequestDelegate> _chunkPatternProcessors;
 

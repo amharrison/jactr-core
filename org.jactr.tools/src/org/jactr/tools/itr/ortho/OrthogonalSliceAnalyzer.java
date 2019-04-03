@@ -16,8 +16,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.utils.parameter.IParameterized;
@@ -32,6 +30,7 @@ import org.jactr.tools.itr.IParameterSetModifier;
 import org.jactr.tools.itr.LongitudinalParameterSetModifier;
 import org.jactr.tools.itr.ortho.impl.Slice;
 import org.jactr.tools.itr.ortho.impl.SliceAnalysis;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 public class OrthogonalSliceAnalyzer
@@ -40,8 +39,8 @@ public class OrthogonalSliceAnalyzer
   /**
    * Logger definition
    */
-  static private transient Log                  LOGGER          = LogFactory
-      .getLog(OrthogonalSliceAnalyzer.class);
+  static private transient org.slf4j.Logger     LOGGER          = LoggerFactory
+      .getLogger(OrthogonalSliceAnalyzer.class);
 
   static public final String                    URI             = "ConfigURL";
 

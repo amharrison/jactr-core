@@ -6,14 +6,13 @@ package org.jactr.core.production.condition;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.VariableBindings;
 import org.jactr.core.production.request.SlotBasedRequest;
 import org.jactr.core.slot.BasicSlot;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.slot.IUniqueSlotContainer;
+import org.slf4j.LoggerFactory;
 
 /**
  * condition that checks the values of system properties. The System properties
@@ -24,8 +23,8 @@ import org.jactr.core.slot.IUniqueSlotContainer;
  */
 public class SystemPropertyCondition extends AbstractSlotCondition
 {
-  static private final transient Log         LOGGER       = LogFactory
-                                                              .getLog(SystemPropertyCondition.class
+  static private final transient org.slf4j.Logger LOGGER       = LoggerFactory
+                                                              .getLogger(SystemPropertyCondition.class
                                                                   .getName());
 
   static private SystemPropertySlotContainer _systemSlots = new SystemPropertySlotContainer();
@@ -115,7 +114,7 @@ public class SystemPropertyCondition extends AbstractSlotCondition
     }
     
     public boolean hasSlot(String propertyName) {
-    	return (System.getProperty(propertyName) != null);
+    	return System.getProperty(propertyName) != null;
     }
   }
 }

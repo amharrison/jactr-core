@@ -17,16 +17,16 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public class RollingFileWriter extends Writer
 {
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER           = LogFactory
-                                                          .getLog(RollingFileWriter.class);
+  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
+                                                          .getLogger(RollingFileWriter.class);
 
   final private long                  _maxFileSize;                         // 1
 

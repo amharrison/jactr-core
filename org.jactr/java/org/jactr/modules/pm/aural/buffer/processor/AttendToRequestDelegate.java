@@ -6,8 +6,8 @@ import java.util.List;
  */
 import java.util.concurrent.Future;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
@@ -41,8 +41,8 @@ public class AttendToRequestDelegate extends AbstractRequestDelegate
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(AttendToRequestDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(AttendToRequestDelegate.class);
 
   final private String               _locationSlotName;
 

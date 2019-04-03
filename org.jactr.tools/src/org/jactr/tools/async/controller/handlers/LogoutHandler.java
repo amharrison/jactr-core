@@ -13,8 +13,8 @@
  */
 package org.jactr.tools.async.controller.handlers;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.net.handler.IMessageHandler;
 import org.commonreality.net.session.ISessionInfo;
 import org.jactr.core.runtime.ACTRRuntime;
@@ -30,8 +30,8 @@ public class LogoutHandler implements IMessageHandler<LogoutCommand>
   /**
    * logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(LogoutHandler.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(LogoutHandler.class);
 
   // /**
   // * @see

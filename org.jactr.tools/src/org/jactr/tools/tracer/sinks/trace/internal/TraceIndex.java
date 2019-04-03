@@ -8,8 +8,8 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 /**
  * documents what files contain what time ranges, plus the general make up of
@@ -22,8 +22,8 @@ public class TraceIndex
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(TraceIndex.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(TraceIndex.class);
 
   private DataOutputStream           _outputStream;
 

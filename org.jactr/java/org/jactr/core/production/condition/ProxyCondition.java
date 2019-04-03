@@ -7,8 +7,8 @@ package org.jactr.core.production.condition;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.VariableBindings;
 import org.jactr.core.production.bindings.VariableBindingsFactory;
@@ -34,8 +34,8 @@ public class ProxyCondition extends AbstractSlotCondition
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ProxyCondition.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ProxyCondition.class);
 
   String                             _className;
 

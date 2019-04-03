@@ -8,19 +8,18 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.production.condition.ICondition;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.IUniqueSlotContainer;
+import org.slf4j.LoggerFactory;
 
 public class UnresolvedVariablesMatchFailure extends AbstractMatchFailure
 {
   /**
    * Logger definition
    */
-  static private final transient Log         LOGGER = LogFactory
-                                                        .getLog(UnresolvedVariablesMatchFailure.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                        .getLogger(UnresolvedVariablesMatchFailure.class);
 
   private final Collection<IConditionalSlot> _unresolved;
 

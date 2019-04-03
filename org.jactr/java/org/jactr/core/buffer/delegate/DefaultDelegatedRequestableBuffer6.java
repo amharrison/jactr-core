@@ -6,8 +6,6 @@ package org.jactr.core.buffer.delegate;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.six.AbstractRequestableBuffer6;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.logging.IMessageBuilder;
@@ -15,6 +13,7 @@ import org.jactr.core.logging.Logger;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.IModule;
 import org.jactr.core.production.request.IRequest;
+import org.slf4j.LoggerFactory;
 
 public abstract class DefaultDelegatedRequestableBuffer6 extends
     AbstractRequestableBuffer6 implements IDelegatedRequestableBuffer
@@ -23,8 +22,8 @@ public abstract class DefaultDelegatedRequestableBuffer6 extends
   /**
    * Logger definition
    */
-  private static final transient Log   LOGGER = LogFactory
-                                                  .getLog(DefaultDelegatedRequestableBuffer6.class);
+  private static final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                  .getLogger(DefaultDelegatedRequestableBuffer6.class);
 
   private Collection<IRequestDelegate> _processors;
 

@@ -13,8 +13,8 @@
  */
 package org.jactr.modules.pm.motor.buffer.processor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.delegate.SimpleRequestDelegate;
 import org.jactr.core.chunktype.IChunkType;
@@ -33,8 +33,8 @@ public class MotorClearRequestDelegate extends SimpleRequestDelegate
   /**
    * logger definition
    */
-  static public final Log LOGGER = LogFactory
-                                     .getLog(MotorClearRequestDelegate.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory
+                                     .getLogger(MotorClearRequestDelegate.class);
 
   public MotorClearRequestDelegate(IChunkType clearChunkType)
   {

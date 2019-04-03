@@ -7,16 +7,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 public class ProxyUniqueSlotContainer implements IUniqueSlotContainer
 {
   /**
    * Logger definition
    */
-  static private final transient Log       LOGGER = LogFactory
-                                                      .getLog(ProxyUniqueSlotContainer.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                      .getLogger(ProxyUniqueSlotContainer.class);
 
   private List<IUniqueSlotContainer> _containers;
 
@@ -53,9 +52,7 @@ public class ProxyUniqueSlotContainer implements IUniqueSlotContainer
   public boolean hasSlot(String slotName)
   {
     for (IUniqueSlotContainer container : _containers)
-    {
       if(container.hasSlot(slotName)) return true;
-    }
     
     return false;
   }

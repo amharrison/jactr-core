@@ -6,8 +6,8 @@ package org.jactr.tools.grapher.core.selector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.link.IAssociativeLink;
 
@@ -17,8 +17,8 @@ public class LinkSelector extends AbstractNameSelector<IAssociativeLink>
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(LinkSelector.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(LinkSelector.class);
 
   private Matcher                    _chunkTypeMatcher;
 

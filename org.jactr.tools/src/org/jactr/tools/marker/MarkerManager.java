@@ -9,12 +9,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.event.ACTREventDispatcher;
 import org.jactr.core.logging.Logger;
 import org.jactr.core.model.IModel;
 import org.jactr.tools.marker.impl.MarkerEvent;
+import org.slf4j.LoggerFactory;
 
 /**
  * singleton manager for IMarker's associated with the current runtime
@@ -26,8 +25,8 @@ public class MarkerManager
   /**
    * Logger definition
    */
-  static private final transient Log                                LOGGER    = LogFactory
-                                                                                  .getLog(MarkerManager.class);
+  static private final transient org.slf4j.Logger                   LOGGER    = LoggerFactory
+                                                                                  .getLogger(MarkerManager.class);
 
   static final MarkerManager                                        _instance = new MarkerManager();
 

@@ -2,8 +2,8 @@ package org.jactr.modules.pm.aural.memory;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.utils.collections.FastListFactory;
@@ -15,8 +15,8 @@ public class AuralUtilities
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(AuralUtilities.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(AuralUtilities.class);
 
   
   static public PerceptualSearchResult getSearchResult(IChunk locationChunk,

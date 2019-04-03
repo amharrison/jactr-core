@@ -8,8 +8,8 @@ import java.util.Collection;
 import java.util.TreeSet;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.io.antlr3.compiler.CompilationError;
 import org.jactr.io.antlr3.compiler.CompilationInfo;
 import org.jactr.io.antlr3.compiler.CompilationWarning;
@@ -31,8 +31,8 @@ public abstract class AbstractReportableUnitCompiler implements
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(AbstractReportableUnitCompiler.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(AbstractReportableUnitCompiler.class);
 
   private Level                      _level;
   private Collection<Exception> _errors;

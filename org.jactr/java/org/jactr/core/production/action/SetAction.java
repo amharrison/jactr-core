@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.model.IModel;
@@ -22,6 +20,7 @@ import org.jactr.core.slot.IMutableSlot;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.slot.ISlotContainer;
 import org.jactr.core.utils.StringUtilities;
+import org.slf4j.LoggerFactory;
 
 /**
  * a zero-time buffer content set operator
@@ -34,8 +33,8 @@ public class SetAction extends DefaultAction implements ISlotContainer,
   /**
    * Logger definition
    */
-  static private final transient Log     LOGGER = LogFactory
-                                                    .getLog(SetAction.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                    .getLogger(SetAction.class);
 
   private String                         _bufferName;
 

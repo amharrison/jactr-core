@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.production.request.SlotBasedRequest;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ISlot;
@@ -32,8 +32,8 @@ public abstract class AbstractSlotCondition implements ICondition,
     ISlotContainer
 {
 
-  private static transient Log LOGGER = LogFactory
-                                          .getLog(AbstractSlotCondition.class
+  private static transient org.slf4j.Logger LOGGER = LoggerFactory
+                                          .getLogger(AbstractSlotCondition.class
                                               .getName());
 
   // private Collection<IConditionalSlot> _slotList;

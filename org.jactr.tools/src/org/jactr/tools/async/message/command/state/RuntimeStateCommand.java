@@ -15,8 +15,8 @@ package org.jactr.tools.async.message.command.state;
 
 import java.io.Serializable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.async.message.BaseMessage;
 
 /**
@@ -32,8 +32,8 @@ public class RuntimeStateCommand extends BaseMessage implements IRuntimeStateCom
   /**
    * logger definition
    */
-  static private final Log LOGGER              = LogFactory
-                                                   .getLog(RuntimeStateCommand.class);
+  static private final org.slf4j.Logger LOGGER              = LoggerFactory
+                                                   .getLogger(RuntimeStateCommand.class);
 
   State                    _state;
 

@@ -1,20 +1,21 @@
 package org.jactr.core.module.declarative.search.filter;
 
+import org.jactr.core.chunk.IChunk;
+import org.jactr.core.chunktype.IChunkType;
+
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jactr.core.chunk.IChunk;
-import org.jactr.core.chunktype.IChunkType;
+ 
+import org.slf4j.LoggerFactory;
 
 public class ChunkTypeFilter implements IChunkFilter
 {
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ChunkTypeFilter.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ChunkTypeFilter.class);
 
   private final IChunkType           _type;
 
@@ -40,7 +41,7 @@ public class ChunkTypeFilter implements IChunkFilter
     }
     catch (Exception e)
     {
-      LOGGER.error(e);
+      LOGGER.error(e.getMessage(), e);
 
       return false;
     }

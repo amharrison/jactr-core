@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.commonreality.modalities.visual.IVisualPropertyHandler;
 import org.commonreality.object.IAfferentObject;
@@ -18,14 +16,15 @@ import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.utils.collections.FastSetFactory;
 import org.jactr.modules.pm.visual.IVisualModule;
+import org.slf4j.LoggerFactory;
 
 public class ValueFeatureMap extends AbstractVisualFeatureMap<String>
 {
   /**
    * Logger definition
    */
-  static private final transient Log    LOGGER = LogFactory
-                                                   .getLog(ValueFeatureMap.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                   .getLogger(ValueFeatureMap.class);
 
   private Map<String, Set<IIdentifier>> _byToken;
 

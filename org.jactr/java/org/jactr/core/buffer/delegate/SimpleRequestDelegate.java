@@ -3,8 +3,8 @@ package org.jactr.core.buffer.delegate;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.production.request.IRequest;
@@ -21,8 +21,8 @@ public abstract class SimpleRequestDelegate implements IRequestDelegate
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(SimpleRequestDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(SimpleRequestDelegate.class);
 
   final private IChunkType           _chunkType;
 

@@ -21,10 +21,9 @@ import java.util.ListIterator;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.utils.collections.FastCollectionFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * class that handles the nitty gritty of tracking listeners, executors, and
@@ -37,8 +36,8 @@ public class ACTREventDispatcher<S, L>
   /**
    * logger definition
    */
-  static public final Log LOGGER              = LogFactory
-      .getLog(ACTREventDispatcher.class);
+  static public final org.slf4j.Logger LOGGER              = LoggerFactory
+      .getLogger(ACTREventDispatcher.class);
 
   private List<Pair>      _actualListeners;
 
@@ -164,7 +163,7 @@ public class ACTREventDispatcher<S, L>
             LOGGER.warn(String.format(
                 "Suppressing further rejection warnings for this event source (%s).",
                 event.getSource().getClass().getName()));
-            LOGGER.warn(ree);
+            LOGGER.warn(ree.getMessage(), ree);
           }
 
           _haveEncounteredREE = true;

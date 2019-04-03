@@ -13,8 +13,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.SortedSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.module.declarative.search.filter.DelegatedFilter;
@@ -35,8 +35,8 @@ public class ExactSingleThreadedSearchDelegate implements ISearchDelegate
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER            = LogFactory
-                                                           .getLog(ExactSingleThreadedSearchDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER            = LoggerFactory
+                                                           .getLogger(ExactSingleThreadedSearchDelegate.class);
 
   protected final boolean            _enableNotFilters = Boolean
                                                            .getBoolean("jactr.search.enableNotFilters");

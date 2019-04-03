@@ -18,8 +18,8 @@ import java.util.Collections;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.chunktype.IRemovableSymbolicChunkType;
@@ -43,8 +43,8 @@ public class BasicSymbolicChunkType extends NotifyingSlotContainer implements
     IRemovableSymbolicChunkType
 {
 
-  final private static transient Log LOGGER      = LogFactory
-                                                     .getLog(BasicSymbolicChunkType.class
+  final private static transient org.slf4j.Logger LOGGER      = LoggerFactory
+                                                     .getLogger(BasicSymbolicChunkType.class
                                                          .getName());
 
   private static int                 TOTAL_COUNT = 0;

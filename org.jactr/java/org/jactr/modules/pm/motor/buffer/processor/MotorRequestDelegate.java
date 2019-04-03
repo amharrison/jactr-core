@@ -2,8 +2,8 @@ package org.jactr.modules.pm.motor.buffer.processor;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.delegate.SimpleRequestDelegate;
 import org.jactr.core.chunktype.IChunkType;
@@ -22,8 +22,8 @@ public class MotorRequestDelegate extends SimpleRequestDelegate
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER     = LogFactory
-      .getLog(MotorRequestDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER     = LoggerFactory
+      .getLogger(MotorRequestDelegate.class);
 
   static public final String         ADJUSTMENT = ":adjustment";
 

@@ -3,8 +3,8 @@ package org.jactr.core.production.condition.match;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.production.condition.ICondition;
@@ -14,8 +14,8 @@ public class ChunkTypeMatchFailure extends AbstractMatchFailure
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ChunkTypeMatchFailure.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ChunkTypeMatchFailure.class);
 
   private final IChunkType           _expectedChunkType;
 

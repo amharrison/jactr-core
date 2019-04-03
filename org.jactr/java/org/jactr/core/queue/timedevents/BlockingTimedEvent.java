@@ -13,8 +13,8 @@
 
 package org.jactr.core.queue.timedevents;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 /**
  * BlockingTimedEvent sits on the TimedEventQueue and when it fires, it will
@@ -28,8 +28,8 @@ import org.apache.commons.logging.LogFactory;
 public class BlockingTimedEvent extends AbstractTimedEvent
 {
 
-  static private transient final Log LOGGER = LogFactory
-                                                .getLog(BlockingTimedEvent.class);
+  static private transient final org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(BlockingTimedEvent.class);
 
   static private long                _totalSleepTime;
 

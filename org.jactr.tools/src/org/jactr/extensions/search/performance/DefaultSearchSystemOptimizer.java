@@ -7,8 +7,8 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.apache.commons.math.stat.descriptive.StatisticalSummary;
 import org.jactr.core.extensions.IExtension;
 import org.jactr.core.model.IModel;
@@ -36,8 +36,8 @@ public class DefaultSearchSystemOptimizer implements IExtension
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER          = LogFactory
-                                                         .getLog(DefaultSearchSystemOptimizer.class);
+  static private final transient org.slf4j.Logger LOGGER          = LoggerFactory
+                                                         .getLogger(DefaultSearchSystemOptimizer.class);
 
   private IModel                     _model;
 

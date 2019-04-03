@@ -1,7 +1,7 @@
 package org.jactr.core.module.declarative.search.filter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.ISubsymbolicChunk;
 import org.jactr.core.logging.IMessageBuilder;
@@ -19,8 +19,8 @@ public class ActivationFilter implements IChunkFilter, ILoggedChunkFilter
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER                = LogFactory
-                                                               .getLog(ActivationFilter.class);
+  static private final transient org.slf4j.Logger LOGGER                = LoggerFactory
+                                                               .getLogger(ActivationFilter.class);
 
   private final double               _activationThreshold;
 

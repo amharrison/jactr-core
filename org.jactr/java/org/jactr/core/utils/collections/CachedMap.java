@@ -20,8 +20,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -37,8 +37,8 @@ public class CachedMap<K, V> implements Map<K, V>
   /**
    * logger definition
    */
-  static private final Log             LOGGER = LogFactory
-                                                  .getLog(CachedMap.class);
+  static private final transient org.slf4j.Logger             LOGGER = LoggerFactory
+                                                  .getLogger(CachedMap.class);
 
   private Map<K, V>                    _backingMap;
 

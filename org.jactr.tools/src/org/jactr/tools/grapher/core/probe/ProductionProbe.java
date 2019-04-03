@@ -5,8 +5,8 @@ package org.jactr.tools.grapher.core.probe;
  */
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.event.IParameterEvent;
 import org.jactr.core.production.IProduction;
 import org.jactr.core.production.event.IProductionListener;
@@ -19,8 +19,8 @@ public class ProductionProbe extends AbstractParameterizedProbe<IProduction>
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ProductionProbe.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ProductionProbe.class);
 
   private IProductionListener        _listener;
 

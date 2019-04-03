@@ -15,15 +15,15 @@ package org.jactr.core.utils.references;
 
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 public class ImmutableReferences implements IReferences
 {
   /**
    logger definition
    */
-  static private final Log LOGGER = LogFactory
-                                      .getLog(ImmutableReferences.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+                                      .getLogger(ImmutableReferences.class);
 
   IReferences _references;
   

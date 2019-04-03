@@ -21,8 +21,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.model.IModel;
@@ -34,7 +34,7 @@ public abstract class AbstractModule extends DefaultAdaptable implements
   /**
    * logger definition
    */
-  static public final Log LOGGER    = LogFactory.getLog(AbstractModule.class);
+  static public final org.slf4j.Logger LOGGER    = LoggerFactory.getLogger(AbstractModule.class);
 
   private IModel          _model;
 

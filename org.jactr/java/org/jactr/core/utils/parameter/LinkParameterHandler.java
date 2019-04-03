@@ -13,8 +13,8 @@
  */
 package org.jactr.core.utils.parameter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.four.Link4;
 import org.jactr.core.chunk.link.IAssociativeLink;
@@ -32,8 +32,8 @@ public class LinkParameterHandler extends ParameterHandler<IAssociativeLink>
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(LinkParameterHandler.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(LinkParameterHandler.class);
 
   IChunk                             _jChunk;
 

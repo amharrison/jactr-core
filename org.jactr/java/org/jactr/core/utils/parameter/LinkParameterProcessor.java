@@ -8,8 +8,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.eclipse.collections.impl.factory.Lists;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.four.Link4;
@@ -23,8 +23,8 @@ public class LinkParameterProcessor
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-      .getLog(LinkParameterProcessor.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(LinkParameterProcessor.class);
 
   /**
    * link parameter handler with string transform functions supporting "(iLink

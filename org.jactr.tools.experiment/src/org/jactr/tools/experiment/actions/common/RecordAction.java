@@ -6,8 +6,8 @@ package org.jactr.tools.experiment.actions.common;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.experiment.IDataLogger;
 import org.jactr.tools.experiment.IExperiment;
 import org.jactr.tools.experiment.actions.IAction;
@@ -21,8 +21,8 @@ public class RecordAction implements IAction
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(RecordAction.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(RecordAction.class);
   
   static public enum Type {OPEN, CLOSE, SIMPLE};
   

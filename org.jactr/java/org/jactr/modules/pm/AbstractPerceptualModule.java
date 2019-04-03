@@ -17,8 +17,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.object.IAfferentObject;
 import org.commonreality.object.IEfferentObject;
@@ -43,8 +43,8 @@ public abstract class AbstractPerceptualModule extends
   /**
    * logger definition
    */
-  static public final Log LOGGER = LogFactory
-                                     .getLog(AbstractPerceptualModule.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory
+                                     .getLogger(AbstractPerceptualModule.class);
 
   private IModelListener  _modelListener;
 

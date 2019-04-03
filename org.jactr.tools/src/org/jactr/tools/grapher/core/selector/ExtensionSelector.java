@@ -3,16 +3,16 @@ package org.jactr.tools.grapher.core.selector;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public class ExtensionSelector extends ClassNamedParameterSelector
 {
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ExtensionSelector.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ExtensionSelector.class);
 
   public ExtensionSelector(String regex)
   {

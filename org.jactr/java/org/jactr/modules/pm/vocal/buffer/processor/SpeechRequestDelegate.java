@@ -6,8 +6,8 @@ package org.jactr.modules.pm.vocal.buffer.processor;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.efferent.IEfferentCommand.ActualState;
 import org.commonreality.modalities.vocal.VocalizationCommand;
 import org.jactr.core.buffer.IActivationBuffer;
@@ -30,8 +30,8 @@ public class SpeechRequestDelegate extends AbstractRequestDelegate
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(SpeechRequestDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(SpeechRequestDelegate.class);
 
   final private IVocalModule         _vocal;
 

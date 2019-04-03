@@ -3,16 +3,16 @@ package org.jactr.tools.grapher.core.selector;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public class InstrumentSelector extends ClassNamedParameterSelector
 {
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(InstrumentSelector.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(InstrumentSelector.class);
 
   public InstrumentSelector(String regex)
   {

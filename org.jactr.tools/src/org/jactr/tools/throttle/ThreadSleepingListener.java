@@ -3,8 +3,8 @@ package org.jactr.tools.throttle;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.event.ModelEvent;
 import org.jactr.core.model.event.ModelListenerAdaptor;
 
@@ -13,8 +13,8 @@ public class ThreadSleepingListener extends ModelListenerAdaptor
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ThreadSleepingListener.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ThreadSleepingListener.class);
 
   private final long                 _minimumTimeMS;
 

@@ -6,17 +6,16 @@ package org.jactr.tools.grapher.core.container;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.tools.grapher.core.probe.IProbe;
+import org.slf4j.LoggerFactory;
 
 public class ProbeContainer implements IProbeContainer
 {
   /**
    * Logger definition
    */
-  static private final transient Log  LOGGER = LogFactory
-                                                 .getLog(ProbeContainer.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                 .getLogger(ProbeContainer.class);
 
   private final String                _name;
 

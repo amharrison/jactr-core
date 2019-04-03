@@ -16,8 +16,8 @@ package org.jactr.tools.tracer.transformer;
 import java.io.Serializable;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.async.message.ast.BaseASTMessage;
 /**
  * @author developer
@@ -35,8 +35,8 @@ public class AbstractTransformedEvent extends BaseASTMessage implements
   /**
    logger definition
    */
-  static private final Log LOGGER = LogFactory
-                                      .getLog(AbstractTransformedEvent.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+                                      .getLogger(AbstractTransformedEvent.class);
 
   
   private double _simulationTime;

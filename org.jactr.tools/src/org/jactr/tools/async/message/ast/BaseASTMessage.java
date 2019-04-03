@@ -23,10 +23,9 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.io.antlr3.serialization.Serializer;
 import org.jactr.tools.async.message.BaseMessage;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author developer
@@ -42,8 +41,8 @@ public class BaseASTMessage extends BaseMessage implements Serializable,
   /**
    * logger definition
    */
-  static private final transient Log                          LOGGER           = LogFactory
-                                                                                   .getLog(BaseASTMessage.class);
+  static private final transient org.slf4j.Logger             LOGGER           = LoggerFactory
+                                                                                   .getLogger(BaseASTMessage.class);
 
   private transient CommonTree _ast;
 

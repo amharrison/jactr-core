@@ -24,8 +24,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.event.ACTREventDispatcher;
 import org.jactr.core.logging.Logger;
 import org.jactr.core.model.IModel;
@@ -80,8 +80,8 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
   /**
    * logger definition
    */
-  static final Log                                                                            LOGGER                        = LogFactory
-                                                                                                                                .getLog(DefaultProceduralLearningModule6.class);
+  static final transient org.slf4j.Logger                                                                            LOGGER                        = LoggerFactory
+                                                                                                                                .getLogger(DefaultProceduralLearningModule6.class);
 
   protected boolean                                                                           _productionCompilationEnabled = false;
 

@@ -8,8 +8,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.tools.experiment.IExperiment;
 import org.jactr.tools.experiment.actions.IAction;
 import org.jactr.tools.experiment.actions.ICompositeAction;
@@ -49,6 +47,7 @@ import org.jactr.tools.experiment.trial.ITrial;
 import org.jactr.tools.experiment.triggers.EndTrigger;
 import org.jactr.tools.experiment.triggers.ITrigger;
 import org.jactr.tools.experiment.triggers.StartTrigger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -59,8 +58,8 @@ public class ExperimentParser
   /**
    * Logger definition
    */
-  static final public transient Log          LOGGER = LogFactory
-                                                         .getLog(ExperimentParser.class);
+  static final public transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                         .getLogger(ExperimentParser.class);
 
   private Map<String, INodeHandler<ITrial>>   _trialProcessors;
 
@@ -205,18 +204,15 @@ public class ExperimentParser
           Object rtn = processNode((Element) node);
           if (rtn instanceof ITrial)
             _experiment.addTrial((ITrial) rtn);
-          else if (first && (rtn instanceof ITrigger))
-          {
-            /*
-             * only add the triggers once..
-             */
-            if (rtn instanceof StartTrigger)
-              _experiment.setStartTrigger((StartTrigger) rtn);
-            else if (rtn instanceof EndTrigger)
-              _experiment.setEndTrigger((EndTrigger) rtn);
-            else
-              _experiment.addTrigger((ITrigger) rtn);
-          }
+          else if (first && rtn instanceof ITrigger) /*
+           * only add the triggers once..
+           */
+          if (rtn instanceof StartTrigger)
+            _experiment.setStartTrigger((StartTrigger) rtn);
+          else if (rtn instanceof EndTrigger)
+            _experiment.setEndTrigger((EndTrigger) rtn);
+          else
+            _experiment.addTrigger((ITrigger) rtn);
         }
       }
       iterations--;
@@ -296,9 +292,7 @@ public class ExperimentParser
           trial.addTrigger((ITrigger) rtn);
       }
       else if (rtn instanceof ITrial && trial instanceof ICompoundTrial)
-      {
         ((ICompoundTrial) trial).add((ITrial) rtn);
-      }
       else if (rtn != null)
         if (LOGGER.isWarnEnabled())
           LOGGER.warn(String.format("No clue what to do with %s from %s", rtn, nodeElement.getTagName()));

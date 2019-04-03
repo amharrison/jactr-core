@@ -9,8 +9,8 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.reality.CommonReality;
 import org.commonreality.sensors.ISensor;
 import org.jactr.core.utils.collections.FastListFactory;
@@ -29,8 +29,8 @@ public class XMLSensorAction implements IAction
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER  = LogFactory
-                                                 .getLog(XMLSensorAction.class);
+  static private final transient org.slf4j.Logger LOGGER  = LoggerFactory
+                                                 .getLogger(XMLSensorAction.class);
 
 
   private String                     _location;

@@ -17,8 +17,8 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.async.message.BaseMessage;
 /**
  * @author developer
@@ -34,7 +34,7 @@ public class ModelStateEvent extends BaseMessage implements IModelStateEvent, Se
   /**
    logger definition
    */
-  static private final Log LOGGER = LogFactory.getLog(ModelStateEvent.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ModelStateEvent.class);
 
   private State _state;
   private String _modelName;

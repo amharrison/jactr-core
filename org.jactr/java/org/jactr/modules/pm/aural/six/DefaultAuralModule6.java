@@ -15,8 +15,8 @@ package org.jactr.modules.pm.aural.six;
 
 import java.util.concurrent.Future;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.concurrent.ModelCycleExecutor;
 import org.jactr.core.logging.Logger;
@@ -43,8 +43,8 @@ public class DefaultAuralModule6 extends AbstractAuralModule
   /**
    * logger definition
    */
-  static private final Log       LOGGER = LogFactory
-                                            .getLog(DefaultAuralModule6.class);
+  static private final transient org.slf4j.Logger       LOGGER = LoggerFactory
+                                            .getLogger(DefaultAuralModule6.class);
 
   private IActivePerceptListener _perceptListener;
 

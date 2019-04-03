@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.event.ActivationBufferEvent;
 import org.jactr.core.buffer.event.ActivationBufferListenerAdaptor;
@@ -17,6 +15,7 @@ import org.jactr.core.chunk.IChunk;
 import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.tools.marker.IMarker;
 import org.jactr.tools.marker.impl.DefaultMarker;
+import org.slf4j.LoggerFactory;
 
 /**
  * listener for buffers that marks state changes and contents
@@ -28,8 +27,8 @@ public class MarkerOfBuffers implements IMarkerOf<IActivationBuffer>
   /**
    * Logger definition
    */
-  static private final transient Log      LOGGER          = LogFactory
-                                                              .getLog(MarkerOfBuffers.class);
+  static private final transient org.slf4j.Logger LOGGER          = LoggerFactory
+                                                              .getLogger(MarkerOfBuffers.class);
 
   private Map<IActivationBuffer, IMarker> _stateMarkers   = new HashMap<IActivationBuffer, IMarker>();
 

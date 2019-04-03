@@ -13,8 +13,8 @@
  */
 package org.jactr.core.queue.timedevents;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IRequestableBuffer;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
@@ -31,8 +31,8 @@ public class DelayedBufferInsertionTimedEvent extends AbstractTimedEvent
   /**
    * logger definition
    */
-  static public final Log     LOGGER = LogFactory
-                                         .getLog(DelayedBufferInsertionTimedEvent.class);
+  static public final transient org.slf4j.Logger     LOGGER = LoggerFactory
+                                         .getLogger(DelayedBufferInsertionTimedEvent.class);
 
   protected IChunk            _chunkToInsert;
 

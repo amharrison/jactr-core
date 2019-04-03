@@ -16,8 +16,8 @@ package org.jactr.core.production.action;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.logging.Logger;
@@ -41,7 +41,7 @@ public class RemoveAction extends ModifyAction implements IBufferAction
 {
 
   // logger class
-  private static transient Log LOGGER = LogFactory.getLog(RemoveAction.class
+  private static transient org.slf4j.Logger LOGGER = LoggerFactory.getLogger(RemoveAction.class
                                           .getName());
 
   /**

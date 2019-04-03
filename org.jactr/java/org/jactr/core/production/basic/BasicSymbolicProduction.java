@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.ISymbolicProduction;
 import org.jactr.core.production.IllegalProductionStateException;
@@ -40,8 +40,8 @@ public class BasicSymbolicProduction extends DefaultAdaptable implements
   /**
    * logger definition
    */
-  static private final Log         LOGGER = LogFactory
-                                              .getLog(BasicSymbolicProduction.class);
+  static private final transient org.slf4j.Logger         LOGGER = LoggerFactory
+                                              .getLogger(BasicSymbolicProduction.class);
 
   protected Collection<IAction>    _actions;
 

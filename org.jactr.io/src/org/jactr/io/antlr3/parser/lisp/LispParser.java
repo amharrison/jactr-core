@@ -16,8 +16,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.net.URL;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 import org.jactr.core.module.IModule;
 
@@ -191,7 +191,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
 
-    static private final transient Log LOGGER = LogFactory.getLog(LispParser.class);
+    static private final transient org.slf4j.Logger LOGGER = LoggerFactory.getLogger(LispParser.class);
 
     static private Set<String> IGNORE_PARAMETERS;;
 

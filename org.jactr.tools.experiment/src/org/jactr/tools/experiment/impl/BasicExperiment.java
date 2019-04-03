@@ -8,8 +8,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.time.IClock;
 import org.jactr.core.model.IModel;
 import org.jactr.core.runtime.ACTRRuntime;
@@ -33,8 +33,8 @@ public class BasicExperiment implements IExperiment
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER           = LogFactory
-                                                          .getLog(BasicExperiment.class);
+  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
+                                                          .getLogger(BasicExperiment.class);
 
   private List<ITrial>               _allTrials;
 

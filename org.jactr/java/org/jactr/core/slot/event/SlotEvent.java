@@ -3,8 +3,8 @@ package org.jactr.core.slot.event;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.event.AbstractACTREvent;
 import org.jactr.core.event.IACTREvent;
 import org.jactr.core.slot.INotifyingSlotContainer;
@@ -17,8 +17,8 @@ public class SlotEvent extends
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(SlotEvent.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(SlotEvent.class);
 
   static public enum Type {
     ADDED, REMOVED, CHANGED

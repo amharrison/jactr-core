@@ -13,8 +13,8 @@
  */
 package org.jactr.core.production.request;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.model.IModel;
 import org.jactr.core.models.FluentSemantic;
@@ -28,8 +28,8 @@ public class RequestTest extends TestCase
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(RequestTest.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(RequestTest.class);
 
   IModel                             _model;
 

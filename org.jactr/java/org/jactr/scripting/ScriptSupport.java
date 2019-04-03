@@ -8,8 +8,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.logging.Logger;
 import org.jactr.core.model.IModel;
@@ -30,7 +30,7 @@ import org.jactr.core.slot.IMutableSlot;
 public class ScriptSupport
 {
 
-  static private transient Log LOGGER = LogFactory.getLog(ScriptSupport.class);
+  static private transient org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ScriptSupport.class);
 
   final IScriptableFactory     _factory;
 

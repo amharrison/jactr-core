@@ -1,10 +1,5 @@
 package org.jactr.modules.pm.visual.memory.impl.encoder;
 
-/*
- * default logging
- */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.commonreality.modalities.visual.Color;
 import org.commonreality.modalities.visual.DefaultVisualPropertyHandler;
@@ -27,6 +22,12 @@ import org.jactr.modules.pm.visual.memory.IVisualMemory;
 import org.jactr.modules.pm.visual.memory.VisualUtilities;
 import org.jactr.modules.pm.visual.memory.impl.DefaultVisualMemory;
 
+/*
+ * default logging
+ */
+ 
+import org.slf4j.LoggerFactory;
+
 /**
  * abstract base implementation of a visual chunk encoder. Extenders must
  * implement {@link #canEncodeVisualObjectType(IAfferentObject)} which tests to
@@ -45,8 +46,8 @@ public abstract class AbstractVisualEncoder implements IPerceptualEncoder
   /**
    * Logger definition
    */
-  static private final transient Log          LOGGER   = LogFactory
-                                                           .getLog(AbstractVisualEncoder.class);
+  static private final transient org.slf4j.Logger LOGGER   = LoggerFactory
+                                                           .getLogger(AbstractVisualEncoder.class);
 
   static private DefaultVisualPropertyHandler _handler = new DefaultVisualPropertyHandler();
 

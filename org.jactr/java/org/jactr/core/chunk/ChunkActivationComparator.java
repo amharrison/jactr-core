@@ -15,8 +15,8 @@ package org.jactr.core.chunk;
 
 import java.util.Comparator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.five.ISubsymbolicChunk5;
 import org.jactr.core.production.request.ChunkTypeRequest;
 
@@ -39,8 +39,8 @@ public class ChunkActivationComparator implements java.util.Comparator<IChunk>
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ChunkActivationComparator.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ChunkActivationComparator.class);
 
   ChunkTypeRequest                       _pattern;
 

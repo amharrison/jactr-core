@@ -5,15 +5,13 @@ package org.jactr.extensions.cached.procedural;
  */
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.extensions.IExtension;
 import org.jactr.core.model.IModel;
 import org.jactr.core.utils.parameter.ParameterHandler;
 import org.jactr.extensions.cached.procedural.internal.CachedProductionInstantiator;
 import org.jactr.extensions.cached.procedural.internal.InstantiationCache;
+import org.slf4j.LoggerFactory;
 
 /**
  * drop in that tracks the procedural module, caching those productions that
@@ -27,8 +25,8 @@ public class CachedProductionSystem implements IExtension
   /**
    * Logger definition
    */
-  static private final transient Log   LOGGER           = LogFactory
-                                                            .getLog(CachedProductionSystem.class);
+  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
+                                                            .getLogger(CachedProductionSystem.class);
 
   static public final String           ENABLE_PARAM     = "EnableCaching";
 

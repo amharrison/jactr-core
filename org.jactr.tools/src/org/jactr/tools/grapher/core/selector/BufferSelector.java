@@ -3,8 +3,8 @@ package org.jactr.tools.grapher.core.selector;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public class BufferSelector extends ClassNamedParameterSelector
 {
@@ -12,8 +12,8 @@ public class BufferSelector extends ClassNamedParameterSelector
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(BufferSelector.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(BufferSelector.class);
 
   public BufferSelector(String regex)
   {

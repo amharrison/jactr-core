@@ -5,8 +5,8 @@ package org.jactr.core.buffer.misc;
  */
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.AbstractActivationBuffer;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
@@ -25,8 +25,8 @@ public class ProxyActivationBuffer extends AbstractActivationBuffer
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ProxyActivationBuffer.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ProxyActivationBuffer.class);
 
   private final IActivationBuffer    _buffer;
 

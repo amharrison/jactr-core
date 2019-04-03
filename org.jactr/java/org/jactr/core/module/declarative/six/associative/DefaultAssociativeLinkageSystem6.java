@@ -5,8 +5,8 @@ package org.jactr.core.module.declarative.six.associative;
  */
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.link.IAssociativeLinkEquation;
 import org.jactr.core.chunk.six.AssociativeLinkEquation6;
 import org.jactr.core.module.declarative.four.associative.DefaultAssociativeLinkageSystem4;
@@ -27,8 +27,8 @@ public class DefaultAssociativeLinkageSystem6 extends
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(DefaultAssociativeLinkageSystem6.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DefaultAssociativeLinkageSystem6.class);
 
   public DefaultAssociativeLinkageSystem6(
       IDeclarativeLearningModule6 learningModule, Executor executor)

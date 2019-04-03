@@ -3,8 +3,8 @@ package org.jactr.modules.pm.visual.timedevent;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.logging.Logger;
@@ -20,8 +20,8 @@ public class ReencodingTimedEvent extends AbstractTimedEvent implements
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ReencodingTimedEvent.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ReencodingTimedEvent.class);
 
   IChunk                             _chunk;
 

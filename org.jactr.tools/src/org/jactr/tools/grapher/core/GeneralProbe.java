@@ -15,8 +15,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.model.IModel;
 import org.jactr.core.model.event.ModelEvent;
@@ -32,14 +30,15 @@ import org.jactr.tools.grapher.core.selector.ModelSelector;
 import org.jactr.tools.tracer.ITraceSink;
 import org.jactr.tools.tracer.listeners.ITraceListener;
 import org.jactr.tools.tracer.transformer.ITransformedEvent;
+import org.slf4j.LoggerFactory;
 
 public class GeneralProbe implements ITraceListener, IParameterized
 {
   /**
    * Logger definition
    */
-  static private final transient Log   LOGGER      = LogFactory
-                                                       .getLog(GeneralProbe.class);
+  static private final transient org.slf4j.Logger  LOGGER      = LoggerFactory
+                                                       .getLogger(GeneralProbe.class);
 
   static public final String           CONFIG      = "ConfigFile";
 

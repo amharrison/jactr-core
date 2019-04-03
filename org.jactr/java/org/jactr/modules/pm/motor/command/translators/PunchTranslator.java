@@ -3,8 +3,8 @@ package org.jactr.modules.pm.motor.command.translators;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.efferent.ICompoundCommand;
 import org.commonreality.efferent.IEfferentCommand;
@@ -23,7 +23,7 @@ public class PunchTranslator extends AbstractManualTranslator
   /**
    * Logger definition
    */
-  static final transient Log LOGGER = LogFactory.getLog(PunchTranslator.class);
+  static final transient org.slf4j.Logger LOGGER = LoggerFactory.getLogger(PunchTranslator.class);
 
   public boolean handles(ChunkTypeRequest request)
   {

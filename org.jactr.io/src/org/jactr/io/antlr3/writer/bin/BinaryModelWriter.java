@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.io.antlr3.serialization.Serializer;
 import org.jactr.io.writer.IModelWriter;
 
@@ -31,7 +31,7 @@ public class BinaryModelWriter implements IModelWriter
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory.getLog(BinaryModelWriter.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BinaryModelWriter.class);
 
   /**
    * @see org.jactr.io.writer.IModelWriter#write(org.antlr.runtime.tree.CommonTree,

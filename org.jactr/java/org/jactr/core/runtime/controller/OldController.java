@@ -30,8 +30,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.concurrent.GeneralThreadFactory;
 import org.jactr.core.model.IModel;
@@ -54,8 +54,8 @@ public class OldController //implements IController
   /**
    * logger definition
    */
-  static private final Log               LOGGER          = LogFactory
-                                                             .getLog(OldController.class);
+  static private final transient org.slf4j.Logger               LOGGER          = LoggerFactory
+                                                             .getLogger(OldController.class);
 
   protected Set<IModel>                  _runningModels;
 

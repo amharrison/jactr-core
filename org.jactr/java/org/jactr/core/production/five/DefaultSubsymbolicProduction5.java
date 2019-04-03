@@ -12,11 +12,11 @@
  */
 package org.jactr.core.production.five;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.ISubsymbolicProduction;
 import org.jactr.core.production.four.DefaultSubsymbolicProduction4;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author harrison
@@ -26,8 +26,8 @@ public class DefaultSubsymbolicProduction5 extends DefaultSubsymbolicProduction4
     ISubsymbolicProduction
 {
 
-  static transient Log         LOGGER               = LogFactory
-                                                                .getLog(DefaultSubsymbolicProduction5.class
+  static transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                                .getLogger(DefaultSubsymbolicProduction5.class
                                                                     .getName());
 
 

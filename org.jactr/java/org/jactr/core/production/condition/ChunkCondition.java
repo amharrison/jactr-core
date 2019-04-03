@@ -15,8 +15,8 @@ package org.jactr.core.production.condition;
 
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.VariableBindings;
@@ -36,8 +36,8 @@ public class ChunkCondition extends ChunkTypeCondition
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ChunkCondition.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ChunkCondition.class);
 
   private IChunk                     _chunk;
 

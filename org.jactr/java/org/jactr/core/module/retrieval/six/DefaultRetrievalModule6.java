@@ -24,8 +24,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.ChunkActivationComparator;
 import org.jactr.core.chunk.IChunk;
@@ -69,8 +69,8 @@ public class DefaultRetrievalModule6 extends AbstractModule implements
   /**
    * logger definition
    */
-  static private final Log                                                LOGGER                           = LogFactory
-                                                                                                               .getLog(DefaultRetrievalModule6.class);
+  static private final transient org.slf4j.Logger                                                LOGGER                           = LoggerFactory
+                                                                                                               .getLogger(DefaultRetrievalModule6.class);
 
   static public final String                                              INDEXED_RETRIEVALS_ENABLED_PARAM = "EnableIndexedRetrievals";
 

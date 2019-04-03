@@ -8,8 +8,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.commonreality.modalities.visual.DefaultVisualPropertyHandler;
 import org.commonreality.modalities.visual.IVisualPropertyHandler;
@@ -20,6 +18,7 @@ import org.commonreality.object.manager.event.IObjectEvent;
 import org.jactr.modules.pm.common.memory.map.FeatureMapEvent;
 import org.jactr.modules.pm.common.memory.map.IFeatureMapListener;
 import org.jactr.modules.pm.visual.IVisualModule;
+import org.slf4j.LoggerFactory;
 
 /**
  * Scene change listener that implements both {@link IVisualFeatureMapListener} to
@@ -40,8 +39,8 @@ public class SceneChangeListener implements IFeatureMapListener,
   /**
    * Logger definition
    */
-  static private final transient Log   LOGGER           = LogFactory
-                                                            .getLog(SceneChangeListener.class);
+  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
+                                                            .getLogger(SceneChangeListener.class);
 
   final private Set<IIdentifier>       _allIdentifiers;
 

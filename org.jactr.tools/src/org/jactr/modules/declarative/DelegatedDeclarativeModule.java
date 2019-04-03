@@ -11,8 +11,6 @@ import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.model.IModel;
@@ -24,13 +22,14 @@ import org.jactr.core.module.declarative.search.filter.IChunkFilter;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.core.utils.parameter.ParameterHandler;
+import org.slf4j.LoggerFactory;
 
 public class DelegatedDeclarativeModule implements IDeclarativeModule,
     IParameterized
 {
 
-  static final transient Log    LOGGER                     = LogFactory
-                                                               .getLog(DelegatedDeclarativeModule.class);
+  static final transient org.slf4j.Logger LOGGER                     = LoggerFactory
+                                                               .getLogger(DelegatedDeclarativeModule.class);
 
   protected IDeclarativeModule  _delegate;
 

@@ -6,8 +6,8 @@ package org.jactr.modules.pm.motor.six;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.modules.pm.motor.AbstractMotorModule;
 import org.jactr.modules.pm.motor.IMotorModule;
@@ -20,8 +20,8 @@ public class DefaultMotorModule6 extends AbstractMotorModule
   /**
    * Logger definition
    */
-  public static final transient Log LOGGER = LogFactory
-                                                .getLog(DefaultMotorModule6.class);
+  public static final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DefaultMotorModule6.class);
 
   private IMotorActivationBuffer     _buffer;
 

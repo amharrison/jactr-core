@@ -15,8 +15,8 @@ package org.jactr.core.reality;
 
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.agents.AbstractAgent;
 import org.commonreality.identifier.IIdentifier;
 import org.commonreality.object.IAgentObject;
@@ -35,8 +35,8 @@ public class ACTRAgent extends AbstractAgent
   /**
    * logger definition
    */
-  static public final Log        LOGGER           = LogFactory
-                                                      .getLog(ACTRAgent.class);
+  static public final transient org.slf4j.Logger        LOGGER           = LoggerFactory
+                                                      .getLogger(ACTRAgent.class);
 
   protected String               _modelName;
 

@@ -3,16 +3,16 @@ package org.jactr.modules.pm.aural.memory.impl.encoder;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 public class WordAuralEncoder extends AbstractAuralEncoder
 {
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(WordAuralEncoder.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(WordAuralEncoder.class);
 
   public WordAuralEncoder()
   {

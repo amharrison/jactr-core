@@ -6,8 +6,8 @@ package org.jactr.modules.pm.motor.six;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ISlot;
@@ -23,8 +23,8 @@ public class DefaultPreparationTimeEquation implements IMotorTimeEquation
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER           = LogFactory
-                                                          .getLog(DefaultPreparationTimeEquation.class);
+  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
+                                                          .getLogger(DefaultPreparationTimeEquation.class);
 
   static public final String         TIME_PER_FEATURE = "TimePerFeature";
 

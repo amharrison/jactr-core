@@ -14,8 +14,8 @@
 package org.jactr.io;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.io.generator.CodeGeneratorFactory;
 import org.jactr.io.generator.ICodeGenerator;
@@ -28,8 +28,8 @@ public class GenerateFromScratchTest extends TestCase
   /**
    * logger definition
    */
-  static public final Log LOGGER = LogFactory
-                                     .getLog(GenerateFromScratchTest.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory
+                                     .getLogger(GenerateFromScratchTest.class);
 
   @Override
   protected void setUp() throws Exception

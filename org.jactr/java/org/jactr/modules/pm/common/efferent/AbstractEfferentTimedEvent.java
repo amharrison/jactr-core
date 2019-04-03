@@ -8,14 +8,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.efferent.IEfferentCommand;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.model.IModel;
 import org.jactr.core.queue.timedevents.AbstractTimedEvent;
 import org.jactr.core.queue.timedevents.IBufferBasedTimedEvent;
+import org.slf4j.LoggerFactory;
 
 /**
  * timed event meant to deal with efferent commands. since efferent commands
@@ -31,8 +30,8 @@ public abstract class AbstractEfferentTimedEvent<E extends IEfferentCommand> ext
   /**
    * Logger definition
    */
-  static private final transient Log              LOGGER = LogFactory
-                                                             .getLog(AbstractEfferentTimedEvent.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                             .getLogger(AbstractEfferentTimedEvent.class);
 
   final private Future<E>                         _commandFuture;
 

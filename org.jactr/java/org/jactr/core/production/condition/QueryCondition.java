@@ -16,8 +16,8 @@ package org.jactr.core.production.condition;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.six.IStatusBuffer;
 import org.jactr.core.model.IModel;
@@ -38,7 +38,7 @@ public class QueryCondition extends AbstractBufferCondition implements
    * Logger definition
    */
 
-  static private final Log LOGGER = LogFactory.getLog(QueryCondition.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(QueryCondition.class);
 
   public QueryCondition(String bufferName)
   {

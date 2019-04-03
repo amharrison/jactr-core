@@ -3,8 +3,8 @@ package org.jactr.core.module.declarative.event;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.event.IParameterEvent;
 
 public class DeclarativeModuleListenerAdaptor implements
@@ -13,8 +13,8 @@ public class DeclarativeModuleListenerAdaptor implements
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(DeclarativeModuleListenerAdaptor.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DeclarativeModuleListenerAdaptor.class);
 
   public void chunkAdded(DeclarativeModuleEvent dme)
   {

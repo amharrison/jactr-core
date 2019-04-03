@@ -5,11 +5,6 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.Collections;
 
-/*
- * default logging
- */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.fluent.RealityConfigurator;
 import org.commonreality.net.message.credentials.ICredentials;
 import org.commonreality.net.message.credentials.PlainTextCredentials;
@@ -28,13 +23,19 @@ import org.jactr.core.utils.StringUtilities;
 import org.jactr.test.ExecutionTester;
 import org.junit.Test;
 
+/*
+ * default logging
+ */
+ 
+import org.slf4j.LoggerFactory;
+
 public class AuralTest
 {
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-      .getLog(AuralTest.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(AuralTest.class);
 
   protected void commonReality(String modelName) throws Exception
   {
@@ -64,7 +65,7 @@ public class AuralTest
     }
     catch (Exception e)
     {
-      LOGGER.error(e);
+      LOGGER.error(e.getMessage(), e);
       e.printStackTrace();
       throw new RuntimeException(e);
     }

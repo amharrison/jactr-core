@@ -21,8 +21,8 @@ import java.util.Collections;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
 import org.jactr.io.generator.ICodeGenerator;
@@ -36,7 +36,7 @@ public class LispCodeGenerator implements ICodeGenerator
   /**
    * logger definition
    */
-  static public final Log LOGGER = LogFactory.getLog(LispCodeGenerator.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(LispCodeGenerator.class);
 
   public Collection<StringBuilder> generate(CommonTree root, boolean shouldTrim)
   {

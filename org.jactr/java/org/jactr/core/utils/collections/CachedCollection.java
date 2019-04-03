@@ -20,8 +20,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 
 /**
  * a collection that permits asynchronous changes to its contents without
@@ -36,8 +36,8 @@ public class CachedCollection<I> implements Collection<I>
   /**
    * logger definition
    */
-  static private final Log         LOGGER = LogFactory
-                                              .getLog(CachedCollection.class);
+  static private final transient org.slf4j.Logger         LOGGER = LoggerFactory
+                                              .getLogger(CachedCollection.class);
 
   private Collection<I>            _backingCollection;
 

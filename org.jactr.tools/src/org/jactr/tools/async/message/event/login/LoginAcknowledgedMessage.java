@@ -15,8 +15,8 @@ package org.jactr.tools.async.message.event.login;
 
 import java.io.Serializable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.async.message.BaseMessage;
 /**
  * @author developer
@@ -33,8 +33,8 @@ public class LoginAcknowledgedMessage extends BaseMessage implements
   /**
    logger definition
    */
-  static private final transient Log LOGGER           = LogFactory
-                                      .getLog(LoginAcknowledgedMessage.class);
+  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
+                                      .getLogger(LoginAcknowledgedMessage.class);
 
   private boolean _accepted;
   private String _message;

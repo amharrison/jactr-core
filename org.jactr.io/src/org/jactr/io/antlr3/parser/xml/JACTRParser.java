@@ -30,14 +30,13 @@ import org.antlr.runtime.tree.RewriteRuleSubtreeStream;
 import org.antlr.runtime.tree.RewriteRuleTokenStream;
 import org.antlr.runtime.tree.Tree;
 import org.antlr.runtime.tree.TreeAdaptor;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.slot.ISlot;
 import org.jactr.io.antlr3.compiler.CompilationError;
 import org.jactr.io.antlr3.compiler.CompilationWarning;
 import org.jactr.io.antlr3.misc.ASTSupport;
 import org.jactr.io.antlr3.misc.CommonTreeException;
 import org.jactr.io.antlr3.parser.AbstractModelParser;
+import org.slf4j.LoggerFactory;
 
 public class JACTRParser extends Parser
 {
@@ -517,8 +516,8 @@ public class JACTRParser extends Parser
     return "/Users/harrison/Archive/Development/git/jactr/org.jactr.io/src/org/jactr/io/antlr3/parser/xml/JACTR.g";
   }
 
-  static private final transient Log LOGGER   = LogFactory
-                                                  .getLog(JACTRParser.class);
+  static private final transient org.slf4j.Logger LOGGER   = LoggerFactory
+                                                  .getLogger(JACTRParser.class);
 
   private ASTSupport                 _support = new ASTSupport();
 
@@ -535,7 +534,7 @@ public class JACTRParser extends Parser
   @Override
   public void reportError(RecognitionException re)
   {
-    if (LOGGER.isDebugEnabled()) LOGGER.debug(re);
+    if (LOGGER.isDebugEnabled()) LOGGER.debug("", re);
     reportException(re);
     super.reportError(re);
   }
@@ -1442,7 +1441,7 @@ public class JACTRParser extends Parser
         }
         catch (Exception e)
         {
-          LOGGER.error(e);
+          LOGGER.error("", e);
           if (e instanceof CommonTreeException)
           {
             // mark the exception so that we know what node it occured on
@@ -1799,7 +1798,7 @@ public class JACTRParser extends Parser
         }
         catch (Exception ex)
         {
-          LOGGER.error(ex);
+          LOGGER.error("", ex);
           if (ex instanceof CommonTreeException)
           {
             // mark the exception so that we know what node it occured on

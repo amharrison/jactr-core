@@ -1,21 +1,22 @@
 package org.jactr.modules.pm.common.efferent;
 
-/*
- * default logging
- */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.efferent.IEfferentCommand;
 import org.commonreality.efferent.IEfferentCommand.ActualState;
 import org.commonreality.identifier.IIdentifier;
+
+/*
+ * default logging
+ */
+ 
+import org.slf4j.LoggerFactory;
 
 public class IndividualCommandManager<C extends IEfferentCommand>
 {
   /**
    * Logger definition
    */
-  static private final transient Log      LOGGER = LogFactory
-                                                     .getLog(IndividualCommandManager.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                     .getLogger(IndividualCommandManager.class);
 
   final private IIdentifier               _identifier;
 

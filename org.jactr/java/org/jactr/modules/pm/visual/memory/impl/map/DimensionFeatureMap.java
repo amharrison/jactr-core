@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.commonreality.modalities.visual.IVisualPropertyHandler;
 import org.commonreality.modalities.visual.geom.Dimension2D;
@@ -26,8 +26,8 @@ public class DimensionFeatureMap extends AbstractVisualFeatureMap<Dimension2D>
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(DimensionFeatureMap.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DimensionFeatureMap.class);
   
   private Map<IIdentifier, Dimension2D> _currentValues;
 

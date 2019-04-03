@@ -12,11 +12,9 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.runtime.event.ACTRRuntimeAdapter;
 import org.jactr.core.runtime.event.ACTRRuntimeEvent;
-import org.jactr.core.runtime.event.IACTRRuntimeListener;
+import org.slf4j.LoggerFactory;
 
 /**
  * the runtime listener is responsible for triggering the appropriate conditions
@@ -29,8 +27,8 @@ public class RuntimeListener extends ACTRRuntimeAdapter
   /**
    * Logger definition
    */
-  static private final transient Log      LOGGER = LogFactory
-                                                     .getLog(RuntimeListener.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                     .getLogger(RuntimeListener.class);
 
   final private RuntimeState              _state;
 
@@ -154,23 +152,27 @@ public class RuntimeListener extends ACTRRuntimeAdapter
     }
   }
 
+  @Override
   public void runtimeResumed(ACTRRuntimeEvent event)
   {
     triggerFutures(_resumeFutures, true, null);
   }
 
+  @Override
   public void runtimeStarted(ACTRRuntimeEvent event)
   {
     _stopException = null;
     triggerFutures(_startFutures, true, null);
   }
 
+  @Override
   public void runtimeStopped(ACTRRuntimeEvent event)
   {
     _stopException = event.getException();
     triggerFutures(_stopFutures, true, event.getException());
   }
 
+  @Override
   public void runtimeSuspended(ACTRRuntimeEvent event)
   {
     triggerFutures(_suspendFutures, true, null);

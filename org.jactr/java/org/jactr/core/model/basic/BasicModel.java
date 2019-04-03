@@ -23,8 +23,8 @@ import java.util.TreeSet;
 import java.util.concurrent.Executor;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.event.ACTREventDispatcher;
 import org.jactr.core.event.IParameterListener;
@@ -53,8 +53,8 @@ public class BasicModel extends DefaultAdaptable implements IModel
   /**
    * logger definition
    */
-  static private final Log                                          LOGGER                = LogFactory
-                                                                                              .getLog(BasicModel.class);
+  static private final transient org.slf4j.Logger                                          LOGGER                = LoggerFactory
+                                                                                              .getLogger(BasicModel.class);
 
   static public final String                                        CYCLE_SKIPPING_PARAM  = "EnableUnusedCycleSkipping";
 

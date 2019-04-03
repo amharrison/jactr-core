@@ -23,8 +23,8 @@ import java.util.function.Supplier;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.compiler.CompilationWarning;
@@ -47,8 +47,8 @@ public class IOUtilities
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory
-      .getLog(IOUtilities.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(IOUtilities.class);
 
 
 

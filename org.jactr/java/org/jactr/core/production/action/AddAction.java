@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.IRequestableBuffer;
 import org.jactr.core.buffer.delegate.AddChunkRequestDelegate;
@@ -34,6 +32,7 @@ import org.jactr.core.production.request.IRequest;
 import org.jactr.core.production.request.SlotBasedRequest;
 import org.jactr.core.slot.IMutableSlot;
 import org.jactr.core.slot.ISlot;
+import org.slf4j.LoggerFactory;
 
 /**
  * AddAction represents the consequence of adding a chunk to a buffer. It can
@@ -47,8 +46,8 @@ public class AddAction extends DefaultAction implements IBufferAction,
     org.jactr.core.slot.ISlotContainer
 {
 
-  private static transient Log               LOGGER = LogFactory
-                                                        .getLog(AddAction.class
+  private static transient org.slf4j.Logger  LOGGER = LoggerFactory
+                                                        .getLogger(AddAction.class
                                                             .getName());
 
   static private AddChunkTypeRequestDelegate _chunkTypeDelegate;

@@ -13,8 +13,8 @@
  */
 package org.jactr.core.slot;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
@@ -29,8 +29,8 @@ import org.jactr.core.utils.WeaklyCached;
 public class BasicSlot implements ISlot, Comparable<ISlot>
 {
 
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(BasicSlot.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(BasicSlot.class);
 
   private Object                     _value;
 

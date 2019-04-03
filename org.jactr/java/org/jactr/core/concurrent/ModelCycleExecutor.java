@@ -5,8 +5,8 @@ package org.jactr.core.concurrent;
  */
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.ICycleProcessor;
 import org.jactr.core.model.IModel;
 
@@ -21,8 +21,8 @@ public class ModelCycleExecutor implements Executor
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ModelCycleExecutor.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ModelCycleExecutor.class);
 
   static public enum When {
     BEFORE, AFTER, ASAP

@@ -7,8 +7,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.object.manager.IAfferentObjectManager;
 import org.commonreality.object.manager.event.IAfferentListener;
@@ -66,8 +66,8 @@ public class SceneChangeExtension implements IExtension
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER                       = LogFactory
-                                                                      .getLog(SceneChangeExtension.class);
+  static private final transient org.slf4j.Logger LOGGER                       = LoggerFactory
+                                                                      .getLogger(SceneChangeExtension.class);
 
   static final public String         CLEAR_CHUNK_TYPE             = "clear-scene-change";
 

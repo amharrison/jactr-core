@@ -17,8 +17,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
 import org.jactr.io.participant.IASTTrimmer;
@@ -31,7 +31,7 @@ public class BasicASTTrimmer implements IASTTrimmer
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory.getLog(BasicASTTrimmer.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BasicASTTrimmer.class);
 
   final private CommonTree _modelDescriptor;
 

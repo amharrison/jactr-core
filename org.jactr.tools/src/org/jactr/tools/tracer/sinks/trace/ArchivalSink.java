@@ -10,8 +10,6 @@ import java.util.TreeMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.util.LockUtilities;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.runtime.ACTRRuntime;
@@ -19,6 +17,7 @@ import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.tools.tracer.ITraceSink;
 import org.jactr.tools.tracer.sinks.trace.internal.TraceFileManager;
 import org.jactr.tools.tracer.transformer.ITransformedEvent;
+import org.slf4j.LoggerFactory;
 
 /**
  * full trace sink saves events to a series of timestamped files that can be
@@ -31,8 +30,8 @@ public class ArchivalSink implements ITraceSink
   /**
    * Logger definition
    */
-  static private final transient Log    LOGGER        = LogFactory
-                                                          .getLog(ArchivalSink.class);
+  static private final transient org.slf4j.Logger LOGGER        = LoggerFactory
+                                                          .getLogger(ArchivalSink.class);
 
   private volatile boolean              _isActive     = true;
 

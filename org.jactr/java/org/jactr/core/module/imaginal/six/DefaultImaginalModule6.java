@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.module.AbstractModule;
 import org.jactr.core.module.imaginal.IImaginalModule;
@@ -40,8 +40,8 @@ public class DefaultImaginalModule6 extends AbstractModule implements
   /**
    * logger definition
    */
-  static private final Log  LOGGER           = LogFactory
-                                                 .getLog(DefaultImaginalModule6.class);
+  static private final transient org.slf4j.Logger  LOGGER           = LoggerFactory
+                                                 .getLogger(DefaultImaginalModule6.class);
 
   private IActivationBuffer _imaginalBuffer;
 

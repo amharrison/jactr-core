@@ -18,8 +18,8 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.TreeNodeStream;
 import org.antlr.runtime.tree.TreeParser;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
@@ -156,7 +156,7 @@ public class JACTRBuilder extends TreeParser {
     public String getGrammarFileName() { return "/Users/harrison/Archive/Development/workspaces/jactr-env-dev/org.jactr.io/src/org/jactr/io/antlr3/builder/JACTRBuilder.g"; }
 
 
-    static private final transient Log LOGGER = LogFactory.getLog(JACTRBuilder.class);
+    static private final transient org.slf4j.Logger LOGGER = LoggerFactory.getLogger(JACTRBuilder.class);
 
 
     static private String NULL = "null";

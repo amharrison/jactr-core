@@ -3,8 +3,8 @@ package org.jactr.modules.pm.motor.event;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.event.AbstractACTREvent;
 import org.jactr.modules.pm.motor.IMotorModule;
 import org.jactr.modules.pm.motor.command.IMovement;
@@ -16,8 +16,8 @@ public class MotorModuleEvent extends
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(MotorModuleEvent.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(MotorModuleEvent.class);
 
   static public enum Type {
     PREPARED, STARTED, COMPLETED, ABORTED, RESET, REJECTED, ADDED, REMOVED

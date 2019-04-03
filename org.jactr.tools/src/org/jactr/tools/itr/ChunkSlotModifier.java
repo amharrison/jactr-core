@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
 import org.jactr.io2.compilation.ICompilationUnit;
@@ -20,8 +20,8 @@ public class ChunkSlotModifier extends AbstractParameterModifier
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ChunkSlotModifier.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ChunkSlotModifier.class);
 
   static public final String   CHUNK_PATTERN     = "ChunkPattern";
 

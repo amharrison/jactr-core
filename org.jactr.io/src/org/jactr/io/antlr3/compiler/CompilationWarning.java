@@ -14,8 +14,8 @@
 package org.jactr.io.antlr3.compiler;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.io.antlr3.misc.CommonTreeException;
 public class CompilationWarning extends CommonTreeException
 {
@@ -23,7 +23,7 @@ public class CompilationWarning extends CommonTreeException
   /**
    logger definition
    */
-  static public final Log LOGGER = LogFactory.getLog(CompilationWarning.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CompilationWarning.class);
 
   public CompilationWarning(String message, CommonTree node)
   {

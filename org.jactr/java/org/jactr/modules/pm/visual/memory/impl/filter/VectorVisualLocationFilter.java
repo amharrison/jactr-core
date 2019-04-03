@@ -5,8 +5,8 @@ package org.jactr.modules.pm.visual.memory.impl.filter;
  */
 import java.util.Comparator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.logging.Logger;
 import org.jactr.core.model.IModel;
@@ -28,8 +28,8 @@ public class VectorVisualLocationFilter extends
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER           = LogFactory
-                                                          .getLog(VectorVisualLocationFilter.class);
+  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
+                                                          .getLogger(VectorVisualLocationFilter.class);
 
   static public final String         ANGLE_SLOT       = ":vector-angle";
 

@@ -5,8 +5,8 @@ package org.jactr.tools.tracer.transformer.visual;
  */
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.event.IACTREvent;
@@ -23,8 +23,8 @@ public class VisualEventTransformer implements IEventTransformer
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(VisualEventTransformer.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(VisualEventTransformer.class);
 
   public ITransformedEvent transform(IACTREvent actrEvent)
   {

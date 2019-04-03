@@ -3,8 +3,8 @@ package org.jactr.tools.grapher.core.selector;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.production.IProduction;
 
 public class ProductionSelector extends AbstractNameSelector<IProduction>
@@ -12,8 +12,8 @@ public class ProductionSelector extends AbstractNameSelector<IProduction>
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ProductionSelector.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ProductionSelector.class);
   
   
   public ProductionSelector(String regex)

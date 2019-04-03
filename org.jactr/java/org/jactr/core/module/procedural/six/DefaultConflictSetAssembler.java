@@ -9,8 +9,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
@@ -30,6 +28,7 @@ import org.jactr.core.production.condition.ChunkTypeCondition;
 import org.jactr.core.production.condition.IBufferCondition;
 import org.jactr.core.production.condition.ICondition;
 import org.jactr.core.utils.collections.FastSetFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * monitors the procedural module for new productions. All productions are
@@ -49,8 +48,8 @@ public class DefaultConflictSetAssembler implements IConflictSetAssembler
   /**
    * Logger definition
    */
-  static private final transient Log                     LOGGER                       = LogFactory
-                                                                                          .getLog(DefaultConflictSetAssembler.class);
+  static private final transient org.slf4j.Logger        LOGGER                       = LoggerFactory
+                                                                                          .getLogger(DefaultConflictSetAssembler.class);
 
   private IProceduralModule                              _module;
 

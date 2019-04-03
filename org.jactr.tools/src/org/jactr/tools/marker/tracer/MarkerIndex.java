@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.tools.marker.IMarker;
 
 public class MarkerIndex
@@ -20,8 +20,8 @@ public class MarkerIndex
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(MarkerIndex.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(MarkerIndex.class);
 
   private final Set<String>          _writtenTypes;
 

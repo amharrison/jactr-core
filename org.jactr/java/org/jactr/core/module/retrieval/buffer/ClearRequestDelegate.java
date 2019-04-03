@@ -13,8 +13,8 @@
  */
 package org.jactr.core.module.retrieval.buffer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.module.retrieval.IRetrievalModule;
@@ -33,8 +33,8 @@ public class ClearRequestDelegate extends AbstractRequestDelegate
   /**
    * logger definition
    */
-  static public final Log LOGGER = LogFactory
-                                     .getLog(ClearRequestDelegate.class);
+  static public final org.slf4j.Logger LOGGER = LoggerFactory
+                                     .getLogger(ClearRequestDelegate.class);
 
   public ClearRequestDelegate(IChunkType clearChunkType)
   {

@@ -14,8 +14,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.BufferUtilities;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.ChunkActivationComparator;
@@ -57,6 +55,7 @@ import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.utils.StringUtilities;
 import org.jactr.core.utils.collections.FastCollectionFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract declarative module that provides most of the functionality required
@@ -74,8 +73,8 @@ public abstract class AbstractDeclarativeModule extends AbstractModule
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER               = LogFactory
-      .getLog(AbstractDeclarativeModule.class);
+  static private final transient org.slf4j.Logger LOGGER               = LoggerFactory
+      .getLogger(AbstractDeclarativeModule.class);
 
   static public final String         SUSPEND_DISPOSAL_KEY = DefaultDeclarativeModule.class
       + ".suspendDisposal";

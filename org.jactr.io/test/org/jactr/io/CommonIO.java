@@ -22,8 +22,8 @@ import java.util.Collection;
 import junit.framework.Assert;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.io.antlr3.Support;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
@@ -40,7 +40,7 @@ public class CommonIO extends Assert
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory.getLog(CommonIO.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CommonIO.class);
 
   static public Collection<StringBuilder> generateSource(IModel model,
       String extension)

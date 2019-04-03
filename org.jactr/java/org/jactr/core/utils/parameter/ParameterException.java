@@ -13,8 +13,8 @@
  */
 package org.jactr.core.utils.parameter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 /**
  * @author developer
  *
@@ -24,7 +24,7 @@ public class ParameterException extends RuntimeException
   /**
    logger definition
    */
-  static private final Log LOGGER = LogFactory.getLog(ParameterException.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ParameterException.class);
 
   /**
    * 

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.delegate.AddChunkRequestDelegate;
 import org.jactr.core.buffer.delegate.AddChunkTypeRequestDelegate;
@@ -21,6 +19,7 @@ import org.jactr.core.model.IModel;
 import org.jactr.core.module.IModule;
 import org.jactr.core.production.request.IRequest;
 import org.jactr.core.utils.parameter.ParameterHandler;
+import org.slf4j.LoggerFactory;
 
 public class DefaultCapacityGoalBuffer6 extends AbstractCapacityBuffer6
     implements IDelegatedRequestableBuffer
@@ -29,8 +28,8 @@ public class DefaultCapacityGoalBuffer6 extends AbstractCapacityBuffer6
   /**
    * Logger definition
    */
-  static private transient Log         LOGGER               = LogFactory
-                                                                .getLog(DefaultCapacityGoalBuffer6.class);
+  static private transient org.slf4j.Logger LOGGER               = LoggerFactory
+                                                                .getLogger(DefaultCapacityGoalBuffer6.class);
 
   static final public String           CHUNK_CAPACITY_PARAM = "ChunkCapacity";
 
@@ -52,6 +51,7 @@ public class DefaultCapacityGoalBuffer6 extends AbstractCapacityBuffer6
      */
 
     AsynchronousRequestDelegate ard = new AddChunkRequestDelegate() {
+      @Override
       protected double computeCompletionTime(double startTime,
           IRequest request, IActivationBuffer buffer)
       {
@@ -65,6 +65,7 @@ public class DefaultCapacityGoalBuffer6 extends AbstractCapacityBuffer6
     addRequestDelegate(ard);
 
     ard = new AddChunkTypeRequestDelegate() {
+      @Override
       protected double computeCompletionTime(double startTime,
           IRequest request, IActivationBuffer buffer)
       {
@@ -102,6 +103,7 @@ public class DefaultCapacityGoalBuffer6 extends AbstractCapacityBuffer6
    * 
    * @return
    */
+  @Override
   protected boolean isCapacityReached()
   {
     try
@@ -154,10 +156,8 @@ public class DefaultCapacityGoalBuffer6 extends AbstractCapacityBuffer6
   public void setParameter(String key, String value)
   {
     if (CHUNK_CAPACITY_PARAM.equalsIgnoreCase(key))
-    {
-      setHardChunkCapacity(((Number) ParameterHandler.numberInstance().coerce(
-          value)).intValue());
-    }
+      setHardChunkCapacity(ParameterHandler.numberInstance().coerce(
+          value).intValue());
     else
       super.setParameter(key, value);
   }

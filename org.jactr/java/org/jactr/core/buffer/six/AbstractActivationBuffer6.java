@@ -16,8 +16,6 @@ package org.jactr.core.buffer.six;
 import java.util.Collection;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.AbstractActivationBuffer;
 import org.jactr.core.buffer.BufferUtilities;
 import org.jactr.core.buffer.IActivationBuffer;
@@ -37,6 +35,7 @@ import org.jactr.core.slot.IMutableSlot;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.slot.NotifyingSlotContainer;
 import org.jactr.core.slot.event.ISlotContainerListener;
+import org.slf4j.LoggerFactory;
 
 /**
  * template for an activation buffer that handles it's own status and inserts
@@ -52,8 +51,8 @@ public abstract class AbstractActivationBuffer6 extends
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(AbstractActivationBuffer6.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(AbstractActivationBuffer6.class);
 
   private IChunk                     _requestedChunk;
 

@@ -4,8 +4,8 @@ package org.jactr.tools.tracer.transformer.chunk;
  * default logging
  */
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.event.ChunkEvent;
 import org.jactr.core.chunk.event.ChunkEvent.Type;
 import org.jactr.tools.tracer.transformer.AbstractTransformedEvent;
@@ -19,8 +19,8 @@ public class TransformedChunkEvent extends AbstractTransformedEvent
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(TransformedChunkEvent.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(TransformedChunkEvent.class);
   
   private ChunkEvent.Type _type;
 

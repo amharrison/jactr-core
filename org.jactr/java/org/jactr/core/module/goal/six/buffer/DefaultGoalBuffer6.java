@@ -13,8 +13,8 @@
  */
 package org.jactr.core.module.goal.six.buffer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.delegate.AddChunkRequestDelegate;
 import org.jactr.core.buffer.delegate.AddChunkTypeRequestDelegate;
@@ -41,8 +41,8 @@ public class DefaultGoalBuffer6 extends DefaultDelegatedRequestableBuffer6
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(DefaultGoalBuffer6.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DefaultGoalBuffer6.class);
 
   ICompilableContext _compilableContext = new DefaultCompilableContext(true, true, false, false);
 	

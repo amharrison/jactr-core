@@ -13,8 +13,7 @@
 
 package org.jactr.scripting.condition;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.VariableBindings;
 import org.jactr.core.production.condition.CannotMatchException;
@@ -23,6 +22,7 @@ import org.jactr.core.production.condition.match.IMatchFailure;
 import org.jactr.scripting.IScriptableFactory;
 import org.jactr.scripting.ScriptSupport;
 import org.jactr.scripting.ScriptingManager;
+import org.slf4j.LoggerFactory;
 
 /**
  * ScriptableCondition allows for custom actions. You set the script via
@@ -36,8 +36,8 @@ import org.jactr.scripting.ScriptingManager;
 public class ScriptableCondition implements ICondition
 {
 
-  static private transient Log   LOGGER = LogFactory
-                                            .getLog(ScriptableCondition.class);
+  static private transient org.slf4j.Logger LOGGER = LoggerFactory
+                                            .getLogger(ScriptableCondition.class);
 
   private final IConditionScript _conditionScript;
 

@@ -4,8 +4,8 @@ package org.jactr.modules.pm.motor.buffer.six;
  * default logging
  */
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.object.IEfferentObject;
 import org.jactr.core.buffer.delegate.AddChunkTypeRequestDelegate;
 import org.jactr.core.buffer.delegate.ExpandChunkRequestDelegate;
@@ -35,8 +35,8 @@ public class DefaultMotorActivationBuffer6 extends AbstractPMActivationBuffer6
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(DefaultMotorActivationBuffer6.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DefaultMotorActivationBuffer6.class);
 
   public DefaultMotorActivationBuffer6(String name, AbstractMotorModule module)
   {

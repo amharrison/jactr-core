@@ -6,8 +6,8 @@ package org.jactr.modules.pm.visual.memory.impl;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.jactr.core.buffer.BufferUtilities;
 import org.jactr.core.buffer.six.IStatusBuffer;
@@ -27,8 +27,8 @@ public class DefaultPerceptListener implements IActivePerceptListener
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(DefaultPerceptListener.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DefaultPerceptListener.class);
 
   private IVisualModule              _module;
 

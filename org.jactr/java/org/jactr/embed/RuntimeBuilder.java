@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Supplier;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.reality.connector.IConnector;
 import org.jactr.core.runtime.ACTRRuntime;
@@ -26,8 +26,8 @@ public class RuntimeBuilder
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER          = LogFactory
-                                                         .getLog(RuntimeBuilder.class);
+  static private final transient org.slf4j.Logger LOGGER          = LoggerFactory
+                                                         .getLogger(RuntimeBuilder.class);
 
 
 

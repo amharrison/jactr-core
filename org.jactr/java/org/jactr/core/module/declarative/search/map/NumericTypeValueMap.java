@@ -16,15 +16,15 @@ package org.jactr.core.module.declarative.search.map;
 import java.util.Collection;
 
 import org.apache.commons.collections.set.CompositeSet;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.utils.collections.CompositeSetFactory;
 public class NumericTypeValueMap<I> extends AbstractTypeValueMap<Double, I> implements ITypeValueMap<Double, I>
 {
   /**
    logger definition
    */
-  static private final Log LOGGER = LogFactory.getLog(NumericTypeValueMap.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(NumericTypeValueMap.class);
 
   private SortedValueMap<Double,I> _valueMap;
   

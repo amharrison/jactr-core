@@ -16,8 +16,6 @@ package org.jactr.io.participant;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.module.declarative.four.learning.DefaultDeclarativeLearningModule4;
 import org.jactr.core.module.declarative.six.DefaultDeclarativeModule6;
 import org.jactr.core.module.goal.six.DefaultGoalModule6;
@@ -40,6 +38,7 @@ import org.jactr.modules.pm.aural.six.DefaultAuralModule6;
 import org.jactr.modules.pm.motor.six.DefaultMotorModule6;
 import org.jactr.modules.pm.visual.six.DefaultVisualModule6;
 import org.jactr.modules.pm.vocal.six.DefaultVocalModule6;
+import org.slf4j.LoggerFactory;
 
 /**
  * Central point for finding IASTParticipants for a given class
@@ -53,8 +52,8 @@ public class ASTParticipantRegistry
    * Logger definition
    */
 
-  static private final transient Log          LOGGER           = LogFactory
-                                                                   .getLog(ASTParticipantRegistry.class);
+  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
+                                                                   .getLogger(ASTParticipantRegistry.class);
 
   static private Map<String, IASTParticipant> _astParticipants = new HashMap<String, IASTParticipant>();
 

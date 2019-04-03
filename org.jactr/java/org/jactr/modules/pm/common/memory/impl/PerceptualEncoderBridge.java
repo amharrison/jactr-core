@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.identifier.IIdentifier;
 import org.commonreality.object.IAfferentObject;
@@ -30,6 +28,7 @@ import org.jactr.modules.pm.common.afferent.IAfferentObjectListener;
 import org.jactr.modules.pm.common.memory.IPerceptualEncoder;
 import org.jactr.modules.pm.common.memory.PerceptualSearchResult;
 import org.jactr.modules.pm.common.memory.event.ActivePerceptEvent;
+import org.slf4j.LoggerFactory;
 
 /**
  * simple delegate that sits between the afferent object listener
@@ -43,8 +42,8 @@ public class PerceptualEncoderBridge implements IAfferentObjectListener
   /**
    * Logger definition
    */
-  static private final transient Log     LOGGER = LogFactory
-                                                    .getLog(PerceptualEncoderBridge.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                    .getLogger(PerceptualEncoderBridge.class);
 
   private final IPerceptualEncoder       _encoder;
 

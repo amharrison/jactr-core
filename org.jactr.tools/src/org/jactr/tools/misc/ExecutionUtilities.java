@@ -6,8 +6,8 @@ package org.jactr.tools.misc;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.concurrent.ModelCycleExecutor;
 import org.jactr.core.model.IModel;
 import org.jactr.core.queue.ITimedEvent;
@@ -32,8 +32,8 @@ public class ExecutionUtilities
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ExecutionUtilities.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ExecutionUtilities.class);
 
 
 

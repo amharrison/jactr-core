@@ -3,8 +3,8 @@ package org.jactr.core.production.bindings;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.production.VariableBindings;
 import org.jactr.core.utils.recyclable.AbstractThreadLocalRecyclableFactory;
 import org.jactr.core.utils.recyclable.RecyclableFactory;
@@ -14,8 +14,8 @@ public class VariableBindingsFactory
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(VariableBindingsFactory.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(VariableBindingsFactory.class);
 
   static private RecyclableFactory<VariableBindings> _factory = new AbstractThreadLocalRecyclableFactory<VariableBindings>(
                                                                   20) {

@@ -14,8 +14,8 @@
 package org.jactr.tools.tracer.transformer.buffer;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.event.ActivationBufferEvent;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.event.IACTREvent;
@@ -33,8 +33,8 @@ public class ActivationBufferEventTransformer implements IEventTransformer
   /**
    * logger definition
    */
-  static private final Log LOGGER   = LogFactory
-                                        .getLog(ActivationBufferEventTransformer.class);
+  static private final org.slf4j.Logger LOGGER   = LoggerFactory
+                                        .getLogger(ActivationBufferEventTransformer.class);
 
   private ASTSupport       _support = new ASTSupport();
 

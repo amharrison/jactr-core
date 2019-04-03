@@ -21,8 +21,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.logging.ILogger;
 import org.jactr.core.logging.LogEvent;
@@ -36,6 +34,7 @@ import org.jactr.core.utils.RollingFileWriter;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.core.utils.parameter.ParameterHandler;
 import org.jactr.instrument.IInstrument;
+import org.slf4j.LoggerFactory;
 
 /**
  * demuxing logger
@@ -47,8 +46,8 @@ public class DefaultModelLogger implements IInstrument, ILogger, IParameterized
   /**
    * logger definition
    */
-  static private final Log         LOGGER      = LogFactory
-                                                   .getLog(DefaultModelLogger.class);
+  static private final org.slf4j.Logger LOGGER      = LoggerFactory
+                                                   .getLogger(DefaultModelLogger.class);
 
   static public final String       ALL         = "all";
 

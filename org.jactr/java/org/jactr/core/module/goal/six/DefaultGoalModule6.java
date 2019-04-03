@@ -16,8 +16,8 @@ package org.jactr.core.module.goal.six;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.module.AbstractModule;
 import org.jactr.core.module.goal.IGoalModule;
@@ -35,8 +35,8 @@ public class DefaultGoalModule6 extends AbstractModule implements IGoalModule
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(DefaultGoalModule6.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DefaultGoalModule6.class);
 
   private IActivationBuffer          _goalBuffer;
 

@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.event.ACTREventDispatcher;
 import org.jactr.core.model.IModel;
@@ -48,8 +48,8 @@ public abstract class AbstractProduction extends DefaultAdaptable implements
   /**
    * logger definition
    */
-  static private final Log                                        LOGGER = LogFactory
-                                                                             .getLog(AbstractProduction.class);
+  static private final transient org.slf4j.Logger                                        LOGGER = LoggerFactory
+                                                                             .getLogger(AbstractProduction.class);
 
   protected ACTREventDispatcher<IProduction, IProductionListener> _eventDispatcher;
 

@@ -12,9 +12,8 @@ import java.util.TreeSet;
 import java.util.concurrent.Executor;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.utils.parameter.IParameterized;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractParameterizedProbe<T> implements IProbe<T>,
     IPollingProbe<T>
@@ -22,8 +21,8 @@ public abstract class AbstractParameterizedProbe<T> implements IProbe<T>,
   /**
    * Logger definition
    */
-  static private final transient Log    LOGGER      = LogFactory
-                                                        .getLog(AbstractParameterizedProbe.class);
+  static private final transient org.slf4j.Logger LOGGER      = LoggerFactory
+                                                        .getLogger(AbstractParameterizedProbe.class);
 
   final protected T                     _parameterized;
 

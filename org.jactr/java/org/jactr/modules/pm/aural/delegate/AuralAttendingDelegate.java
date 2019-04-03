@@ -3,8 +3,8 @@ package org.jactr.modules.pm.aural.delegate;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.logging.Logger;
@@ -23,8 +23,8 @@ public class AuralAttendingDelegate extends
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(AuralAttendingDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(AuralAttendingDelegate.class);
 
   public AuralAttendingDelegate(AbstractAuralModule module)
   {

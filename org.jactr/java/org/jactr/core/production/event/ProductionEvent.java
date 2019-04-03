@@ -13,8 +13,8 @@
  */
 package org.jactr.core.production.event;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.event.AbstractACTREvent;
 import org.jactr.core.event.IParameterEvent;
 import org.jactr.core.production.IInstantiation;
@@ -30,7 +30,7 @@ public class ProductionEvent extends
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory.getLog(ProductionEvent.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ProductionEvent.class);
 
   static public enum Type {
     ENCODED, FIRED, INSTANTIATED, CONDITION_ADDED, CONDITION_REMOVED, ACTION_ADDED, ACTION_REMOVED, PARAMETER_CHANGED

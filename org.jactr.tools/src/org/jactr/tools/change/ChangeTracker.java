@@ -13,8 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.event.ActivationBufferEvent;
 import org.jactr.core.buffer.event.ActivationBufferListenerAdaptor;
@@ -42,6 +40,7 @@ import org.jactr.instrument.IInstrument;
 import org.jactr.io.generator.CodeGeneratorFactory;
 import org.jactr.io.generator.ICodeGenerator;
 import org.jactr.io.resolver.ASTResolver;
+import org.slf4j.LoggerFactory;
 
 /**
  * general change tracker that logs chunk changes and production instantiations.
@@ -54,8 +53,8 @@ public class ChangeTracker implements IInstrument, IParameterized
   /**
    * Logger definition
    */
-  static private final transient Log          LOGGER               = LogFactory
-                                                                       .getLog(ChangeTracker.class);
+  static private final transient org.slf4j.Logger LOGGER               = LoggerFactory
+                                                                       .getLogger(ChangeTracker.class);
 
   static public final String                  CHANGE_STREAM        = "CHANGE";
 

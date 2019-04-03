@@ -13,8 +13,8 @@
 
 package org.jactr.core.queue.event;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.event.AbstractACTREvent;
 import org.jactr.core.queue.ITimedEvent;
 import org.jactr.core.queue.TimedEventQueue;
@@ -34,8 +34,8 @@ public class TimedEventEvent extends
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(TimedEventEvent.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(TimedEventEvent.class);
 
   static public enum Type {
     ABORTED, FIRED, QUEUED, UPDATED;

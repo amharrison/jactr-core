@@ -5,8 +5,8 @@ package org.jactr.embed;
  */
 import java.util.ArrayList;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.models.FluentSemantic;
 import org.jactr.core.reality.connector.IConnector;
@@ -22,8 +22,8 @@ public class EmbedTest
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(EmbedTest.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(EmbedTest.class);
 
   @Before
   public void setUp() throws Exception

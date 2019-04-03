@@ -24,8 +24,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.model.IModel;
 import org.jactr.core.model.event.IModelListener;
@@ -57,8 +57,8 @@ public class RuntimeTracer implements IInstrument, IParameterized
   /**
    * logger definition
    */
-  static public final Log            LOGGER                = LogFactory
-                                                               .getLog(RuntimeTracer.class);
+  static public final transient org.slf4j.Logger            LOGGER                = LoggerFactory
+                                                               .getLogger(RuntimeTracer.class);
 
   static public final String         EXECUTOR_PARAM        = "Executor";
 

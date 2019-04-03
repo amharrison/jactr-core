@@ -3,8 +3,8 @@ package org.jactr.modules.pm.motor.managers;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.jactr.core.buffer.six.IStatusBuffer;
 import org.jactr.core.chunk.IChunk;
@@ -20,8 +20,8 @@ public class MuscleState extends NotifyingSlotContainer
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER    = LogFactory
-                                                   .getLog(MuscleState.class);
+  static private final transient org.slf4j.Logger LOGGER    = LoggerFactory
+                                                   .getLogger(MuscleState.class);
 
 
   private double[]                   _position = { 0, 0, 0 };

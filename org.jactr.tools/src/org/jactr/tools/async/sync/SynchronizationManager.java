@@ -7,8 +7,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.net.handler.IMessageHandler;
 import org.commonreality.net.session.ISessionInfo;
 import org.jactr.core.concurrent.ExecutorServices;
@@ -38,8 +38,8 @@ public class SynchronizationManager implements IInstrument, IParameterized
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER   = LogFactory
-                                                  .getLog(SynchronizationManager.class);
+  static private final transient org.slf4j.Logger LOGGER   = LoggerFactory
+                                                  .getLogger(SynchronizationManager.class);
 
   // static public final String SYNC_AT_START = "SynchronizeOnStartUp";
 

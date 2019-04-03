@@ -34,8 +34,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.commons.collections.collection.CompositeCollection;
 import org.apache.commons.collections.set.CompositeSet;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
@@ -106,8 +106,8 @@ public class DefaultSearchSystem implements ISearchSystem
   /**
    * logger definition
    */
-  static public final Log                                   LOGGER               = LogFactory
-                                                                                     .getLog(DefaultSearchSystem.class);
+  static public final transient org.slf4j.Logger                                   LOGGER               = LoggerFactory
+                                                                                     .getLogger(DefaultSearchSystem.class);
 
   private ReentrantReadWriteLock                            _lock                = new ReentrantReadWriteLock();
 

@@ -13,14 +13,13 @@
  */
 package org.jactr.core.buffer.six;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jactr.core.buffer.IRequestableBuffer;
 import org.jactr.core.buffer.event.ActivationBufferEvent;
 import org.jactr.core.logging.IMessageBuilder;
 import org.jactr.core.logging.Logger;
 import org.jactr.core.module.IModule;
 import org.jactr.core.production.request.IRequest;
+import org.slf4j.LoggerFactory;
 public abstract class AbstractRequestableBuffer6 extends AbstractActivationBuffer6
     implements IRequestableBuffer
 {
@@ -29,8 +28,8 @@ public abstract class AbstractRequestableBuffer6 extends AbstractActivationBuffe
    * Logger definition
    */
 
-  static private final transient Log LOGGER = LogFactory
-      .getLog(AbstractRequestableBuffer6.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(AbstractRequestableBuffer6.class);
 
   
   public AbstractRequestableBuffer6(String name, IModule module)

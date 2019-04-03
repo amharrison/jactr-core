@@ -6,8 +6,8 @@ package org.jactr.modules.pm.vocal.delegate;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.efferent.IEfferentCommand;
 import org.commonreality.modalities.vocal.VocalizationCommand;
 import org.commonreality.object.IEfferentObject;
@@ -27,8 +27,8 @@ public class VocalManagementDelegate
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(VocalManagementDelegate.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(VocalManagementDelegate.class);
 
   final private VocalCommandManager  _manager;
 

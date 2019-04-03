@@ -15,8 +15,8 @@ package org.jactr.core.models;
 
 import java.util.Arrays;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
@@ -41,8 +41,8 @@ public class ExecutionVerifyTest extends TestCase
   /**
    * logger definition
    */
-  static private final Log LOGGER = LogFactory
-      .getLog(ExecutionVerifyTest.class);
+  static private final org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(ExecutionVerifyTest.class);
 
   protected void run(IModel model) throws Exception
   {

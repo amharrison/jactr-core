@@ -3,8 +3,8 @@ package org.jactr.modules.pm.common.memory.map;
 /*
  * default logging
  */
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.commonreality.object.IAfferentObject;
 import org.commonreality.object.IPropertyHandler;
 import org.jactr.core.slot.ISlot;
@@ -32,8 +32,8 @@ public class DefaultNumericFeatureMap extends AbstractSortedFeatureMap<Double>
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(DefaultNumericFeatureMap.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(DefaultNumericFeatureMap.class);
 
   private final IPropertyHandler     _propertyHandler;
 

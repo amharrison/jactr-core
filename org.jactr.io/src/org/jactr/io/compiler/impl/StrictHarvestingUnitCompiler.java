@@ -11,8 +11,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
 import org.jactr.io.compiler.AbstractReportableUnitCompiler;
@@ -29,8 +29,8 @@ public class StrictHarvestingUnitCompiler extends
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(StrictHarvestingUnitCompiler.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(StrictHarvestingUnitCompiler.class);
 
   private Set<String>                _strictBuffers;
 

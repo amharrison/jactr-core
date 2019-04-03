@@ -5,8 +5,8 @@ package org.jactr.core.module.procedural.six;
  */
 import java.util.Comparator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+ 
+import org.slf4j.LoggerFactory;
 import org.jactr.core.production.IProduction;
 
 public class ProductionNameComparator implements Comparator<IProduction>
@@ -14,8 +14,8 @@ public class ProductionNameComparator implements Comparator<IProduction>
   /**
    * Logger definition
    */
-  static private final transient Log LOGGER = LogFactory
-                                                .getLog(ProductionNameComparator.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+                                                .getLogger(ProductionNameComparator.class);
 
   public int compare(IProduction o1, IProduction o2)
   {

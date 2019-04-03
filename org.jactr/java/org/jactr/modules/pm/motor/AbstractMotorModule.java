@@ -11,8 +11,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.efferent.IEfferentCommand;
 import org.commonreality.identifier.IIdentifier;
@@ -44,6 +42,7 @@ import org.jactr.modules.pm.motor.event.MotorModuleEvent;
 import org.jactr.modules.pm.motor.managers.MotorCommandManager;
 import org.jactr.modules.pm.motor.managers.MuscleState;
 import org.jactr.modules.pm.motor.managers.MuscleStateManager;
+import org.slf4j.LoggerFactory;
 
 /**
  * abstract motor module that handles just about everything one needs. It uses a
@@ -82,8 +81,8 @@ public abstract class AbstractMotorModule extends AbstractPerceptualModule
   /**
    * Logger definition
    */
-  protected static final transient Log                            LOGGER                            = LogFactory
-                                                                                                        .getLog(AbstractMotorModule.class);
+  protected static final transient org.slf4j.Logger               LOGGER                            = LoggerFactory
+                                                                                                        .getLogger(AbstractMotorModule.class);
 
   static public final String                                      ENABLE_PARALLEL_MUSCLES_PARAM     = "EnableMuscleLevelParallelism";
 
