@@ -6,8 +6,6 @@ package org.jactr.eclipse.runtime.ui.selection;
 import java.util.ArrayList;
 import java.util.List;
 
-import javolution.util.FastList;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.viewers.ISelection;
@@ -68,7 +66,7 @@ public class SessionTimeSelectionProvider implements ISelectionProvider
       if (_listeners.size() == 0) return;
 
       if (_cachedListeners == null)
-        _cachedListeners = new FastList<ISelectionChangedListener>(_listeners);
+        _cachedListeners = new ArrayList<>(_listeners);
 
       listeners = _cachedListeners;
     }

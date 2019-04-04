@@ -40,7 +40,7 @@ public class ModuleRegistry extends
 
   private ModuleRegistry()
   {
-    super("org.jactr.modules");
+    super("org.jactr.osgi.modules");
   }
 
   @Override

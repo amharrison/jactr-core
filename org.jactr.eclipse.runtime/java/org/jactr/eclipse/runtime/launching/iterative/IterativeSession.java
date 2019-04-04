@@ -47,6 +47,12 @@ public class IterativeSession extends AbstractSession
   private final class IterativeTrackerJob extends Job
   {
 
+    final private DateFormat _shortFormat  = DateFormat.getDateTimeInstance(
+                                               DateFormat.SHORT,
+                                               DateFormat.SHORT);
+
+    private StringBuilder    _labelBuilder = new StringBuilder();
+
     final private int TOTAL_WORK = 1000;
 
     private IterativeTrackerJob(String name)
@@ -81,12 +87,14 @@ public class IterativeSession extends AbstractSession
 
     protected String generateLabel()
     {
-      StringBuilder sb = new StringBuilder("Running ");
-      sb.append(_tracker.getCurrentIteration()).append("/");
-      sb.append(_tracker.getTotalIterations()).append(" ETA : ");
-      DateFormat format = DateFormat.getDateTimeInstance(DateFormat.SHORT,
-          DateFormat.SHORT);
-      sb.append(format.format(new Date(_tracker.getETA()))).append(" (");
+      _labelBuilder.delete(0, _labelBuilder.length());
+
+      _labelBuilder.append("Running ");
+      _labelBuilder.append(_tracker.getCurrentIteration()).append("/");
+      _labelBuilder.append(_tracker.getTotalIterations()).append(" ETA : ");
+
+      _labelBuilder.append(_shortFormat.format(new Date(_tracker.getETA())))
+          .append(" (");
 
       /*
        * how much time is remaining
@@ -105,27 +113,28 @@ public class IterativeSession extends AbstractSession
         long unit = remaining / scalors[i];
         if (unit > 0)
         {
-          sb.append(unit).append(tags[i]).append(' ');
+          _labelBuilder.append(unit).append(tags[i]).append(' ');
           remaining -= unit * scalors[i];
           // cut the seconds if anything else is displayed
           if (tags[i] != 's') len = scalors.length - 1;
         }
       }
 
-      sb.append("remain)");
+      _labelBuilder.append("remain)");
 
       Collection<Integer> exceptions = _tracker.getExceptionCycles();
       if (exceptions.size() != 0)
       {
         _cleanRun = false;
-        sb.append(" Errors on iterations:");
-        sb.append(exceptions);
+        _labelBuilder.append(" Errors on iterations:");
+        _labelBuilder.append(exceptions);
       }
 
       int queued = getIterativeSessionTracker().getNumberOfDeferredLaunches();
-      if (queued != 0) sb.append(" (").append(queued).append(" runs queued)");
+      if (queued != 0)
+        _labelBuilder.append(" (").append(queued).append(" runs queued)");
 
-      return sb.toString();
+      return _labelBuilder.toString();
     }
 
     protected void processIterations(IProgressMonitor monitor)
@@ -166,8 +175,8 @@ public class IterativeSession extends AbstractSession
             }
 
             // but always update the display
-            String label = generateLabel();
-            monitor.setTaskName(label);
+
+            monitor.setTaskName(generateLabel());
           }
 
           if (shouldSleep) try

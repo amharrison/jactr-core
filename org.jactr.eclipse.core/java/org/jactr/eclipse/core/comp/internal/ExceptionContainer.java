@@ -4,11 +4,11 @@ package org.jactr.eclipse.core.comp.internal;
  * default logging
  */
 import java.util.Collection;
-
-import javolution.util.FastList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.collections.impl.factory.Lists;
 
 public class ExceptionContainer
 {
@@ -18,24 +18,25 @@ public class ExceptionContainer
   static private final transient Log LOGGER = LogFactory
                                                 .getLog(ExceptionContainer.class);
 
-  final private FastList<Exception>  _info;
+  final private List<Exception>      _info;
 
-  final private FastList<Exception>  _warnings;
+  final private List<Exception>      _warnings;
 
-  final private FastList<Exception>  _errors;
+  final private List<Exception>      _errors;
 
   public ExceptionContainer()
   {
-    _info = FastList.newInstance();
-    _warnings = FastList.newInstance();
-    _errors = FastList.newInstance();
+    _info = Lists.mutable.empty();
+
+    _warnings = Lists.mutable.empty();
+    _errors = Lists.mutable.empty();
   }
 
   protected void dispose()
   {
-    FastList.recycle(_info);
-    FastList.recycle(_warnings);
-    FastList.recycle(_errors);
+    _info.clear();
+    _warnings.clear();
+    _errors.clear();
   }
   
   /**
@@ -50,21 +51,21 @@ public class ExceptionContainer
 
   public Collection<Exception> getInfo(Collection<Exception> container)
   {
-    if (container == null) container = FastList.newInstance();
+    if (container == null) container = Lists.mutable.empty();
     container.addAll(_info);
     return container;
   }
 
   public Collection<Exception> getWarnings(Collection<Exception> container)
   {
-    if (container == null) container = FastList.newInstance();
+    if (container == null) container = Lists.mutable.empty();
     container.addAll(_warnings);
     return container;
   }
 
   public Collection<Exception> getErrors(Collection<Exception> container)
   {
-    if (container == null) container = FastList.newInstance();
+    if (container == null) container = Lists.mutable.empty();
     container.addAll(_errors);
     return container;
   }

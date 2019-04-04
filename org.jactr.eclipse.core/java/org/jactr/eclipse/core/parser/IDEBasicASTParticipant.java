@@ -5,12 +5,12 @@ package org.jactr.eclipse.core.parser;
  */
 import java.io.IOException;
 import java.net.URL;
-
-import javolution.util.FastList;
+import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.collections.impl.factory.Lists;
 import org.jactr.io.IOUtilities;
 import org.jactr.io.parser.IParserImportDelegate;
 import org.jactr.io.participant.impl.BasicASTParticipant;
@@ -36,25 +36,14 @@ public class IDEBasicASTParticipant extends BasicASTParticipant
 
     if (importModel == null) return null;
 
-    FastList<Exception> warnings = FastList.newInstance();
-    FastList<Exception> errors = FastList.newInstance();
+    List<Exception> warnings = Lists.mutable.empty();
+    List<Exception> errors = Lists.mutable.empty();
 
     CommonTree defaults = IOUtilities.loadModelFile(importModel, importer,
         warnings,
         errors);
 
-    // CorePlugin.debug(String.format("[%d/%d] Load returned ast %s",
-    // warnings.size(), errors.size(),
-    // defaults != null ? defaults.toStringTree() : null));
 
-    // for (Exception warn : warnings)
-    // CorePlugin.debug("load warning : " + warn.getMessage(), warn);
-    //
-    // for (Exception warn : errors)
-    // CorePlugin.debug("load error : " + warn.getMessage(), warn);
-
-    FastList.recycle(warnings);
-    FastList.recycle(errors);
 
     return defaults;
   }

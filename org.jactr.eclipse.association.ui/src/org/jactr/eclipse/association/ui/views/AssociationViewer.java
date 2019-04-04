@@ -6,12 +6,12 @@ import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 import java.util.concurrent.CompletableFuture;
 
-import javolution.util.FastList;
-
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.gef.layout.algorithms.RadialLayoutAlgorithm;
+import org.eclipse.gef.layout.algorithms.SpringLayoutAlgorithm;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuCreator;
@@ -25,19 +25,11 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.events.MenuListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -51,10 +43,6 @@ import org.eclipse.zest.core.viewers.ZoomContributionViewItem;
 import org.eclipse.zest.core.widgets.GraphConnection;
 import org.eclipse.zest.core.widgets.ZestStyles;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.GridLayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.RadialLayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import org.jactr.eclipse.association.ui.content.AssociationViewLabelProvider;
 import org.jactr.eclipse.association.ui.content.AssociativeContentProvider;
 import org.jactr.eclipse.association.ui.filter.IFilterProvider;
@@ -73,25 +61,27 @@ import org.jactr.eclipse.ui.concurrent.UIJobExecutor;
 import org.jactr.eclipse.ui.editor.ACTRModelEditor;
 import org.jactr.io.antlr3.misc.ASTSupport;
 
-public class AssociationViewer extends ViewPart implements
-    IZoomableWorkbenchPart
+import javolution.util.FastList;
+
+public class AssociationViewer extends ViewPart
+    implements IZoomableWorkbenchPart
 {
 
   /**
    * Logger definition
    */
   static private final transient Log       LOGGER            = LogFactory
-                                                                 .getLog(AssociationViewer.class);
+      .getLog(AssociationViewer.class);
 
   /**
    * The ID of the view as specified by the extension.
    */
   public static final String               VIEW_ID           = "org.jactr.eclipse.association.ui.views.AssociationViewer";
 
-  private GraphViewer                      _viewer;
+  GraphViewer                              _viewer;
 
   private int                              _nodeStyle        = ZestStyles.NODES_FISHEYE
-                                                                 | ZestStyles.NODES_NO_LAYOUT_RESIZE;
+      | ZestStyles.NODES_NO_LAYOUT_RESIZE;
 
   private Action                           _viewAll;
 
@@ -102,10 +92,10 @@ public class AssociationViewer extends ViewPart implements
   private ACTRModelEditor                  _lastEditor;
 
   private Object                           _currentSelection;                                                             // used
-                                                                                                                           // for
-                                                                                                                           // reset
-                                                                                                                           // of
-                                                                                                                           // visual
+                                                                                                                          // for
+                                                                                                                          // reset
+                                                                                                                          // of
+                                                                                                                          // visual
 
   private Class<? extends LayoutAlgorithm> _lastLayoutClass  = RadialLayoutAlgorithm.class;
 
@@ -118,11 +108,14 @@ public class AssociationViewer extends ViewPart implements
                                                                  if (arg0 instanceof CommonTree)
                                                                  {
                                                                    String name0 = ASTSupport
-                                                                       .getName((CommonTree) arg0);
+                                                                       .getName(
+                                                                           (CommonTree) arg0);
                                                                    String name1 = ASTSupport
-                                                                       .getName((CommonTree) arg1);
+                                                                       .getName(
+                                                                           (CommonTree) arg1);
                                                                    return name0
-                                                                       .compareTo(name1);
+                                                                       .compareTo(
+                                                                           name1);
                                                                  }
                                                                  if (arg0 instanceof Association)
                                                                  {
@@ -131,14 +124,15 @@ public class AssociationViewer extends ViewPart implements
                                                                    Double value1 = ((Association) arg1)
                                                                        .getStrength();
                                                                    return value0
-                                                                       .compareTo(value1);
+                                                                       .compareTo(
+                                                                           value1);
                                                                  }
                                                                  return 0;
                                                                }
 
                                                              };
 
-  private Collection<IFilterProvider>      _availableFilterProviders;
+  Collection<IFilterProvider>              _availableFilterProviders;
 
   /**
    * The constructor.
@@ -164,8 +158,8 @@ public class AssociationViewer extends ViewPart implements
       }
       catch (Exception e)
       {
-        UIPlugin.log(
-            String.format("Failed to instantiation filter provider : %s",
+        UIPlugin
+            .log(String.format("Failed to instantiation filter provider : %s",
                 afd.getClassName()), e);
       }
   }
@@ -224,15 +218,13 @@ public class AssociationViewer extends ViewPart implements
       setAssociationMapper(assMapper);
 
       // save
-      Activator.getDefault().getPreferenceStore()
-          .setValue(VIEW_ID + ".mapper", descriptor.getClassName());
+      Activator.getDefault().getPreferenceStore().setValue(VIEW_ID + ".mapper",
+          descriptor.getClassName());
     }
     catch (Exception e)
     {
-      UIPlugin.log(
-          IStatus.ERROR,
-          String.format("Failed to instantiation %s ",
-              descriptor.getClassName()), e);
+      UIPlugin.log(IStatus.ERROR, String.format("Failed to instantiation %s ",
+          descriptor.getClassName()), e);
     }
 
   }
@@ -395,8 +387,8 @@ public class AssociationViewer extends ViewPart implements
     // build the associations, but only after setup
     final CompletableFuture<Void> assProc = setupProc.thenComposeAsync((v) -> {
 
-      return associations.process(
-          Runtime.getRuntime().availableProcessors() / 2 + 1, ex);
+      return associations
+          .process(Runtime.getRuntime().availableProcessors() / 2 + 1, ex);
     }, ex);
 
     // cleanup just in case
@@ -408,32 +400,29 @@ public class AssociationViewer extends ViewPart implements
     });
 
     // when this is done, we can actually set the display
-    CompletableFuture<Void> setProc = assProc.thenAcceptAsync(
-        (v) -> {
-          try
-          {
-            if (LOGGER.isDebugEnabled())
-              LOGGER.debug(String.format("Setting input for viewer"));
+    CompletableFuture<Void> setProc = assProc.thenAcceptAsync((v) -> {
+      try
+      {
+        if (LOGGER.isDebugEnabled())
+          LOGGER.debug(String.format("Setting input for viewer"));
 
-            _viewer.setInput(associations);
+        _viewer.setInput(associations);
 
-            forceCurve(30);
-          }
-          catch (Exception e)
-          {
-            UIPlugin.log("Failed to focus on " + nearestChunk, e);
-          }
-        }, uiex);
+        forceCurve(30);
+      }
+      catch (Exception e)
+      {
+        UIPlugin.log("Failed to focus on " + nearestChunk, e);
+      }
+    }, uiex);
 
     // clean up after failure or success
-    setProc
-        .handle((v, t) -> {
-          if (t != null)
-            UIPlugin.log(
-                String.format("Failed to set associations in parallel"), t);
-          uiex.execute(cleanup);
-          return null;
-        });
+    setProc.handle((v, t) -> {
+      if (t != null) UIPlugin
+          .log(String.format("Failed to set associations in parallel"), t);
+      uiex.execute(cleanup);
+      return null;
+    });
 
   }
 
@@ -447,7 +436,7 @@ public class AssociationViewer extends ViewPart implements
    * @param depth
    */
   @SuppressWarnings("unchecked")
-  private void forceCurve(int depth)
+  void forceCurve(int depth)
   {
     double trueDepth = 25; // default
     FastList<GraphConnection> connections = FastList.newInstance();
@@ -521,8 +510,8 @@ public class AssociationViewer extends ViewPart implements
     _viewer.setNodeStyle(_nodeStyle);
 
     // _viewer.setConnectionStyle(ZestStyles.CONNECTIONS_DIRECTED);
-    _viewer.setLabelProvider(new AssociationViewLabelProvider(this,
-        getAssociationMapper()));
+    _viewer.setLabelProvider(
+        new AssociationViewLabelProvider(this, getAssociationMapper()));
     _viewer.setContentProvider(new AssociativeContentProvider());
 
     setLayoutAlgorithm(_lastLayoutClass, false);
@@ -635,8 +624,8 @@ public class AssociationViewer extends ViewPart implements
   {
     _lastLayoutClass = clazz;
 
-    Activator.getDefault().getPreferenceStore()
-        .setValue(VIEW_ID + ".layout", clazz.getName());
+    Activator.getDefault().getPreferenceStore().setValue(VIEW_ID + ".layout",
+        clazz.getName());
 
     /*
      * do we need to actually change the layout?
@@ -688,128 +677,10 @@ public class AssociationViewer extends ViewPart implements
 
   private IMenuCreator createFilterMenu()
   {
-    IMenuCreator menuCreator = new IMenuCreator() {
-      private Menu _menu;
-
-      public void dispose()
-      {
-        if (_menu != null && !_menu.isDisposed()) _menu.dispose();
-        _menu = null;
-      }
-
-      protected void addMenuListener(Menu menu)
-      {
-        menu.addMenuListener(new MenuListener() {
-
-          @Override
-          public void menuHidden(MenuEvent e)
-          {
-
-          }
-
-          @Override
-          public void menuShown(MenuEvent e)
-          {
-
-            // String mapperName = getAssociationMapper().getClass().getName();
-            // for (MenuItem item : menu.getItems())
-            // {
-            // AssociationMapperDescriptor descriptor =
-            // (AssociationMapperDescriptor) item
-            // .getData();
-            //
-            // if (descriptor.getClassName().equals(mapperName))
-            // item.setSelection(true);
-            // else
-            // item.setSelection(false);
-            // }
-          }
-
-        });
-      }
-
-      public Menu getMenu(Control parent)
-      {
-        if (_menu == null || _menu.getParent() != parent)
-        {
-          if (_menu != null) dispose();
-          _menu = new Menu(parent);
-          buildMenu(_menu);
-        }
-        return _menu;
-      }
-
-      public Menu getMenu(Menu parent)
-      {
-        if (_menu == null || _menu.getParentMenu() != parent)
-        {
-          if (_menu != null) dispose();
-          _menu = new Menu(parent);
-          buildMenu(_menu);
-        }
-        return _menu;
-      }
-
-      protected void buildMenu(Menu menu)
-      {
-        addMenuListener(_menu);
-
-        for (IFilterProvider provider : _availableFilterProviders)
-        {
-          MenuItem item = new MenuItem(menu, SWT.PUSH);
-          item.setData(provider);
-          item.setText(provider.getLabel());
-          item.addSelectionListener(new SelectionListener() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e)
-            {
-              ViewerFilter[] newFilters = ((IFilterProvider) e.widget.getData())
-                  .getFilters();
-              if (newFilters != null && newFilters.length != 0)
-              {
-                _viewer.setFilters(newFilters);
-                forceCurve(10);
-              }
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e)
-            {
-              widgetSelected(e);
-            }
-
-          });
-        }
-
-        // Collection<AssociationMapperDescriptor> descriptors =
-        // AssociationMapperRegistry
-        // .getRegistry().getAllDescriptors();
-        //
-        // for (AssociationMapperDescriptor descriptor : descriptors)
-        // {
-        // MenuItem item = new MenuItem(menu, SWT.CHECK);
-        // item.setData(descriptor);
-        // item.setText(descriptor.getName());
-        //
-        // item.addSelectionListener(new SelectionListener() {
-        //
-        // public void widgetDefaultSelected(SelectionEvent e)
-        // {
-        //
-        // }
-        //
-        // public void widgetSelected(SelectionEvent e)
-        // {
-        // setAssociationMapper((AssociationMapperDescriptor) ((MenuItem)
-        // e.widget)
-        // .getData());
-        // }
-        // });
-        // }
-
-      }
-    };
+    IMenuCreator menuCreator = new FilterMenuCreator(() -> {
+      return _availableFilterProviders;
+    }, (filters) -> {
+    });
 
     return menuCreator;
   }
@@ -819,68 +690,7 @@ public class AssociationViewer extends ViewPart implements
     /*
      * layout control
      */
-    IMenuCreator menuCreator = new IMenuCreator() {
-
-      private Menu     _menu;
-
-      private String[] _names      = new String[] { "Spring", "Radial", "Grid",
-                                       "Tree" };
-
-      private Class[]  _algorithms = new Class[] { SpringLayoutAlgorithm.class,
-                                       RadialLayoutAlgorithm.class,
-                                       GridLayoutAlgorithm.class,
-                                       TreeLayoutAlgorithm.class };
-
-      public void dispose()
-      {
-        if (_menu != null && !_menu.isDisposed()) _menu.dispose();
-        _menu = null;
-      }
-
-      public Menu getMenu(Control parent)
-      {
-        if (_menu == null || _menu.getParent() != parent)
-        {
-          if (_menu != null) dispose();
-          _menu = new Menu(parent);
-          buildMenu(_menu);
-        }
-        return _menu;
-      }
-
-      public Menu getMenu(Menu parent)
-      {
-        if (_menu == null || _menu.getParentMenu() != parent)
-        {
-          if (_menu != null) dispose();
-          _menu = new Menu(parent);
-          buildMenu(_menu);
-        }
-        return _menu;
-      }
-
-      protected void buildMenu(Menu menu)
-      {
-        for (int i = 0; i < _names.length; i++)
-        {
-          MenuItem item = new MenuItem(menu, SWT.PUSH);
-          item.setText(_names[i]);
-          item.setData(_algorithms[i]);
-          item.addSelectionListener(new SelectionListener() {
-
-            public void widgetDefaultSelected(SelectionEvent e)
-            {
-
-            }
-
-            public void widgetSelected(SelectionEvent e)
-            {
-              setLayoutAlgorithm((Class) ((MenuItem) e.widget).getData(), true);
-            }
-          });
-        }
-      }
-    };
+    IMenuCreator menuCreator = new LayoutMenuCreator(this);
 
     return menuCreator;
   }
@@ -890,99 +700,7 @@ public class AssociationViewer extends ViewPart implements
     /*
      * associationMapper control
      */
-    IMenuCreator menuCreator = new IMenuCreator() {
-
-      private Menu _menu;
-
-      public void dispose()
-      {
-        if (_menu != null && !_menu.isDisposed()) _menu.dispose();
-        _menu = null;
-      }
-
-      protected void addMenuListener(Menu menu)
-      {
-        menu.addMenuListener(new MenuListener() {
-
-          @Override
-          public void menuHidden(MenuEvent e)
-          {
-
-          }
-
-          @Override
-          public void menuShown(MenuEvent e)
-          {
-            // TODO Auto-generated method stub
-            Menu menu = (Menu) e.widget;
-            String mapperName = getAssociationMapper().getClass().getName();
-            for (MenuItem item : menu.getItems())
-            {
-              AssociationMapperDescriptor descriptor = (AssociationMapperDescriptor) item
-                  .getData();
-
-              if (descriptor.getClassName().equals(mapperName))
-                item.setSelection(true);
-              else
-                item.setSelection(false);
-            }
-          }
-
-        });
-      }
-
-      public Menu getMenu(Control parent)
-      {
-        if (_menu == null || _menu.getParent() != parent)
-        {
-          if (_menu != null) dispose();
-          _menu = new Menu(parent);
-          buildMenu(_menu);
-        }
-        return _menu;
-      }
-
-      public Menu getMenu(Menu parent)
-      {
-        if (_menu == null || _menu.getParentMenu() != parent)
-        {
-          if (_menu != null) dispose();
-          _menu = new Menu(parent);
-          buildMenu(_menu);
-        }
-        return _menu;
-      }
-
-      protected void buildMenu(Menu menu)
-      {
-        addMenuListener(_menu);
-
-        Collection<AssociationMapperDescriptor> descriptors = AssociationMapperRegistry
-            .getRegistry().getAllDescriptors();
-
-        for (AssociationMapperDescriptor descriptor : descriptors)
-        {
-          MenuItem item = new MenuItem(menu, SWT.CHECK);
-          item.setData(descriptor);
-          item.setText(descriptor.getName());
-
-          item.addSelectionListener(new SelectionListener() {
-
-            public void widgetDefaultSelected(SelectionEvent e)
-            {
-
-            }
-
-            public void widgetSelected(SelectionEvent e)
-            {
-              setAssociationMapper((AssociationMapperDescriptor) ((MenuItem) e.widget)
-                  .getData());
-            }
-          });
-        }
-
-      }
-    };
+    IMenuCreator menuCreator = new MapperMenuCreator(this);
     return menuCreator;
   }
 
@@ -1040,12 +758,11 @@ public class AssociationViewer extends ViewPart implements
     // manager.add(action1);
     // manager.add(action2);
 
-    manager.add(new Action("Refresh Layout" /*
-                                             * , ProductionViewActivator
-                                             * .getDefault
-                                             * ().getImageRegistry().
-                                             * getDescriptor (REFRESH)
-                                             */) {
+    manager.add(new Action(
+        "Refresh Layout" /*
+                          * , ProductionViewActivator .getDefault
+                          * ().getImageRegistry(). getDescriptor (REFRESH)
+                          */) {
       @Override
       public void run()
       {

@@ -1,15 +1,13 @@
 package org.jactr.eclipse.ui.editor.formatting;
 
-/*
- * default logging
- */
-import javolution.util.FastSet;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
+import org.jactr.core.utils.collections.FastSetFactory;
 
 public class JACTRCloseTagEdityStrategy implements IAutoEditStrategy
 {
@@ -56,7 +54,7 @@ public class JACTRCloseTagEdityStrategy implements IAutoEditStrategy
 
   private String getOpenTag(IDocument document, int startOffset)
   {
-    FastSet<String> closed = FastSet.newInstance();
+    Set<String> closed = FastSetFactory.newInstance();
     try
     {
       int closeOffset = 0;
@@ -111,7 +109,7 @@ public class JACTRCloseTagEdityStrategy implements IAutoEditStrategy
     }
     finally
     {
-      FastSet.recycle(closed);
+      FastSetFactory.recycle(closed);
     }
   }
 }

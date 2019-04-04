@@ -6,8 +6,6 @@ package org.jactr.eclipse.runtime.ui.probe.components;
 import java.util.Calendar;
 import java.util.Set;
 
-import javolution.util.FastSet;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -28,6 +26,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.progress.UIJob;
+import org.jactr.core.utils.collections.FastSetFactory;
 import org.jactr.eclipse.runtime.RuntimePlugin;
 import org.jactr.eclipse.runtime.preferences.RuntimePreferences;
 import org.jactr.eclipse.runtime.probe3.ModelProbeData2;
@@ -104,24 +103,24 @@ public class XYGraphProbeContainer extends
 
   protected void configureGraph(XYGraph graph)
   {
-    graph.primaryXAxis.setTitle("Time");
-    graph.primaryXAxis.setTimeUnit(Calendar.MILLISECOND);
-    graph.primaryXAxis.setAutoScale(true);
-    graph.primaryXAxis.setDateEnabled(true);
-    graph.primaryXAxis.setShowMajorGrid(true);
+    graph.getPrimaryXAxis().setTitle("Time");
+    graph.getPrimaryXAxis().setTimeUnit(Calendar.MILLISECOND);
+    graph.getPrimaryXAxis().setAutoScale(true);
+    graph.getPrimaryXAxis().setDateEnabled(true);
+    graph.getPrimaryXAxis().setShowMajorGrid(true);
 
 
-    graph.primaryXAxis.setRange(
+    graph.getPrimaryXAxis().setRange(
         0,
         RuntimePlugin.getDefault().getPreferenceStore()
             .getInt(RuntimePreferences.PROBE_RUNTIME_DATA_WINDOW));
 
-    graph.primaryXAxis.setZoomType(ZoomType.PANNING);
-    graph.primaryXAxis.setFormatPattern("mm:ss.SSS");
+    graph.getPrimaryXAxis().setZoomType(ZoomType.PANNING);
+    graph.getPrimaryXAxis().setFormatPattern("mm:ss.SSS");
 
-    graph.primaryYAxis.setTitle("Parameter Value");
-    graph.primaryYAxis.setAutoScale(true);
-    graph.primaryYAxis.setShowMajorGrid(true);
+    graph.getPrimaryYAxis().setTitle("Parameter Value");
+    graph.getPrimaryYAxis().setAutoScale(true);
+    graph.getPrimaryYAxis().setShowMajorGrid(true);
 
     // graph.getPlotArea().addMouseListener(new MouseListener.Stub() {
     // @Override
@@ -141,7 +140,7 @@ public class XYGraphProbeContainer extends
       _filteredOut.addAll(probeNames);
     }
 
-    FastSet<String> allKnown = FastSet.newInstance();
+    Set<String> allKnown = FastSetFactory.newInstance();
     allKnown.addAll(_probeSeries.keySet());
 
     for (String probeName : allKnown)
@@ -155,7 +154,7 @@ public class XYGraphProbeContainer extends
       }
     }
 
-    FastSet.recycle(allKnown);
+    FastSetFactory.recycle(allKnown);
   }
 
   @Override
@@ -185,10 +184,10 @@ public class XYGraphProbeContainer extends
    */
   protected void refreshInternal()
   {
-    FastSet<String> allKnown = FastSet.newInstance();
+    Set<String> allKnown = FastSetFactory.newInstance();
     allKnown.addAll(_probeSeries.keySet());
 
-    FastSet<String> allData = FastSet.newInstance();
+    Set<String> allData = FastSetFactory.newInstance();
 
     ModelProbeData2 mpd2 = getProbeData();
     mpd2.getProbeNames(allData);
@@ -204,8 +203,8 @@ public class XYGraphProbeContainer extends
       // this had better be true..
       ProbeDataSourceProvider pd = (ProbeDataSourceProvider) mpd2
           .getProbeData(newTrace);
-      Trace trace = new Trace(newTrace, _graph.primaryXAxis,
-          _graph.primaryYAxis, pd);
+      Trace trace = new Trace(newTrace, _graph.getPrimaryXAxis(),
+          _graph.getPrimaryYAxis(), pd);
 
       PointStyle[] values = PointStyle.values();
       int hash = Math.abs(newTrace.hashCode());
@@ -225,8 +224,8 @@ public class XYGraphProbeContainer extends
     }
 
 
-    FastSet.recycle(allKnown);
-    FastSet.recycle(allData);
+    FastSetFactory.recycle(allKnown);
+    FastSetFactory.recycle(allData);
   }
 
   protected void showNearestValue(MouseEvent me)

@@ -116,7 +116,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="ACTRPreferencePage"
+            category="org.jactr.io2.jactr.ModelFragment"
             class="org.jactr.eclipse.runtime.ui.preferences.RuntimePreferencePage"
             id="ACTRRuntimePreferencePage"
             name="Run/Debug">
@@ -159,6 +159,12 @@
              description="Extract probe data from session"
              id="org.jactr.eclipse.runtime.ui.command.extractProbeData"
              name="Playback">
+       </command>
+       <command
+             defaultHandler="org.jactr.eclipse.runtime.ui.command.StartSessionListener"
+             description="Starts session listener for ACT-R model runs"
+             id="org.jactr.eclipse.runtime.ui.command.startSessionListener"
+             name="Start Session Listener">
        </command>
    </extension>
    <extension
@@ -226,12 +232,50 @@
              </visibleWhen>
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="org.jactr.eclipse.runtime.ui.toolbar1">
+            <command
+                  commandId="org.jactr.eclipse.runtime.ui.command.startSessionListener"
+                  icon="icons/full/basic/jactr-run.gif"
+                  id="org.jactr.eclipse.runtime.ui.menu.startSessionListener"
+                  label="Start Session Listener"
+                  style="push">
+            </command>
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </toolbar>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
             class="org.jactr.eclipse.runtime.ui.preferences.RuntimeUIPreferenceInitializer">
       </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            class="org.jactr.eclipse.runtime.ui.launch.ACTRLaunchShortcut"
+            description="Quick launch a cognitive model"
+            icon="icons/full/basic/jactr-run.gif"
+            id="org.jactr.eclipse.runtime.ui.shortcut1"
+            label="ACT-R Model"
+            modes="run, debug">
+             <contextualLaunch>
+		  <enablement>
+    <with variable="selection">
+     <count value="1"/>
+     </with>
+  </enablement>
+  </contextualLaunch>
+            <configurationType 
+          id="org.jactr.eclipse.runtime.launching.normal">
+         </configurationType>
+      </shortcut>
    </extension>
    
    

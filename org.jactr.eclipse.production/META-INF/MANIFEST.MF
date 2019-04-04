@@ -6,15 +6,14 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.jactr.eclipse.production.ProductionViewActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.jactr.tools,
- org.jactr.io,
  org.jactr.eclipse.ui,
- org.jactr.support,
  org.eclipse.draw2d,
  org.jactr.eclipse.core,
  org.eclipse.ui.editors,
- org.eclipse.zest.core,
- org.eclipse.zest.layouts
+ org.eclipse.gef;bundle-version="3.11.0",
+ org.jactr.osgi;bundle-version="2.5.0",
+ org.antlr.runtime;bundle-version="[3.2.0,4.0.0)",
+ org.apache.commons.logging;bundle-version="1.1.1"
 Eclipse-LazyStart: true
 Export-Package: org.jactr.eclipse.production,
  org.jactr.eclipse.production.handler

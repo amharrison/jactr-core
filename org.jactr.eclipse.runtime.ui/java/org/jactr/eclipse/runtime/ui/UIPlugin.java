@@ -40,6 +40,16 @@ public class UIPlugin extends AbstractUIPlugin
   {
     super();
     plugin = this;
+  }
+
+  /**
+   * This method is called upon plug-in activation
+   */
+  @Override
+  public void start(BundleContext context) throws Exception
+  {
+    super.start(context);
+
     _imageRegistry = new ImageRegistry();
     try
     {
@@ -50,15 +60,6 @@ public class UIPlugin extends AbstractUIPlugin
     {
       resourceBundle = null;
     }
-  }
-
-  /**
-   * This method is called upon plug-in activation
-   */
-  @Override
-  public void start(BundleContext context) throws Exception
-  {
-    super.start(context);
 
     // RuntimePlugin.getDefault().getRuntimeTraceManager().addListener(
     // new RuntimeLoopDetector());

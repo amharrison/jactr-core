@@ -39,29 +39,13 @@ USA
    </url>
 
    <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.zest.core" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.zest.layouts" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.gef" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.jactr" version="1.2.15" match="greaterOrEqual"/>
-      <import plugin="org.jactr.eclipse.compilers" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.jactr.eclipse.core" version="1.2.8" match="greaterOrEqual"/>
       <import plugin="org.jactr.eclipse.ui" version="1.2.8" match="greaterOrEqual"/>
-      <import plugin="org.jactr.io" version="1.0.9" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jface.text" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.editors" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.jactr.tools"/>
-      <import plugin="org.jactr.support"/>
-      <import plugin="org.eclipse.draw2d"/>
       <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.pde.ui" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.pde.ui.templates" version="3.4.200" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.jactr.eclipse.bundles"/>
+      <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

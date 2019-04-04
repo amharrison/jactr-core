@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-<plugin
-   id="org.jactr.eclipse.doc"
-   name="%pluginName"
-   version="1.0.8.qualifier"
-   provider-name="%pluginProvider">
-   <requires>
-      <import plugin="org.eclipse.ui.cheatsheets"/>
-      <import plugin="org.eclipse.ui.workbench"/>
-      <import plugin="org.eclipse.ui.intro"/>
-      <import plugin="org.eclipse.ui.intro.universal"/>
-      <import plugin="org.eclipse.ui"/>
-   </requires>
-   <extension
+<plugin>
+    <extension
          point="org.eclipse.ui.cheatsheets.cheatSheetContent">
       <category
             name="jACT-R"
@@ -49,13 +38,6 @@
             name="jACT-R Tutorials"
             parentCategory="org.jactr.eclipse.doc.category">
       </category>
-      <cheatsheet
-            category="org.jactr.eclipse.doc.category/org.jactr.eclipse.doc.tutorial.category/"
-            composite="true"
-            contentFile="sheets/tutorial/unit1/unit1.xml"
-            id="org.jactr.eclipse.doc.tutorial.unit1"
-            name="Unit 1 Tutorial">
-      </cheatsheet>
    </extension>
    <extension
          point="org.eclipse.help.toc">

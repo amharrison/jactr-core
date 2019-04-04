@@ -40,7 +40,6 @@ Export-Package: org.jactr.eclipse.ui,
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.workbench.texteditor,
- org.jactr,
  org.jactr.eclipse.core,
  org.eclipse.ui.ide,
  org.eclipse.jface.text,
@@ -50,10 +49,15 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.debug.ui,
  org.eclipse.ui.console,
  org.eclipse.jdt.core,
- org.jactr.io,
  org.eclipse.pde.ui,
  org.jactr.eclipse.bundles,
- org.eclipse.core.filesystem
+ org.eclipse.core.filesystem,
+ org.jactr.osgi;bundle-version="2.5.0",
+ org.apache.commons.logging;bundle-version="1.1.1",
+ org.eclipse.collections;bundle-version="9.2.0",
+ org.jactr.core;bundle-version="2.5.1",
+ org.jactr.io;bundle-version="2.5.1",
+ org.jactr.tools;bundle-version="2.5.1"
 Eclipse-RegisterBuddy: org.apache.log4j 
 Eclipse-BuddyPolicy: registered
 Bundle-ActivationPolicy: lazy

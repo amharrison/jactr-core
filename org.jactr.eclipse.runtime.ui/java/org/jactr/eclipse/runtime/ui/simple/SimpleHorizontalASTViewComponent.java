@@ -5,11 +5,10 @@ package org.jactr.eclipse.runtime.ui.simple;
  */
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
-import javolution.util.FastList;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
@@ -26,6 +25,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.eclipse.runtime.session.ISession;
 import org.jactr.eclipse.ui.content.ACTRLabelProvider;
 import org.jactr.eclipse.ui.content.AbstractACTRContentProvider;
@@ -109,13 +109,13 @@ public abstract class SimpleHorizontalASTViewComponent implements
       boolean isPostConflictResolution)
   {
 
-    final FastList<CommonTree> trees = FastList.newInstance();
+    final List<CommonTree> trees = FastListFactory.newInstance();
     getAST(session, modelName, time, isPostConflictResolution, trees);
 
     if (trees.size() == 0)
     {
       noAST();
-      FastList.recycle(trees);
+      FastListFactory.recycle(trees);
       return;
     }
 
@@ -190,7 +190,7 @@ public abstract class SimpleHorizontalASTViewComponent implements
     }
 
     // recylce
-    FastList.recycle(trees);
+    FastListFactory.recycle(trees);
 
     _table.pack(true);
     // _table.redraw();

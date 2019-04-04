@@ -16,10 +16,10 @@ package org.jactr.eclipse.runtime.launching;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.antlr.runtime.tree.CommonTree;
@@ -38,6 +38,7 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.PluginRegistry;
+import org.eclipse.pde.core.plugin.PluginRegistry.PluginFilter;
 import org.eclipse.pde.core.plugin.TargetPlatform;
 import org.eclipse.pde.internal.launching.IPDEConstants;
 import org.jactr.eclipse.core.CorePlugin;
@@ -58,6 +59,11 @@ import org.jactr.eclipse.runtime.RuntimePlugin;
 import org.jactr.eclipse.runtime.preferences.RuntimePreferences;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
+import org.jactr.io2.jactr.modelFragment.ModelFragment;
+import org.jactr.io2.jactr.modelFragment.Module;
+import org.jactr.io2.jactr.ui.util.JactrUIUtilities;
+import org.osgi.framework.Version;
+import org.osgi.framework.VersionRange;
 
 /**
  * builds a valid ILaunchConfiguration for the ACTR launch environment, which
@@ -69,7 +75,7 @@ public class ACTRLaunchConfigurationUtils
 {
 
   static private final Log LOGGER = LogFactory
-                                      .getLog(ACTRLaunchConfigurationUtils.class);
+      .getLog(ACTRLaunchConfigurationUtils.class);
 
   /**
    * return the project defined in the configuration
@@ -83,8 +89,8 @@ public class ACTRLaunchConfigurationUtils
       throws CoreException
   {
     IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-    String projectName = configuration.getAttribute(
-        IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "");
+    String projectName = configuration
+        .getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "");
 
     try
     {
@@ -118,8 +124,8 @@ public class ACTRLaunchConfigurationUtils
 
     if (project == null) return resources;
 
-    for (String modelFile : configuration.getAttribute(
-        ACTRLaunchConstants.ATTR_MODEL_FILES, "").split(","))
+    for (String modelFile : configuration
+        .getAttribute(ACTRLaunchConstants.ATTR_MODEL_FILES, "").split(","))
       if (modelFile.length() > 0)
       {
         IResource resource = project.findMember(modelFile, false);
@@ -142,15 +148,15 @@ public class ACTRLaunchConfigurationUtils
       ILaunchConfiguration configuration) throws CoreException
   {
     boolean hasSensors = getRequiredSensors(configuration).size() != 0
-        || configuration.getAttribute(
-            ACTRLaunchConstants.ATTR_USE_EMBED_CONTROLLER, false);
+        || configuration
+            .getAttribute(ACTRLaunchConstants.ATTR_USE_EMBED_CONTROLLER, false);
 
     for (IResource modelFile : getModelFiles(configuration))
       for (ModuleDescriptor module : getModulesInModel(modelFile))
         if (module.requiresCommonReality() && !hasSensors)
-          throw new RuntimeException(modelFile.getName()
-              + " requires CommonReality because of " + module.getName()
-              + ", but no sensors are configured.");
+          throw new RuntimeException(
+              modelFile.getName() + " requires CommonReality because of "
+                  + module.getName() + ", but no sensors are configured.");
     return true;
   }
 
@@ -161,6 +167,48 @@ public class ACTRLaunchConfigurationUtils
    * @return
    */
   static public Collection<ModuleDescriptor> getModulesInModel(
+      IResource modelFile)
+  {
+    if (!modelFile.getFileExtension().equals("jactr"))
+      return getModulesInModelCommonTree(modelFile);
+    else
+      return getModulesInModelModelFragment(modelFile);
+  }
+
+  /**
+   * returns all the modules required in a specific model
+   * 
+   * @param modelFile
+   * @return
+   */
+  static public Collection<ModuleDescriptor> getModulesInModelModelFragment(
+      IResource modelFile)
+  {
+    ArrayList<ModuleDescriptor> modules = new ArrayList<ModuleDescriptor>();
+    Collection<ModuleDescriptor> allModules = ModuleRegistry.getRegistry()
+        .getDescriptors(modelFile.getProject(), true);
+
+    ModelFragment modelFragment = JactrUIUtilities
+        .loadModel(modelFile.getLocationURI());
+
+    for (Module module : modelFragment.getPackage().getModules())
+      for (ModuleDescriptor moduleDesc : allModules)
+        if (moduleDesc.getClassName().equals(module.getModuleClass()))
+        {
+          modules.add(moduleDesc);
+          break;
+        }
+
+    return modules;
+  }
+
+  /**
+   * returns all the modules required in a specific model
+   * 
+   * @param modelFile
+   * @return
+   */
+  static public Collection<ModuleDescriptor> getModulesInModelCommonTree(
       IResource modelFile)
   {
     ArrayList<ModuleDescriptor> modules = new ArrayList<ModuleDescriptor>();
@@ -218,8 +266,9 @@ public class ACTRLaunchConfigurationUtils
   {
     String path = modelFile.getFullPath().toOSString();
     Set<String> aliases = new HashSet<String>();
-    for (String alias : configuration.getAttribute(
-        ACTRLaunchConstants.ATTR_MODEL_ALIASES + path, "").split(","))
+    for (String alias : configuration
+        .getAttribute(ACTRLaunchConstants.ATTR_MODEL_ALIASES + path, "")
+        .split(","))
     {
       alias = alias.trim();
       if (alias.length() > 0) aliases.add(alias);
@@ -277,10 +326,8 @@ public class ACTRLaunchConfigurationUtils
     /*
      * exclude optional bundles
      */
-    workingCopy
-        .setAttribute(
-            org.eclipse.pde.launching.IPDELauncherConstants.INCLUDE_OPTIONAL,
-            false);
+    workingCopy.setAttribute(
+        org.eclipse.pde.launching.IPDELauncherConstants.INCLUDE_OPTIONAL, true);
 
     /*
      * don't add everything in the workspace
@@ -291,10 +338,9 @@ public class ACTRLaunchConfigurationUtils
     /*
      * 
      */
-    workingCopy
-        .setAttribute(
-            org.eclipse.pde.launching.IPDELauncherConstants.DESELECTED_WORKSPACE_PLUGINS,
-            (String) null);
+    workingCopy.setAttribute(
+        org.eclipse.pde.launching.IPDELauncherConstants.DESELECTED_WORKSPACE_PLUGINS,
+        (String) null);
 
     if (LOGGER.isDebugEnabled())
       LOGGER.debug("Applied permanent attributes " + workingCopy);
@@ -316,64 +362,18 @@ public class ACTRLaunchConfigurationUtils
     IProject project = getProject(workingCopy);
     String configName = workingCopy.getName();
 
-    workingCopy
-        .setAttribute(
-            org.eclipse.pde.launching.IPDELauncherConstants.CONFIG_USE_DEFAULT_AREA,
-            false);
+    workingCopy.setAttribute(
+        org.eclipse.pde.launching.IPDELauncherConstants.CONFIG_USE_DEFAULT_AREA,
+        false);
     workingCopy.setAttribute(
         org.eclipse.pde.launching.IPDELauncherConstants.CONFIG_LOCATION,
         ACTRLaunchConstants.NORMAL_CONFIGURATION_LOCATION + project.getName()
             + "/" + configName);
 
-    /*
-     * what about core logging? that needs to be set up by the tab but for now..
-     */
-    boolean logging = workingCopy.getAttribute(
-        ACTRLaunchConstants.ATTR_DEBUG_CORE_ENABLED, false);
 
-    if (logging)
-    {
-      IResource logFile = project.findMember(workingCopy.getAttribute(
-          ACTRLaunchConstants.ATTR_DEBUG_CORE_LOG_CONF,
-          ACTRLaunchConstants.DEFAULT_CORE_LOG_CONF));
-      if (logFile != null && logFile.exists())
-      {
-        StringBuilder vmArg = new StringBuilder(
-            " -Dorg.apache.commons.logging.log=");
-        vmArg.append(workingCopy.getAttribute(
-            ACTRLaunchConstants.ATTR_DEBUG_CORE_LOGGER,
-            ACTRLaunchConstants.DEFAULT_CORE_LOGGER));
-        vmArg.append(" -Dlog4j.configuration=");
-        try
-        {
-          URI uri = logFile.getRawLocationURI();
-          vmArg
-              .append(uri.toURL())
-              .append(" ")
-              .append(
-                  workingCopy.getAttribute(
-                      IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, ""));
 
-          workingCopy.setAttribute(
-              IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
-              vmArg.toString());
-        }
-        catch (Exception e)
-        {
-          CorePlugin.debug("failed to transform url " + logFile, e);
-          logging = false;
-        }
-      }
-      else
-        logging = false;
-    }
-
-    if (!logging)
-      workingCopy.setAttribute(
-          IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
-          "-Dorg.apache.commons.logging.log=org.apache.commons.logging.impl.SimpleLog "
-              + workingCopy.getAttribute(
-                  IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, ""));
+    RuntimePlugin.info("Command line args " + workingCopy
+        .getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, ""));
 
     if (LOGGER.isDebugEnabled())
       LOGGER.debug("Applied persistent attributes " + workingCopy);
@@ -425,7 +425,8 @@ public class ACTRLaunchConfigurationUtils
     if (workingCopy.getType().getIdentifier()
         .equals("org.jactr.eclipse.runtime.launching.cr"))
       arguments.append(ACTRLaunchConstants.DEFAULT_CR_RUN_ARG);
-    else if (workingCopy.getAttribute(ACTRLaunchConstants.ATTR_ITERATIONS, 0) != 0)
+    else if (workingCopy.getAttribute(ACTRLaunchConstants.ATTR_ITERATIONS,
+        0) != 0)
       arguments.append(ACTRLaunchConstants.ITERATIVE_APPLICATION_ARG);
     else if (ILaunchManager.DEBUG_MODE.equals(mode))
       arguments.append(ACTRLaunchConstants.DEFAULT_APPLICATION_DEBUG_ARG);
@@ -437,12 +438,8 @@ public class ACTRLaunchConfigurationUtils
     try
     {
       URI uri = environmentFile.getRawLocationURI();
-      arguments
-          .append(uri.toURL())
-          .append(" ")
-          .append(
-              workingCopy.getAttribute(
-                  IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, ""));
+      arguments.append(uri.toURL()).append(" ").append(workingCopy.getAttribute(
+          IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, ""));
 
       workingCopy.setAttribute(
           IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
@@ -450,9 +447,8 @@ public class ACTRLaunchConfigurationUtils
     }
     catch (Exception e)
     {
-      throw new CoreException(new Status(IStatus.ERROR,
-          RuntimePlugin.PLUGIN_ID, "Could not get a valid url from "
-              + environmentFile, e));
+      throw new CoreException(new Status(IStatus.ERROR, RuntimePlugin.PLUGIN_ID,
+          "Could not get a valid url from " + environmentFile, e));
     }
 
     /*
@@ -479,21 +475,21 @@ public class ACTRLaunchConfigurationUtils
     for (String bundle : target)
       targetBundles.append(bundle).append(",");
 
-    if (workspaceBundles.length() > 0)
-      workspaceBundles.delete(workspaceBundles.length() - 1,
-          workspaceBundles.length());
+    if (workspaceBundles.length() > 0) workspaceBundles
+        .delete(workspaceBundles.length() - 1, workspaceBundles.length());
 
     if (targetBundles.length() > 0)
       targetBundles.delete(targetBundles.length() - 1, targetBundles.length());
 
-    workingCopy
-        .setAttribute(
-            org.eclipse.pde.launching.IPDELauncherConstants.SELECTED_WORKSPACE_PLUGINS,
-            workspaceBundles.toString());
-    workingCopy
-        .setAttribute(
-            org.eclipse.pde.launching.IPDELauncherConstants.SELECTED_TARGET_PLUGINS,
-            targetBundles.toString());
+    workingCopy.setAttribute(
+        org.eclipse.pde.launching.IPDELauncherConstants.INCLUDE_OPTIONAL, true);
+
+    workingCopy.setAttribute(
+        org.eclipse.pde.launching.IPDELauncherConstants.SELECTED_WORKSPACE_PLUGINS,
+        workspaceBundles.toString());
+    workingCopy.setAttribute(
+        org.eclipse.pde.launching.IPDELauncherConstants.SELECTED_TARGET_PLUGINS,
+        targetBundles.toString());
 
     if (LOGGER.isDebugEnabled())
       LOGGER.debug("Applied temporary attributes " + workingCopy);
@@ -514,8 +510,8 @@ public class ACTRLaunchConfigurationUtils
     Collection<SensorDescriptor> installed = SensorRegistry.getRegistry()
         .getDescriptors(project, true);
 
-    String sensors = configuration.getAttribute(
-        ACTRLaunchConstants.ATTR_COMMON_REALITY_SENSORS, "");
+    String sensors = configuration
+        .getAttribute(ACTRLaunchConstants.ATTR_COMMON_REALITY_SENSORS, "");
     for (String sensor : sensors.split(","))
       for (SensorDescriptor desc : installed)
         if (desc.getClassName().equals(sensor)) descriptors.add(desc);
@@ -531,8 +527,8 @@ public class ACTRLaunchConfigurationUtils
     Collection<IterativeListenerDescriptor> installed = IterativeListenerRegistry
         .getRegistry().getDescriptors(project, true);
 
-    String sensors = configuration.getAttribute(
-        ACTRLaunchConstants.ATTR_ITERATIVE_LISTENERS, "");
+    String sensors = configuration
+        .getAttribute(ACTRLaunchConstants.ATTR_ITERATIVE_LISTENERS, "");
 
     for (String listener : sensors.split(","))
       for (IterativeListenerDescriptor desc : installed)
@@ -565,8 +561,8 @@ public class ACTRLaunchConfigurationUtils
     Collection<InstrumentDescriptor> installed = InstrumentRegistry
         .getRegistry().getDescriptors(project, true);
 
-    String instruments = configuration.getAttribute(
-        ACTRLaunchConstants.ATTR_INSTRUMENTS, "");
+    String instruments = configuration
+        .getAttribute(ACTRLaunchConstants.ATTR_INSTRUMENTS, "");
     for (String instrument : instruments.split(","))
       for (InstrumentDescriptor desc : installed)
         if (desc.getClassName().equals(instrument)) descriptors.add(desc);
@@ -582,8 +578,8 @@ public class ACTRLaunchConfigurationUtils
     Collection<RuntimeTracerDescriptor> installed = RuntimeTracerRegistry
         .getRegistry().getDescriptors(project, true);
 
-    String instruments = configuration.getAttribute(
-        ACTRLaunchConstants.ATTR_TRACERS, "");
+    String instruments = configuration
+        .getAttribute(ACTRLaunchConstants.ATTR_TRACERS, "");
 
     for (String instrument : instruments.split(","))
       for (RuntimeTracerDescriptor desc : installed)
@@ -592,6 +588,90 @@ public class ACTRLaunchConfigurationUtils
     return descriptors;
   }
 
+//  @SuppressWarnings("unchecked")
+//  static public void computeBundleDependenciesOld(
+//      ILaunchConfigurationWorkingCopy configuration,
+//      Set<String> workspaceBundles, Set<String> targetBundles)
+//      throws CoreException
+//  {
+//    IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+//    String projectName = configuration
+//        .getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "");
+//    IProject sourceProject = null;
+//
+//    if (projectName.length() != 0) sourceProject = root.getProject(projectName);
+//
+//    // IProject project = root.getProject(configuration.getAttribute(
+//    // LaunchConfigurationConstants.ACTR_PROJECT, ""));
+//
+//    Collection<String> appDependencies = null;
+//
+//    if (configuration.getAttribute(ACTRLaunchConstants.ATTR_ITERATIONS, 0) == 0)
+//      appDependencies = BundleUtilities
+//          .getDependencies(ACTRLaunchConstants.DEFAULT_APPLICATION_BUNDLE);
+//    else
+//      appDependencies = BundleUtilities
+//          .getDependencies(ACTRLaunchConstants.ITERATIVE_APPLICATION_BUNDLE);
+//
+//    Collection<String> currentDependencies = Collections.EMPTY_SET;
+//
+//    if (sourceProject != null && sourceProject.exists())
+//      currentDependencies = BundleUtilities.getDependencies(sourceProject);
+//
+//    Collection<String> uniqueDependencies = new TreeSet<String>();
+//    for (String bundleId : appDependencies)
+//      uniqueDependencies.add(bundleId);
+//
+//    for (String bundleId : currentDependencies)
+//      uniqueDependencies.add(bundleId);
+//
+//    /*
+//     * now for the sensors
+//     */
+//    for (SensorDescriptor sensor : getRequiredSensors(configuration))
+//      for (String bundleId : BundleUtilities
+//          .getDependencies(sensor.getContributor()))
+//        uniqueDependencies.add(bundleId);
+//
+//    /*
+//     * and instruments
+//     */
+//    for (InstrumentDescriptor instrument : getRequiredInstruments(
+//        configuration))
+//      for (String bundleId : BundleUtilities
+//          .getDependencies(instrument.getContributor()))
+//        uniqueDependencies.add(bundleId);
+//
+//    /*
+//     * now we determine where they are coming from, we preference workspace
+//     * plugins over installed ones so that you can self-host
+//     */
+//    for (IPluginModelBase modelBase : PluginRegistry.getWorkspaceModels())
+//    {
+//      String pluginId = modelBase.getPluginBase(true).getId();
+//
+//      // not entirely clear how to get the project from the model..
+//      // this matters because if the project is closed, we shouldn't use it
+//      // IProject requiredProject = root.getProject();
+//      // if (requiredProject.isAccessible())
+//      if (pluginId != null && uniqueDependencies.remove(pluginId))
+//        workspaceBundles.add(pluginId);
+//    }
+//
+//    /*
+//     * and the rest we assume are targets
+//     */
+//    targetBundles.addAll(uniqueDependencies);
+//
+//    // System.err.println("Target bundles : " + uniqueDependencies);
+//
+//    if (LOGGER.isDebugEnabled())
+//    {
+//      LOGGER.debug("workspace : " + workspaceBundles.toString());
+//      LOGGER.debug("target : " + targetBundles.toString());
+//    }
+//  }
+
   @SuppressWarnings("unchecked")
   static public void computeBundleDependencies(
       ILaunchConfigurationWorkingCopy configuration,
@@ -599,52 +679,46 @@ public class ACTRLaunchConfigurationUtils
       throws CoreException
   {
     IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-    String projectName = configuration.getAttribute(
-        IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "");
+    String projectName = configuration
+        .getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "");
     IProject sourceProject = null;
 
-    if (projectName.length() != 0)
-      sourceProject = root.getProject(projectName);
+    if (projectName.length() != 0) sourceProject = root.getProject(projectName);
 
-    // IProject project = root.getProject(configuration.getAttribute(
-    // LaunchConfigurationConstants.ACTR_PROJECT, ""));
+    /*
+     * find all the dependencies for the launching application
+     */
 
-    Collection<String> appDependencies = null;
+    Map<String, VersionRange> bundleDependencies = new TreeMap<>();
 
-    if (configuration.getAttribute(ACTRLaunchConstants.ATTR_ITERATIONS, 0) == 0)
-      appDependencies = BundleUtilities
-          .getDependencies(ACTRLaunchConstants.DEFAULT_APPLICATION_BUNDLE);
+    if (configuration.getAttribute(ACTRLaunchConstants.ATTR_ITERATIONS, 0) == 0) BundleUtilities.getDependencies(
+        ACTRLaunchConstants.DEFAULT_APPLICATION_BUNDLE, bundleDependencies, true);
     else
-      appDependencies = BundleUtilities
-          .getDependencies(ACTRLaunchConstants.ITERATIVE_APPLICATION_BUNDLE);
+      BundleUtilities.getDependencies(
+          ACTRLaunchConstants.ITERATIVE_APPLICATION_BUNDLE, bundleDependencies, true);
 
-    Collection<String> currentDependencies = Collections.EMPTY_SET;
-
-    if (sourceProject != null && sourceProject.exists())
-      currentDependencies = BundleUtilities.getDependencies(sourceProject);
-
-    Collection<String> uniqueDependencies = new TreeSet<String>();
-    for (String bundleId : appDependencies)
-      uniqueDependencies.add(bundleId);
-
-    for (String bundleId : currentDependencies)
-      uniqueDependencies.add(bundleId);
+    if (sourceProject != null && sourceProject.exists()) //      workspaceBundles.add(projectName + "@default:default");
+    BundleUtilities.getDependencies(sourceProject, bundleDependencies, true);
 
     /*
      * now for the sensors
      */
     for (SensorDescriptor sensor : getRequiredSensors(configuration))
-      for (String bundleId : BundleUtilities.getDependencies(sensor
-          .getContributor()))
-        uniqueDependencies.add(bundleId);
+      BundleUtilities.getDependencies(sensor.getContributor(),
+          bundleDependencies, true);
 
     /*
      * and instruments
      */
-    for (InstrumentDescriptor instrument : getRequiredInstruments(configuration))
-      for (String bundleId : BundleUtilities.getDependencies(instrument
-          .getContributor()))
-        uniqueDependencies.add(bundleId);
+    for (InstrumentDescriptor instrument : getRequiredInstruments(
+        configuration))
+      BundleUtilities.getDependencies(instrument.getContributor(),
+          bundleDependencies, true);
+
+    /*
+     * for logging
+     */
+    configureLogging(configuration, bundleDependencies);
 
     /*
      * now we determine where they are coming from, we preference workspace
@@ -658,19 +732,152 @@ public class ACTRLaunchConfigurationUtils
       // this matters because if the project is closed, we shouldn't use it
       // IProject requiredProject = root.getProject();
       // if (requiredProject.isAccessible())
-      if (pluginId != null && uniqueDependencies.remove(pluginId))
-        workspaceBundles.add(pluginId);
+      if (pluginId != null && bundleDependencies.remove(pluginId) != null)
+        workspaceBundles.add(pluginId + "@default:default");
     }
 
     /*
-     * and the rest we assume are targets
+     * now we need to iterate over the dependencies, find the plugins that
+     * satisfy it, choose the highest satisfying version
      */
-    targetBundles.addAll(uniqueDependencies);
+    for (Map.Entry<String, VersionRange> entry : bundleDependencies.entrySet())
+    {
+      org.eclipse.osgi.service.resolver.VersionRange newRange = new org.eclipse.osgi.service.resolver.VersionRange(
+          entry.getValue().toString());
+
+      IPluginModelBase[] plugins = PluginRegistry.findModels(entry.getKey(),
+          newRange, new PluginFilter() {
+            @Override
+            public boolean accept(IPluginModelBase base)
+            {
+              return true;
+            }
+          });
+
+      if (plugins.length == 0)
+      {
+        RuntimePlugin.warn("no plugin " + entry.getKey() + " for " + newRange
+            + " was found, blundering ahead");
+        targetBundles.add(entry.getKey() + "@default:default");
+      }
+      else if (plugins.length == 1)
+        targetBundles.add(entry.getKey() + "*"
+            + plugins[0].getBundleDescription().getVersion().toString()
+            + "@default:default"); // no need for
+      // version
+      else
+      {
+        /*
+         * select the latest
+         */
+        IPluginModelBase latest = plugins[0];
+        Version current = latest.getBundleDescription().getVersion();
+        for (IPluginModelBase base : plugins)
+          if (base.getBundleDescription().getVersion().compareTo(current) > 0)
+          {
+            latest = base;
+            current = base.getBundleDescription().getVersion();
+          }
+
+        RuntimePlugin.warn("Multiple versions of "
+            + latest.getBundleDescription().getSymbolicName()
+            + " were found. Using " + current.toString());
+        targetBundles.add(
+            entry.getKey() + "*" + current.toString() + "@default:default");
+      }
+
+    }
+
+    RuntimePlugin
+        .info("Launching workspace bundles " + workspaceBundles.toString());
+    RuntimePlugin.info("Launching target bundles " + targetBundles.toString());
 
     if (LOGGER.isDebugEnabled())
     {
       LOGGER.debug("workspace : " + workspaceBundles.toString());
       LOGGER.debug("target : " + targetBundles.toString());
+    }
+  }
+
+  static private void configureLogging(
+      ILaunchConfigurationWorkingCopy configuration,
+      Map<String, VersionRange> bundleDependencies) throws CoreException
+  {
+    IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+    String projectName = configuration
+        .getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "");
+    IProject sourceProject = null;
+
+    if (projectName.length() != 0) sourceProject = root.getProject(projectName);
+
+    /*
+     * what about core logging? that needs to be set up by the tab but for now..
+     */
+    boolean logging = configuration
+        .getAttribute(ACTRLaunchConstants.ATTR_DEBUG_CORE_ENABLED, false);
+
+    if (logging)
+    {
+      /**
+       * logging is different now that we are no longer using JCL. now we need
+       * to load the org.slf4j.impl.log4j12 bundle.
+       */
+      IResource logFile = sourceProject.findMember(configuration.getAttribute(
+          ACTRLaunchConstants.ATTR_DEBUG_CORE_LOG_CONF,
+          ACTRLaunchConstants.DEFAULT_CORE_LOG_CONF));
+
+      if (logFile != null && logFile.exists())
+      {
+        /*
+         * add the appropriate bundle for logging and its deps
+         */
+        String defaultLoggerImpl = configuration.getAttribute(
+            ACTRLaunchConstants.ATTR_DEBUG_CORE_LOGGER,
+            ACTRLaunchConstants.DEFAULT_CORE_LOGGER);
+
+        BundleUtilities.getDependencies(defaultLoggerImpl, bundleDependencies,
+            true);
+        BundleUtilities.getDependencies("org.apache.log4j", bundleDependencies,
+            true);
+
+//        IPluginModelBase modelBase = PluginRegistry.findModel("org.slf4j.api");
+//        for (BundleDescription fragment : modelBase.getBundleDescription()
+//            .getFragments())
+//          if (fragment.getSymbolicName().equals(defaultLoggerImpl))
+//          {
+//            Version version = fragment.getVersion();
+//            bundleDependencies.put(defaultLoggerImpl,
+//                new VersionRange(VersionRange.LEFT_CLOSED, version, version,
+//                    VersionRange.RIGHT_CLOSED));
+//          }
+
+        StringBuilder vmArg = new StringBuilder();
+
+        vmArg.append(" -Dlog4j.configuration=");
+        try
+        {
+          URI uri = logFile.getRawLocationURI();
+          vmArg.append(uri.toURL()).append(" ")
+              .append(configuration.getAttribute(
+                  IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, ""));
+
+          configuration.setAttribute(
+              IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
+              vmArg.toString());
+        }
+        catch (Exception e)
+        {
+          CorePlugin.debug("failed to transform url " + logFile, e);
+          logging = false;
+        }
+      }
+      else
+        logging = false;
+    }
+
+    if (!logging)
+    {
+
     }
   }
 }

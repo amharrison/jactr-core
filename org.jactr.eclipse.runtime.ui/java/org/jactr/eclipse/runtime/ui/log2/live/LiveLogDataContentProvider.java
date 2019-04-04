@@ -10,10 +10,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javolution.util.FastList;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -23,6 +22,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.eclipse.runtime.log2.ILogSessionDataStream;
 import org.jactr.eclipse.runtime.log2.LogData;
 import org.jactr.eclipse.runtime.session.stream.ILiveSessionDataStream;
@@ -35,9 +35,9 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
    * Logger definition
    */
   static private final transient Log              LOGGER                 = LogFactory
-                                                                             .getLog(LiveLogDataContentProvider.class);
+      .getLog(LiveLogDataContentProvider.class);
 
-  private final static long                       MINIMUM_RESPONSIVENESS = 300;                                        // ms
+  private final static long                       MINIMUM_RESPONSIVENESS = 300;                             // ms
 
   private TableViewer                             _viewer;
 
@@ -47,26 +47,25 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
 
   private ReentrantLock                           _lock                  = new ReentrantLock();
 
-  private FastList<LogData>                       _pendingRemovals;
+  private List<LogData>                           _pendingRemovals;
 
-  private FastList<LogData>                       _pendingAdds;
+  private List<LogData>                           _pendingAdds;
 
-  private FastList<LogData>                       _pendingUpdates;
+  private List<LogData>                           _pendingUpdates;
 
   private Set<String>                             _knownColumns;
 
   private QueueingUIJob                           _updater;
-  
-  private List<ColumnListener>					  _columnListeners = new LinkedList<ColumnListener>();
+
+  private List<ColumnListener>                    _columnListeners       = new LinkedList<ColumnListener>();
 
   public LiveLogDataContentProvider(TableViewer viewer)
   {
     _viewer = viewer;
     _knownColumns = new TreeSet<String>();
-    _pendingRemovals = FastList.newInstance();
-    _pendingAdds = FastList.newInstance();
-    _pendingUpdates = FastList.newInstance();
-
+    _pendingRemovals = Lists.mutable.empty();
+    _pendingAdds = Lists.mutable.empty();
+    _pendingUpdates = Lists.mutable.empty();
 
     _liveListener = new ILiveSessionDataStreamListener<LogData>() {
 
@@ -110,9 +109,7 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
 
   public void dispose()
   {
-    FastList.recycle(_pendingAdds);
-    FastList.recycle(_pendingRemovals);
-    FastList.recycle(_pendingUpdates);
+
   }
 
   @SuppressWarnings("unchecked")
@@ -123,7 +120,8 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
       _logData = (ILogSessionDataStream) newInput;
       if (_logData instanceof ILiveSessionDataStream)
         ((ILiveSessionDataStream) _logData).addListener(_liveListener,
-        // new SWTExecutor()); //this may have been killing our performance..
+            // new SWTExecutor()); //this may have been killing our
+            // performance..
             null);
     }
     else /*
@@ -135,7 +133,7 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
 
   public Object[] getElements(Object inputElement)
   {
-    FastList<LogData> data = FastList.newInstance();
+    List<LogData> data = FastListFactory.newInstance();
     try
     {
       _logData.getData(_logData.getStartTime(), _logData.getEndTime(), data);
@@ -143,7 +141,7 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
     }
     finally
     {
-      FastList.recycle(data);
+      FastListFactory.recycle(data);
     }
   }
 
@@ -163,7 +161,7 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
 
   protected void processChanges(IProgressMonitor monitor)
   {
-    FastList<LogData> pending = FastList.newInstance();
+    List<LogData> pending = FastListFactory.newInstance();
 
     LogData lastData = null;
     try
@@ -177,7 +175,7 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
       if (pending.size() > 0)
       {
         monitor.subTask(String.format("Adding %d rows", pending.size()));
-        lastData = pending.getLast();
+        lastData = pending.get(pending.size() - 1);
         verifyColumns(lastData);
         _viewer.add(pending.toArray());
         monitor.worked(pending.size());
@@ -204,7 +202,7 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
     }
     finally
     {
-      FastList.recycle(pending);
+      FastListFactory.recycle(pending);
       if (lastData != null)
       {
         Table table = _viewer.getTable();
@@ -228,7 +226,7 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
   {
     if (_knownColumns.size() == 0)
       for (TableColumn column : _viewer.getTable().getColumns())
-        _knownColumns.add(column.getText());
+      _knownColumns.add(column.getText());
 
     Set<String> streamsInData = data.getStreamNames();
     for (String stream : streamsInData)
@@ -241,18 +239,19 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
         TableColumn column = new TableColumn(table, SWT.LEFT);
         column.setText(stream);
         _knownColumns.add(stream);
-        for(ColumnListener listener: _columnListeners)
+        for (ColumnListener listener : _columnListeners)
           listener.added(column);
       }
 
   }
-  
+
   public void addColumnListener(ColumnListener listener)
   {
-	  _columnListeners.add(listener);
+    _columnListeners.add(listener);
   }
-  
-  public void removeColumnListener(ColumnListener listener) {
-	  _columnListeners.remove(listener);
+
+  public void removeColumnListener(ColumnListener listener)
+  {
+    _columnListeners.remove(listener);
   }
 }

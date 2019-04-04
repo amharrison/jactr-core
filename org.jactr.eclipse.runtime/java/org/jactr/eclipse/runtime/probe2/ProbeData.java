@@ -1,12 +1,9 @@
 package org.jactr.eclipse.runtime.probe2;
 
-/*
- * default logging
- */
-import org.apache.commons.collections.primitives.ArrayDoubleList;
-import org.apache.commons.collections.primitives.DoubleList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.collections.api.list.primitive.MutableDoubleList;
+import org.eclipse.collections.impl.factory.primitive.DoubleLists;
 
 public class ProbeData
 {
@@ -18,7 +15,7 @@ public class ProbeData
 
   private final String               _probeName;
 
-  private ArrayDoubleList            _data;
+  private MutableDoubleList          _data;
 
   private int                        _maximumCapacity;
 
@@ -34,7 +31,7 @@ public class ProbeData
     _probeName = probeName;
     _maximumCapacity = maxCapacity;
     _shiftCapacity = normalCapacity;
-    _data = new ArrayDoubleList(maxCapacity);
+    _data = DoubleLists.mutable.empty();
 
     for (int i = 0; i < fillTo; i++)
       _data.add(Double.NaN);
@@ -52,14 +49,13 @@ public class ProbeData
 
   synchronized public void shift()
   {
-    DoubleList view = _data.subList(0, _maximumCapacity - _shiftCapacity);
+    MutableDoubleList view = _data.subList(0,
+        _maximumCapacity - _shiftCapacity);
     view.clear();
   }
 
   synchronized public double[] getData(double[] container)
   {
-    if (container == null) container = new double[_data.size()];
-
-    return _data.toArray(container);
+    return _data.toArray();
   }
 }

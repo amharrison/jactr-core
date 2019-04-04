@@ -5,12 +5,12 @@ package org.jactr.eclipse.core.parser;
  */
 import java.net.URL;
 import java.util.Collections;
-
-import javolution.util.FastList;
+import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -57,7 +57,7 @@ public class ParseRunnable implements ICompilationUnitRunnable
   {
     if (monitor.isCanceled()) return Status.CANCEL_STATUS;
 
-    FastList<Exception> tmp = FastList.newInstance();
+    List<Exception> tmp = Lists.mutable.empty();
 
     try
     {
@@ -127,7 +127,7 @@ public class ParseRunnable implements ICompilationUnitRunnable
     }
     finally
     {
-      FastList.recycle(tmp);
+
     }
   }
 

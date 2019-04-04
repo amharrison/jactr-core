@@ -17,17 +17,17 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
-import javolution.util.FastList;
 
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
 import org.jactr.io.antlr3.misc.DetailedCommonTree;
@@ -327,7 +327,7 @@ public class Support
       end = ct.getStopIndex();
     }
 
-    FastList<CommonTree> container = FastList.newInstance();
+    List<CommonTree> container = FastListFactory.newInstance();
     for (CommonTree child : Support.getAllChildren(node, container))
     {
       int[] tmp = getTreeOffsets(child, base);
@@ -336,7 +336,7 @@ public class Support
         start = tmp[0];
       else if (tmp[0] < start) start = tmp[0];
     }
-    FastList.recycle(container);
+    FastListFactory.recycle(container);
 
     if (node instanceof DetailedCommonTree)
     {
@@ -366,7 +366,7 @@ public class Support
     int size = bounds[1] - bounds[0];
     CommonTree candidate = root;
 
-    FastList<CommonTree> container = FastList.newInstance();
+    List<CommonTree> container = FastListFactory.newInstance();
     for (CommonTree child : Support.getAllChildren(root, container))
     {
       int[] cBounds = getTreeOffsets(child, base);
@@ -381,7 +381,7 @@ public class Support
           candidate = child;
         }
     }
-    FastList.recycle(container);
+    FastListFactory.recycle(container);
 
     /*
      * the child contains the offset, lets dive in.

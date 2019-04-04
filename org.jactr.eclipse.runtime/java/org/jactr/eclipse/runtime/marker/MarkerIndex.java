@@ -13,10 +13,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
-import javolution.util.FastList;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.core.resources.IResource;
 
 /**
@@ -45,7 +44,7 @@ public class MarkerIndex
     _markerIndex = markerIndex;
     _markerTypes = markerTypes;
     _knownTypes = new TreeSet<String>();
-    _knownMarkers = new FastList<MarkerRecord>();
+    _knownMarkers = Lists.mutable.empty();
     readTypes();
     readIndex();
   }

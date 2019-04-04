@@ -92,8 +92,6 @@ public class CorePlugin extends Plugin
   @Override
   public void stop(BundleContext context) throws Exception
   {
-    // save preferences
-    savePluginPreferences();
     super.stop(context);
   }
 

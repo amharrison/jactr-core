@@ -153,26 +153,9 @@ public abstract class BaseACTRContributorTemplateSection extends
     /*
      * access to the core
      */
-    rtn.add(new PluginReference("org.jactr", null, 0));
-    /*
-     * and can be accessed from io (needed for the buddy policy stuff)
-     */
-    rtn.add(new PluginReference("org.jactr.io", null, 0));
-    /*
-     * so that they get the default tools
-     */
-    rtn.add(new PluginReference("org.jactr.tools", null, 0));
-    /*
-     * basic logging.. this may change org.apache.commons.logging official
-     * package is still pending..
-     */
-    rtn.add(new PluginReference("org.jactr.support", null, 0));
+    rtn.add(new PluginReference("org.jactr.osgi", null, 0));
 
-    rtn.add(new PluginReference("org.commonreality.api", null, 0));
-    rtn.add(new PluginReference("org.commonreality.core", null, 0));
-    rtn.add(new PluginReference("org.commonreality.time", null, 0));
-    rtn.add(new PluginReference("org.commonreality.sensors", null, 0));
-    rtn.add(new PluginReference("org.commonreality.modalities", null, 0));
+    rtn.add(new PluginReference("org.commonreality.osgi", null, 0));
 
     rtn.add(new PluginReference("org.apache.log4j", null, 0));
     return rtn;
@@ -245,6 +228,6 @@ public abstract class BaseACTRContributorTemplateSection extends
    */
   protected void addProjectNature() throws CoreException
   {
-    ACTRProjectUtils.addNature(project);
+    ACTRProjectUtils.ensureNatureAndBuilders(project);
   }
 }

@@ -53,7 +53,7 @@ public class ConvertToACTRProjectHandler extends AbstractHandler
 
       try
       {
-        ACTRProjectUtils.addNature(project);
+        ACTRProjectUtils.ensureNatureAndBuilders(project);
       }
       catch (Exception e)
       {

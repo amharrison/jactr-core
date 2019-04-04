@@ -7,10 +7,13 @@ package org.jactr.eclipse.core.project;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.collections.impl.factory.Sets;
+import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -31,7 +34,7 @@ public class ACTRProjectUtils
 
   static private transient final Log LOGGER = LogFactory
 
-                                            .getLog(ACTRProjectUtils.class);
+      .getLog(ACTRProjectUtils.class);
 
   static public boolean isACTRProject(IProject project)
   {
@@ -72,11 +75,16 @@ public class ACTRProjectUtils
     if (!isACTRProject(project)) return Collections.EMPTY_LIST;
 
     Collection<String> validExtensions = new TreeSet<String>();
+
+    // shortterm hack during io2 transition
+    validExtensions.add("jactr");
+
     for (String ext : ModelParserFactory.getValidExtensions())
       validExtensions.add(ext.toLowerCase());
 
     ArrayList<IFile> rtn = new ArrayList<IFile>();
     findModelsOnPath(project.findMember("models"), rtn, validExtensions);
+//    findModelsOnPath(project.findMember("src"), rtn, validExtensions);
     return rtn;
   }
 
@@ -108,25 +116,39 @@ public class ACTRProjectUtils
     }
   }
 
-  static public void addNature(IProject project) throws CoreException
+  static public void ensureNatureAndBuilders(IProject project)
+      throws CoreException
   {
-    /*
-     * add the project nature
-     */
+    Set<String> requiredNatures = (Set<String>) Sets.immutable.of(
+        "org.eclipse.jdt.core.javanature", "org.eclipse.pde.PluginNature",
+        "org.eclipse.xtext.ui.shared.xtextNature",
+        "org.jactr.eclipse.core.project.actrNature");
+
+    Set<String> requiredBuilders = (Set<String>) Sets.immutable.of(
+        "org.eclipse.jdt.core.javabuilder",
+        "org.eclipse.xtext.ui.shared.xtextBuilder",
+        "org.jactr.eclipse.core.builder.actrBuilder");
+
+    Set<String> definedNatures = Sets.mutable.empty();
+    Set<String> definedBuilders = Sets.mutable.empty();
+
     IProjectDescription desc = project.getDescription();
-    String[] defined = desc.getNatureIds();
+    for (String defined : desc.getNatureIds())
+      definedNatures.add(defined);
 
-    /*
-     * was it already set
-     */
-    for (String nature : defined)
-      if (ACTRProjectNature.NATURE_ID.equals(nature)) return;
+    for (ICommand defined : desc.getBuildSpec())
+      definedBuilders.add(defined.getBuilderName());
 
-    String[] natures = new String[defined.length + 1];
-    System.arraycopy(defined, 0, natures, 0, defined.length);
-    natures[defined.length] = ACTRProjectNature.NATURE_ID;
+    definedNatures.addAll(requiredNatures);
+    definedBuilders.addAll(requiredBuilders);
 
-    desc.setNatureIds(natures);
+    desc.setNatureIds(definedNatures.stream().toArray(String[]::new));
+
+    desc.setBuildSpec(definedBuilders.stream().map(s -> {
+      ICommand command = desc.newCommand();
+      command.setBuilderName(s);
+      return command;
+    }).toArray(ICommand[]::new));
 
     project.setDescription(desc, null);
   }

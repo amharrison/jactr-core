@@ -4,12 +4,12 @@ package org.jactr.eclipse.runtime.ui.production;
  * default logging
  */
 import java.util.Collection;
-
-import javolution.util.FastList;
+import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.eclipse.runtime.production2.ConflictResolutionData;
 import org.jactr.eclipse.runtime.production2.IConflictResolutionDataStream;
 import org.jactr.eclipse.runtime.session.ISession;
@@ -76,18 +76,18 @@ public class ProductionView extends SimpleConfigurableASTView
         .getDataStream("conflict");
     if (bsds == null) return;
 
-    FastList<ConflictResolutionData> conflictData = FastList.newInstance();
+    List<ConflictResolutionData> conflictData = FastListFactory.newInstance();
     try
     {
       bsds.getData(time, time, conflictData);
 
       if (conflictData.size() == 0) return;
 
-      container.addAll(conflictData.getFirst().getConflictSet());
+      container.addAll(conflictData.get(0).getConflictSet());
     }
     finally
     {
-      FastList.recycle(conflictData);
+      FastListFactory.recycle(conflictData);
     }
   }
 

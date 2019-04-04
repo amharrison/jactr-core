@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description name="jACT-R IDE Update site" url="http://jactr.org/update/eclipse/">
+   <description name="jACT-R IDE Update site" url="http://jact-r.org/update2/release/org.jactr.eclipse.update/">
       jACT-R IDE update site
    </description>
-   <feature url="features/org.jactr.eclipse.tools_1.3.0.201207130116.jar" id="org.jactr.eclipse.tools" version="1.3.0.201207130116">
-      <category name="org.jactr.eclipse"/>
+   <feature url="features/org.jactr.eclipse.feature_2.5.0.201904041328.jar" id="org.jactr.eclipse.feature" version="2.5.0.201904041328">
+      <category name="org.jactr"/>
    </feature>
-   <feature url="features/org.jactr.eclipse.feature_1.3.0.201301152231.jar" id="org.jactr.eclipse.feature" version="1.3.0.201301152231">
-      <category name="org.jactr.eclipse"/>
-   </feature>
-   <category-def name="org.jactr.eclipse" label="jACT-R : Eclipse Integration"/>
+   <category-def name="org.jactr" label="jACT-R : Tools and Runtime"/>
 </site>

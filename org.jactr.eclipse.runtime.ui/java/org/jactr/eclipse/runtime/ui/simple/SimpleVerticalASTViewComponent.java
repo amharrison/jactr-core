@@ -7,8 +7,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import javolution.util.FastList;
-
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,6 +15,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
+import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.eclipse.runtime.session.ISession;
 import org.jactr.eclipse.ui.content.ACTRLabelProvider;
 import org.jactr.eclipse.ui.content.AbstractACTRContentProvider;
@@ -78,13 +77,13 @@ public abstract class SimpleVerticalASTViewComponent implements
   public void setData(ISession session, String modelName, double time,
       boolean isPostConflictResolution)
   {
-    final FastList<CommonTree> trees = FastList.newInstance();
+    final List<CommonTree> trees = FastListFactory.newInstance();
     getAST(session, modelName, time, isPostConflictResolution, trees);
 
     if (trees.size() == 0)
     {
       noAST();
-      FastList.recycle(trees);
+      FastListFactory.recycle(trees);
       return;
     }
 

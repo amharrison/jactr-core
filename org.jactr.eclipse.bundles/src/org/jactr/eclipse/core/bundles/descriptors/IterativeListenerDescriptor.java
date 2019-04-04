@@ -26,7 +26,7 @@ public class IterativeListenerDescriptor extends CommonExtensionDescriptor
   public IterativeListenerDescriptor(String contributor, String name,
       String className, String desc, Map<String, String> parameters)
   {
-    super("org.jactr.tools.iterative", contributor, name, className, desc);
+    super("org.jactr.osgi.iterative", contributor, name, className, desc);
     _parameters = new TreeMap<String, String>(parameters);
   }
 

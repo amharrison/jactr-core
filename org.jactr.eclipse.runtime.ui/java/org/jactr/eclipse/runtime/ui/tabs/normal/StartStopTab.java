@@ -218,9 +218,9 @@ public class StartStopTab extends AbstractLaunchConfigurationTab
       IType type = jProject.findType(className);
       if (type == null)
       {
-        RuntimePlugin.info("Could not find " + className + " on classpath of "
-            + project.getName() + ". Checked : "
-            + Arrays.toString(jProject.getResolvedClasspath(false)));
+//        RuntimePlugin.info("Could not find " + className + " on classpath of "
+//            + project.getName() + ". Checked : "
+//            + Arrays.toString(jProject.getResolvedClasspath(false)));
         throw new ClassNotFoundException();
       }
     }

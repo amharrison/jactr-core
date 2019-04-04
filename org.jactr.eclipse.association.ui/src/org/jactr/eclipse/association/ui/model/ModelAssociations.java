@@ -8,12 +8,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.Executor;
-
-import javolution.util.FastList;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
@@ -23,6 +23,8 @@ import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.eclipse.association.ui.mapper.IAssociationMapper;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
+
+import javolution.util.FastList;
 
 public class ModelAssociations
 {
@@ -285,6 +287,28 @@ public class ModelAssociations
   public Collection<Association> getInboundAssociations(String iChunkName)
   {
     return get(iChunkName, _iChunks);
+  }
+
+  public Set<String> getChunkNames(Set<String> container)
+  {
+    if (container == null) container = new TreeSet<>();
+    container.addAll(_iChunks.keySet());
+    container.addAll(_jChunks.keySet());
+    return container;
+  }
+
+  public Map<String, CommonTree> chunks(Map<String, CommonTree> container)
+  {
+    if (container == null) container = new TreeMap<>();
+    final Map<String, CommonTree> fContainer = container;
+
+    _associations.forEach(ass -> {
+      fContainer.putIfAbsent(ASTSupport.getName(ass.getIChunk()),
+          ass.getIChunk());
+      fContainer.putIfAbsent(ASTSupport.getName(ass.getJChunk()),
+          ass.getJChunk());
+    });
+    return container;
   }
 
   protected Collection<Association> get(String keyName,

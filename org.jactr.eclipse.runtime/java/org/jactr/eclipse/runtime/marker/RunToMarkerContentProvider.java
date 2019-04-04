@@ -4,13 +4,13 @@ package org.jactr.eclipse.runtime.marker;
  * default logging
  */
 import java.util.Collection;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import javolution.util.FastList;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.jactr.eclipse.runtime.marker.MarkerIndex.MarkerRecord;
@@ -39,7 +39,7 @@ public class RunToMarkerContentProvider implements ITreeContentProvider
 
   protected void populate()
   {
-    FastList<MarkerRecord> records = FastList.newInstance();
+    List<MarkerRecord> records = Lists.mutable.empty();
     _index.getKnownRecords(records);
 
     for (MarkerRecord record : records)
@@ -48,13 +48,13 @@ public class RunToMarkerContentProvider implements ITreeContentProvider
       Collection<MarkerRecord> allOfType = _tree.get(type);
       if (allOfType == null)
       {
-        allOfType = new FastList<MarkerRecord>();
+        allOfType = Lists.mutable.empty();
         _tree.put(type, allOfType);
       }
       allOfType.add(record);
     }
 
-    FastList.recycle(records);
+
   }
 
   public void dispose()

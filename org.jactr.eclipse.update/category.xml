@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="jACT-R IDE Update site" url="http://jact-r.org/update2/release/org.jactr.eclipse.update/">
+      jACT-R IDE update site
+   </description>
+   <feature url="features/org.jactr.eclipse.feature_2.5.0.qualifier.jar" id="org.jactr.eclipse.feature" version="2.5.0.qualifier">
+      <category name="org.jactr"/>
+   </feature>
+   <category-def name="org.jactr" label="jACT-R : Tools and Runtime"/>
+</site>

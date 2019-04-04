@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.zip.GZIPInputStream;
 
-import javolution.util.FastList;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IResource;
@@ -22,6 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.eclipse.core.concurrent.QueueingJob;
 import org.jactr.eclipse.runtime.RuntimePlugin;
 import org.jactr.eclipse.runtime.debug.elements.ACTRDebugElement;
@@ -86,7 +85,7 @@ public class EventPumper extends QueueingJob
     /*
      * collect the records
      */
-    FastList<ArchivalIndex.Index> toLoad = FastList.newInstance();
+    List<ArchivalIndex.Index> toLoad = FastListFactory.newInstance();
     synchronized (_queue)
     {
       if (_queue.size() == 0) return Status.OK_STATUS;
@@ -114,7 +113,7 @@ public class EventPumper extends QueueingJob
     processIndices(new SubProgressMonitor(monitor, toLoad.size()), toLoad,
         blockSize);
 
-    FastList.recycle(toLoad);
+    FastListFactory.recycle(toLoad);
 
     synchronized (_queue)
     {
@@ -293,7 +292,7 @@ public class EventPumper extends QueueingJob
     RuntimeTraceManager rtm = RuntimePlugin.getDefault()
         .getRuntimeTraceManager();
 
-    FastList<ITransformedEvent> events = FastList.newInstance();
+    List<ITransformedEvent> events = FastListFactory.newInstance();
 
     boolean done = false;
 
@@ -427,7 +426,7 @@ public class EventPumper extends QueueingJob
     }
     finally
     {
-      FastList.recycle(events);
+      FastListFactory.recycle(events);
     }
   }
 }

@@ -5,40 +5,13 @@
    
 <!--  
    -->
-    <extension
-         point="org.eclipse.ui.newWizards">
-      <category
-            name="%ACTRCategory.name"
-            id="org.jactr.eclipse.ui.wizards.actrCategory">
-      </category>
-      <wizard
-            icon="icons/full/basic/jactr-project.gif"
-            class="org.jactr.eclipse.ui.wizards.project.NewACTRProjectWizard"
-            category="org.jactr.eclipse.ui.wizards.actrCategory"
-            project="true"
-            name="%NewACTRProjectWizard.title"
-            id="org.jactr.eclipse.ui.wizards.project.NewACTRProjectWizard">
-         <description>
-            %NewACTRProjectWizard.description
-         </description>
-      </wizard>
-      <wizard
-            icon="icons/full/basic/jactr.gif"
-            class="org.jactr.eclipse.ui.wizards.model.NewModelWizard"
-            category="org.jactr.eclipse.ui.wizards.actrCategory"
-            name="jACT-R Model"
-            id="org.jactr.eclipse.ui.wizards.model.NewModelWizard">
-         <selection
-               class="org.eclipse.core.resources.IContainer"/>
-      </wizard>
-   </extension>
 
    
    <extension
          point="org.eclipse.ui.editors">
       <editor
             name="%ACTRModelEditor.name"
-            extensions="jactr"
+            extensions="jactrx"
             icon="icons/full/basic/jactr.gif"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             class="org.jactr.eclipse.ui.editor.JACTRModelEditor"
@@ -134,9 +107,11 @@
       </extension>
     
 	  <extension point="org.eclipse.ui.preferencePages">
-         <page id="ACTRPreferencePage"
-               name="jACT-R"
-               class="org.jactr.eclipse.ui.preferences.ACTRPreferencePage">
+         <page
+               category="org.jactr.io2.jactr.ModelFragment"
+               class="org.jactr.eclipse.ui.preferences.ACTRPreferencePage"
+               id="ACTRPreferencePage"
+               name="jACT-R (Old)">
          </page>
          
          <page id="UnitCompilersPreferencePage"
@@ -286,43 +261,31 @@
        
        <!-- package nav-->
        <menuContribution
-             locationURI="popup:org.eclipse.jdt.ui.PackageExplorer?after=additions">
+             locationURI="popup:org.eclipse.ui.popup.any?after=additions">
           <menu
                 icon="icons/full/basic/jactr.gif"
                 id="org.jactr.eclipse.ui.menu"
                 label="jACT-R"
                 tooltip="jACT-R Tools...">
-             <menu
-                   icon="icons/full/basic/jactr.gif"
-                   id="org.jactr.eclipse.ui.menu.convert"
-                   label="Convert to..">
-                <visibleWhen
-                      checkEnabled="false">
-                      <iterate
-                            ifEmpty="false">
-                         <adapt
-                               type="org.eclipse.core.resources.IFile">
-                         </adapt>
-                      </iterate>
-                </visibleWhen>
-                <dynamic
-                      class="org.jactr.eclipse.ui.commands.ConvertTo"
-                      id="org.jactr.eclipse.ui.dynamic2">
-                </dynamic>
-             </menu>
           <command
                 commandId="org.jactr.eclipse.ui.commands.convertProject"
                 icon="icons/full/basic/jactr-project.gif"
                 id="org.jactr.eclipse.ui.menu.convertProject"
-                label="Tweak imported jACT-R Project"
+                label="Update jACT-R Project"
                 style="push"
-                tooltip="Imported jACT-R Projects often need to be tweaked before attempting to use">
+                tooltip="Updates old projects to the new infrastructure">
              <visibleWhen
                       checkEnabled="false">
                       <iterate
                             ifEmpty="false">
                          <adapt
                                type="org.eclipse.core.resources.IProject">
+                            <not>
+                               <test
+                                     property="org.eclipse.core.resources.projectNature"
+                                     value="org.eclipse.xtext.ui.shared.xtextNature">
+                               </test>
+                            </not>
                          </adapt>
                       </iterate>
                 </visibleWhen>
@@ -349,7 +312,7 @@
                 commandId="org.jactr.eclipse.ui.command.useTools"
                 icon="icons/full/basic/library.gif"
                 id="org.jactr.eclipse.ui.menu.useTools"
-                label="Use Tools"
+                label="Dependency Tool"
                 style="push"
                 tooltip="Select what tools to use in your jACT-R project">
              <visibleWhen

@@ -4,12 +4,12 @@ package org.jactr.eclipse.runtime.ui.buffer;
  * default logging
  */
 import java.util.Collection;
-
-import javolution.util.FastList;
+import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.eclipse.runtime.buffer2.BufferData;
 import org.jactr.eclipse.runtime.buffer2.IBufferSessionDataStream;
 import org.jactr.eclipse.runtime.session.ISession;
@@ -76,14 +76,14 @@ public class BufferView extends SimpleConfigurableASTView
         .getDataStream("buffer");
     if (bsds == null) return;
 
-    FastList<BufferData> bufferData = FastList.newInstance();
+    List<BufferData> bufferData = FastListFactory.newInstance();
     try
     {
       bsds.getLatestData(time, bufferData);
 
       if (bufferData.size() == 0) return;
 
-      BufferData bd = bufferData.getLast();
+      BufferData bd = bufferData.get(bufferData.size() - 1);
       for (String buffer : bd.getBufferNames())
       {
         CommonTree data = bd.getBufferContents(buffer, isPostConflict);
@@ -92,7 +92,7 @@ public class BufferView extends SimpleConfigurableASTView
     }
     finally
     {
-      FastList.recycle(bufferData);
+      FastListFactory.recycle(bufferData);
     }
   }
 

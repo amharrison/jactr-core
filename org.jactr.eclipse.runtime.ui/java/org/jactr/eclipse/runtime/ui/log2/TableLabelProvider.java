@@ -1,9 +1,6 @@
 package org.jactr.eclipse.runtime.ui.log2;
 
-/*
- * default logging
- */
-import javolution.util.FastList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,6 +12,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.jactr.core.logging.Logger;
+import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.eclipse.runtime.log2.LogData;
 import org.jactr.eclipse.runtime.marker.OpenMarkerSessionDataStream;
 import org.jactr.eclipse.runtime.marker.OpenMarkers;
@@ -96,8 +94,8 @@ public class TableLabelProvider extends LabelProvider implements
       /*
        * we may have marker data.
        */
-      FastList<OpenMarkers> openMarkers = FastList.newInstance();
-      FastList<Long> markerIds = FastList.newInstance();
+      List<OpenMarkers> openMarkers = FastListFactory.newInstance();
+      List<Long> markerIds = FastListFactory.newInstance();
       try
       {
         double logTime = ld.getTime();
@@ -130,8 +128,8 @@ public class TableLabelProvider extends LabelProvider implements
       }
       finally
       {
-        FastList.recycle(openMarkers);
-        FastList.recycle(markerIds);
+        FastListFactory.recycle(openMarkers);
+        FastListFactory.recycle(markerIds);
       }
     }
 

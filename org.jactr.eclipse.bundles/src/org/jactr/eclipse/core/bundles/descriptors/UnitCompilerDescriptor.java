@@ -25,7 +25,8 @@ public class UnitCompilerDescriptor extends CommonExtensionDescriptor
   public UnitCompilerDescriptor(String contributor, String name, String className,
       String description, boolean defaultEnabled, IReportableUnitCompiler.Level defaultLevel)
   {
-    super("org.jactr.io.unitcompiler", contributor, name, className, description);
+    super("org.jactr.osgi.unitcompiler", contributor, name, className,
+        description);
     _defaultEnabled = defaultEnabled;
     _defaultLevel = defaultLevel;
   }

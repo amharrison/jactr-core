@@ -58,7 +58,7 @@ public class ACTRSession extends AbstractSession
    * Logger definition
    */
   static private final transient Log       LOGGER              = LogFactory
-                                                                   .getLog(ACTRSession.class);
+      .getLog(ACTRSession.class);
 
   static public String                     ACTR_DEBUG_MODEL    = "org.jactr.eclipse.runtime.debug.DebugClient";
 
@@ -81,8 +81,8 @@ public class ACTRSession extends AbstractSession
 
     try
     {
-      setSuspendImmediately(configuration.getAttribute(
-          ACTRLaunchConstants.ATTR_SUSPEND, false));
+      setSuspendImmediately(
+          configuration.getAttribute(ACTRLaunchConstants.ATTR_SUSPEND, false));
     }
     catch (Exception e)
     {
@@ -92,7 +92,7 @@ public class ACTRSession extends AbstractSession
 
     configureShadowControllerConnection(_shadowController, configuration);
 
-    configureShadowController(_shadowController, launch);
+    configureShadowController(_shadowController);
   }
 
   public void setSuspendImmediately(boolean suspendImmediately)
@@ -118,10 +118,10 @@ public class ACTRSession extends AbstractSession
       INetworkingProvider provider = INetworkingProvider
           .getProvider(providerName);
       controller.setService(provider.newServer());
-      controller.setTransportProvider(provider
-          .getTransport(INetworkingProvider.NIO_TRANSPORT));
-      controller.setProtocol(provider
-          .getProtocol(INetworkingProvider.SERIALIZED_PROTOCOL));
+      controller.setTransportProvider(
+          provider.getTransport(INetworkingProvider.NIO_TRANSPORT));
+      controller.setProtocol(
+          provider.getProtocol(INetworkingProvider.SERIALIZED_PROTOCOL));
     }
     catch (Exception e)
     {
@@ -136,7 +136,15 @@ public class ACTRSession extends AbstractSession
     if (credentials == null)
     {
       StringBuilder sb = new StringBuilder(System.getProperty("user.name"));
-      sb.append(":").append(generateRandomPassword());
+      sb.append(":");
+      /*
+       * when there is no configuration, we are listening promiscuously, so
+       * password is known "*"
+       */
+      if (configuration == null)
+        sb.append("*");
+      else
+        sb.append(generateRandomPassword());
       credentials = sb.toString();
     }
 
@@ -151,8 +159,7 @@ public class ACTRSession extends AbstractSession
   }
 
   @SuppressWarnings("unchecked")
-  protected void configureShadowController(ShadowController controller,
-      ILaunch launch)
+  protected void configureShadowController(ShadowController controller)
   {
     Map<Class<?>, IMessageHandler<?>> handlers = controller
         .getDefaultHandlers();
@@ -162,28 +169,21 @@ public class ACTRSession extends AbstractSession
      * logging for ourselves
      */
     IMessageHandler fMSEHandler = handlers.get(ModelStateEvent.class);
-    handlers.put(
-        ModelStateEvent.class,
-        (s, m) -> {
-          fMSEHandler.accept(s, m); // original
-          ModelStateEvent mse = (ModelStateEvent) m;
-          if (mse.getException() != null)
-            RuntimePlugin.error(String.format(
-                "%s terminated abnormally due to %s", mse.getModelName(),
-                mse.getException()));
-        });
+    handlers.put(ModelStateEvent.class, (s, m) -> {
+      fMSEHandler.accept(s, m); // original
+      ModelStateEvent mse = (ModelStateEvent) m;
+      if (mse.getException() != null)
+        RuntimePlugin.error(String.format("%s terminated abnormally due to %s",
+            mse.getModelName(), mse.getException()));
+    });
 
     IMessageHandler fRSEHandler = handlers.get(RuntimeStateEvent.class);
-    handlers.put(
-        RuntimeStateEvent.class,
-        (s, m) -> {
-          fRSEHandler.accept(s, m);// original
-          RuntimeStateEvent message = (RuntimeStateEvent) m;
-          if (message.getException() != null)
-            RuntimePlugin.error(String.format(
-                "Execution terminated abnormally due to %s",
-                message.getException()));
-        });
+    handlers.put(RuntimeStateEvent.class, (s, m) -> {
+      fRSEHandler.accept(s, m);// original
+      RuntimeStateEvent message = (RuntimeStateEvent) m;
+      if (message.getException() != null) RuntimePlugin.error(String.format(
+          "Execution terminated abnormally due to %s", message.getException()));
+    });
 
     /**
      * to grab and route all the ITRansformedEvents..
@@ -201,6 +201,12 @@ public class ACTRSession extends AbstractSession
     return sb.toString();
   }
 
+  public String getName()
+  {
+    if (_configuration != null) return _configuration.getName();
+    return "model listener";
+  }
+
   public ShadowController getShadowController()
   {
     return _shadowController;
@@ -215,17 +221,16 @@ public class ACTRSession extends AbstractSession
     }
     catch (Exception e)
     {
-      throw new CoreException(new Status(IStatus.ERROR,
-          RuntimePlugin.PLUGIN_ID, "Failed to start shadow controller ", e));
+      throw new CoreException(new Status(IStatus.ERROR, RuntimePlugin.PLUGIN_ID,
+          "Failed to start shadow controller ", e));
     }
 
     if (_shadowController.getActiveSession() != null)
-      _shadowController.getActiveSession().addExceptionHandler(
-          (s, t) -> {
-            RuntimePlugin.error(
-                "Exception caught while listening to jACT-R execution ", t);
-            return false;
-          });
+      _shadowController.getActiveSession().addExceptionHandler((s, t) -> {
+        RuntimePlugin
+            .error("Exception caught while listening to jACT-R execution ", t);
+        return false;
+      });
   }
 
   @Override
@@ -267,7 +272,7 @@ public class ACTRSession extends AbstractSession
 
     public ListenerJob(ACTRSession master)
     {
-      super(master.getConfiguration().getName());
+      super(master.getName());
       _master = master;
     }
 
@@ -318,8 +323,7 @@ public class ACTRSession extends AbstractSession
      * @param monitor
      * @return
      */
-    protected boolean waitForDebugger(IProgressMonitor monitor)
-        throws Exception
+    protected boolean waitForDebugger(IProgressMonitor monitor) throws Exception
     {
       monitor = new SubProgressMonitor(monitor, 2);
       monitor.beginTask("Waiting for debugger", 2);
@@ -451,16 +455,14 @@ public class ACTRSession extends AbstractSession
         monitor.worked(1);
 
         monitor.setTaskName(label);
-        if (shouldContinue)
-          shouldContinue = !monitor.isCanceled() && !_launch.isTerminated()
-              && waitForDebugger(monitor);
+        if (shouldContinue) shouldContinue = !monitor.isCanceled()
+            && !_launch.isTerminated() && waitForDebugger(monitor);
         monitor.worked(1);
 
         label = "Starting";
         monitor.setTaskName(label);
-        if (shouldContinue)
-          shouldContinue = !monitor.isCanceled() && !_launch.isTerminated()
-              && startRuntime(monitor, waitTime / 2);
+        if (shouldContinue) shouldContinue = !monitor.isCanceled()
+            && !_launch.isTerminated() && startRuntime(monitor, waitTime / 2);
         monitor.worked(1);
 
         label = "Listening";

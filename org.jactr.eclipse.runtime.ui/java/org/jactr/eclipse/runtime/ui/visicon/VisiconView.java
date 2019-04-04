@@ -1,9 +1,6 @@
 package org.jactr.eclipse.runtime.ui.visicon;
 
-/*
- * default logging
- */
-import javolution.util.FastList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,6 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
+import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.eclipse.runtime.ui.misc.AbstractRuntimeModelViewPart;
 import org.jactr.eclipse.runtime.visual.IVisualDescriptorListener;
 import org.jactr.eclipse.runtime.visual.IVisualTraceCenterListener;
@@ -155,13 +153,13 @@ public class VisiconView extends AbstractRuntimeModelViewPart
      * the control that contains the components isn't created until
      * createPartControl
      */
-    FastList<VisualDescriptor> container = FastList.newInstance();
+    List<VisualDescriptor> container = FastListFactory.newInstance();
 
     for (VisualDescriptor desc : VisualTraceCenter.get()
         .getAllRuntimeTraceData(container))
       addModelData(desc.getModelName(), desc);
 
-    FastList.recycle(container);
+    FastListFactory.recycle(container);
     
   }
   

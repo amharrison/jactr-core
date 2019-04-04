@@ -6,15 +6,15 @@ package org.jactr.eclipse.core.comp;
 import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javolution.util.FastList;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -231,7 +231,7 @@ public class CompilationUnitManager
    */
   synchronized public void clearCache(IProject project)
   {
-    FastList<IProject> projects = FastList.newInstance();
+    List<IProject> projects = Lists.mutable.empty();
     if (project != null)
       projects.add(project);
     else

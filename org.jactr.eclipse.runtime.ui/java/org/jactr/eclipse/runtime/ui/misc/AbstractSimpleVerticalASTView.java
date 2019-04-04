@@ -4,8 +4,7 @@ package org.jactr.eclipse.runtime.ui.misc;
  * default logging
  */
 import java.util.Collection;
-
-import javolution.util.FastList;
+import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
@@ -16,6 +15,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.eclipse.runtime.session.ISession;
 import org.jactr.eclipse.ui.content.ACTRLabelProvider;
 import org.jactr.eclipse.ui.content.AbstractACTRContentProvider;
@@ -63,13 +63,13 @@ public abstract class AbstractSimpleVerticalASTView extends
   protected void setData(ISession session, String modelName, double time,
       boolean isPostConflictResolution)
   {
-    final FastList<CommonTree> trees = FastList.newInstance();
+    final List<CommonTree> trees = FastListFactory.newInstance();
     getAST(session, modelName, time, isPostConflictResolution, trees);
 
     if (trees.size() == 0)
     {
       noData();
-      FastList.recycle(trees);
+      FastListFactory.recycle(trees);
       return;
     }
 

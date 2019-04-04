@@ -5,9 +5,8 @@ package org.jactr.eclipse.ui.generic.dialog;
  */
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
-
-import javolution.util.FastList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,6 +22,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.eclipse.ui.UIPlugin;
 
 /**
@@ -127,7 +127,7 @@ public class ListSelectionDialog extends TitleAreaDialog
     String checked = UIPlugin.getDefault().getPreferenceStore()
         .getString(getClass().getName() + ".checked");
 
-    FastList<String> checkedNames = FastList.newInstance();
+    List<String> checkedNames = FastListFactory.newInstance();
 
     for (String item : checked.split(","))
       checkedNames.add(item);
@@ -137,12 +137,12 @@ public class ListSelectionDialog extends TitleAreaDialog
       String label = _labelProvider.getText(element);
       _viewer.setChecked(element, checkedNames.contains(label));
     }
-    FastList.recycle(checkedNames);
+    FastListFactory.recycle(checkedNames);
   }
 
   private void saveState()
   {
-    FastList<String> checkedNames = FastList.newInstance();
+    List<String> checkedNames = FastListFactory.newInstance();
 
     for (Object checked : _checkedItems)
       checkedNames.add(_labelProvider.getText(checked));
@@ -151,7 +151,7 @@ public class ListSelectionDialog extends TitleAreaDialog
     UIPlugin.getDefault().getPreferenceStore()
         .setValue(getClass().getName() + ".checked", all);
 
-    FastList.recycle(checkedNames);
+    FastListFactory.recycle(checkedNames);
   }
 
 }

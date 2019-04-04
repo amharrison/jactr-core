@@ -153,9 +153,7 @@ public class UIPlugin extends AbstractUIPlugin
 
   public static Display getStandardDisplay()
   {
-    Display display = Display.getCurrent();
-    if (display == null) display = Display.getDefault();
-    return display;
+    return getDefault().getWorkbench().getDisplay();
   }
 
   /**

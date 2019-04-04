@@ -29,7 +29,7 @@ public class InstrumentDescriptor extends CommonExtensionDescriptor
       String className, String desc, Map<String, String> parameters,
       boolean isHidden)
   {
-    super("org.jactr.instruments",contributor,name,className,desc);
+    super("org.jactr.osgi.instruments", contributor, name, className, desc);
     _parameters = new TreeMap<String,String>(parameters);
     _isHidden = isHidden;
   }

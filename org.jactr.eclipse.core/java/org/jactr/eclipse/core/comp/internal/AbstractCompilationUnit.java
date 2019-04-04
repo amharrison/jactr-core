@@ -7,15 +7,15 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import javolution.util.FastList;
-
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.collections.impl.factory.Lists;
 import org.jactr.eclipse.core.comp.ICompilationUnitListener;
 import org.jactr.io.antlr3.misc.ASTSupport;
 
@@ -32,7 +32,7 @@ public abstract class AbstractCompilationUnit implements
 
   private final ExceptionContainer                 _compileContainer;
 
-  private final FastList<ICompilationUnitListener> _listeners;
+  private final List<ICompilationUnitListener>  _listeners;
 
   private CommonTree                               _modelDescriptor;
 
@@ -44,7 +44,7 @@ public abstract class AbstractCompilationUnit implements
 
   public AbstractCompilationUnit()
   {
-    _listeners = FastList.newInstance();
+    _listeners = Lists.mutable.empty();
     _parseContainer = new ExceptionContainer();
     _compileContainer = new ExceptionContainer();
     _cachedNamedTypes = new TreeMap<Integer, Map<String, CommonTree>>();
@@ -63,7 +63,7 @@ public abstract class AbstractCompilationUnit implements
 
   public void dispose()
   {
-    FastList.recycle(_listeners);
+    _listeners.clear();
     _parseContainer.dispose();
     _compileContainer.dispose();
     _modelDescriptor = null;

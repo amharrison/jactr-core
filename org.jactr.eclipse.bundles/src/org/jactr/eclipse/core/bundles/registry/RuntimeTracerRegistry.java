@@ -43,7 +43,7 @@ public class RuntimeTracerRegistry extends
 
   private RuntimeTracerRegistry()
   {
-    super("org.jactr.tools.tracers");
+    super("org.jactr.osgi.tracers");
   }
 
   @Override

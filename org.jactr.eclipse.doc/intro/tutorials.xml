@@ -6,7 +6,7 @@
       <link url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=org.jactr.eclipse.help.bootcamp" label="Using Eclipse BootCamp" id="jactr" style-id="content-link">
         <text>Provides a quick introduction to the basics of Eclipse</text>
       </link>
-      <link url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=org.jactr.eclipse.help.tutorial.unit1" label="Dive into Unit 1" id="jactr" style-id="content-link">
+      <link url="http://jact-r.org/node/53" label="Dive into Unit 1" id="jactr" style-id="content-link">
                <text>Jump head-first into Unit 1</text>
             </link>
     </group>

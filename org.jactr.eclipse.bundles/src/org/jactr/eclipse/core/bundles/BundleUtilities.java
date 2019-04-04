@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -37,6 +38,8 @@ import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.PluginRegistry;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.Version;
+import org.osgi.framework.VersionRange;
 import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
@@ -51,7 +54,7 @@ public class BundleUtilities
    * Default logger
    */
   static private transient final Log LOGGER = LogFactory
-                                                .getLog(BundleUtilities.class);
+      .getLog(BundleUtilities.class);
 
   private BundleUtilities()
   {
@@ -62,7 +65,7 @@ public class BundleUtilities
    * is resolved or not.
    * 
    * @param bundleName
-   *            the bundle name
+   *          the bundle name
    * @return the bundle
    */
   static public Bundle getBundle(String bundleName)
@@ -126,25 +129,24 @@ public class BundleUtilities
     BundleDescription descriptor = platformState.getBundle(bundleName, null);
 
     requiredBundles.add(descriptor);
-    
-    for(BundleDescription fragment : descriptor.getFragments())
+
+    for (BundleDescription fragment : descriptor.getFragments())
       getRequiredBundles(fragment.getName(), platformState, requiredBundles);
 
     for (BundleSpecification requirement : descriptor.getRequiredBundles())
     {
       // if (!requirement.isOptional())
-      if (LOGGER.isDebugEnabled())
-        LOGGER.debug(requirement.getName() + " isOptional " +
-            requirement.isOptional());
-      if (!requirement.isOptional())
-        getRequiredBundles(requirement.getName(), platformState,
-            requiredBundles);
+      if (LOGGER.isDebugEnabled()) LOGGER.debug(
+          requirement.getName() + " isOptional " + requirement.isOptional());
+
+      if (!requirement.isOptional()) getRequiredBundles(requirement.getName(),
+          platformState, requiredBundles);
     }
-    
 
   }
 
-  static public Collection<BundleDescription> getRequiredBundles(String bundleId)
+  static public Collection<BundleDescription> getRequiredBundles(
+      String bundleId)
   {
     PlatformAdmin pAdmin = getPlatformAdmin();
     State state = pAdmin.getState();
@@ -183,9 +185,8 @@ public class BundleUtilities
     TreeSet<String> dependencies = new TreeSet<String>();
     getDependencies(project, dependencies);
 
-    if (LOGGER.isDebugEnabled())
-      LOGGER.debug("Dependencies of " + project.getName() + " : " +
-          dependencies);
+    if (LOGGER.isDebugEnabled()) LOGGER
+        .debug("Dependencies of " + project.getName() + " : " + dependencies);
 
     return dependencies;
   }
@@ -194,18 +195,15 @@ public class BundleUtilities
       Set<String> dependencies)
   {
     IPluginModelBase modelBase = PluginRegistry.findModel(project);
-    if (LOGGER.isDebugEnabled())
-      LOGGER.debug("Search for " +
-          project.getName() +
-          " found " +
-          (modelBase == null ? "nothing, skipping." : modelBase.getPluginBase()
-              .getId()));
+    if (LOGGER.isDebugEnabled()) LOGGER.debug("Search for " + project.getName()
+        + " found " + (modelBase == null ? "nothing, skipping."
+            : modelBase.getPluginBase().getId()));
     if (modelBase != null) getDependencies(modelBase, dependencies);
   }
 
   /**
    * search for a plugin model base based on the plugin id
-   * 
+   *
    * @param pluginId
    * @param dependencies
    */
@@ -213,21 +211,18 @@ public class BundleUtilities
       Set<String> dependencies)
   {
     IPluginModelBase modelBase = PluginRegistry.findModel(pluginId);
-    if (LOGGER.isDebugEnabled())
-      LOGGER.debug("Search for " +
-          pluginId +
-          " found " +
-          (modelBase == null ? "nothing, skipping." : modelBase.getPluginBase()
-              .getId()));
+    if (LOGGER.isDebugEnabled()) LOGGER.debug("Search for " + pluginId
+        + " found " + (modelBase == null ? "nothing, skipping."
+            : modelBase.getPluginBase().getId()));
     if (modelBase != null) getDependencies(modelBase, dependencies);
   }
 
-  /**
-   * this is the code that actually does the work
-   * 
-   * @param modelBase
-   * @param dependenices
-   */
+//  /**
+//   * this is the code that actually does the work
+//   *
+//   * @param modelBase
+//   * @param dependenices
+//   */
   static protected void getDependencies(IPluginModelBase modelBase,
       Set<String> dependencies)
   {
@@ -235,19 +230,81 @@ public class BundleUtilities
 
     String id = modelBase.getPluginBase().getId();
     if (!dependencies.add(id)) return;
-    
-    for(BundleDescription desc : modelBase.getBundleDescription().getFragments())
+//    dependencies.add(id);
+
+    for (BundleDescription desc : modelBase.getBundleDescription()
+        .getFragments())
       getDependencies(desc.getName(), dependencies);
 
     for (BundleSpecification requirement : modelBase.getBundleDescription()
         .getRequiredBundles())
-      if (!dependencies.contains(requirement.getName()))
-      {
-        if (!requirement.isOptional())
-          getDependencies(requirement.getName(), dependencies);
-        else if (LOGGER.isDebugEnabled())
-          LOGGER.debug(requirement.getName() + " is optional, ignoring");
-      }
+      if (!dependencies.contains(requirement.getName())) // if
+                                                         // (!requirement.isOptional())
+        getDependencies(requirement.getName(), dependencies);
+//        else if (LOGGER.isDebugEnabled())
+//          LOGGER.debug(requirement.getName() + " is optional, ignoring");
+  }
+
+  static public void getDependencies(IProject project,
+      Map<String, VersionRange> dependencies, boolean includeSelf)
+  {
+
+    IPluginModelBase modelBase = PluginRegistry.findModel(project);
+    if (LOGGER.isDebugEnabled()) LOGGER.debug("Search for " + project.getName()
+        + " found " + (modelBase == null ? "nothing, skipping."
+            : modelBase.getPluginBase().getId()));
+    if (modelBase != null && !dependencies
+        .containsKey(modelBase.getBundleDescription().getName()))
+      getDependencies(modelBase, dependencies, includeSelf);
+  }
+
+  static public void getDependencies(String pluginId,
+      Map<String, VersionRange> dependencies, boolean includeSelf)
+  {
+    IPluginModelBase modelBase = PluginRegistry.findModel(pluginId);
+    if (LOGGER.isDebugEnabled()) LOGGER.debug("Search for " + pluginId
+        + " found " + (modelBase == null ? "nothing, skipping."
+            : modelBase.getPluginBase().getId()));
+    if (modelBase != null && !dependencies
+        .containsKey(modelBase.getBundleDescription().getName()))
+      getDependencies(modelBase, dependencies, includeSelf);
+  }
+
+  static protected void getDependencies(IPluginModelBase modelBase,
+      Map<String, VersionRange> dependencies, boolean includeSelf)
+  {
+
+    if (includeSelf)
+    {
+      Version version = modelBase.getBundleDescription().getVersion();
+      dependencies.put(modelBase.getBundleDescription().getName(),
+          new VersionRange(VersionRange.LEFT_CLOSED, version, version,
+              VersionRange.RIGHT_CLOSED));
+    }
+    /*
+     * if there are any fragments
+     */
+    if (!modelBase.getBundleDescription().getName().equals("org.slf4j.api"))
+      for (BundleDescription desc : modelBase.getBundleDescription()
+          .getFragments())
+      getDependencies(desc.getName(), dependencies, includeSelf);
+
+    /*
+     * we merge the version ranges
+     */
+    for (BundleSpecification requirement : modelBase.getBundleDescription()
+        .getRequiredBundles())
+    {
+      VersionRange existing = dependencies.get(requirement.getName());
+      if (existing != null)
+        existing = existing.intersection(requirement.getVersionRange());
+
+      if (existing == null) existing = requirement.getVersionRange();
+
+//      dependencies.put(requirement.getName(), existing);
+
+      getDependencies(requirement.getName(), dependencies, includeSelf);
+    }
   }
 
 }

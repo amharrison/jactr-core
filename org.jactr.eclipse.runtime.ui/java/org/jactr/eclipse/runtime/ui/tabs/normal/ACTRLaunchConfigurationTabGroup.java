@@ -57,6 +57,7 @@ public class ACTRLaunchConfigurationTabGroup extends
     options.add(new NewLoggingAndTraceTab());
     options.add(new JavaArgumentsTab());
     options.add(new JavaJRETab());
+    options.add(new org.eclipse.debug.ui.EnvironmentTab());
     options.add(new CommonTab());
 
     if (LOGGER.isDebugEnabled()) LOGGER.debug("Setting tabs");

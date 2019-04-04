@@ -43,7 +43,7 @@ public class IterativeListenerRegistry extends
 
   private IterativeListenerRegistry()
   {
-    super("org.jactr.tools.iterative");
+    super("org.jactr.osgi.iterative");
   }
 
   @Override

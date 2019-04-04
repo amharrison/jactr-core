@@ -41,7 +41,6 @@ import org.jactr.eclipse.core.CorePlugin;
 import org.jactr.eclipse.core.bundles.descriptors.CommonExtensionDescriptor;
 import org.jactr.eclipse.core.bundles.descriptors.SensorDescriptor;
 import org.jactr.eclipse.core.bundles.registry.SensorRegistry;
-import org.jactr.eclipse.runtime.RuntimePlugin;
 import org.jactr.eclipse.runtime.launching.ACTRLaunchConfigurationUtils;
 import org.jactr.eclipse.runtime.launching.ACTRLaunchConstants;
 import org.jactr.eclipse.runtime.ui.tabs.CommonExtensionDescriptorTab;
@@ -240,7 +239,7 @@ public class RealityTab extends CommonExtensionDescriptorTab
     catch (Exception e)
     {
       setErrorMessage(e.getMessage());
-      RuntimePlugin.error("Failed to check CR reqs", e);
+      // RuntimePlugin.error("Failed to check CR reqs", e);
       return false;
     }
 

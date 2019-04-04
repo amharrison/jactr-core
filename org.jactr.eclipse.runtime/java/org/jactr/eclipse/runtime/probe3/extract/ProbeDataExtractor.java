@@ -1,12 +1,10 @@
 package org.jactr.eclipse.runtime.probe3.extract;
 
-/*
- * default logging
- */
-import javolution.util.FastSet;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.collections.impl.factory.Sets;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
@@ -14,7 +12,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IDebugEventSetListener;
-import org.jactr.core.utils.collections.FastSetFactory;
 import org.jactr.eclipse.runtime.RuntimePlugin;
 import org.jactr.eclipse.runtime.playback.SessionArchive;
 import org.jactr.eclipse.runtime.probe3.IProbeData;
@@ -94,7 +91,7 @@ public class ProbeDataExtractor
   {
     DebugPlugin.getDefault().removeDebugEventListener(_debugListener);
 
-    FastSet<String> dataKeys = FastSetFactory.newInstance();
+    Set<String> dataKeys = Sets.mutable.empty();
 
     _archive.getKeys(dataKeys);
 
@@ -109,7 +106,6 @@ public class ProbeDataExtractor
       }
     }
 
-    FastSetFactory.recycle(dataKeys);
 
     _archive.close();
     _archive.destroy();
@@ -117,7 +113,7 @@ public class ProbeDataExtractor
 
   private void flush(ModelProbeData2 root)
   {
-    FastSet<String> probeNames = FastSetFactory.newInstance();
+    Set<String> probeNames = Sets.mutable.empty();
 
     root.getProbeNames(probeNames);
 
@@ -130,8 +126,6 @@ public class ProbeDataExtractor
         opd.close();
       }
     }
-
-    FastSetFactory.recycle(probeNames);
   }
 
   protected IFolder createFolder(SessionArchive sa)

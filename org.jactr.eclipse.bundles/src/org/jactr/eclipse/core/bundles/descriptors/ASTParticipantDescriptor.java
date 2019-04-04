@@ -32,7 +32,8 @@ public class ASTParticipantDescriptor extends CommonExtensionDescriptor
   public ASTParticipantDescriptor(String contributor, String participantClass,
       String contributingClass, String content)
   {
-    super("org.jactr.io.astparticipants", contributor, "", participantClass, "");
+    super("org.jactr.osgi.astparticipants", contributor, "", participantClass,
+        "");
     _contributingClass = contributingClass;
     _contentLocation = content;
   }

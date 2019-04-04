@@ -1,9 +1,6 @@
 package org.jactr.eclipse.core.builder;
 
-/*
- * default logging
- */
-import javolution.util.FastList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,6 +8,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.eclipse.core.CorePlugin;
 import org.jactr.eclipse.core.comp.IProjectCompilationUnit;
 import org.jactr.eclipse.core.comp.internal.IMutableCompilationUnit;
@@ -65,7 +63,7 @@ public class BuildJob extends Job
 
     private boolean                         _force = false;
 
-    private FastList<IRunnableWithProgress> _steps = FastList.newInstance();
+    private List<IRunnableWithProgress> _steps = FastListFactory.newInstance();
 
     public BuildRunnable(IMutableCompilationUnit compilationUnit,
         IDECompiler compiler, boolean force)
@@ -126,7 +124,7 @@ public class BuildJob extends Job
       }
       finally
       {
-        FastList.recycle(_steps);
+        FastListFactory.recycle(_steps);
       }
     }
   }

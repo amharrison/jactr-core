@@ -56,8 +56,7 @@ public class DefaultACTRContributorTemplateSection extends
   {
     addProjectNature();
 
-    addEclipseBuddies(Arrays.asList("org.jactr", "org.jactr.io",
-        "org.jactr.support", "org.jactr.tools", "org.commonreality.core",
+    addEclipseBuddies(Arrays.asList("org.jactr.osgi", "org.commonreality.osgi",
         "org.apache.log4j", "org.apache.commons.logging"));
 
     /*

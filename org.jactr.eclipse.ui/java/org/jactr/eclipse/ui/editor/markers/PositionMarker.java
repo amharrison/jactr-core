@@ -20,11 +20,10 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javolution.util.FastList;
-
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.DefaultPositionUpdater;
@@ -65,14 +64,14 @@ public class PositionMarker implements ITreeTracker
 
   private URL                                      _baseURL;
 
-  private final Collection<ASTPosition>            _createdPositions = FastList
-                                                                         .newInstance();
+  private final Collection<ASTPosition>            _createdPositions = Lists.mutable
+      .empty();
 
-  private final Collection<ASTPosition>            _orphanPositions  = FastList
-                                                                         .newInstance();
+  private final Collection<ASTPosition>            _orphanPositions  = Lists.mutable
+      .empty();
   
-  private Collection<ASTPosition>                  _oldPositions     = FastList
-                                                                         .newInstance();
+  private Collection<ASTPosition>                  _oldPositions     = Lists.mutable
+      .empty();
 
   public PositionMarker()
   {

@@ -8,14 +8,14 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
-
-import javolution.util.FastList;
+import java.util.List;
 
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -81,7 +81,7 @@ public class MarkRunnable implements ICompilationUnitRunnable
         .getParseContainer();
 
     
-    FastList<Exception> exceptions = FastList.newInstance();
+    List<Exception> exceptions = Lists.mutable.empty();
     container.getInfo(exceptions);
     container.getWarnings(exceptions);
     container.getErrors(exceptions);
@@ -96,7 +96,7 @@ public class MarkRunnable implements ICompilationUnitRunnable
     container.getErrors(exceptions);
     markExceptions(resource, url, exceptions);
 
-    FastList.recycle(exceptions);
+
 
     return Status.OK_STATUS;
   }

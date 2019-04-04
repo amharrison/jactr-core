@@ -4,12 +4,12 @@ package org.jactr.eclipse.core.compiler;
  * default logging
  */
 import java.util.Collections;
-
-import javolution.util.FastList;
+import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -64,9 +64,9 @@ public class CompileRunnable implements ICompilationUnitRunnable
       _compiler.setProject(((IProjectCompilationUnit) _compilationUnit)
           .getResource().getProject());
 
-    FastList<Exception> info = FastList.newInstance();
-    FastList<Exception> warn = FastList.newInstance();
-    FastList<Exception> error = FastList.newInstance();
+    List<Exception> info = Lists.mutable.empty();
+    List<Exception> warn = Lists.mutable.empty();
+    List<Exception> error = Lists.mutable.empty();
 
     ExceptionContainer container = _compilationUnit.getCompileContainer();
 
@@ -76,6 +76,7 @@ public class CompileRunnable implements ICompilationUnitRunnable
       
       _compiler.compile(modelDesc, info, warn, error,
           new CancelableTreeNodeStream(modelDesc, monitor));
+//          new CommonTreeNodeStream(modelDesc));
 
       container.clear();
       Collections.reverse(info);
@@ -101,9 +102,6 @@ public class CompileRunnable implements ICompilationUnitRunnable
     finally
     {
       _compiler.setProject(null);
-      FastList.recycle(info);
-      FastList.recycle(warn);
-      FastList.recycle(error);
     }
   }
 

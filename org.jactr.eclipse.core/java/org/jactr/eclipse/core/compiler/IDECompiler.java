@@ -47,7 +47,7 @@ public class IDECompiler extends DefaultCompiler
     ProjectSensitiveClassVerifyingUnitCompiler verifyingCompiler = new ProjectSensitiveClassVerifyingUnitCompiler();
     _resourceUnitCompilers.add(verifyingCompiler);
     addCompiler(verifyingCompiler);
-    
+
     addEnvironmentCompilers();
   }
 

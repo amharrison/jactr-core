@@ -41,7 +41,7 @@ public class UnitCompilerRegistry extends
 
   private UnitCompilerRegistry()
   {
-    super("org.jactr.io.unitcompilers");
+    super("org.jactr.osgi.unitcompilers");
   }
 
   @Override
