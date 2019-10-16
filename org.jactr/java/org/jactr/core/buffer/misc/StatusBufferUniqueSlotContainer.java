@@ -78,4 +78,10 @@ public class StatusBufferUniqueSlotContainer implements IUniqueSlotContainer
     return _delegate.hasSlot(slotName);
   }
 
+  @Override
+  public String toString()
+  {
+    return _buffer.getName();
+  }
+
 }

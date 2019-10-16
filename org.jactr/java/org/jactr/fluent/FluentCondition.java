@@ -5,11 +5,6 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.function.Consumer;
 
-/*
- * default logging
- */
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.production.condition.AbstractSlotCondition;
@@ -24,6 +19,12 @@ import org.jactr.core.slot.ISlot;
 import org.jactr.scripting.IScriptableFactory;
 import org.jactr.scripting.ScriptingManager;
 import org.jactr.scripting.condition.ScriptableCondition;
+
+/*
+ * default logging
+ */
+ 
+import org.slf4j.LoggerFactory;
 
 /**
  * Fluent builder for common conditions: match, query, and scriptable. Supports
@@ -101,6 +102,50 @@ public class FluentCondition
     FluentCondition cb = new FluentCondition();
     cb._slotBasedCondition = new VariableCondition(bufferName, variableName);
     return new SlotBuilder(cb, cb::addSlot);
+  }
+
+  /**
+   * is the content of bufferName a chunkType
+   * 
+   * @param bufferName
+   * @param chunkType
+   * @return
+   */
+  static public FluentCondition matchNoSlots(String bufferName,
+      IChunkType chunkType)
+  {
+    FluentCondition cb = new FluentCondition();
+    cb._slotBasedCondition = new ChunkTypeCondition(bufferName, chunkType);
+    return cb;
+  }
+
+  /**
+   * is chunk in bufferName
+   * 
+   * @param bufferName
+   * @param chunk
+   * @return
+   */
+  static public FluentCondition matchNoSlots(String bufferName, IChunk chunk)
+  {
+    FluentCondition cb = new FluentCondition();
+    cb._slotBasedCondition = new ChunkCondition(bufferName, chunk);
+    return cb;
+  }
+
+  /**
+   * is variableName in bufferName
+   * 
+   * @param bufferName
+   * @param variableName
+   * @return
+   */
+  static public FluentCondition matchNoSlots(String bufferName,
+      String variableName)
+  {
+    FluentCondition cb = new FluentCondition();
+    cb._slotBasedCondition = new VariableCondition(bufferName, variableName);
+    return cb;
   }
 
   /**

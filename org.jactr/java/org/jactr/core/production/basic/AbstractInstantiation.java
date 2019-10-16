@@ -15,8 +15,6 @@ package org.jactr.core.production.basic;
 
 import java.util.Collection;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.model.IModel;
@@ -34,6 +32,7 @@ import org.jactr.core.production.condition.IBufferCondition;
 import org.jactr.core.production.condition.ICondition;
 import org.jactr.core.production.condition.QueryCondition;
 import org.jactr.core.production.event.ProductionEvent;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractInstantiation extends AbstractProduction
     implements IInstantiation
@@ -239,10 +238,11 @@ public abstract class AbstractInstantiation extends AbstractProduction
 
         IActivationBuffer ac = m.getActivationBuffer(bufferName);
 
-        IChunk chunk = (IChunk) _variableBindings.get("=" + bufferName);
+        Object variable = _variableBindings.get("=" + bufferName);
 
-        if (chunk != null)
+        if (variable instanceof IChunk)
         {
+          IChunk chunk = (IChunk) variable;
           if (LOGGER.isDebugEnabled())
             LOGGER.debug(sp.getName() + "(" + now + ") : Notifying "
                 + ac.getName() + " that we've matched " + chunk);

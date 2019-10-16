@@ -15,8 +15,6 @@ package org.jactr.modules.pm.visual.buffer.six;
 
 import java.util.Collection;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IllegalActivationBufferStateException;
 import org.jactr.core.buffer.delegate.ExpandChunkRequestDelegate;
 import org.jactr.core.chunk.IChunk;
@@ -39,6 +37,7 @@ import org.jactr.modules.pm.visual.buffer.IVisualActivationBuffer;
 import org.jactr.modules.pm.visual.buffer.IVisualLocationBuffer;
 import org.jactr.modules.pm.visual.buffer.processor.SetDefaultSearchRequestDelegate;
 import org.jactr.modules.pm.visual.buffer.processor.VisualSearchRequestDelegate;
+import org.slf4j.LoggerFactory;
 
 /**
  * since visual-location and visual buffers share the same state information
@@ -251,7 +250,7 @@ public class DefaultVisualLocationBuffer6 extends AbstractPMActivationBuffer6
     }
 
     _scanDelegate = new VisualSearchRequestDelegate(
-        (IVisualModule) getModule(), false);
+        (IVisualModule) getModule(), true);
     addRequestDelegate(_scanDelegate);
   }
 
