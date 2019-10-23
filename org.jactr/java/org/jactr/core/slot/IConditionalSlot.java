@@ -29,6 +29,7 @@ public interface IConditionalSlot extends IMutableSlot
 
   public final static int GREATER_THAN_EQUALS = 4;
 
+  @Deprecated
   public final static int WITHIN              = 5;
 
   public final static int NOT_EQUALS          = 6;

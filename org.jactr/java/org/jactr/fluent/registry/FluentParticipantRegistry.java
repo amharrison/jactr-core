@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.declarative.six.DefaultDeclarativeModule6;
+import org.jactr.core.module.meta.MetaModule;
 import org.jactr.modules.pm.aural.six.DefaultAuralModule6;
 import org.jactr.modules.pm.motor.six.DefaultMotorModule6;
 import org.jactr.modules.pm.visual.six.DefaultVisualModule6;
@@ -45,6 +46,7 @@ public class FluentParticipantRegistry
         new DefaultVocalParticipant());
     _instance.register(DefaultMotorModule6.class,
         new DefaultMotorParticipant());
+    _instance.register(MetaModule.class, new DefaultMetaParticipant());
   }
 
   static public FluentParticipantRegistry get()
