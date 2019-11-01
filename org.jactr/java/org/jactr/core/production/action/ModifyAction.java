@@ -23,6 +23,7 @@ import org.jactr.core.model.IModel;
 import org.jactr.core.production.CannotInstantiateException;
 import org.jactr.core.production.IInstantiation;
 import org.jactr.core.production.VariableBindings;
+import org.jactr.core.production.request.IRequest;
 import org.jactr.core.queue.timedevents.AbstractTimedEvent;
 import org.jactr.core.queue.timedevents.IBufferBasedTimedEvent;
 import org.jactr.core.slot.DefaultVariableConditionalSlot;
@@ -39,25 +40,24 @@ import org.slf4j.LoggerFactory;
  * @author harrison
  * @created January 22, 2003
  */
-public class ModifyAction extends DefaultAction implements IBufferAction,
-    org.jactr.core.slot.ISlotContainer
+public class ModifyAction extends DefaultAction
+    implements IBufferAction, org.jactr.core.slot.ISlotContainer
 {
 
   // logging mechanism
   private static transient org.slf4j.Logger LOGGER = LoggerFactory
-                                              .getLogger(ModifyAction.class
-                                                  .getName());
+      .getLogger(ModifyAction.class.getName());
 
   /**
    * name of the buffer that is to have its contents modified
    * 
    * @since
    */
-  private String                   _bufferName;
+  private String                            _bufferName;
 
-  private Collection<IMutableSlot> _slots;
+  private Collection<IMutableSlot>          _slots;
 
-  private IChunk                   _boundChunk;
+  private IChunk                            _boundChunk;
 
   /**
    * Constructor merely takes the name of the buffer where the chunk will
@@ -126,10 +126,12 @@ public class ModifyAction extends DefaultAction implements IBufferAction,
   protected void bindChunk(VariableBindings bindings)
       throws CannotInstantiateException
   {
-    _boundChunk = (IChunk) bindings.get("=" + getBufferName());
-    if (_boundChunk == null)
-      throw new CannotInstantiateException("Could not get chunk bound to ="
-          + getBufferName());
+    Object bound = bindings.get("=" + getBufferName());
+    if (bound instanceof IRequest) return;
+
+    _boundChunk = (IChunk) bound;
+    if (_boundChunk == null) throw new CannotInstantiateException(
+        "Could not get chunk bound to =" + getBufferName());
   }
 
   public String getBufferName()
@@ -191,16 +193,19 @@ public class ModifyAction extends DefaultAction implements IBufferAction,
         + model.getProceduralModule().getDefaultProductionFiringTime();
     IActivationBuffer buffer = model.getActivationBuffer(getBufferName());
 
-    ModifyActionTimedEvent modify = new ModifyActionTimedEvent(firingTime,
-        fireAt, buffer, getBoundChunk(), getSlots());
+    if (_boundChunk != null)
+    {
+      ModifyActionTimedEvent modify = new ModifyActionTimedEvent(firingTime,
+          fireAt, buffer, getBoundChunk(), getSlots());
 
-    model.getTimedEventQueue().enqueue(modify);
+      model.getTimedEventQueue().enqueue(modify);
+    }
 
     return 0;
   }
 
-  public class ModifyActionTimedEvent extends AbstractTimedEvent implements
-      IBufferBasedTimedEvent
+  public class ModifyActionTimedEvent extends AbstractTimedEvent
+      implements IBufferBasedTimedEvent
   {
     final IChunk                      _chunkToModify;
 
@@ -218,8 +223,9 @@ public class ModifyAction extends DefaultAction implements IBufferAction,
       _buffer = buffer;
       _chunkToModify = chunkToModify;
       _slotsToChange = new ArrayList<ISlot>(slots);
-      _label = String.format("Modify(%1$s in %2$s @ %3$.2f)", _chunkToModify
-          .getSymbolicChunk().getName(), _buffer.getName(), whenToFire);
+      _label = String.format("Modify(%1$s in %2$s @ %3$.2f)",
+          _chunkToModify.getSymbolicChunk().getName(), _buffer.getName(),
+          whenToFire);
     }
 
     @Override
@@ -258,11 +264,10 @@ public class ModifyAction extends DefaultAction implements IBufferAction,
           && _slotsToChange.size() != 0)
       {
         IModel model = _chunkToModify.getModel();
-        if (Logger.hasLoggers(model))
-          Logger.log(model, Logger.Stream.EXCEPTION, String
-.format(
-              "%s in %s is encoded and immutable, cannot be modified",
-              _chunkToModify, _bufferName));
+        if (Logger.hasLoggers(model)) Logger.log(model, Logger.Stream.EXCEPTION,
+            String.format(
+                "%s in %s is encoded and immutable, cannot be modified",
+                _chunkToModify, _bufferName));
       }
       else
         updateSlots(_chunkToModify, _slotsToChange);

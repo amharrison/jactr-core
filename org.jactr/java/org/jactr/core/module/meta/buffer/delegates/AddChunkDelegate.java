@@ -36,7 +36,7 @@ public class AddChunkDelegate implements IRequestDelegate
   {
     ISymbolicChunk sc = condition.getSymbolicChunk();
 
-    String slotName = (String) sc.getSlot("name").getValue();
+    String slotName = (String) sc.getSlot("slot").getValue();
     Object value = sc.getSlot("value").getValue();
     IChunk conditionValue = (IChunk) sc.getSlot("condition").getValue();
     int conditionIndex = IConditionalSlot.EQUALS;

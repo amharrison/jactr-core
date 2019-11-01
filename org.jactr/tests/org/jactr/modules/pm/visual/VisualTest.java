@@ -105,7 +105,7 @@ public class VisualTest
 
   protected void cleanup(ExecutionTester tester, IModel model, boolean dispose)
   {
-    RealityConfigurator.shutdownRunnable(true).run();
+    RealityConfigurator.shutdownRunnable(false).run();
 
     model.uninstall(tester);
     if (dispose) model.dispose();
@@ -172,7 +172,7 @@ public class VisualTest
     String[] failures = { "search-failed", "search-match-failed",
         "encoding-failed", "encoding-match-failed" };
 
-    ExecutionTester tester = setup(model, productionSequence, false);
+    ExecutionTester tester = setup(model, productionSequence, true);
 
     tester.setFailedProductions(Arrays.asList(failures));
 

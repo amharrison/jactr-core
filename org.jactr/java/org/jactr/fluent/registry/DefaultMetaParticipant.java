@@ -26,7 +26,7 @@ public class DefaultMetaParticipant implements Consumer<IModel>
           .chunks("equals", "less-than", "less-than-equals", "greater-than",
               "greater-than-equals", "not-equals");
 
-      FluentChunkType.from(t).slots("name", "value")
+      FluentChunkType.from(t).slots("slot", "value", "reference")
           .slot("condition", chunks.get("equals")).encode();
     }
     catch (Exception e)
