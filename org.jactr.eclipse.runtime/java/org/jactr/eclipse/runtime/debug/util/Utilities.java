@@ -41,7 +41,9 @@ public class Utilities
   static public int extractLineNumber(ILaunch launch, String modelName,
       String elementName, int elementType)
   {
-    ICompilationUnit compUnit = getCompilationUnitForAlias(launch, modelName);
+
+    ICompilationUnit compUnit = CompilationUnitManager
+        .acquire(getResourceForAlias(launch, modelName));
     int lineNumber = -1;
     if (compUnit == null) return lineNumber;
 
@@ -73,7 +75,7 @@ public class Utilities
    * @param modelName
    * @return
    */
-  static public ICompilationUnit getCompilationUnitForAlias(ILaunch launch,
+  static public IResource getResourceForAlias(ILaunch launch,
       String modelName)
   {
     try
@@ -84,7 +86,7 @@ public class Utilities
       for (IResource modelFile : modelFiles)
         if (ACTRLaunchConfigurationUtils.getModelAliases(modelFile,
             configuration).contains(modelName))
-          return CompilationUnitManager.acquire(modelFile);
+          return modelFile;
     }
     catch (CoreException ce)
     {

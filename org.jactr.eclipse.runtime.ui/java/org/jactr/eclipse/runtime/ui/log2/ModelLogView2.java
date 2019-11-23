@@ -11,8 +11,12 @@ import java.util.Optional;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -33,9 +37,11 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 import org.jactr.core.logging.Logger;
 import org.jactr.eclipse.runtime.RuntimePlugin;
@@ -315,7 +321,30 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
 
     });
 
+    /*
+     * context menu
+     */
+    MenuManager contextMenu = new MenuManager("#LogViewerMenu"); //$NON-NLS-1$
+    contextMenu.setRemoveAllWhenShown(true);
+    contextMenu.addMenuListener(new IMenuListener() {
+      @Override
+      public void menuAboutToShow(IMenuManager mgr)
+      {
+        fillContextMenu(mgr, viewer);
+      }
+    });
+
+    Menu menu = contextMenu.createContextMenu(viewer.getControl());
+    viewer.getControl().setMenu(menu);
+
+
     return viewer;
+  }
+
+  protected void fillContextMenu(IMenuManager contextMenu, TableViewer viewer)
+  {
+    contextMenu.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+    contextMenu.add(new JumpToProduction(viewer));
   }
 
   protected void configureTable(Table table)
@@ -347,6 +376,7 @@ public class ModelLogView2 extends AbstractRuntimeModelViewPart
         adjustColumnSizes((Table) ce.widget);
       }
     });
+
 
     table.pack();
   }

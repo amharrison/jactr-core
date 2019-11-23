@@ -13,6 +13,8 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.debug.ui.actions.IToggleBreakpointsTarget;
+import org.eclipse.xtext.ui.editor.XtextEditor;
+import org.jactr.eclipse.core.comp.CompilationUnitManager;
 import org.jactr.eclipse.ui.editor.ACTRModelEditor;
 
 /**
@@ -25,7 +27,7 @@ public class ACTRBreakpointAdapterFactory implements IAdapterFactory
    */
 
   static private final transient Log LOGGER = LogFactory
-                                                .getLog(ACTRBreakpointAdapterFactory.class);
+      .getLog(ACTRBreakpointAdapterFactory.class);
 
   /*
    * (non-Javadoc)
@@ -36,21 +38,22 @@ public class ACTRBreakpointAdapterFactory implements IAdapterFactory
   {
     try
     {
-      if (LOGGER.isDebugEnabled())
-        LOGGER.debug("Breakpoint adapter requested");
+      if (LOGGER.isDebugEnabled()) LOGGER.debug("Breakpoint adapter requested");
+      IResource resource = null;
       if (adaptableObject instanceof ACTRModelEditor)
       {
         ACTRModelEditor editorPart = (ACTRModelEditor) adaptableObject;
-        IResource resource = (IResource) editorPart.getEditorInput()
-            .getAdapter(IResource.class);
-        if (resource != null)
-        {
-          String extension = resource.getFileExtension();
-          if (extension != null
-              && (extension.equalsIgnoreCase("jactr") || extension
-                  .equalsIgnoreCase("lisp")))
-            return new ACTRBreakpointAdapter();
-        }
+        resource = editorPart.getEditorInput().getAdapter(IResource.class);
+      }
+      else if (adaptableObject instanceof XtextEditor)
+        resource = ((XtextEditor) adaptableObject).getResource();
+
+      if (resource != null)
+      {
+        String extension = resource.getFileExtension();
+        if (extension != null && CompilationUnitManager.isJACTRModel(resource)
+            || "jactr".equals(extension))
+          return new ACTRBreakpointAdapter();
       }
     }
     catch (Exception e)

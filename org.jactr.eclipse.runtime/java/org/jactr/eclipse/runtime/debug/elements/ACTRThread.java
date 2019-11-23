@@ -27,9 +27,6 @@ import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
-import org.jactr.eclipse.core.comp.CompilationUnitManager;
-import org.jactr.eclipse.core.comp.ICompilationUnit;
-import org.jactr.eclipse.core.comp.IProjectCompilationUnit;
 import org.jactr.eclipse.runtime.RuntimePlugin;
 import org.jactr.eclipse.runtime.debug.ACTRDebugTarget;
 import org.jactr.eclipse.runtime.debug.marker.ACTRBreakpoint;
@@ -76,15 +73,7 @@ public class ACTRThread extends ACTRDebugElement implements IThread
 
   public String getSourceName()
   {
-    ICompilationUnit compUnit = Utilities.getCompilationUnitForAlias(
-        getLaunch(), _modelName);
-
-    if (compUnit == null || !(compUnit instanceof IProjectCompilationUnit))
-      return null;
-
-    IResource resource = ((IProjectCompilationUnit) compUnit).getResource();
-
-    CompilationUnitManager.release(compUnit);
+    IResource resource = Utilities.getResourceForAlias(getLaunch(), _modelName);
 
     return resource.getProjectRelativePath().toString();
   }
@@ -147,6 +136,8 @@ public class ACTRThread extends ACTRDebugElement implements IThread
 
       _stackFrames.add(frame);
     }
+
+    fireChangeEvent();
 
     if (isBreakpoint)
     {

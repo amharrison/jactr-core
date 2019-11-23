@@ -9,10 +9,8 @@ import org.jactr.core.module.procedural.event.ProceduralModuleEvent;
 import org.jactr.eclipse.runtime.debug.ACTRDebugTarget;
 import org.jactr.eclipse.runtime.debug.elements.ACTRStackFrame;
 import org.jactr.eclipse.runtime.debug.elements.ACTRThread;
-import org.jactr.eclipse.runtime.debug.util.Utilities;
 import org.jactr.eclipse.runtime.session.ISession;
 import org.jactr.eclipse.runtime.trace.IRuntimeTraceListener;
-import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
 import org.jactr.tools.tracer.transformer.ITransformedEvent;
 import org.jactr.tools.tracer.transformer.procedural.TransformedProceduralEvent;
@@ -44,18 +42,20 @@ public class ProceduralTraceListener implements IRuntimeTraceListener
        */
       String modelName = tpme.getModelName();
       ACTRThread thread = _target.getThread(modelName);
+      String productionName = ASTSupport.getName(tpme.getAST());
       if (thread == null)
       {
-        LOGGER.warn("Could not find ACTRThread for model " + modelName);
+        LOGGER.warn("Could not find ACTRThread for model " + modelName + "."
+            + productionName);
         return;
       }
 
-      String productionName = ASTSupport.getName(tpme.getAST());
-      int lineNumber = Utilities.extractLineNumber(_target.getLaunch(),
-          modelName, productionName, JACTRBuilder.PRODUCTION);
+//      int lineNumber = Utilities.extractLineNumber(_target.getLaunch(),
+//          modelName, productionName, JACTRBuilder.PRODUCTION);
 
       ACTRStackFrame trace = new ACTRStackFrame(thread, tpme
-          .getSimulationTime(), productionName, lineNumber);
+          .getSimulationTime(), productionName, -1);
+
       thread.addStackFrame(trace, false);
     }
 

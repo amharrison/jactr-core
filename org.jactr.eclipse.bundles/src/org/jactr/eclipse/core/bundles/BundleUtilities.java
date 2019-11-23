@@ -282,7 +282,8 @@ public class BundleUtilities
               VersionRange.RIGHT_CLOSED));
     }
     /*
-     * if there are any fragments
+     * if there are any fragments. skip the slf4j fragments as they will
+     * interfere with logging.
      */
     if (!modelBase.getBundleDescription().getName().equals("org.slf4j.api"))
       for (BundleDescription desc : modelBase.getBundleDescription()
@@ -300,8 +301,6 @@ public class BundleUtilities
         existing = existing.intersection(requirement.getVersionRange());
 
       if (existing == null) existing = requirement.getVersionRange();
-
-//      dependencies.put(requirement.getName(), existing);
 
       getDependencies(requirement.getName(), dependencies, includeSelf);
     }

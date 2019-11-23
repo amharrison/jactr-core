@@ -60,7 +60,7 @@ import org.jactr.eclipse.runtime.preferences.RuntimePreferences;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
 import org.jactr.io2.jactr.modelFragment.ModelFragment;
-import org.jactr.io2.jactr.modelFragment.Module;
+import org.jactr.io2.jactr.modelFragment.ModelModule;
 import org.jactr.io2.jactr.ui.util.JactrUIUtilities;
 import org.osgi.framework.Version;
 import org.osgi.framework.VersionRange;
@@ -191,7 +191,7 @@ public class ACTRLaunchConfigurationUtils
     ModelFragment modelFragment = JactrUIUtilities
         .loadModel(modelFile.getLocationURI());
 
-    for (Module module : modelFragment.getPackage().getModules())
+    for (ModelModule module : modelFragment.getPackage().getModules())
       for (ModuleDescriptor moduleDesc : allModules)
         if (moduleDesc.getClassName().equals(module.getModuleClass()))
         {

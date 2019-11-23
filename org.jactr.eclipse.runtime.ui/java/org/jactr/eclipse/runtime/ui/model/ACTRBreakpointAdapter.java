@@ -18,16 +18,28 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.ui.actions.IToggleBreakpointsTarget;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.xtext.EcoreUtil2;
+import org.eclipse.xtext.nodemodel.INode;
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
+import org.eclipse.xtext.resource.EObjectAtOffsetHelper;
+import org.eclipse.xtext.resource.XtextResource;
+import org.eclipse.xtext.ui.editor.XtextEditor;
+import org.eclipse.xtext.ui.editor.model.IXtextDocument;
+import org.eclipse.xtext.ui.editor.model.XtextDocumentUtil;
 import org.jactr.eclipse.core.comp.CompilationUnitManager;
 import org.jactr.eclipse.core.comp.ICompilationUnit;
 import org.jactr.eclipse.runtime.debug.marker.ACTRBreakpoint;
 import org.jactr.eclipse.runtime.launching.norm.ACTRSession;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
+import org.jactr.io2.jactr.modelFragment.Production;
+
+import com.google.common.collect.Iterables;
 
 /**
  * Adapter to create breakpoints in jactr files.
@@ -40,7 +52,98 @@ public class ACTRBreakpointAdapter implements IToggleBreakpointsTarget
    */
 
   static private final transient Log LOGGER = LogFactory
-                                                .getLog(ACTRBreakpointAdapter.class);
+      .getLog(ACTRBreakpointAdapter.class);
+
+  public void toggleLineBreakpoints(IWorkbenchPart part, ISelection selection)
+      throws CoreException
+  {
+    IResource resource = getResource(part);
+    if (isOldIO(resource))
+      toggleLineBreakpointsAST(part, selection);
+    else
+      toggeleLineBreakpointsIO2(part, selection);
+  }
+
+  private boolean isOldIO(IResource resource)
+  {
+    return CompilationUnitManager.isJACTRModel(resource);
+  }
+
+  public void toggeleLineBreakpointsIO2(IWorkbenchPart part,
+      ISelection selection) throws CoreException
+  {
+    IResource eclipseResource = getResource(part);
+    XtextEditor editor = (XtextEditor) part;
+    ITextSelection textSelection = (ITextSelection) selection;
+    XtextDocumentUtil util = new XtextDocumentUtil();
+
+    IXtextDocument document = util.getXtextDocument(editor);
+    document.readOnly((resource) -> {
+      return productionAt(resource, textSelection, eclipseResource);
+    });
+  }
+
+  protected Object productionAt(XtextResource xtextResource,
+      ITextSelection textSelection, IResource eclipseResource)
+  {
+    EObjectAtOffsetHelper helper = new EObjectAtOffsetHelper();
+    EObject object = helper.resolveContainedElementAt(xtextResource,
+        textSelection.getOffset());
+    Production production = null;
+
+    if (object instanceof Production) production = (Production) object;
+    /*
+     * find the production container, then create the breakpoint
+     */
+    if (production == null) production = (Production) Iterables
+        .getFirst(Iterables.filter(EcoreUtil2.getAllContainers(object), obj -> {
+          return obj instanceof Production;
+        }), null);
+
+    if (production == null) return null;
+
+    INode objectNode = NodeModelUtils.findActualNodeFor(production);
+
+    int lineNumber = objectNode.getStartLine();
+
+    String type = ACTRBreakpoint.PRODUCTION;
+    String name = production.getName();
+
+    IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager()
+        .getBreakpoints(ACTRSession.ACTR_DEBUG_MODEL);
+    try
+    {
+      for (IBreakpoint breakpoint : breakpoints)
+        if (eclipseResource.equals(breakpoint.getMarker().getResource()))
+        {
+          ACTRBreakpoint bp = (ACTRBreakpoint) breakpoint;
+          if (bp.getLineNumber() == lineNumber
+              && bp.getBreakpointName().equals(name)
+              && bp.getBreakpointType().equals(type))
+          {
+            // remove
+            if (LOGGER.isDebugEnabled()) LOGGER.debug("removing");
+            breakpoint.delete();
+            return null;
+          }
+        }
+
+      // create line breakpoint (doc line numbers start at 0)
+      ACTRBreakpoint lineBreakpoint = new ACTRBreakpoint(eclipseResource, type,
+          name, lineNumber);
+
+      if (LOGGER.isDebugEnabled()) LOGGER.debug("Adding breakpoint");
+
+      DebugPlugin.getDefault().getBreakpointManager()
+          .addBreakpoint(lineBreakpoint);
+    }
+    catch (CoreException ce)
+    {
+
+    }
+
+    return null;
+  }
 
   /*
    * (non-Javadoc)
@@ -48,8 +151,8 @@ public class ACTRBreakpointAdapter implements IToggleBreakpointsTarget
    * org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#toggleLineBreakpoints
    * (org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
    */
-  public void toggleLineBreakpoints(IWorkbenchPart part, ISelection selection)
-      throws CoreException
+  public void toggleLineBreakpointsAST(IWorkbenchPart part,
+      ISelection selection) throws CoreException
   {
     if (LOGGER.isDebugEnabled())
       LOGGER.debug("Attempting to toggle breakpoint at " + selection);
@@ -57,24 +160,23 @@ public class ACTRBreakpointAdapter implements IToggleBreakpointsTarget
     ITextEditor textEditor = getEditor(part);
     if (textEditor != null)
     {
-      IResource resource = (IResource) textEditor.getEditorInput().getAdapter(
-          IResource.class);
+      IResource resource = textEditor.getEditorInput()
+          .getAdapter(IResource.class);
       ITextSelection textSelection = (ITextSelection) selection;
       int lineNumber = textSelection.getStartLine();
 
       ICompilationUnit compUnit = CompilationUnitManager.acquire(resource);
 
       if (compUnit == null) return;
-      
+
       CommonTree modelDescriptor = compUnit.getModelDescriptor();
       CompilationUnitManager.release(compUnit);
-      
+
       // compilation errors - can't set break point
       if (modelDescriptor == null)
       {
-        if (LOGGER.isDebugEnabled())
-          LOGGER.debug(resource.getName()
-              + " has compilation errors, can't mark breakpoints");
+        if (LOGGER.isDebugEnabled()) LOGGER.debug(resource.getName()
+            + " has compilation errors, can't mark breakpoints");
         return;
       }
 
@@ -89,9 +191,8 @@ public class ACTRBreakpointAdapter implements IToggleBreakpointsTarget
         return;
       }
 
-      if (LOGGER.isDebugEnabled())
-        LOGGER.debug(topLevel.toStringTree() + " is the closest element near "
-            + lineNumber);
+      if (LOGGER.isDebugEnabled()) LOGGER.debug(topLevel.toStringTree()
+          + " is the closest element near " + lineNumber);
 
       lineNumber = getLowestValidLineNumber(topLevel);
 
@@ -108,7 +209,6 @@ public class ACTRBreakpointAdapter implements IToggleBreakpointsTarget
       IBreakpoint[] breakpoints = DebugPlugin.getDefault()
           .getBreakpointManager().getBreakpoints(ACTRSession.ACTR_DEBUG_MODEL);
       for (IBreakpoint breakpoint : breakpoints)
-      {
         if (resource.equals(breakpoint.getMarker().getResource()))
         {
           ACTRBreakpoint bp = (ACTRBreakpoint) breakpoint;
@@ -122,7 +222,6 @@ public class ACTRBreakpointAdapter implements IToggleBreakpointsTarget
             return;
           }
         }
-      }
 
       // create line breakpoint (doc line numbers start at 0)
       ACTRBreakpoint lineBreakpoint = new ACTRBreakpoint(resource, type, name,
@@ -130,16 +229,16 @@ public class ACTRBreakpointAdapter implements IToggleBreakpointsTarget
 
       if (LOGGER.isDebugEnabled()) LOGGER.debug("Adding breakpoint");
 
-      DebugPlugin.getDefault().getBreakpointManager().addBreakpoint(
-          lineBreakpoint);
+      DebugPlugin.getDefault().getBreakpointManager()
+          .addBreakpoint(lineBreakpoint);
     }
   }
 
   protected CommonTree findNearestTopLevelElement(CommonTree modelDescriptor,
       int referenceLine)
   {
-    Collection<CommonTree> topLevels = ASTSupport.getAllDescendantsWithType(
-        modelDescriptor, JACTRBuilder.PRODUCTION);
+    Collection<CommonTree> topLevels = ASTSupport
+        .getAllDescendantsWithType(modelDescriptor, JACTRBuilder.PRODUCTION);
     // topLevels.addAll(ASTSupport.getAllDescendantsWithType(modelDescriptor,
     // JACTRBuilderTreeParser.CHUNK));
     // topLevels.addAll(ASTSupport.getAllDescendantsWithType(modelDescriptor,
@@ -152,8 +251,8 @@ public class ACTRBreakpointAdapter implements IToggleBreakpointsTarget
     for (CommonTree node : topLevels)
     {
       int currentLine = getLowestValidLineNumber(node);
-      if (Math.abs(referenceLine - currentLine) < Math.abs(bestLine
-          - referenceLine))
+      if (Math.abs(referenceLine - currentLine) < Math
+          .abs(bestLine - referenceLine))
       {
         bestNode = node;
         bestLine = currentLine;
@@ -171,8 +270,8 @@ public class ACTRBreakpointAdapter implements IToggleBreakpointsTarget
 
     // zip through the childre
     for (int i = 0; i < commonTree.getChildCount(); i++)
-      rtn = Math.min(getLowestValidLineNumber((CommonTree) commonTree
-          .getChild(i)), rtn);
+      rtn = Math.min(
+          getLowestValidLineNumber((CommonTree) commonTree.getChild(i)), rtn);
 
     return rtn;
   }
@@ -183,21 +282,21 @@ public class ACTRBreakpointAdapter implements IToggleBreakpointsTarget
     {
       case JACTRBuilder.PRODUCTION:
         return ACTRBreakpoint.PRODUCTION;
-        // case JACTRBuilderTreeParser.CHUNK:
-        // return org.jactr.eclipse.runtime.debug.marker.CHUNK;
-        // case JACTRBuilderTreeParser.CHUNK_TYPE:
-        // return org.jactr.eclipse.runtime.debug.marker.CHUNK_TYPE;
-        // case JACTRBuilderTreeParser.BUFFER:
-        // return org.jactr.eclipse.runtime.debug.marker.BUFFER;
+      // case JACTRBuilderTreeParser.CHUNK:
+      // return org.jactr.eclipse.runtime.debug.marker.CHUNK;
+      // case JACTRBuilderTreeParser.CHUNK_TYPE:
+      // return org.jactr.eclipse.runtime.debug.marker.CHUNK_TYPE;
+      // case JACTRBuilderTreeParser.BUFFER:
+      // return org.jactr.eclipse.runtime.debug.marker.BUFFER;
     }
     return "unknown";
   }
 
   /*
    * (non-Javadoc)
-   * @see
-   * org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#canToggleLineBreakpoints
-   * (org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
+   * @see org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#
+   * canToggleLineBreakpoints (org.eclipse.ui.IWorkbenchPart,
+   * org.eclipse.jface.viewers.ISelection)
    */
   public boolean canToggleLineBreakpoints(IWorkbenchPart part,
       ISelection selection)
@@ -219,24 +318,35 @@ public class ACTRBreakpointAdapter implements IToggleBreakpointsTarget
     if (part instanceof ITextEditor)
     {
       ITextEditor editorPart = (ITextEditor) part;
-      IResource resource = (IResource) editorPart.getEditorInput().getAdapter(
-          IResource.class);
-      if (resource != null)
-      {
-        String extension = resource.getFileExtension();
-        if (extension != null
-            && (extension.equalsIgnoreCase("jactr") || extension
-                .equalsIgnoreCase("lisp"))) return editorPart;
-      }
+      IResource resource = editorPart.getEditorInput()
+          .getAdapter(IResource.class);
+      if (resource != null) if (CompilationUnitManager.isJACTRModel(resource)
+          || "jactr".equals(resource.getFileExtension()))
+        return editorPart;
     }
+    return null;
+  }
+
+  private IResource getResource(IWorkbenchPart part)
+  {
+    if (part instanceof XtextEditor) return ((XtextEditor) part).getResource();
+
+    if (part instanceof ITextEditor)
+    {
+      ITextEditor editorPart = (ITextEditor) part;
+      IResource resource = editorPart.getEditorInput()
+          .getAdapter(IResource.class);
+      return resource;
+    }
+
     return null;
   }
 
   /*
    * (non-Javadoc)
-   * @see
-   * org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#toggleMethodBreakpoints
-   * (org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
+   * @see org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#
+   * toggleMethodBreakpoints (org.eclipse.ui.IWorkbenchPart,
+   * org.eclipse.jface.viewers.ISelection)
    */
   public void toggleMethodBreakpoints(IWorkbenchPart part, ISelection selection)
       throws CoreException

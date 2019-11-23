@@ -303,16 +303,18 @@ public abstract class AbstractSession
     return _executionStart;
   }
 
-  public void start() throws CoreException
+  public void initialize() throws CoreException
   {
-
     _executionStart = new Date();
     _sessionJob = createSessionJob();
     _sessionJob.addJobChangeListener(_listener);
 
-    connect();
-
     _sessionJob.schedule();
+  }
+
+  public void start() throws CoreException
+  {
+    connect();
   }
 
   public boolean isActive()

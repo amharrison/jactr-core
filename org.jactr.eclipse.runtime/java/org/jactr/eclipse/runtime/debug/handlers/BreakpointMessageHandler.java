@@ -14,16 +14,21 @@
 package org.jactr.eclipse.runtime.debug.handlers;
 
 import org.commonreality.net.session.ISessionInfo;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.model.IBreakpoint;
 import org.jactr.eclipse.runtime.debug.ACTRDebugTarget;
 import org.jactr.eclipse.runtime.debug.elements.ACTRStackFrame;
 import org.jactr.eclipse.runtime.debug.elements.ACTRThread;
+import org.jactr.eclipse.runtime.debug.marker.ACTRBreakpoint;
 import org.jactr.eclipse.runtime.debug.util.Utilities;
-import org.jactr.io.antlr3.builder.JACTRBuilder;
+import org.jactr.eclipse.runtime.launching.norm.ACTRSession;
 import org.jactr.io.antlr3.misc.ASTSupport;
 import org.jactr.tools.async.message.event.data.BreakpointReachedEvent;
 
-public class BreakpointMessageHandler extends
-    org.jactr.tools.async.shadow.handlers.BreakpointMessageHandler
+public class BreakpointMessageHandler
+    extends org.jactr.tools.async.shadow.handlers.BreakpointMessageHandler
 {
 
   ACTRDebugTarget _target;
@@ -45,13 +50,30 @@ public class BreakpointMessageHandler extends
      */
     String modelName = message.getModelName();
     ACTRThread thread = _target.getThread(modelName);
+    IResource resource = Utilities.getResourceForAlias(_target.getLaunch(),
+        modelName);
+
     String breakpointName = ASTSupport.getName(message.getAST());
+    IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager()
+        .getBreakpoints(ACTRSession.ACTR_DEBUG_MODEL);
+    int lineNumber = 0;
+    for (IBreakpoint breakpoint : breakpoints)
+      if (resource.equals(breakpoint.getMarker().getResource())) try
+      {
+        ACTRBreakpoint bp = (ACTRBreakpoint) breakpoint;
+        if (bp.getBreakpointName().equals(breakpointName)
+            && bp.getBreakpointType().equals(message.getBreakpointType()))
+          lineNumber = bp.getLineNumber();
+      }
+      catch (CoreException e)
+      {
 
-    int lineNumber = Utilities.extractLineNumber(_target.getLaunch(),
-        modelName, breakpointName, JACTRBuilder.PRODUCTION);
+      }
+//    int lineNumber = Utilities.extractLineNumber(_target.getLaunch(),
+//        modelName, breakpointName, JACTRBuilder.PRODUCTION);
 
-    ACTRStackFrame frame = new ACTRStackFrame(thread, message.getSimulationTime(),
-        breakpointName, lineNumber);
+    ACTRStackFrame frame = new ACTRStackFrame(thread,
+        message.getSimulationTime(), breakpointName, lineNumber);
 
     /*
      * this will fire the event notifying the debugger

@@ -541,7 +541,7 @@ public class EnvironmentConfigurator
     if (isIterative)
       useNetworkSync = false;
     else
-      useNetworkSync ^= isDebug; // we force it on
+      useNetworkSync = isDebug; // we force it on
 
     // not using any? leave
     if (!useArchivalSync && !useNetworkSync) return;

@@ -115,10 +115,7 @@ public class ACTRModelPresentation extends LabelProvider implements
    */
   public IEditorInput getEditorInput(Object element)
   {
-    if (element instanceof IFile)
-    {
-      return new FileEditorInput((IFile) element);
-    }
+    if (element instanceof IFile) return new FileEditorInput((IFile) element);
     if (element instanceof ILineBreakpoint)
     {
       IMarker marker = ((ACTRBreakpoint) element).getMarker();
@@ -137,9 +134,7 @@ public class ACTRModelPresentation extends LabelProvider implements
   public String getEditorId(IEditorInput input, Object element)
   {
     if (element instanceof IFile || element instanceof ACTRBreakpoint)
-    {
-      return "org.jactr.eclipse.ui.editor.JACTRModelEditor";
-    }
+      return "org.jactr.io2.jactr.ModelFragment";
     return null;
   }
 }
