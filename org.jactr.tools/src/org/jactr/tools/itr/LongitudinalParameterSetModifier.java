@@ -14,8 +14,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.antlr.runtime.tree.CommonTree;
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.io.generator.CodeGeneratorFactory;
 import org.jactr.io.generator.ICodeGenerator;
@@ -23,6 +21,7 @@ import org.jactr.io.resolver.ASTResolver;
 import org.jactr.io2.compilation.ICompilationUnit;
 import org.jactr.tools.itr.ortho.ISlice;
 import org.jactr.tools.itr.ortho.ISliceListener;
+import org.slf4j.LoggerFactory;
 
 /**
  * saves models of terminal runs and restores them to the run directory so that
@@ -80,7 +79,7 @@ public class LongitudinalParameterSetModifier extends ParameterSetModifier
    */
   public void copyModels(Collection<IModel> models, long iteration)
   {
-    ICodeGenerator generator = CodeGeneratorFactory.getCodeGenerator("jactr");
+    ICodeGenerator generator = CodeGeneratorFactory.getCodeGenerator("jactrx");
     Collection<File> serialized = new ArrayList<File>(_nameToFile.size());
     for (IModel model : models)
       try

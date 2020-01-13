@@ -492,11 +492,14 @@ public class DefaultDeclarativeModule extends AbstractDeclarativeModule
     if (LOGGER.isDebugEnabled()) LOGGER.debug("find exact matches (" + pattern
         + ") evaluating " + candidates.size() + " candidates");
 
-    if (Logger.hasLoggers(getModel())) logMessage
-        .prepend(String.format("Evaluating exact matches : %s \n", candidates));
-
     if (Logger.hasLoggers(getModel()))
+    {
+      logMessage.prepend(
+          String.format("Evaluating exact matches : %s \n", candidates));
+      logMessage.prepend("Searching for " + pattern + "\n");
+
       Logger.log(getModel(), Logger.Stream.DECLARATIVE, logMessage.toString());
+    }
 
     if (recycle) MessageBuilderFactory.recycle(logMessage);
 

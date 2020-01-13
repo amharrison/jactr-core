@@ -24,7 +24,7 @@ public class CompilationUnitManager
 
   public void addProvider(ICompilationUnitProvider provider)
   {
-    _providers.add(provider);
+    _providers.add(0, provider);
   }
 
   public ICompilationUnit get(final URI resource) throws Exception

@@ -8,6 +8,7 @@
             <strings name="aural.type" value="tone"/> <!-- tone, digit, word, speech -->
             <string name="aural.token" value="a"/>
             <double name="aural.onset" value="0"/>
+            <double name="aural.pitch" value="100"/>
         </add>
     </time>
     <time relative="2"> <!-- 2 seconds from the last time event -->

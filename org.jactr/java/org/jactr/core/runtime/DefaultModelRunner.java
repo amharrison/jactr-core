@@ -20,8 +20,6 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
- 
-import org.slf4j.LoggerFactory;
 import org.commonreality.time.IAuthoritativeClock;
 import org.commonreality.time.IClock;
 import org.commonreality.time.impl.BasicClock;
@@ -35,6 +33,7 @@ import org.jactr.core.model.event.ModelEvent;
 import org.jactr.core.queue.TimedEventQueue;
 import org.jactr.core.runtime.event.ACTRRuntimeEvent;
 import org.jactr.core.utils.Diagnostics;
+import org.slf4j.LoggerFactory;
 
 /**
  * basic model runner, handles all events except disconnected which will be
@@ -355,6 +354,7 @@ public class DefaultModelRunner implements Runnable
     catch (Exception e)
     {
       LOGGER.error("Unknown exception, terminating ", e);
+      e.printStackTrace(System.err);
     }
     finally
     {

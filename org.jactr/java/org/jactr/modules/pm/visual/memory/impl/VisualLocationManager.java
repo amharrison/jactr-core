@@ -10,14 +10,13 @@ import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.slot.BasicSlot;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.modules.pm.common.memory.impl.IIndexManager;
 import org.jactr.modules.pm.visual.IVisualModule;
+import org.slf4j.LoggerFactory;
 
 public class VisualLocationManager implements IIndexManager
 {
@@ -25,21 +24,21 @@ public class VisualLocationManager implements IIndexManager
    * Logger definition
    */
   static private final transient org.slf4j.Logger LOGGER = LoggerFactory
-                                                .getLogger(VisualLocationManager.class);
+      .getLogger(VisualLocationManager.class);
 
-  private SortedMap<Integer, IChunk> _sparseVisualLocations;
+  private SortedMap<Integer, IChunk>              _sparseVisualLocations;
 
-  private int                        _horizontalResolution;
+  private int                                     _horizontalResolution;
 
-  private int                        _verticalResolution;
+  private int                                     _verticalResolution;
 
-  private double                     _horizontalSpan;
+  private double                                  _horizontalSpan;
 
-  private double                     _verticalSpan;
+  private double                                  _verticalSpan;
 
-  private Lock                       _lock  = new ReentrantLock();
+  private Lock                                    _lock  = new ReentrantLock();
 
-  private final IVisualModule        _module;
+  private final IVisualModule                     _module;
 
   public VisualLocationManager(IVisualModule module)
   {
@@ -69,26 +68,38 @@ public class VisualLocationManager implements IIndexManager
        * grab existing visual-locations, possibly having been written to file
        * already
        */
-      for (IChunk location : _module.getVisualLocationChunkType()
-          .getSymbolicChunkType().getChunks())
-      {
-        double x = ((Number) location.getSymbolicChunk().getSlot(
-            IVisualModule.SCREEN_X_SLOT).getValue()).doubleValue();
-        double y = ((Number) location.getSymbolicChunk().getSlot(
-            IVisualModule.SCREEN_Y_SLOT).getValue()).doubleValue();
-        location.setMutable(true);
-        _sparseVisualLocations.put(getVisualLocationChunkIndex(x, y), location);
-      }
+//      for (IChunk location : _module.getVisualLocationChunkType()
+//          .getSymbolicChunkType().getChunks())
+//        try
+//        {
+//          double x = ((Number) location.getSymbolicChunk()
+//              .getSlot(IVisualModule.SCREEN_X_SLOT).getValue()).doubleValue();
+//          double y = ((Number) location.getSymbolicChunk()
+//              .getSlot(IVisualModule.SCREEN_Y_SLOT).getValue()).doubleValue();
+//          location.setMutable(true);
+//          _sparseVisualLocations.put(getVisualLocationChunkIndex(x, y),
+//              location);
+//        }
+//        catch (Exception npe)
+//        {
+//          // if we have partially encoded chunks we might get exceptions
+//        }
 
       for (IChunk location : locations)
-      {
-        double x = ((Number) location.getSymbolicChunk().getSlot(
-            IVisualModule.SCREEN_X_SLOT).getValue()).doubleValue();
-        double y = ((Number) location.getSymbolicChunk().getSlot(
-            IVisualModule.SCREEN_Y_SLOT).getValue()).doubleValue();
-        location.setMutable(true);
-        _sparseVisualLocations.put(getVisualLocationChunkIndex(x, y), location);
-      }
+        try
+        {
+          double x = ((Number) location.getSymbolicChunk()
+              .getSlot(IVisualModule.SCREEN_X_SLOT).getValue()).doubleValue();
+          double y = ((Number) location.getSymbolicChunk()
+              .getSlot(IVisualModule.SCREEN_Y_SLOT).getValue()).doubleValue();
+          location.setMutable(true);
+          _sparseVisualLocations.put(getVisualLocationChunkIndex(x, y),
+              location);
+        }
+        catch (Exception e)
+        {
+          // ignore
+        }
     }
     finally
     {
@@ -100,8 +111,8 @@ public class VisualLocationManager implements IIndexManager
   {
     try
     {
-      ISlot screenPos = encodedChunk.getSymbolicChunk().getSlot(
-          IVisualModule.SCREEN_POSITION_SLOT);
+      ISlot screenPos = encodedChunk.getSymbolicChunk()
+          .getSlot(IVisualModule.SCREEN_POSITION_SLOT);
       return (IChunk) screenPos.getValue();
     }
     catch (Exception e)
@@ -151,21 +162,19 @@ public class VisualLocationManager implements IIndexManager
   private double getClosestXLocation(double x)
   {
     double half = _horizontalSpan / 2.0;
-    int xIndex = (int) Math.ceil((x + half) / _horizontalSpan
-        * _horizontalResolution);
+    int xIndex = (int) Math
+        .ceil((x + half) / _horizontalSpan * _horizontalResolution);
 
-    return xIndex * _horizontalSpan / _horizontalResolution
-        - half;
+    return xIndex * _horizontalSpan / _horizontalResolution - half;
   }
 
   private double getClosestYLocation(double y)
   {
     double half = _verticalSpan / 2.0;
-    int yIndex = (int) Math.ceil((y + half) / _verticalSpan
-        * _verticalResolution);
+    int yIndex = (int) Math
+        .ceil((y + half) / _verticalSpan * _verticalResolution);
 
-    return yIndex * _verticalSpan / _verticalResolution
-        - half;
+    return yIndex * _verticalSpan / _verticalResolution - half;
   }
 
   private IChunk createVisualLocationChunk(double x, double y) throws Exception
@@ -183,18 +192,20 @@ public class VisualLocationManager implements IIndexManager
     Double xLoc = x;
     Double yLoc = y;
     IChunk locationChunk = created.get();
-    locationChunk.getSymbolicChunk().addSlot(
-        new BasicSlot(IVisualModule.SCREEN_X_SLOT, xLoc));
-    locationChunk.getSymbolicChunk().addSlot(
-        new BasicSlot(IVisualModule.SCREEN_Y_SLOT, yLoc));
+    locationChunk.getSymbolicChunk()
+        .addSlot(new BasicSlot(IVisualModule.SCREEN_X_SLOT, xLoc));
+    locationChunk.getSymbolicChunk()
+        .addSlot(new BasicSlot(IVisualModule.SCREEN_Y_SLOT, yLoc));
+    locationChunk.getSymbolicChunk()
+        .addSlot(new BasicSlot(IVisualModule.SCREEN_Z_SLOT, 0));
 
     /*
      * so that the chunk is marked as being permitted to have its slots changed
      * after encoding
      */
     locationChunk.setMutable(true);
-    locationChunk = _module.getModel().getDeclarativeModule().addChunk(
-        locationChunk).get();
+    locationChunk = _module.getModel().getDeclarativeModule()
+        .addChunk(locationChunk).get();
 
     return locationChunk;
   }
@@ -206,16 +217,16 @@ public class VisualLocationManager implements IIndexManager
 
     if (x > halfWidth || x < -halfWidth)
     {
-      LOGGER
-          .warn("requested visual location beyond the available horizontal range. requested:"
+      LOGGER.warn(
+          "requested visual location beyond the available horizontal range. requested:"
               + x + " width:" + _horizontalSpan);
       return -1;
     }
 
     if (y > halfHeight || y < -halfHeight)
     {
-      LOGGER
-          .warn("requested visual location beyond the available vertical range. requested:"
+      LOGGER.warn(
+          "requested visual location beyond the available vertical range. requested:"
               + y + " width:" + _verticalSpan);
       return -1;
     }

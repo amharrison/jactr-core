@@ -551,7 +551,8 @@ public class RemoteInterface extends NetworkedEndpoint implements IInstrument,
 
     try
     {
-      getExecutor().execute(disconnect);
+      ExecutorServices.getExecutor(ExecutorServices.BACKGROUND)
+          .execute(disconnect);
     }
     catch (RejectedExecutionException e)
     {

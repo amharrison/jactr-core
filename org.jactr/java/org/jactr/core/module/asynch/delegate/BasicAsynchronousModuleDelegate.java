@@ -6,13 +6,12 @@ package org.jactr.core.module.asynch.delegate;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.module.AbstractModule;
 import org.jactr.core.module.asynch.IAsynchronousModule;
 import org.jactr.core.production.condition.ChunkPattern;
 import org.jactr.core.production.request.IRequest;
 import org.jactr.core.queue.timedevents.BlockingTimedEvent;
+import org.slf4j.LoggerFactory;
 
 /**
  * abstract asynch delegate. This will manage the {@link BlockingTimedEvent}
@@ -30,11 +29,11 @@ public abstract class BasicAsynchronousModuleDelegate<M extends IAsynchronousMod
    * Logger definition
    */
   static private final transient org.slf4j.Logger LOGGER = LoggerFactory
-                                                .getLogger(BasicAsynchronousModuleDelegate.class);
+      .getLogger(BasicAsynchronousModuleDelegate.class);
 
-  private M                          _module;
+  private M                                       _module;
 
-  private R                          _errorResult;
+  private R                                       _errorResult;
 
   public BasicAsynchronousModuleDelegate(M module, R cantProcessResult)
   {
@@ -47,8 +46,6 @@ public abstract class BasicAsynchronousModuleDelegate<M extends IAsynchronousMod
     return _module;
   }
 
-  
-
   public CompletableFuture<R> process(final IRequest request,
       final double requestTime, final Object... parameters)
   {
@@ -56,31 +53,32 @@ public abstract class BasicAsynchronousModuleDelegate<M extends IAsynchronousMod
 
     if (canProcess)
     {
-      CompletableFuture<R> rtn = AbstractModule.delayedFuture(
-          new Callable<R>() {
+      CompletableFuture<R> rtn = AbstractModule
+          .delayedFuture(new Callable<R>() {
 
-        public R call() throws Exception
-        {
-          R result = _errorResult;
+            public R call() throws Exception
+            {
+              R result = _errorResult;
 
-          try
-          {
-            result = processInternal(request, requestTime, parameters);
-          }
-          catch (Exception e)
-          {
-            /**
-             * Error : error
-             */
-            LOGGER.error("Failed to process pattern request ", e);
-          }
+              try
+              {
+                result = processInternal(request, requestTime, parameters);
+              }
+              catch (Exception e)
+              {
+                /**
+                 * Error : error
+                 */
+                LOGGER.error("Failed to process pattern request ", e);
+                e.printStackTrace(System.err);
+              }
 
-          processInternalCompleted(request, result, parameters);
+              processInternalCompleted(request, result, parameters);
 
-          return result;
-        }
+              return result;
+            }
 
-      }, getModule().getExecutor());
+          }, getModule().getExecutor());
       return rtn;
     }
     else
@@ -93,8 +91,6 @@ public abstract class BasicAsynchronousModuleDelegate<M extends IAsynchronousMod
     }
   }
 
-  
-
   /**
    * called on the asynch thread after processInternal has completed. primarily
    * used to output some logging info..
@@ -104,12 +100,11 @@ public abstract class BasicAsynchronousModuleDelegate<M extends IAsynchronousMod
    * @param startTime
    * @param harvestAt
    */
-  protected void processInternalCompleted(IRequest request, R result, Object...parameters)
+  protected void processInternalCompleted(IRequest request, R result,
+      Object... parameters)
   {
 
   }
-
-  
 
   /**
    * Called on the initiating thread (i.e. model thread), this checks the module
@@ -130,7 +125,7 @@ public abstract class BasicAsynchronousModuleDelegate<M extends IAsynchronousMod
    * @param request
    * @return
    */
-  abstract protected R processInternal(IRequest request, double requestTime, Object... parameters);
+  abstract protected R processInternal(IRequest request, double requestTime,
+      Object... parameters);
 
- 
 }

@@ -1,8 +1,6 @@
 package org.jactr.core.module.meta.buffer.delegates;
 
 import java.util.Collection;
-import java.util.Map;
-import java.util.TreeMap;
 
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.delegate.IRequestDelegate;
@@ -85,7 +83,20 @@ public class AddChunkDelegate implements IRequestDelegate
         buff.setContents(existingRequest);
       }
       else if (existingRequest instanceof ChunkTypeRequest)
+      {
         ((ChunkTypeRequest) existingRequest).addSlot(conditionalSlot);
+        if (Logger.hasLoggers(buffer.getModel()))
+        {
+          IMessageBuilder mb = MessageBuilderFactory.newInstance();
+
+          mb.append("Current request : ");
+          mb.append(existingRequest);
+
+          Logger.log(buffer.getModel(), "META", mb);
+
+          MessageBuilderFactory.recycle(mb);
+        }
+      }
       else
       {
         /*
@@ -105,26 +116,17 @@ public class AddChunkDelegate implements IRequestDelegate
     else
     {
       /*
-       * expand the request using the chunk as default values
+       * expand the request using the chunk nonnull slot values as default
+       * values
        */
-      Collection<ISlot> definedSlots = FastCollectionFactory.newInstance();
-      definedSlots = ctr.getSlots(definedSlots);
-
       Collection<ISlot> chunkSlots = FastCollectionFactory.newInstance();
       chunkSlots = ctr.getChunk().getSymbolicChunk().getSlots(chunkSlots);
 
-      Map<String, ISlot> uniqueSlots = new TreeMap<>();
-      chunkSlots.forEach((s) -> uniqueSlots.put(s.getName(), s));
-
-      // find missing
-      definedSlots.forEach((s) -> uniqueSlots.remove(s.getName()));
-
-      // add missing
-      uniqueSlots.values().forEach(s -> ctr.addSlot(s));
+      chunkSlots.stream().filter(s -> s.getValue() != null)
+          .forEach(s -> ctr.addSlot(s));
 
       buff.setContents(ctr);
 
-      FastCollectionFactory.recycle(definedSlots);
       FastCollectionFactory.recycle(chunkSlots);
     }
 

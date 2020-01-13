@@ -13,6 +13,8 @@
  */
 package org.jactr.core.production.condition;
 
+import org.jactr.core.buffer.IActivationBuffer;
+import org.jactr.core.buffer.meta.IMetaBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.VariableBindings;
@@ -72,7 +74,15 @@ public class VariableCondition extends AbstractBufferCondition
      *  =buffer
      * </code>
      */
-    if (variableName.equals(bufferVariable)) return 0;
+    if (variableName.equals(bufferVariable))
+    {
+      IActivationBuffer buffer = model.getActivationBuffer(getBufferName());
+      if (buffer.getSourceChunk() != null) return 0;
+
+      if (buffer instanceof IMetaBuffer
+          && ((IMetaBuffer) buffer).getContents() != null)
+        return 0;
+    }
 
     Object resolvedValue = variableBindings.get(variableName);
 
@@ -108,12 +118,11 @@ public class VariableCondition extends AbstractBufferCondition
 
         if (_indirectRequest instanceof ChunkTypeRequest)
         {
-          IChunk testChunk = (IChunk) variableBindings
-              .get(bufferVariable);
+          IChunk testChunk = (IChunk) variableBindings.get(bufferVariable);
 
           unresolved = ((ChunkTypeRequest) _indirectRequest).bind(testChunk,
-              model.getActivationBuffer(getBufferName()),
-              variableBindings, isIterative);
+              model.getActivationBuffer(getBufferName()), variableBindings,
+              isIterative);
         }
         else
           unresolved = _indirectRequest.bind(model, variableBindings,
@@ -121,8 +130,8 @@ public class VariableCondition extends AbstractBufferCondition
       }
       else
         throw new CannotMatchException(new GeneralMatchFailure(this,
-            String.format("%s is %s. Don't know how to proceed.",
-                variableName, resolvedValue.getClass().getSimpleName())));
+            String.format("%s is %s. Don't know how to proceed.", variableName,
+                resolvedValue.getClass().getSimpleName())));
     }
     catch (CannotMatchException cme)
     {
