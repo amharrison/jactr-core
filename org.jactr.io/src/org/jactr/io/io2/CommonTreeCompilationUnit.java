@@ -8,11 +8,10 @@ import org.antlr.runtime.tree.CommonTree;
 /*
  * default logging
  */
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.io.IOUtilities;
 import org.jactr.io2.compilation.ICompilationUnit;
+import org.slf4j.LoggerFactory;
 
 public class CommonTreeCompilationUnit implements ICompilationUnit
 {
@@ -60,6 +59,12 @@ public class CommonTreeCompilationUnit implements ICompilationUnit
     if (errors.size() > 0) throw errors.iterator().next();
 
     return model;
+  }
+
+  @Override
+  public Object getNormalizedAST()
+  {
+    return getAST();
   }
 
 }

@@ -11,6 +11,13 @@ public interface ICompilationUnit
 
   public Object getAST();
 
+  /**
+   * return the AST with all its imports normalized
+   * 
+   * @return
+   */
+  public Object getNormalizedAST();
+
   public IModel build() throws Exception;
 
 }
