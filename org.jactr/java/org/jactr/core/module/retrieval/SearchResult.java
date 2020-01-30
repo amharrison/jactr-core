@@ -2,6 +2,11 @@ package org.jactr.core.module.retrieval;
 
 import org.jactr.core.chunk.IChunk;
 
+/**
+ * result for a retrieval
+ * 
+ * @author harrison
+ */
 public class SearchResult
 {
   final private IChunk _chunk;
