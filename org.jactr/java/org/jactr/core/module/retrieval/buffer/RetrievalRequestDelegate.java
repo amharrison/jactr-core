@@ -7,8 +7,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Future;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.delegate.AsynchronousRequestDelegate;
 import org.jactr.core.chunk.IChunk;
@@ -20,6 +18,7 @@ import org.jactr.core.model.IModel;
 import org.jactr.core.module.declarative.four.IDeclarativeModule4;
 import org.jactr.core.module.declarative.search.filter.ActivationPolicy;
 import org.jactr.core.module.retrieval.IRetrievalModule;
+import org.jactr.core.module.retrieval.SearchResult;
 import org.jactr.core.module.retrieval.six.DefaultRetrievalModule6;
 import org.jactr.core.production.request.ChunkRequest;
 import org.jactr.core.production.request.ChunkTypeRequest;
@@ -28,6 +27,7 @@ import org.jactr.core.queue.ITimedEvent;
 import org.jactr.core.queue.timedevents.DelayedBufferInsertionTimedEvent;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.utils.collections.FastListFactory;
+import org.slf4j.LoggerFactory;
 
 public class RetrievalRequestDelegate extends AsynchronousRequestDelegate
 {
@@ -286,6 +286,7 @@ public class RetrievalRequestDelegate extends AsynchronousRequestDelegate
     IChunk error = buffer.getModel().getDeclarativeModule().getErrorChunk();
     IChunk result = error;
     boolean indexed = false;
+    double retrievalTime = 0;
 
     if (startValue instanceof IChunk)
     {
@@ -295,7 +296,9 @@ public class RetrievalRequestDelegate extends AsynchronousRequestDelegate
     else
       try
       {
-        result = ((Future<IChunk>) startValue).get();
+        SearchResult sResult = ((Future<SearchResult>) startValue).get();
+        result = sResult.getChunk();
+        retrievalTime = sResult.getRetrievalTime();
       }
       catch (InterruptedException ie)
       {
@@ -319,12 +322,6 @@ public class RetrievalRequestDelegate extends AsynchronousRequestDelegate
        * make it available
        */
       double retrievalStartTime = getCurrentTimedEvent().getEndTime();
-      /*
-       * what would the retrieval time be? This call uses the retrieval time
-       * method that includes the possibility for partial matching.
-       */
-      double retrievalTime = _retrievalModule.getRetrievalTimeEquation()
-          .computeRetrievalTime(result, (ChunkTypeRequest) request);
 
       if (retrievalTime > 60)
         if (LOGGER.isWarnEnabled())

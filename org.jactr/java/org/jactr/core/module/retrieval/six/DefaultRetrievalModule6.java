@@ -24,8 +24,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.ChunkActivationComparator;
 import org.jactr.core.chunk.IChunk;
@@ -41,6 +39,7 @@ import org.jactr.core.module.declarative.search.filter.IChunkFilter;
 import org.jactr.core.module.declarative.search.filter.ILoggedChunkFilter;
 import org.jactr.core.module.declarative.search.filter.PartialMatchActivationFilter;
 import org.jactr.core.module.retrieval.IRetrievalModule;
+import org.jactr.core.module.retrieval.SearchResult;
 import org.jactr.core.module.retrieval.buffer.DefaultRetrievalBuffer6;
 import org.jactr.core.module.retrieval.buffer.RetrievalRequestDelegate;
 import org.jactr.core.module.retrieval.event.IRetrievalModuleListener;
@@ -56,6 +55,7 @@ import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.core.utils.collections.SkipListSetFactory;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.core.utils.parameter.ParameterHandler;
+import org.slf4j.LoggerFactory;
 
 /**
  * default retrieval buffer
@@ -63,14 +63,14 @@ import org.jactr.core.utils.parameter.ParameterHandler;
  * @see http://jactr.org/node/33
  * @author harrison
  */
-public class DefaultRetrievalModule6 extends AbstractModule implements
-    IRetrievalModule4, IParameterized
+public class DefaultRetrievalModule6 extends AbstractModule
+    implements IRetrievalModule4, IParameterized
 {
   /**
    * logger definition
    */
-  static private final transient org.slf4j.Logger                                                LOGGER                           = LoggerFactory
-                                                                                                               .getLogger(DefaultRetrievalModule6.class);
+  static private final transient org.slf4j.Logger                         LOGGER                           = LoggerFactory
+      .getLogger(DefaultRetrievalModule6.class);
 
   static public final String                                              INDEXED_RETRIEVALS_ENABLED_PARAM = "EnableIndexedRetrievals";
 
@@ -170,9 +170,8 @@ public class DefaultRetrievalModule6 extends AbstractModule implements
       Collection<? extends ISlot> slots)
   {
     dm = dm.getAdapter(IDeclarativeModule4.class);
-    if (dm instanceof IDeclarativeModule4)
-      return RetrievalRequestDelegate.isPartialMatchEnabled(
-          (IDeclarativeModule4) dm, slots);
+    if (dm instanceof IDeclarativeModule4) return RetrievalRequestDelegate
+        .isPartialMatchEnabled((IDeclarativeModule4) dm, slots);
     return false;
   }
 
@@ -232,19 +231,17 @@ public class DefaultRetrievalModule6 extends AbstractModule implements
     /*
      * snag the message from the filter.
      */
-    if (filter instanceof ILoggedChunkFilter)
-      if (Logger.hasLoggers(getModel()))
-        Logger.log(getModel(), Logger.Stream.RETRIEVAL,
-            ((ILoggedChunkFilter) filter).getMessageBuilder().toString());
+    if (filter instanceof ILoggedChunkFilter) if (Logger.hasLoggers(getModel()))
+      Logger.log(getModel(), Logger.Stream.RETRIEVAL,
+          ((ILoggedChunkFilter) filter).getMessageBuilder().toString());
 
     IChunk retrievalResult = selectRetrieval(results, dm.getErrorChunk(),
         pattern, cleanedPattern);
 
     // we should check to see if this is an indexed, as their time is immediate
     double retrievalTime = 0;
-    if (!wasIndexed)
-      retrievalTime = getRetrievalTimeEquation().computeRetrievalTime(
-          retrievalResult, pattern);
+    if (!wasIndexed) retrievalTime = getRetrievalTimeEquation()
+        .computeRetrievalTime(retrievalResult, pattern);
 
     fireCompleted(pattern, retrievalResult, retrievalTime, results);
 
@@ -272,7 +269,7 @@ public class DefaultRetrievalModule6 extends AbstractModule implements
 
     if (cleanSlots.size() != slots.size())
       if (pattern instanceof ChunkTypeRequest)
-        pattern = new ChunkTypeRequest(pattern.getChunkType(), cleanSlots);
+      pattern = new ChunkTypeRequest(pattern.getChunkType(), cleanSlots);
       else if (pattern instanceof ChunkRequest)
         pattern = new ChunkRequest(((ChunkRequest) pattern).getChunk(),
             cleanSlots);
@@ -321,21 +318,16 @@ public class DefaultRetrievalModule6 extends AbstractModule implements
           _finstManager.clearRecentRetrievals();
           recentlySpecified = false;
           if (Logger.hasLoggers(getModel()))
-            Logger
-                .log(
-                    getModel(),
-                    Logger.Stream.RETRIEVAL,
-                    String
-                        .format(
-                            "%s reset is archaic, use +retrieval> isa clear full t instead",
-                            RECENTLY_RETRIEVED_SLOT));
+            Logger.log(getModel(), Logger.Stream.RETRIEVAL, String.format(
+                "%s reset is archaic, use +retrieval> isa clear full t instead",
+                RECENTLY_RETRIEVED_SLOT));
         }
         else
         {
           ignoreRecent = cSlot.getCondition() == IConditionalSlot.EQUALS
               && (value == null || Boolean.FALSE.equals(value))
               || cSlot.getCondition() == IConditionalSlot.NOT_EQUALS
-              && Boolean.TRUE.equals(value);
+                  && Boolean.TRUE.equals(value);
 
           if (LOGGER.isDebugEnabled())
             LOGGER.debug(String.format("%s ignoring recently retrieved %s",
@@ -352,20 +344,18 @@ public class DefaultRetrievalModule6 extends AbstractModule implements
       {
         if (!_finstManager.hasBeenRetrieved(chunk))
         {
-          if (LOGGER.isDebugEnabled())
-            LOGGER.debug(String.format(
-                "%s has not been recently retrieved, returning", chunk));
+          if (LOGGER.isDebugEnabled()) LOGGER.debug(String
+              .format("%s has not been recently retrieved, returning", chunk));
 
           if (Logger.hasLoggers(getModel()))
-            Logger.log(getModel(), Logger.Stream.RETRIEVAL, String.format(
-                "%s was not recently retrieved. Selecting.", chunk));
+            Logger.log(getModel(), Logger.Stream.RETRIEVAL, String
+                .format("%s was not recently retrieved. Selecting.", chunk));
           return chunk;
         }
         else
         {
-          if (LOGGER.isDebugEnabled())
-            LOGGER.debug(String.format(
-                "%s has been recently retrieved, ignoring", chunk));
+          if (LOGGER.isDebugEnabled()) LOGGER.debug(
+              String.format("%s has been recently retrieved, ignoring", chunk));
 
           if (Logger.hasLoggers(getModel()))
             Logger.log(getModel(), Logger.Stream.RETRIEVAL,
@@ -374,9 +364,8 @@ public class DefaultRetrievalModule6 extends AbstractModule implements
       }
       else if (_finstManager.hasBeenRetrieved(chunk))
       {
-        if (LOGGER.isDebugEnabled())
-          LOGGER.debug(String.format(
-              "%s has been recently retrieved. Selecting.", chunk));
+        if (LOGGER.isDebugEnabled()) LOGGER.debug(
+            String.format("%s has been recently retrieved. Selecting.", chunk));
 
         if (Logger.hasLoggers(getModel()))
           Logger.log(getModel(), Logger.Stream.RETRIEVAL,
@@ -386,30 +375,31 @@ public class DefaultRetrievalModule6 extends AbstractModule implements
       }
       else
       {
-        if (LOGGER.isDebugEnabled())
-          LOGGER.debug(String.format(
-              "%s has not been recently retrieved, ignoring", chunk));
+        if (LOGGER.isDebugEnabled()) LOGGER.debug(String
+            .format("%s has not been recently retrieved, ignoring", chunk));
         if (Logger.hasLoggers(getModel()))
           Logger.log(getModel(), Logger.Stream.RETRIEVAL,
               String.format("%s was not recently retrieved. Ignoring.", chunk));
       }
 
-    if (LOGGER.isDebugEnabled())
-      LOGGER
-          .debug(String
-              .format("No results matched the recently retrieved specification, returning error"));
+    if (LOGGER.isDebugEnabled()) LOGGER.debug(String.format(
+        "No results matched the recently retrieved specification, returning error"));
     return errorChunk;
   }
 
-  public CompletableFuture<IChunk> retrieveChunk(
+  public CompletableFuture<SearchResult> retrieveChunk(
       final ChunkTypeRequest chunkPattern)
   {
-    return delayedFuture(new Callable<IChunk>() {
+    return delayedFuture(new Callable<SearchResult>() {
 
-      public IChunk call() throws Exception
+      public SearchResult call() throws Exception
       {
-        return retrieveChunkInternal(getModel().getDeclarativeModule(),
+        IChunk chunk = retrieveChunkInternal(getModel().getDeclarativeModule(),
             chunkPattern);
+        double retrievalTime = getRetrievalTimeEquation()
+            .computeRetrievalTime(chunk, chunkPattern);
+
+        return new SearchResult(chunk, retrievalTime);
       }
 
     }, getExecutor());
@@ -454,8 +444,8 @@ public class DefaultRetrievalModule6 extends AbstractModule implements
       throw new IllegalModuleStateException("Could not get reset chunk", e);
     }
 
-    _finstManager.setErrorChunk(getModel().getDeclarativeModule()
-        .getErrorChunk());
+    _finstManager
+        .setErrorChunk(getModel().getDeclarativeModule().getErrorChunk());
   }
 
   public IRetrievalTimeEquation getRetrievalTimeEquation()
@@ -532,28 +522,27 @@ public class DefaultRetrievalModule6 extends AbstractModule implements
   public void setParameter(String key, String value)
   {
     if (RETRIEVAL_THRESHOLD.equalsIgnoreCase(key))
-      setRetrievalThreshold(ParameterHandler.numberInstance().coerce(value)
-          .doubleValue());
+      setRetrievalThreshold(
+          ParameterHandler.numberInstance().coerce(value).doubleValue());
     else if (LATENCY_EXPONENT.equalsIgnoreCase(key))
-      setLatencyExponent(ParameterHandler.numberInstance().coerce(value)
-          .doubleValue());
+      setLatencyExponent(
+          ParameterHandler.numberInstance().coerce(value).doubleValue());
     else if (LATENCY_FACTOR.equalsIgnoreCase(key))
-      setLatencyFactor(ParameterHandler.numberInstance().coerce(value)
-          .doubleValue());
+      setLatencyFactor(
+          ParameterHandler.numberInstance().coerce(value).doubleValue());
     else if (INDEXED_RETRIEVALS_ENABLED_PARAM.equalsIgnoreCase(key))
-      setIndexedRetrievalEnabled(ParameterHandler.booleanInstance()
-          .coerce(value).booleanValue());
+      setIndexedRetrievalEnabled(
+          ParameterHandler.booleanInstance().coerce(value).booleanValue());
     else if (DeclarativeFINSTManager.FINST_DURATION_PARAM.equalsIgnoreCase(key))
-      _finstManager.setFINSTDuration(ParameterHandler.numberInstance()
-          .coerce(value).doubleValue());
+      _finstManager.setFINSTDuration(
+          ParameterHandler.numberInstance().coerce(value).doubleValue());
     else if (DeclarativeFINSTManager.NUMBER_OF_FINSTS_PARAM
         .equalsIgnoreCase(key))
-      _finstManager.setNumberOfFINSTs(ParameterHandler.numberInstance()
-          .coerce(value).intValue());
-    else if (LOGGER.isWarnEnabled())
-      LOGGER.warn(String.format(
-          "%s doesn't recognize %s. Available parameters : %s", getClass()
-              .getSimpleName(), key, getSetableParameters()));
+      _finstManager.setNumberOfFINSTs(
+          ParameterHandler.numberInstance().coerce(value).intValue());
+    else if (LOGGER.isWarnEnabled()) LOGGER.warn(
+        String.format("%s doesn't recognize %s. Available parameters : %s",
+            getClass().getSimpleName(), key, getSetableParameters()));
 
   }
 
