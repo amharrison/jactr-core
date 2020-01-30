@@ -18,8 +18,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.concurrent.ExecutorServices;
@@ -32,6 +30,7 @@ import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.utils.collections.FastCollectionFactory;
 import org.jactr.core.utils.collections.SkipListSetFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * still not correct. chunkFilter needs to be applied last. We can probably
@@ -171,6 +170,39 @@ public class ExactParallelSearchDelegate implements ISearchDelegate
         LOGGER.debug(String.format("First pass candidates %s = %s", pattern,
             results));
 
+      if (results.size() != 0)
+      {
+        /*
+         * we now need to deal with those that are actually the correct chunk
+         * type. Iteration over the candidates doing an isA() test would be
+         * O(candidates.size). candidates.retainAll(chunksOfType) is either
+         * O(candidates.size)*O(log(chunksOfType.size) or
+         * O(chunksOfType.size)*O(log(candidates.size)). Until the Fast
+         * collections come out with their predicate iterators, we will just
+         * iterate raw. And use the opportunity to filter and sort.
+         */
+        Comparator<IChunk> comparator = searchSystem._chunkNameComparator;
+        if (sortRule != null) comparator = sortRule;
+
+        IChunkFilter chunkFilter = filter == null ? searchSystem._defaultFilter
+            : filter;
+
+        SortedSet<IChunk> returnCandidates = SkipListSetFactory
+            .newInstance(comparator);
+
+        for (IChunk candidate : results)
+          if (chunkType == null || candidate.isA(chunkType))
+            if (primaryFilter.accept(candidate))
+              if (chunkFilter.accept(candidate))
+                // shouldn't we actually test this against the pattern, jsut to
+                // be
+                // sure?
+                returnCandidates.add(candidate);
+
+        searchSystem.recycleCollection(results);
+        results = returnCandidates;
+      }
+
       return results;
     }
     catch (InterruptedException e)
@@ -184,6 +216,7 @@ public class ExactParallelSearchDelegate implements ISearchDelegate
           "Failed to collect parallel search results for %s", pattern), e);
       return new TreeSet<IChunk>();
     }
+
   }
 
   /**
