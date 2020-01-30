@@ -16,7 +16,6 @@ package org.jactr.core.module.retrieval;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-import org.jactr.core.chunk.IChunk;
 import org.jactr.core.module.IModule;
 import org.jactr.core.module.retrieval.event.IRetrievalModuleListener;
 import org.jactr.core.module.retrieval.time.IRetrievalTimeEquation;
@@ -32,7 +31,7 @@ public interface IRetrievalModule extends IModule
   public void setRetrievalThreshold(double threshold);
   
   
-  public CompletableFuture<IChunk> retrieveChunk(ChunkTypeRequest chunkRequest);
+  public CompletableFuture<SearchResult> retrieveChunk(ChunkTypeRequest chunkRequest);
  
   
   public IRetrievalTimeEquation getRetrievalTimeEquation();
