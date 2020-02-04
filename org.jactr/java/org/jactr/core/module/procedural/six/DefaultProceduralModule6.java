@@ -29,8 +29,6 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.event.ActivationBufferEvent;
 import org.jactr.core.buffer.event.IActivationBufferListener;
@@ -67,6 +65,7 @@ import org.jactr.core.production.six.DefaultProduction6;
 import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.core.utils.parameter.ParameterHandler;
+import org.slf4j.LoggerFactory;
 
 /**
  * default procedural module. It provides extensibility by using
@@ -595,6 +594,9 @@ public class DefaultProceduralModule6 extends AbstractModule implements
     IProduction production = new DefaultProduction6(model);
     production.getSymbolicProduction().setName(
         getSafeName(name, _allProductionsByName));
+
+    production.getSubsymbolicProduction()
+        .setFiringTime(getDefaultProductionFiringTime());
 
     fireProductionCreated(production);
     return production;
