@@ -6,7 +6,6 @@ package org.jactr.core.utils.recyclable;
 import java.util.ArrayList;
 import java.util.List;
 
- 
 import org.slf4j.LoggerFactory;
 
 public abstract class AbstractThreadLocalRecyclableFactory<T> implements
@@ -22,9 +21,21 @@ public abstract class AbstractThreadLocalRecyclableFactory<T> implements
 
   private ThreadLocal<List<T>>       _local = new ThreadLocal<List<T>>();
 
+  static private int getDefaultSize()
+  {
+    try
+    {
+      return Integer.parseInt(System.getProperty("jactrFactorySize"));
+    }
+    catch (Exception e)
+    {
+      return 10;
+    }
+  }
+
   public AbstractThreadLocalRecyclableFactory()
   {
-    this(10);
+    this(getDefaultSize());
   }
 
   public AbstractThreadLocalRecyclableFactory(int maxCapacity)

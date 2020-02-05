@@ -8,9 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import org.jactr.core.utils.recyclable.CollectionPooledObjectFactory;
-import org.jactr.core.utils.recyclable.PooledRecycableFactory;
 import org.jactr.core.utils.recyclable.RecyclableFactory;
+import org.jactr.core.utils.recyclable.ThreadLocalFactory;
 import org.slf4j.LoggerFactory;
 
 public class SkipListSetFactory
@@ -48,10 +47,16 @@ public class SkipListSetFactory
 //        // noop
 //      }
 //    };
-    return new PooledRecycableFactory<ConcurrentSkipListSet<?>>(
-        new CollectionPooledObjectFactory<>(() -> {
-          return new ConcurrentSkipListSet(comparator);
-        }));
+//    return new PooledRecycableFactory<ConcurrentSkipListSet<?>>(
+//        new CollectionPooledObjectFactory<>(() -> {
+//          return new ConcurrentSkipListSet(comparator);
+//        }));
+//
+    return new ThreadLocalFactory<ConcurrentSkipListSet<?>>(() -> {
+      return new ConcurrentSkipListSet(comparator);
+    }, (obj) -> {
+      obj.clear();
+    }, null);
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })

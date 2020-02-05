@@ -34,8 +34,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.commons.collections.collection.CompositeCollection;
 import org.apache.commons.collections.set.CompositeSet;
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
@@ -62,6 +60,7 @@ import org.jactr.core.utils.collections.CompositeSetFactory;
 import org.jactr.core.utils.collections.FastCollectionFactory;
 import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.core.utils.collections.SkipListSetFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * basic, but memory intensive inverted index of encoded chunks and their

@@ -2,6 +2,7 @@ package org.jactr.core.utils.recyclable;
 
 import org.apache.commons.pool2.ObjectPool;
 import org.apache.commons.pool2.PooledObjectFactory;
+import org.apache.commons.pool2.impl.AbandonedConfig;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
@@ -18,7 +19,11 @@ public class PooledRecycableFactory<T> implements RecyclableFactory<T>
     config.setMinIdle(1);
     config.setMaxTotal(Integer.MAX_VALUE);
 
-    _pool = new GenericObjectPool<>(factory, config);
+    AbandonedConfig abandon = new AbandonedConfig();
+    abandon.setRemoveAbandonedOnBorrow(true);
+    abandon.setRemoveAbandonedOnMaintenance(true);
+
+    _pool = new GenericObjectPool<>(factory, config, abandon);
   }
 
   @Override
