@@ -26,11 +26,12 @@ public class Main
   public static void main(String[] args)
   {
     IExperiment experiment = StartModelExperiments.loadExperiment(args[0],
-        null);
-    experiment.setClock(
-        new RealtimeClock(Executors.newSingleThreadScheduledExecutor()));
-    experiment.getVariableContext().set(StartModelExperiments.SUBJECT_ID,
-        DataCollector.createSubjectId(System.currentTimeMillis()));
+        (exp) -> {
+          exp.setClock(
+              new RealtimeClock(Executors.newSingleThreadScheduledExecutor()));
+          exp.getVariableContext().set(StartModelExperiments.SUBJECT_ID,
+              DataCollector.createSubjectId(System.currentTimeMillis()));
+        });
 
     experiment.start();
   }
