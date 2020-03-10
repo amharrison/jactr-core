@@ -8,8 +8,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
- 
-import org.slf4j.LoggerFactory;
 import org.commonreality.time.IClock;
 import org.jactr.core.model.IModel;
 import org.jactr.core.runtime.ACTRRuntime;
@@ -17,7 +15,6 @@ import org.jactr.tools.experiment.IDataLogger;
 import org.jactr.tools.experiment.IExperiment;
 import org.jactr.tools.experiment.impl.VariableResolver.IResolver;
 import org.jactr.tools.experiment.lock.LockManager;
-import org.jactr.tools.experiment.misc.ExperimentUtilities;
 import org.jactr.tools.experiment.parser.ExperimentParser;
 import org.jactr.tools.experiment.trial.ICompoundTrial;
 import org.jactr.tools.experiment.trial.ITrial;
@@ -26,6 +23,7 @@ import org.jactr.tools.experiment.triggers.ITrigger;
 import org.jactr.tools.experiment.triggers.NamedTriggerManager;
 import org.jactr.tools.experiment.triggers.StartTrigger;
 import org.jactr.tools.experiment.triggers.TimeTrigger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 public class BasicExperiment implements IExperiment
@@ -34,39 +32,39 @@ public class BasicExperiment implements IExperiment
    * Logger definition
    */
   static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
-                                                          .getLogger(BasicExperiment.class);
+      .getLogger(BasicExperiment.class);
 
-  private List<ITrial>               _allTrials;
+  private List<ITrial>                            _allTrials;
 
-  private List<ITrial>               _pendingTrials;
+  private List<ITrial>                            _pendingTrials;
 
-  private final NamedTriggerManager  _manager;
+  private final NamedTriggerManager               _manager;
 
-  private String                     _name;
+  private String                                  _name;
 
-  private final VariableResolver     _resolver;
+  private final VariableResolver                  _resolver;
 
-  private final LockManager          _lockManager;
+  private final LockManager                       _lockManager;
 
-  private IDataLogger                _collector;
+  private IDataLogger                             _collector;
 
-  private double                     _startTime;
+  private double                                  _startTime;
 
-  private double                     _stopTime;
+  private double                                  _stopTime;
 
-  private StartTrigger               _startTrigger;
+  private StartTrigger                            _startTrigger;
 
-  private EndTrigger                 _endTrigger;
+  private EndTrigger                              _endTrigger;
 
-  private Collection<ITrigger>       _triggers;
+  private Collection<ITrigger>                    _triggers;
 
-  private final IVariableContext     _variableContext = new VariableContext();
+  private final IVariableContext                  _variableContext = new VariableContext();
 
-  private volatile ITrial            _currentTrial;
+  private volatile ITrial                         _currentTrial;
 
-  private volatile boolean           _shouldStop      = false;
+  private volatile boolean                        _shouldStop      = false;
 
-  private IClock                     _clock           = null;
+  private IClock                                  _clock           = null;
 
   public BasicExperiment()
   {
@@ -145,7 +143,7 @@ public class BasicExperiment implements IExperiment
         ITrial trial = getTrial();
         if (trial != null) start = trial.getStartTime();
 
-        return String.format("%1$f", (getTime() - start));
+        return String.format("%1$f", getTime() - start);
       }
 
     });
@@ -185,8 +183,8 @@ public class BasicExperiment implements IExperiment
         try
         {
           IModel model = (IModel) context.get("=model");
-          ArrayList<IModel> models = new ArrayList<IModel>(ACTRRuntime
-              .getRuntime().getModels());
+          ArrayList<IModel> models = new ArrayList<IModel>(
+              ACTRRuntime.getRuntime().getModels());
           models.remove(model);
 
           StringBuilder sb = new StringBuilder();
@@ -214,8 +212,8 @@ public class BasicExperiment implements IExperiment
       {
         try
         {
-          ArrayList<IModel> models = new ArrayList<IModel>(ACTRRuntime
-              .getRuntime().getModels());
+          ArrayList<IModel> models = new ArrayList<IModel>(
+              ACTRRuntime.getRuntime().getModels());
 
           StringBuilder sb = new StringBuilder();
           for (IModel m : models)
@@ -295,8 +293,9 @@ public class BasicExperiment implements IExperiment
       throw new RuntimeException("Failed to parse configuration ", e);
     }
 
-    if (Boolean.parseBoolean(document.getDocumentElement().getAttribute(
-        "shuffle"))) Collections.shuffle(_allTrials);
+    if (Boolean
+        .parseBoolean(document.getDocumentElement().getAttribute("shuffle")))
+      Collections.shuffle(_allTrials);
   }
 
   /**
@@ -420,12 +419,8 @@ public class BasicExperiment implements IExperiment
   {
     _triggers.add(trigger);
     if (trigger instanceof TimeTrigger)
-    {
-      if (LOGGER.isWarnEnabled())
-        LOGGER
-            .warn(String
-                .format("Use of timed triggers in experiment block is not recommended as the model's clock may not be set yet"));
-    }
+      if (LOGGER.isWarnEnabled()) LOGGER.warn(String.format(
+          "Use of timed triggers in experiment block is not recommended as the model's clock may not be set yet"));
   }
 
   public double getStartTime()
