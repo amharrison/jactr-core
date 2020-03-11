@@ -5,12 +5,11 @@ package org.jactr.tools.experiment.actions.jactr;
  */
 import java.util.concurrent.Future;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.runtime.controller.IController;
 import org.jactr.tools.experiment.actions.IAction;
 import org.jactr.tools.experiment.impl.IVariableContext;
+import org.slf4j.LoggerFactory;
 
 public class WaitForACTRAction implements IAction
 {
@@ -34,9 +33,9 @@ public class WaitForACTRAction implements IAction
   public void fire(IVariableContext context)
   {
     IController controller = ACTRRuntime.getRuntime().getController();
+
     if (controller == null)
-      throw new IllegalStateException(
-          "No runtime controller available to wait on");
+      return;
 
     try
     {
