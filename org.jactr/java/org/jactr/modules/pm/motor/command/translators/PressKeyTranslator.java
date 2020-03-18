@@ -132,9 +132,14 @@ public class PressKeyTranslator extends AbstractManualTranslator
 
       double[] peckRate = computeRate(muscleLocation, keyLocation,
           computeFitts(getPeckFittsCoefficient(motor),
-              distanceSquared(muscleLocation, keyLocation), 1));
+              Math.sqrt(distanceSquared(muscleLocation, keyLocation)), 1));
 
       translateTo.translate(muscleLocation, keyLocation, peckRate);
+
+      peckRate = computeRate(keyLocation, muscleLocation,
+          computeFitts(getPeckFittsCoefficient(motor),
+              Math.sqrt(distanceSquared(muscleLocation, keyLocation)), 1));
+
       translateFrom.translate(keyLocation, muscleLocation, peckRate);
 
       double[] punchTarget = new double[] { keyLocation[0], keyLocation[1], 0 };
