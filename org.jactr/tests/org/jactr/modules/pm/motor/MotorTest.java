@@ -151,11 +151,12 @@ public class MotorTest
         "movement-completed", "retrieve-next-movement", "start-peck",
         "movement-completed", "retrieve-next-movement", "start-punch",
         "movement-completed", "retrieve-next-movement", "start-peck-recoil",
+        "movement-completed", "retrieve-next-movement", "start-key-press",
         "movement-completed", "retrieve-next-movement", "retrieval-failed" };
 
     String[] failures = { "movement-failed" };
 
-    ExecutionTester tester = setup(model, productionSequence, false);
+    ExecutionTester tester = setup(model, productionSequence, true);
 
     tester.setFailedProductions(Arrays.asList(failures));
 

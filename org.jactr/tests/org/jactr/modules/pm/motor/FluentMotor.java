@@ -49,7 +49,8 @@ public class FluentMotor implements Supplier<IModel>
           .slot("state", definedChunks.get("starting")).encode();
 
       IChunkType sequence = FluentChunkType.from(model).named("sequence")
-          .slots("order", "command", "finger", "hand", "r", "theta").encode();
+          .slots("order", "command", "finger", "hand", "r", "theta", "key")
+          .encode();
 
       /*
        * sequence of chunks that defines the execution
@@ -75,6 +76,11 @@ public class FluentMotor implements Supplier<IModel>
               model.getDeclarativeModule().getChunkType("peck-recoil").get())
           .slot("finger", index).slot("hand", right).slot("r", 1)
           .slot("theta", 3.14).encode();
+
+      FluentChunk.from(sequence).named("key-typed").slot("order", 5)
+          .slot("command",
+              model.getDeclarativeModule().getChunkType("press-key").get())
+          .slot("key", "a").encode();
 
       /*
        * productions
@@ -128,8 +134,7 @@ public class FluentMotor implements Supplier<IModel>
           .condition(FluentCondition.query("motor").slot("state", free).build())
           .action(FluentAction.modify("goal")
               .slot("state", definedChunks.get("motor-completed")).build())
-          .action(FluentAction.modify("retrieval").build())
-          .encode();
+          .action(FluentAction.modify("retrieval").build()).encode();
 
       FluentProduction.from(model).named("movement-failed")
           .condition(FluentCondition.match("goal", goal)
@@ -201,6 +206,25 @@ public class FluentMotor implements Supplier<IModel>
               .slot("hand", "=hand").slot("finger", "=finger").slot("r", "=r")
               .slot("theta", "=theta").build())
           .encode();
+
+      // start key-press
+      FluentProduction.from(model).named("start-key-press")
+          .condition(FluentCondition.match("goal", goal)
+              .slot("state", definedChunks.get("retrieving")).build())
+          .condition(FluentCondition.match("retrieval", sequence)
+              .slot("command",
+                  model.getDeclarativeModule().getChunkType("press-key").get())
+              .slot("key", "=key").build())
+          .condition(FluentCondition.query("motor").slot("state", free).build())
+          .action(FluentAction.modify("goal")
+              .slot("state", definedChunks.get("motor-started")).build())
+          .action(FluentAction.modify("retrieval").build())
+          .action(FluentAction
+              .add("motor",
+                  model.getDeclarativeModule().getChunkType("press-key").get())
+              .slot("key", "=key").build())
+          .encode();
+
       // goal
       model.getActivationBuffer("goal")
           .addSourceChunk(FluentChunk.from(goal).build());

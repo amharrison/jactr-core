@@ -39,7 +39,8 @@ public abstract class AbstractManualTranslator extends AbstractTranslator
 
   private double                            _peckFittsCoeff        = Double.NaN;
   
-  private Collection<ISlot> _recycledSlotContainer = new ArrayList<ISlot>(4);
+  protected Collection<ISlot>             _recycledSlotContainer = new ArrayList<ISlot>(
+      4);
 
   public AbstractManualTranslator()
   {
