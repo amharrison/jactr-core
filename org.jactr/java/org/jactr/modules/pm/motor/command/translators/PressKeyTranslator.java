@@ -60,7 +60,7 @@ public class PressKeyTranslator extends AbstractManualTranslator
 
     char key = keySlot.get().getValue().toString().charAt(0);
 
-    int keyCode = _deviceMap.getKeyCode("press " + key);
+    int keyCode = _deviceMap.getKeyCode("" + Character.toUpperCase(key));
     return _deviceMap.getKeyLocation(keyCode);
   }
 
