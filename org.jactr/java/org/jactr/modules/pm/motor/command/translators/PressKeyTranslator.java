@@ -94,6 +94,7 @@ public class PressKeyTranslator extends AbstractManualTranslator
           return MotorUtilities.isMotor(eff);
         }).collect(Collectors.minBy(Comparators.byDoubleFunction((eff) -> {
           double[] muscleLocation = MotorUtilities.getPosition(eff);
+          if (muscleLocation == null) return Double.MAX_VALUE;
           return distanceSquared(muscleLocation, keyLocation);
         })));
 
@@ -116,7 +117,9 @@ public class PressKeyTranslator extends AbstractManualTranslator
       IMotorModule motor = (IMotorModule) model.getModule(IMotorModule.class);
 
       // the key to press should be specified in the request
-      final double[] keyLocation = getKeyLocation(request);
+      double[] key2DLocation = getKeyLocation(request);
+      double[] keyLocation = new double[] { key2DLocation[0], key2DLocation[1],
+          1 };
       double[] muscleLocation = MotorUtilities.getPosition(muscle);
 
       /*
