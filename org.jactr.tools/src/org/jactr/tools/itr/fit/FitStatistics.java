@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
- 
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.slf4j.LoggerFactory;
-import org.apache.commons.math.stat.regression.SimpleRegression;
 
 public class FitStatistics
 {

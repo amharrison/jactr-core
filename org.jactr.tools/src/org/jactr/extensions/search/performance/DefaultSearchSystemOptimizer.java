@@ -7,9 +7,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
- 
-import org.slf4j.LoggerFactory;
-import org.apache.commons.math.stat.descriptive.StatisticalSummary;
+import org.apache.commons.math3.stat.descriptive.StatisticalSummary;
 import org.jactr.core.extensions.IExtension;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.declarative.IDeclarativeModule;
@@ -22,6 +20,7 @@ import org.jactr.core.module.declarative.search.local.PartialParallelSearchDeleg
 import org.jactr.core.module.declarative.search.local.PartialSingleThreadedSearchDelegate;
 import org.jactr.core.utils.parameter.BooleanParameterProcessor;
 import org.jactr.core.utils.parameter.ParameterHelper;
+import org.slf4j.LoggerFactory;
 
 /**
  * turns on profiling of local search. Can also enable parallel searches via

@@ -6,16 +6,15 @@ package org.jactr.extensions.search.performance;
 import java.util.Comparator;
 import java.util.SortedSet;
 
- 
-import org.slf4j.LoggerFactory;
-import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
-import org.apache.commons.math.stat.descriptive.StatisticalSummary;
-import org.apache.commons.math.stat.descriptive.SummaryStatistics;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.apache.commons.math3.stat.descriptive.StatisticalSummary;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.module.declarative.search.filter.IChunkFilter;
 import org.jactr.core.module.declarative.search.local.DefaultSearchSystem;
 import org.jactr.core.module.declarative.search.local.ISearchDelegate;
 import org.jactr.core.production.request.ChunkTypeRequest;
+import org.slf4j.LoggerFactory;
 
 public class ProfiledSearchDelegate implements ISearchDelegate
 {
