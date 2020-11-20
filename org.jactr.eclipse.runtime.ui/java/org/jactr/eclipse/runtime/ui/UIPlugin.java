@@ -50,7 +50,8 @@ public class UIPlugin extends AbstractUIPlugin
   {
     super.start(context);
 
-    _imageRegistry = new ImageRegistry();
+    _imageRegistry = new ImageRegistry(plugin.getWorkbench().getDisplay());
+
     try
     {
       resourceBundle = ResourceBundle
@@ -95,7 +96,8 @@ public class UIPlugin extends AbstractUIPlugin
     /*
      * prefetch this one
      */
-    MarkerUI.getInstance();
+
+    new MarkerUI(plugin.getWorkbench().getDisplay());
   }
 
   /**

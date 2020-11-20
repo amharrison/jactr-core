@@ -86,7 +86,7 @@ public class ACTRLaunchConstants
   static public final String  ATTR_DEBUG_CORE_LOG_CONF        = ACTR
                                                                   + "debugCoreLogConfiguration";
 
-  static public final String  DEFAULT_CORE_LOGGER             = "org.slf4j.impl.log4j12";
+  static public final String  DEFAULT_CORE_LOGGER             = "org.jactr.slf4j.impl.log4j12";
 
   static public final String  DEFAULT_CORE_LOG_CONF           = "/jactr-log.xml";
 

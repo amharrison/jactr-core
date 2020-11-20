@@ -25,6 +25,7 @@ import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
 import org.jactr.eclipse.runtime.debug.ACTRDebugTarget;
+import org.jactr.io2.jactr.source.ISourceLocator.SourceLocation;
 import org.jactr.tools.async.shadow.ShadowController;
 
 public class ACTRStackFrame extends ACTRDebugElement implements IStackFrame
@@ -35,7 +36,7 @@ public class ACTRStackFrame extends ACTRDebugElement implements IStackFrame
    */
 
   static private final transient Log LOGGER = LogFactory
-                                                .getLog(ACTRStackFrame.class);
+      .getLog(ACTRStackFrame.class);
 
   double                             _time;
 
@@ -47,12 +48,12 @@ public class ACTRStackFrame extends ACTRDebugElement implements IStackFrame
 
   String                             _displayText;
 
-  public ACTRStackFrame(ACTRThread thread, double time, String productionName,
-      int lineNumber)
+  private SourceLocation             _sourceLocation;
+
+  public ACTRStackFrame(ACTRThread thread, double time, String productionName)
   {
     _time = time;
     _productionName = productionName;
-    _line = lineNumber;
     _thread = thread;
 
     StringBuilder sb = new StringBuilder();
@@ -61,6 +62,8 @@ public class ACTRStackFrame extends ACTRDebugElement implements IStackFrame
     sb.append(_productionName);
     _displayText = sb.toString();
     setDebugTarget((ACTRDebugTarget) thread.getDebugTarget());
+
+    _sourceLocation = getACTRDebugTarget().getSourceLocation(productionName);
   }
 
   public String getProductionName()
@@ -70,7 +73,13 @@ public class ACTRStackFrame extends ACTRDebugElement implements IStackFrame
 
   public String getSourceName()
   {
-    return _thread.getSourceName();
+    if (_sourceLocation != null)
+    {
+      String location = _sourceLocation._uri.lastSegment();
+      return location;
+    }
+    else
+      return null;
   }
 
   public int getCharEnd() throws DebugException
@@ -85,7 +94,10 @@ public class ACTRStackFrame extends ACTRDebugElement implements IStackFrame
 
   public int getLineNumber() throws DebugException
   {
-    return _line;
+    if (_sourceLocation != null)
+      return (int) _sourceLocation._line;
+    else
+      return -1;
   }
 
   public String getName() throws DebugException
@@ -112,13 +124,11 @@ public class ACTRStackFrame extends ACTRDebugElement implements IStackFrame
     CommonTree breakPoint = sc.getBreakpointData(_thread.getName());
 
     ArrayList<IVariable> variables = new ArrayList<IVariable>();
-    if (modelDescriptor != null)
-      variables.add(new ASTVariable(modelDescriptor, "current model state",
-          _target));
+    if (modelDescriptor != null) variables
+        .add(new ASTVariable(modelDescriptor, "current model state", _target));
 
-    if (breakPoint != null)
-      variables
-          .add(new ASTVariable(breakPoint, "current break point", _target));
+    if (breakPoint != null) variables
+        .add(new ASTVariable(breakPoint, "current break point", _target));
 
     return variables.toArray(new IVariable[0]);
   }

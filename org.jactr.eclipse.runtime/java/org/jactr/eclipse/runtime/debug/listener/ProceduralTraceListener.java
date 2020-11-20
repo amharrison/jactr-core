@@ -54,7 +54,7 @@ public class ProceduralTraceListener implements IRuntimeTraceListener
 //          modelName, productionName, JACTRBuilder.PRODUCTION);
 
       ACTRStackFrame trace = new ACTRStackFrame(thread, tpme
-          .getSimulationTime(), productionName, -1);
+          .getSimulationTime(), productionName);
 
       thread.addStackFrame(trace, false);
     }

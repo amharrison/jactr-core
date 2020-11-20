@@ -47,6 +47,7 @@ public class IterativeACTRLaunchConfiguration extends
     /*
      * we must start before we do much of anything else
      */
+    session.initialize();
     session.start();
 
     InetSocketAddress addr = session.getConnectionAddress();

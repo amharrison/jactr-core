@@ -137,13 +137,14 @@ public class ACTRThread extends ACTRDebugElement implements IThread
       _stackFrames.add(frame);
     }
 
-    fireChangeEvent();
 
     if (isBreakpoint)
     {
       _breakpointStackFrame = frame;
       setSuspended(true, frame.getProductionName());
     }
+    else
+      fireChangeEvent();
   }
 
   public boolean hasStackFrames() throws DebugException
@@ -246,7 +247,7 @@ public class ACTRThread extends ACTRDebugElement implements IThread
 
   public boolean canStepOver()
   {
-    return false;
+    return isSuspended();
   }
 
   public boolean canStepReturn()
@@ -267,7 +268,8 @@ public class ACTRThread extends ACTRDebugElement implements IThread
 
   public void stepOver() throws DebugException
   {
-
+    resume();
+    suspend();
   }
 
   public void stepReturn() throws DebugException

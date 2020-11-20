@@ -84,13 +84,15 @@ public class ACTRProjectUtils
 
     ArrayList<IFile> rtn = new ArrayList<IFile>();
     findModelsOnPath(project.findMember("models"), rtn, validExtensions);
-//    findModelsOnPath(project.findMember("src"), rtn, validExtensions);
+    findModelsOnPath(project.findMember("src"), rtn, validExtensions);
+    findModelsOnPath(project.findMember("src-gen"), rtn, validExtensions);
     return rtn;
   }
 
   static protected void findModelsOnPath(IResource root,
       Collection<IFile> modelFiles, Collection<String> validExtensions)
   {
+    if (root == null) return;
     if (!(root instanceof IFolder)) return;
     IFolder folder = (IFolder) root;
     if (!folder.exists()) return;

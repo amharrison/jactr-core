@@ -40,7 +40,9 @@ import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.PluginRegistry;
 import org.eclipse.pde.core.plugin.PluginRegistry.PluginFilter;
 import org.eclipse.pde.core.plugin.TargetPlatform;
+import org.eclipse.pde.internal.core.DependencyManager;
 import org.eclipse.pde.internal.launching.IPDEConstants;
+import org.eclipse.pde.internal.launching.launcher.RequirementHelper;
 import org.jactr.eclipse.core.CorePlugin;
 import org.jactr.eclipse.core.bundles.BundleUtilities;
 import org.jactr.eclipse.core.bundles.descriptors.InstrumentDescriptor;
@@ -335,13 +337,6 @@ public class ACTRLaunchConfigurationUtils
     workingCopy.setAttribute(
         org.eclipse.pde.launching.IPDELauncherConstants.AUTOMATIC_ADD, false);
 
-    /*
-     * 
-     */
-    workingCopy.setAttribute(
-        org.eclipse.pde.launching.IPDELauncherConstants.DESELECTED_WORKSPACE_PLUGINS,
-        (String) null);
-
     if (LOGGER.isDebugEnabled())
       LOGGER.debug("Applied permanent attributes " + workingCopy);
   }
@@ -369,8 +364,6 @@ public class ACTRLaunchConfigurationUtils
         org.eclipse.pde.launching.IPDELauncherConstants.CONFIG_LOCATION,
         ACTRLaunchConstants.NORMAL_CONFIGURATION_LOCATION + project.getName()
             + "/" + configName);
-
-
 
     RuntimePlugin.info("Command line args " + workingCopy
         .getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, ""));
@@ -464,32 +457,19 @@ public class ACTRLaunchConfigurationUtils
      * well, things change.
      */
 
+    workingCopy.setAttribute(
+        org.eclipse.pde.launching.IPDELauncherConstants.INCLUDE_OPTIONAL, true);
+
     Set<String> workspace = new TreeSet<String>();
     Set<String> target = new TreeSet<String>();
     computeBundleDependencies(workingCopy, workspace, target);
 
-    StringBuilder workspaceBundles = new StringBuilder();
-    StringBuilder targetBundles = new StringBuilder();
-    for (String bundle : workspace)
-      workspaceBundles.append(bundle).append(",");
-    for (String bundle : target)
-      targetBundles.append(bundle).append(",");
-
-    if (workspaceBundles.length() > 0) workspaceBundles
-        .delete(workspaceBundles.length() - 1, workspaceBundles.length());
-
-    if (targetBundles.length() > 0)
-      targetBundles.delete(targetBundles.length() - 1, targetBundles.length());
-
     workingCopy.setAttribute(
-        org.eclipse.pde.launching.IPDELauncherConstants.INCLUDE_OPTIONAL, true);
-
+        org.eclipse.pde.launching.IPDELauncherConstants.SELECTED_WORKSPACE_BUNDLES,
+        workspace);
     workingCopy.setAttribute(
-        org.eclipse.pde.launching.IPDELauncherConstants.SELECTED_WORKSPACE_PLUGINS,
-        workspaceBundles.toString());
-    workingCopy.setAttribute(
-        org.eclipse.pde.launching.IPDELauncherConstants.SELECTED_TARGET_PLUGINS,
-        targetBundles.toString());
+        org.eclipse.pde.launching.IPDELauncherConstants.SELECTED_TARGET_BUNDLES,
+        target);
 
     if (LOGGER.isDebugEnabled())
       LOGGER.debug("Applied temporary attributes " + workingCopy);
@@ -691,14 +671,37 @@ public class ACTRLaunchConfigurationUtils
 
     Map<String, VersionRange> bundleDependencies = new TreeMap<>();
 
-    if (configuration.getAttribute(ACTRLaunchConstants.ATTR_ITERATIONS, 0) == 0) BundleUtilities.getDependencies(
-        ACTRLaunchConstants.DEFAULT_APPLICATION_BUNDLE, bundleDependencies, true);
+    /*
+     * eclipse's own dependency calculator
+     */
+    String[] requirements = RequirementHelper
+        .getApplicationRequirements(configuration);
+
+    for (String requiredId : requirements)
+    {
+      BundleUtilities.getDependencies(requiredId, bundleDependencies, true);
+
+      IPluginModelBase[] modelBases = PluginRegistry.findModels(requiredId,
+          null, null);
+      Set<String> additionalIds = DependencyManager.getDependencies(modelBases,
+          true, null);
+      for (String dep : additionalIds)
+        BundleUtilities.getDependencies(dep, bundleDependencies, true);
+    }
+
+    if (configuration.getAttribute(ACTRLaunchConstants.ATTR_ITERATIONS, 0) == 0)
+      BundleUtilities.getDependencies(
+          ACTRLaunchConstants.DEFAULT_APPLICATION_BUNDLE, bundleDependencies,
+          true);
     else
       BundleUtilities.getDependencies(
-          ACTRLaunchConstants.ITERATIVE_APPLICATION_BUNDLE, bundleDependencies, true);
+          ACTRLaunchConstants.ITERATIVE_APPLICATION_BUNDLE, bundleDependencies,
+          true);
 
-    if (sourceProject != null && sourceProject.exists()) //      workspaceBundles.add(projectName + "@default:default");
-    BundleUtilities.getDependencies(sourceProject, bundleDependencies, true);
+    if (sourceProject != null && sourceProject.exists()) // workspaceBundles.add(projectName
+                                                         // +
+                                                         // "@default:default");
+      BundleUtilities.getDependencies(sourceProject, bundleDependencies, true);
 
     /*
      * now for the sensors
@@ -734,6 +737,7 @@ public class ACTRLaunchConfigurationUtils
       // if (requiredProject.isAccessible())
       if (pluginId != null && bundleDependencies.remove(pluginId) != null)
         workspaceBundles.add(pluginId + "@default:default");
+
     }
 
     /*
@@ -742,6 +746,24 @@ public class ACTRLaunchConfigurationUtils
      */
     for (Map.Entry<String, VersionRange> entry : bundleDependencies.entrySet())
     {
+      String startLevel = "default";
+      String autoStart = "default";
+
+      if (entry.getKey().equals("org.eclipse.osgi"))
+      {
+        startLevel = "-1";
+        autoStart = "true";
+      }
+      else if (entry.getKey().equals("org.eclipse.core.runtime"))
+        autoStart = "true";
+      else if (entry.getKey().equals("org.eclipse.equinox.common"))
+      {
+        startLevel = "2";
+        autoStart = "true";
+      }
+
+      String startUp = "@" + startLevel + ":" + autoStart;
+
       org.eclipse.osgi.service.resolver.VersionRange newRange = new org.eclipse.osgi.service.resolver.VersionRange(
           entry.getValue().toString());
 
@@ -758,12 +780,12 @@ public class ACTRLaunchConfigurationUtils
       {
         RuntimePlugin.warn("no plugin " + entry.getKey() + " for " + newRange
             + " was found, blundering ahead");
-        targetBundles.add(entry.getKey() + "@default:default");
+        targetBundles.add(entry.getKey() + startUp);
       }
       else if (plugins.length == 1)
         targetBundles.add(entry.getKey() + "*"
             + plugins[0].getBundleDescription().getVersion().toString()
-            + "@default:default"); // no need for
+            + startUp); // no need for
       // version
       else
       {
@@ -782,8 +804,7 @@ public class ACTRLaunchConfigurationUtils
         RuntimePlugin.warn("Multiple versions of "
             + latest.getBundleDescription().getSymbolicName()
             + " were found. Using " + current.toString());
-        targetBundles.add(
-            entry.getKey() + "*" + current.toString() + "@default:default");
+        targetBundles.add(entry.getKey() + "*" + current.toString() + startUp);
       }
 
     }
@@ -875,9 +896,7 @@ public class ACTRLaunchConfigurationUtils
         logging = false;
     }
 
-    if (!logging)
-    {
-
-    }
+    if (!logging) BundleUtilities.getDependencies("org.slf4j.binding.nop",
+        bundleDependencies, true);
   }
 }

@@ -15,7 +15,6 @@ package org.jactr.eclipse.runtime.debug.handlers;
 
 import org.commonreality.net.session.ISessionInfo;
 import org.jactr.eclipse.runtime.debug.ACTRDebugTarget;
-import org.jactr.eclipse.runtime.debug.elements.ACTRStackFrame;
 import org.jactr.eclipse.runtime.debug.elements.ACTRThread;
 import org.jactr.tools.async.message.event.state.ModelStateEvent;
 import org.jactr.tools.async.shadow.handlers.ModelStateHandler;
@@ -41,15 +40,9 @@ public class ModelStateMessageHandler extends ModelStateHandler
     {
       case STARTED:
         thread = _target.addThread(message.getModelName());
-        ACTRStackFrame startStack = new ACTRStackFrame(thread, message
-            .getSimulationTime(), "<started>", 0);
-        thread.addStackFrame(startStack, false);
         break;
       case STOPPED:
         thread = _target.getThread(message.getModelName());
-        ACTRStackFrame endStack = new ACTRStackFrame(thread, message
-            .getSimulationTime(), "<terminated>", 0);
-        thread.addStackFrame(endStack, false);
         thread.setTerminated(true);
         break;
       case SUSPENDED:

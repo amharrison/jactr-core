@@ -17,29 +17,25 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.commonreality.net.handler.IMessageHandler;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.jactr.core.runtime.controller.debug.BreakpointType;
-import org.jactr.eclipse.core.comp.CompilationUnitManager;
-import org.jactr.eclipse.core.comp.ICompilationUnit;
 import org.jactr.eclipse.runtime.RuntimePlugin;
 import org.jactr.eclipse.runtime.debug.elements.ACTRDebugElement;
 import org.jactr.eclipse.runtime.debug.elements.ACTRThread;
@@ -49,13 +45,16 @@ import org.jactr.eclipse.runtime.debug.handlers.ModelStateMessageHandler;
 import org.jactr.eclipse.runtime.debug.handlers.RuntimeStateMessageHandler;
 import org.jactr.eclipse.runtime.debug.listener.ProceduralTraceListener;
 import org.jactr.eclipse.runtime.debug.marker.ACTRBreakpoint;
-import org.jactr.eclipse.runtime.debug.marker.IDisableProductionMarker;
 import org.jactr.eclipse.runtime.launching.ACTRLaunchConfigurationUtils;
 import org.jactr.eclipse.runtime.launching.norm.ACTRSession;
 import org.jactr.eclipse.runtime.session.ISession;
 import org.jactr.eclipse.runtime.session.ISessionListener;
 import org.jactr.eclipse.runtime.session.data.ISessionData;
 import org.jactr.eclipse.runtime.session.stream.ISessionDataStream;
+import org.jactr.io2.jactr.modelFragment.ModelFragment;
+import org.jactr.io2.jactr.source.ISourceLocator;
+import org.jactr.io2.jactr.source.ISourceLocator.SourceLocation;
+import org.jactr.io2.jactr.ui.util.JactrUIUtilities;
 import org.jactr.tools.async.message.event.data.BreakpointReachedEvent;
 import org.jactr.tools.async.message.event.login.LoginAcknowledgedMessage;
 import org.jactr.tools.async.message.event.state.ModelStateEvent;
@@ -69,18 +68,22 @@ public class ACTRDebugTarget extends ACTRDebugElement implements IDebugTarget
    * Logger definition
    */
 
-  static private final transient Log LOGGER     = LogFactory
-                                                    .getLog(ACTRDebugTarget.class);
+  static private final transient Log                 LOGGER           = LogFactory
+      .getLog(ACTRDebugTarget.class);
 
-  ILaunch                            _launch;
+  ILaunch                                            _launch;
 
-  ACTRSession                        _client;
+  ACTRSession                                        _client;
 
-  Map<String, ACTRThread>            _threads;
+  Map<String, ACTRThread>                            _threads;
 
-  volatile boolean                   _inStartUp = true;
+  volatile boolean                                   _inStartUp       = true;
 
-  ProceduralTraceListener            _procTraceListener;
+  ProceduralTraceListener                            _procTraceListener;
+
+  private Map<String, ISourceLocator.SourceLocation> _sourceLocations = new TreeMap<>();
+
+  private ISourceLocator.SourceLocation              _defaultLocation;
 
   public ACTRDebugTarget(ACTRSession client)
   {
@@ -89,6 +92,7 @@ public class ACTRDebugTarget extends ACTRDebugElement implements IDebugTarget
 
     _threads = new HashMap<String, ACTRThread>();
     _procTraceListener = new ProceduralTraceListener(this);
+
 
     /*
      * we need to install various listeners..
@@ -174,24 +178,9 @@ public class ACTRDebugTarget extends ACTRDebugElement implements IDebugTarget
 
   public boolean supportsBreakpoint(IBreakpoint breakpoint)
   {
-    if (breakpoint.getModelIdentifier().equals(getModelIdentifier())) try
-    {
-      // snag all the model files running in this launch
-      ILaunchConfiguration launchConfig = getLaunch().getLaunchConfiguration();
+    if (breakpoint.getModelIdentifier().equals(getModelIdentifier()))
+      return true;
 
-      Collection<IResource> modelFiles = ACTRLaunchConfigurationUtils
-          .getModelFiles(launchConfig);
-      // get the resource associated with this break point
-      IMarker marker = breakpoint.getMarker();
-      if (marker != null)
-        for (IResource modelFile : modelFiles)
-          if (modelFile.equals(marker.getResource())
-              && marker.getResource().exists()) return true;
-    }
-    catch (CoreException ce)
-    {
-
-    }
     return false;
   }
 
@@ -286,30 +275,29 @@ public class ACTRDebugTarget extends ACTRDebugElement implements IDebugTarget
 
   public void breakpointAdded(IBreakpoint breakpoint)
   {
-    if (supportsBreakpoint(breakpoint))
-      try
+    if (supportsBreakpoint(breakpoint)) try
+    {
+      if (breakpoint.isEnabled())
       {
-        if (breakpoint.isEnabled())
-        {
-          ACTRBreakpoint abp = (ACTRBreakpoint) breakpoint;
-          String name = abp.getBreakpointName();
-          String type = abp.getBreakpointType();
-          if (name.length() == 0 || type.length() == 0) return;
+        ACTRBreakpoint abp = (ACTRBreakpoint) breakpoint;
+        String name = abp.getBreakpointName();
+        String type = abp.getBreakpointType();
+        if (name.length() == 0 || type.length() == 0) return;
 
-          ShadowController service = _client.getShadowController();
-          /*
-           * we have to add a breakpoint for all the models.. this is not
-           * completely correct, but since models can be renamed, we can't be
-           * sure we have the correct name..
-           */
-          if (ACTRBreakpoint.PRODUCTION.equals(type) && service.isConnected())
-            service.addBreakpoint(BreakpointType.PRODUCTION, "all", name);
-        }
+        ShadowController service = _client.getShadowController();
+        /*
+         * we have to add a breakpoint for all the models.. this is not
+         * completely correct, but since models can be renamed, we can't be sure
+         * we have the correct name..
+         */
+        if (ACTRBreakpoint.PRODUCTION.equals(type) && service.isConnected())
+          service.addBreakpoint(BreakpointType.PRODUCTION, "all", name);
       }
-      catch (CoreException ce)
-      {
+    }
+    catch (CoreException ce)
+    {
 
-      }
+    }
   }
 
   public void breakpointChanged(IBreakpoint breakpoint, IMarkerDelta delta)
@@ -351,6 +339,11 @@ public class ACTRDebugTarget extends ACTRDebugElement implements IDebugTarget
       }
     }
 
+  }
+
+  public SourceLocation getSourceLocation(String productionName)
+  {
+    return _sourceLocations.get(productionName);
   }
 
   public boolean canDisconnect()
@@ -396,7 +389,7 @@ public class ACTRDebugTarget extends ACTRDebugElement implements IDebugTarget
           String name = breakpoint.getBreakpointName();
           IResource resource = breakpoint.getMarker().getResource();
           for (IResource modelFile : modelFiles)
-            if (resource.equals(modelFile))
+            if (resource.getProject().equals(modelFile.getProject()))
             {
               if (LOGGER.isDebugEnabled())
                 LOGGER.debug("installing " + type + " breakpoint " + name);
@@ -407,27 +400,25 @@ public class ACTRDebugTarget extends ACTRDebugElement implements IDebugTarget
             }
         }
 
-      IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+      ResourcesPlugin.getWorkspace().getRoot();
       /*
        * now let's get all the disable annotations
        */
+
       for (IResource modelFile : modelFiles)
-      {
-        ICompilationUnit compilationUnit = CompilationUnitManager
-            .acquire(modelFile);
-        if (compilationUnit == null) continue;
-
-        Collection<String> aliases = ACTRLaunchConfigurationUtils
-            .getModelAliases(modelFile, _launch.getLaunchConfiguration());
-        markDisabledProductions(modelFile, aliases);
-
-        /*
-         * now for the imports
-         */
-        for (URI importSource : compilationUnit.getImportSources())
-          for (IFile file : root.findFilesForLocationURI(importSource))
-            markDisabledProductions(file, aliases);
-      }
+        try
+        {
+          IPath source = modelFile.getFullPath();
+          URI uri = new URI("platform:/resource" + source.toPortableString());
+          org.jactr.io2.compilation.ICompilationUnit compUnit = org.jactr.io2.compilation.CompilationUnitManager
+              .get().get(uri);
+          ModelFragment mf = (ModelFragment) compUnit.getAST();
+          _sourceLocations.putAll(JactrUIUtilities.locateSourceElements(mf));
+        }
+        catch (Exception e)
+        {
+          // ignore
+        }
     }
     catch (CoreException ce)
     {
@@ -435,22 +426,6 @@ public class ACTRDebugTarget extends ACTRDebugElement implements IDebugTarget
     }
 
     _inStartUp = false;
-  }
-
-  protected void markDisabledProductions(IResource modelFile,
-      Collection<String> aliases) throws CoreException
-  {
-    IMarker[] disabled = modelFile.findMarkers(
-        IDisableProductionMarker.MARKER_TYPE, true, IResource.DEPTH_INFINITE);
-    for (String alias : aliases)
-      for (IMarker marker : disabled)
-      {
-        String productionName = marker.getAttribute(
-            IDisableProductionMarker.PRODUCTION_NAME_ATTR, "");
-        if (productionName.length() > 0)
-          _client.getShadowController().setProductionEnabled(alias,
-              productionName, false);
-      }
   }
 
   protected void installListeners()
@@ -465,8 +440,8 @@ public class ACTRDebugTarget extends ACTRDebugElement implements IDebugTarget
     RuntimePlugin.getDefault().getRuntimeTraceManager()
         .addListener(_procTraceListener, null);
 
-    handlers.put(BreakpointReachedEvent.class, new BreakpointMessageHandler(
-        this));
+    handlers.put(BreakpointReachedEvent.class,
+        new BreakpointMessageHandler(this));
 
     handlers.put(ModelStateEvent.class, new ModelStateMessageHandler(this));
 

@@ -29,7 +29,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.pde.ui.launcher.EclipseApplicationLaunchConfiguration;
+import org.eclipse.pde.launching.EclipseApplicationLaunchConfiguration;
 import org.eclipse.swt.widgets.Display;
 import org.jactr.eclipse.core.CorePlugin;
 import org.jactr.eclipse.runtime.RuntimePlugin;
@@ -251,8 +251,10 @@ public abstract class AbstractACTRLaunchConfiguration extends
     }
     catch (CoreException ce)
     {
+      CorePlugin.error("Failed to launch ", ce);
       shouldCleanUp = true;
       throw ce;
+
     }
     finally
     {

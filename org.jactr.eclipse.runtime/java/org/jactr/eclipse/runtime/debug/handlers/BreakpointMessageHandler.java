@@ -56,14 +56,12 @@ public class BreakpointMessageHandler
     String breakpointName = ASTSupport.getName(message.getAST());
     IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager()
         .getBreakpoints(ACTRSession.ACTR_DEBUG_MODEL);
-    int lineNumber = 0;
     for (IBreakpoint breakpoint : breakpoints)
       if (resource.equals(breakpoint.getMarker().getResource())) try
       {
         ACTRBreakpoint bp = (ACTRBreakpoint) breakpoint;
         if (bp.getBreakpointName().equals(breakpointName)
-            && bp.getBreakpointType().equals(message.getBreakpointType()))
-          lineNumber = bp.getLineNumber();
+            && bp.getBreakpointType().equals(message.getBreakpointType())) bp.getLineNumber();
       }
       catch (CoreException e)
       {
@@ -73,7 +71,7 @@ public class BreakpointMessageHandler
 //        modelName, breakpointName, JACTRBuilder.PRODUCTION);
 
     ACTRStackFrame frame = new ACTRStackFrame(thread,
-        message.getSimulationTime(), breakpointName, lineNumber);
+        message.getSimulationTime(), breakpointName);
 
     /*
      * this will fire the event notifying the debugger
