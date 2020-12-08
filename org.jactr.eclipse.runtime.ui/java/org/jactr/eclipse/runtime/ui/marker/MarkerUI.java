@@ -16,6 +16,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 import org.jactr.eclipse.runtime.ui.UIPlugin;
 
 public class MarkerUI
@@ -25,24 +26,27 @@ public class MarkerUI
    */
   static private final transient Log LOGGER = LogFactory.getLog(MarkerUI.class);
 
-  private final ColorRegistry        _colorRegistry;
+  private ColorRegistry              _colorRegistry;
 
   static private final String        COLOR_SUFFIX = ".markerColor";
 
   static public final String         ALL_MARKERS  = "marker.allMakers";
 
-  static private final MarkerUI      _instance    = new MarkerUI();
+  static private MarkerUI            _instance    = null;
 
   static public MarkerUI getInstance()
   {
     return _instance;
   }
 
-  private MarkerUI()
+  public MarkerUI(Display display)
   {
-    _colorRegistry = new ColorRegistry();
-    loadColorRegistry();
-    installListener();
+    display.asyncExec(() -> {
+      _colorRegistry = new ColorRegistry(display);
+      loadColorRegistry();
+      installListener();
+      _instance = this;
+    });
   }
 
   private void installListener()

@@ -16,7 +16,7 @@ import org.jactr.eclipse.runtime.production2.ConflictResolutionRuntimeTraceListe
 import org.jactr.eclipse.runtime.session.manager.ISessionManager;
 import org.jactr.eclipse.runtime.session.manager.internal.SessionManager;
 import org.jactr.eclipse.runtime.trace.RuntimeTraceManager;
-import org.jactr.eclipse.runtime.visual.VisualTraceCenter;
+import org.jactr.eclipse.runtime.visual.ModelVisiconRuntimeListener;
 import org.jactr.eclipse.ui.concurrent.SWTExecutor;
 import org.osgi.framework.BundleContext;
 
@@ -79,27 +79,15 @@ public class RuntimePlugin extends Plugin
     /*
      * always listen for log
      */
-    // _runtimeTraceManager.addListener(ModelLoggingCenter.get()
-    // .getRuntimeListener());
-    // _runtimeTraceManager.addListener(new BufferTraceListener());
-    _runtimeTraceManager.addListener(VisualTraceCenter.get()
-        .getRuntimeListener());
-    // _runtimeTraceManager
-    // .addListener(ProbeDataManager.get()
-    // .getRuntimeListener());
-    // _runtimeTraceManager.addListener(new ProductionTraceListener());
-
-    _runtimeTraceManager
-        .addListener(new org.jactr.eclipse.runtime.session.data.RuntimeTraceListener());
-    _runtimeTraceManager
-        .addListener(new org.jactr.eclipse.runtime.log2.LogRuntimeTraceListener());
-    _runtimeTraceManager
-        .addListener(new org.jactr.eclipse.runtime.buffer2.BufferRuntimeTraceListener());
+    _runtimeTraceManager.addListener(
+        new org.jactr.eclipse.runtime.session.data.RuntimeTraceListener());
+    _runtimeTraceManager.addListener(
+        new org.jactr.eclipse.runtime.log2.LogRuntimeTraceListener());
+    _runtimeTraceManager.addListener(
+        new org.jactr.eclipse.runtime.buffer2.BufferRuntimeTraceListener());
     _runtimeTraceManager
         .addListener(new ConflictResolutionRuntimeTraceListener());
-    // _runtimeTraceManager
-    // .addListener(new
-    // org.jactr.eclipse.runtime.probe2.ModelProbeRuntimeListener());
+    _runtimeTraceManager.addListener(new ModelVisiconRuntimeListener());
 
     // must be run on SWT thread for the probe data storage
     _runtimeTraceManager.addListener(
@@ -107,7 +95,6 @@ public class RuntimePlugin extends Plugin
         new SWTExecutor());
 
     _runtimeTraceManager.addListener(new MarkerRuntimeTraceListener());
-
 
   }
 

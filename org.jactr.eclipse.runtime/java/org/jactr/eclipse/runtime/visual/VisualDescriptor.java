@@ -31,7 +31,7 @@ public class VisualDescriptor
   // what object was encoded
   private IIdentifier                           _encoded;
 
-  private String                                _commonName;
+  // private String _commonName;
   private String                                _modelName;
 
   private Collection<IVisualDescriptorListener> _listeners;
@@ -42,10 +42,10 @@ public class VisualDescriptor
 
   final private ISession                        _session;
 
-  public VisualDescriptor(String commonName, String modelName,
+  public VisualDescriptor(String modelName,
  ISession session)
   {
-    _commonName = commonName;
+    // _commonName = commonName;
     _modelName = modelName;
     _objects = new HashMap<IIdentifier, Map<String, Object>>();
     _listeners = new ArrayList<IVisualDescriptorListener>();

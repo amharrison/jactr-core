@@ -1,7 +1,5 @@
 package org.jactr.eclipse.runtime.ui.visicon;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.commonreality.identifier.IIdentifier;
@@ -11,12 +9,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
-import org.jactr.core.utils.collections.FastListFactory;
+import org.jactr.eclipse.runtime.session.data.ISessionData;
 import org.jactr.eclipse.runtime.ui.misc.AbstractRuntimeModelViewPart;
+import org.jactr.eclipse.runtime.visual.IModelVisiconSessionDataStream;
 import org.jactr.eclipse.runtime.visual.IVisualDescriptorListener;
-import org.jactr.eclipse.runtime.visual.IVisualTraceCenterListener;
 import org.jactr.eclipse.runtime.visual.VisualDescriptor;
-import org.jactr.eclipse.runtime.visual.VisualTraceCenter;
 
 public class VisiconView extends AbstractRuntimeModelViewPart
 {
@@ -29,8 +26,6 @@ public class VisiconView extends AbstractRuntimeModelViewPart
   static private final transient Log LOGGER = LogFactory
                                                 .getLog(VisiconView.class);
 
-  // to be notified of new models
-  private IVisualTraceCenterListener _traceCenterListener;
 
   // to be notified of data changes
   private IVisualDescriptorListener  _descriptorListener;
@@ -41,32 +36,6 @@ public class VisiconView extends AbstractRuntimeModelViewPart
   public void init(IViewSite site) throws PartInitException
   {
     super.init(site);
-
-    _traceCenterListener = new IVisualTraceCenterListener() {
-
-      public void modelAdded(final String commonName,
-          final VisualDescriptor desc)
-      {
-        Display.getDefault().asyncExec(new Runnable() {
-
-          public void run()
-          {
-            addModelData(commonName, desc);
-          }
-        });
-      }
-
-      public void modelRemoved(String modelName, final VisualDescriptor desc)
-      {
-        Display.getDefault().asyncExec(new Runnable() {
-
-          public void run()
-          {
-            removeModelData(desc);
-          }
-        });
-      }
-    };
 
     _descriptorListener = new IVisualDescriptorListener() {
 
@@ -145,22 +114,6 @@ public class VisiconView extends AbstractRuntimeModelViewPart
   public void createPartControl(Composite parent)
   {
     super.createPartControl(parent);
-
-    VisualTraceCenter.get().add(_traceCenterListener);
-
-    /*
-     * now we need to add all the existing data. we cant do this in init because
-     * the control that contains the components isn't created until
-     * createPartControl
-     */
-    List<VisualDescriptor> container = FastListFactory.newInstance();
-
-    for (VisualDescriptor desc : VisualTraceCenter.get()
-        .getAllRuntimeTraceData(container))
-      addModelData(desc.getModelName(), desc);
-
-    FastListFactory.recycle(container);
-    
   }
   
   @Override
@@ -179,35 +132,80 @@ protected void configureModelControl() {
   @Override
   public void dispose()
   {
-    VisualTraceCenter.get().remove(_traceCenterListener);
     super.dispose();
+  }
+
+  @Override
+  protected void newSessionData(ISessionData sessionData)
+  {
+    deferAdd(sessionData.getModelName(), sessionData, 250);
+  }
+
+  private float getMagnification()
+  {
+    if (zoomSlider != null)
+      return zoomSlider.getMagnification();
+    else
+      return VisiconComponent.DEFAULT_MAGNIFICATION;
   }
 
   @Override
   protected Composite createModelComposite(String modelName, Object modelData,
       Composite parent)
   {
-    if (!(modelData instanceof VisualDescriptor)) return null;
 
-    VisualDescriptor desc = (VisualDescriptor) modelData;
-    VisiconComponent comp = new VisiconComponent(parent, SWT.NONE, desc, getMagnification());
-    desc.add(_descriptorListener);
+    ISessionData sessionData = (ISessionData) modelData;
+    IModelVisiconSessionDataStream mvsds = (IModelVisiconSessionDataStream) sessionData
+        .getDataStream("visicon");
+    VisualDescriptor descriptor = null;
+    if (mvsds != null) descriptor = mvsds.getRoot();
+
+    if (mvsds == null || descriptor == null)
+    {
+      if (sessionData.isOpen())
+      {
+        if (!wasDeferred(modelData))
+        {
+          if (LOGGER.isDebugEnabled())
+            LOGGER.debug(String.format("Deferring add of %s", modelName));
+          deferAdd(modelName, modelData, 500);
+        }
+        else
+        {
+          if (LOGGER.isDebugEnabled()) LOGGER.debug(String.format(
+              "%s Was previous deferred, assuming no data is coming.",
+              modelName));
+          removeDeferred(modelData);
+        }
+
+      }
+      else
+      {
+        if (LOGGER.isDebugEnabled()) LOGGER.debug(
+            String.format("Session data is closed, ignoring %s", modelName));
+
+        removeDeferred(modelData);
+      }
+      return null;
+    }
+
+    VisiconComponent comp = new VisiconComponent(parent, SWT.NONE, descriptor,
+        getMagnification());
+    descriptor.add(_descriptorListener);
     return comp;
-  }
-  
-  private float getMagnification() {
-	  if(zoomSlider != null)
-		  return zoomSlider.getMagnification();
-	  else
-		  return VisiconComponent.DEFAULT_MAGNIFICATION;
   }
 
   @Override
   protected void disposeModelComposite(String modelName, Object modelData,
       Composite content)
   {
-    if (modelData != null)
-      ((VisualDescriptor) modelData).remove(_descriptorListener);
+    ISessionData sessionData = (ISessionData) modelData;
+    IModelVisiconSessionDataStream mvsds = (IModelVisiconSessionDataStream) sessionData
+        .getDataStream("visicon");
+    VisualDescriptor descriptor = null;
+    if (mvsds != null) descriptor = mvsds.getRoot();
+    if (descriptor != null) descriptor.remove(_descriptorListener);
+    content.dispose();
   }
 
 

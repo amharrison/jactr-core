@@ -29,8 +29,9 @@ Require-Bundle: org.eclipse.core.resources,
  org.eclipse.collections;bundle-version="9.2.0",
  org.jactr.launching;bundle-version="2.5.0",
  org.jactr.core;bundle-version="2.5.1",
- org.jactr.io;bundle-version="2.5.1"
+ org.jactr.io
 Bundle-ActivationPolicy: lazy
 Eclipse-BuddyPolicy: registered
 Eclipse-RegisterBuddy: org.apache.mina, org.apache.log4j
 Plugin-Class: org.jactr.eclipse.core.CorePlugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
