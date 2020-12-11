@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.event.ACTREventDispatcher;
 import org.jactr.core.model.IModel;
@@ -41,6 +39,7 @@ import org.jactr.core.production.event.ProductionEvent;
 import org.jactr.core.utils.DefaultAdaptable;
 import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.core.utils.collections.FastSetFactory;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractProduction extends DefaultAdaptable implements
     IProduction
@@ -103,6 +102,11 @@ public abstract class AbstractProduction extends DefaultAdaptable implements
   public ISymbolicProduction getSymbolicProduction()
   {
     return _symbolicProduction;
+  }
+
+  public boolean equalsSymbolic(IProduction other)
+  {
+    return _symbolicProduction.equals(other.getSymbolicProduction());
   }
 
   // public IInstantiation instantiate() throws CannotInstantiateException

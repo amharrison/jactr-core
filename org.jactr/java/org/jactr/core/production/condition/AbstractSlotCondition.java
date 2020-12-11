@@ -17,12 +17,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.production.request.SlotBasedRequest;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.slot.ISlotContainer;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author harrison TODO To change the template for this generated type comment
@@ -138,4 +137,29 @@ public abstract class AbstractSlotCondition implements ICondition,
 
     return getSlots().toString();
   }
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + (_request == null ? 0 : _request.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
+    AbstractSlotCondition other = (AbstractSlotCondition) obj;
+    if (_request == null)
+    {
+      if (other._request != null) return false;
+    }
+    else if (!_request.equals(other._request)) return false;
+    return true;
+  }
+
 }

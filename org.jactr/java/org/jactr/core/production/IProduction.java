@@ -80,4 +80,7 @@ public interface IProduction extends Comparable<IProduction>, ICommentable,
   public void encode();
 
   public boolean isEncoded();
+
+  public boolean equalsSymbolic(IProduction production);
+
 }

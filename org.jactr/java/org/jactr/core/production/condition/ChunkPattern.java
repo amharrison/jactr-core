@@ -16,13 +16,12 @@ package org.jactr.core.production.condition;
 import java.util.Collection;
 import java.util.Collections;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.VariableBindings;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.ISlot;
+import org.slf4j.LoggerFactory;
 
 /**
  * ChunkPatterns are a type of condition used only for searching within a model
@@ -82,6 +81,30 @@ public class ChunkPattern extends AbstractSlotCondition
       cme.getMismatch().setCondition(this);
       throw cme;
     }
+  }
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + (_chunkType == null ? 0 : _chunkType.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj) return true;
+    if (!super.equals(obj)) return false;
+    if (getClass() != obj.getClass()) return false;
+    ChunkPattern other = (ChunkPattern) obj;
+    if (_chunkType == null)
+    {
+      if (other._chunkType != null) return false;
+    }
+    else if (!_chunkType.equals(other._chunkType)) return false;
+    return true;
   }
 
 }

@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.ISymbolicProduction;
 import org.jactr.core.production.IllegalProductionStateException;
@@ -27,6 +25,7 @@ import org.jactr.core.production.condition.ICondition;
 import org.jactr.core.production.event.ProductionEvent;
 import org.jactr.core.utils.DefaultAdaptable;
 import org.jactr.core.utils.collections.CachedCollection;
+import org.slf4j.LoggerFactory;
 
 /**
  * this implementation is not thread safe for the add/remove of
@@ -167,6 +166,37 @@ public class BasicSymbolicProduction extends DefaultAdaptable implements
           "Cannot change the name of an encoded production");
 
     _name = str;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + (_actions == null ? 0 : _actions.hashCode());
+    result = prime * result
+        + (_conditions == null ? 0 : _conditions.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
+    BasicSymbolicProduction other = (BasicSymbolicProduction) obj;
+    if (_actions == null)
+    {
+      if (other._actions != null) return false;
+    }
+    else if (!_actions.equals(other._actions)) return false;
+    if (_conditions == null)
+    {
+      if (other._conditions != null) return false;
+    }
+    else if (!_conditions.equals(other._conditions)) return false;
+    return true;
   }
 
   public void encode()

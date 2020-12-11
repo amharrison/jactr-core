@@ -111,6 +111,37 @@ public class BindAction extends DefaultAction
     _object = ob;
   }
 
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + (_object == null ? 0 : _object.hashCode());
+    result = prime * result
+        + (_variableName == null ? 0 : _variableName.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
+    BindAction other = (BindAction) obj;
+    if (_object == null)
+    {
+      if (other._object != null) return false;
+    }
+    else if (!_object.equals(other._object)) return false;
+    if (_variableName == null)
+    {
+      if (other._variableName != null) return false;
+    }
+    else if (!_variableName.equals(other._variableName)) return false;
+    return true;
+  }
+
   /**
    * 
    */

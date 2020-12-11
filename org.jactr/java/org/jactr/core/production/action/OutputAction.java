@@ -14,7 +14,6 @@
 package org.jactr.core.production.action;
 
  
-import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.logging.Logger;
 import org.jactr.core.model.IModel;
@@ -22,6 +21,7 @@ import org.jactr.core.production.IInstantiation;
 import org.jactr.core.production.VariableBindings;
 import org.jactr.core.queue.ITimedEvent;
 import org.jactr.core.queue.timedevents.AbstractTimedEvent;
+import org.slf4j.LoggerFactory;
 
 /**
  * OutputAction is a general purpose output function. It takes a string that can
@@ -225,4 +225,30 @@ public class OutputAction extends DefaultAction
     }
     return sb.toString();
   }
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result
+        + (_outputTemplate == null ? 0 : _outputTemplate.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
+    OutputAction other = (OutputAction) obj;
+    if (_outputTemplate == null)
+    {
+      if (other._outputTemplate != null) return false;
+    }
+    else if (!_outputTemplate.equals(other._outputTemplate)) return false;
+    return true;
+  }
+
 }

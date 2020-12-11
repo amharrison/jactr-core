@@ -13,13 +13,13 @@
 package org.jactr.core.production.five;
 
  
-import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.basic.AbstractProduction;
 import org.jactr.core.production.basic.BasicSymbolicProduction;
 import org.jactr.core.production.event.ProductionEvent;
 import org.jactr.core.production.four.ISubsymbolicProduction4;
 import org.jactr.core.production.four.ISymbolicProduction4;
+import org.slf4j.LoggerFactory;
 
 /*
  * Not thread safe this once added to memory, the production cannot be changed.
@@ -33,6 +33,7 @@ import org.jactr.core.production.four.ISymbolicProduction4;
 public class DefaultSymbolicProduction5 extends BasicSymbolicProduction
     implements ISymbolicProduction4
 {
+
 
   private static transient org.slf4j.Logger LOGGER      = LoggerFactory
                                                .getLogger(DefaultSymbolicProduction5.class
@@ -84,13 +85,31 @@ public class DefaultSymbolicProduction5 extends BasicSymbolicProduction
     Boolean oldValue = Boolean.valueOf(_failure);
     Boolean newValue = Boolean.valueOf(f);
     _failure = f;
-    if (_production.hasListeners())
-    {
-      _production.dispatch(new ProductionEvent(_production,
-          ISubsymbolicProduction4.FAILURE,
-          newValue, oldValue));
-    }
+    if (_production.hasListeners()) _production.dispatch(new ProductionEvent(_production,
+        ISubsymbolicProduction4.FAILURE,
+        newValue, oldValue));
   }
 
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + (_failure ? 1231 : 1237);
+    result = prime * result + (_successful ? 1231 : 1237);
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj) return true;
+    if (!super.equals(obj)) return false;
+    if (getClass() != obj.getClass()) return false;
+    DefaultSymbolicProduction5 other = (DefaultSymbolicProduction5) obj;
+    if (_failure != other._failure) return false;
+    if (_successful != other._successful) return false;
+    return true;
+  }
 
 }

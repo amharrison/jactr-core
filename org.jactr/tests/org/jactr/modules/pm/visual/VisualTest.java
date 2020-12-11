@@ -1,7 +1,5 @@
 package org.jactr.modules.pm.visual;
 
-import static org.junit.Assert.fail;
-
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -32,7 +30,9 @@ import org.junit.Test;
  
 import org.slf4j.LoggerFactory;
 
-public class VisualTest
+import junit.framework.TestCase;
+
+public class VisualTest extends TestCase
 {
   /**
    * Logger definition

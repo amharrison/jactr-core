@@ -224,4 +224,49 @@ public class SetAction extends DefaultAction implements ISlotContainer,
     }
 
   }
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result
+        + (_boundChunk == null ? 0 : _boundChunk.hashCode());
+    result = prime * result
+        + (_bufferName == null ? 0 : _bufferName.hashCode());
+    result = prime * result + (_referant == null ? 0 : _referant.hashCode());
+    result = prime * result + (_slots == null ? 0 : _slots.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
+    SetAction other = (SetAction) obj;
+    if (_boundChunk == null)
+    {
+      if (other._boundChunk != null) return false;
+    }
+    else if (!_boundChunk.equals(other._boundChunk)) return false;
+    if (_bufferName == null)
+    {
+      if (other._bufferName != null) return false;
+    }
+    else if (!_bufferName.equals(other._bufferName)) return false;
+    if (_referant == null)
+    {
+      if (other._referant != null) return false;
+    }
+    else if (!_referant.equals(other._referant)) return false;
+    if (_slots == null)
+    {
+      if (other._slots != null) return false;
+    }
+    else if (!_slots.equals(other._slots)) return false;
+    return true;
+  }
+
 }

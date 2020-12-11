@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
- 
 import org.slf4j.LoggerFactory;
 
 public class UniqueSlotContainer implements IUniqueSlotContainer
@@ -27,6 +26,32 @@ public class UniqueSlotContainer implements IUniqueSlotContainer
   public UniqueSlotContainer()
   {
     this(false);
+  }
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + (_slotMap == null ? 0 : _slotMap.hashCode());
+    result = prime * result + (_useMutable ? 1231 : 1237);
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
+    UniqueSlotContainer other = (UniqueSlotContainer) obj;
+    if (_slotMap == null)
+    {
+      if (other._slotMap != null) return false;
+    }
+    else if (!_slotMap.equals(other._slotMap)) return false;
+    if (_useMutable != other._useMutable) return false;
+    return true;
   }
 
   public UniqueSlotContainer(boolean useMutableSlots)

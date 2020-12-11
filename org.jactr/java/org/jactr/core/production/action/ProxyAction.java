@@ -7,13 +7,12 @@ package org.jactr.core.production.action;
 import java.util.Collection;
 import java.util.Collections;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.production.CannotInstantiateException;
 import org.jactr.core.production.IInstantiation;
 import org.jactr.core.production.VariableBindings;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.slot.ISlotContainer;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author harrison To change the template for this generated type comment go to
@@ -183,4 +182,36 @@ public class ProxyAction extends AddAction
 
     return getDelegate().fire(instantiation, firingTime);
   }
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + (_className == null ? 0 : _className.hashCode());
+    result = prime * result
+        + (_delegateAction == null ? 0 : _delegateAction.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj) return true;
+    if (!super.equals(obj)) return false;
+    if (getClass() != obj.getClass()) return false;
+    ProxyAction other = (ProxyAction) obj;
+    if (_className == null)
+    {
+      if (other._className != null) return false;
+    }
+    else if (!_className.equals(other._className)) return false;
+    if (_delegateAction == null)
+    {
+      if (other._delegateAction != null) return false;
+    }
+    else if (!_delegateAction.equals(other._delegateAction)) return false;
+    return true;
+  }
+
 }

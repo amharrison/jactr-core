@@ -15,11 +15,10 @@ package org.jactr.core.production.action;
 
 import java.lang.reflect.Method;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.production.IInstantiation;
 import org.jactr.core.production.VariableBindings;
 import org.jactr.core.utils.ModelerException;
+import org.slf4j.LoggerFactory;
 
 /**
  * The ExecuteAction is a convenience IAction that permits the execution of an
@@ -129,6 +128,30 @@ public class ExecuteAction extends DefaultAction
           "Are you sure you spelled the class name correctly? Is it in your path?");
     }
     return 0.0;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + (_className == null ? 0 : _className.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
+    ExecuteAction other = (ExecuteAction) obj;
+    if (_className == null)
+    {
+      if (other._className != null) return false;
+    }
+    else if (!_className.equals(other._className)) return false;
+    return true;
   }
 
 }

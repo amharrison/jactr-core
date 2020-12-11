@@ -20,6 +20,7 @@ import java.util.concurrent.Executor;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.module.IModule;
 import org.jactr.core.module.procedural.event.IProceduralModuleListener;
+import org.jactr.core.module.procedural.storage.IProductionStorage;
 import org.jactr.core.production.IInstantiation;
 import org.jactr.core.production.IProduction;
 
@@ -122,4 +123,8 @@ public interface IProceduralModule extends IModule
   public void setConflictSetAssembler(IConflictSetAssembler assembler);
 
   public IConflictSetAssembler getConflictSetAssembler();
+
+  public void setProductionStorage(IProductionStorage productionStorage);
+
+  public IProductionStorage getProductionStorage();
 }

@@ -7,8 +7,6 @@ package org.jactr.core.production.condition;
 import java.util.Collection;
 import java.util.Collections;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.VariableBindings;
 import org.jactr.core.production.bindings.VariableBindingsFactory;
@@ -17,6 +15,7 @@ import org.jactr.core.production.condition.match.IMatchFailure;
 import org.jactr.core.production.request.SlotBasedRequest;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.slot.ISlotContainer;
+import org.slf4j.LoggerFactory;
 
 /**
  * proxy condition that wraps a class that implements {@link ICondition}. This
@@ -220,4 +219,36 @@ public class ProxyCondition extends AbstractSlotCondition
         VariableBindingsFactory.recycle(expandedBindings);
     }
   }
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + (_className == null ? 0 : _className.hashCode());
+    result = prime * result
+        + (_delegateCondition == null ? 0 : _delegateCondition.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj) return true;
+    if (!super.equals(obj)) return false;
+    if (getClass() != obj.getClass()) return false;
+    ProxyCondition other = (ProxyCondition) obj;
+    if (_className == null)
+    {
+      if (other._className != null) return false;
+    }
+    else if (!_className.equals(other._className)) return false;
+    if (_delegateCondition == null)
+    {
+      if (other._delegateCondition != null) return false;
+    }
+    else if (!_delegateCondition.equals(other._delegateCondition)) return false;
+    return true;
+  }
+
 }

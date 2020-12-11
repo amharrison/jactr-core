@@ -18,9 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
@@ -45,6 +43,8 @@ import org.jactr.core.module.procedural.IProductionInstantiator;
 import org.jactr.core.module.procedural.IProductionSelector;
 import org.jactr.core.module.procedural.event.IProceduralModuleListener;
 import org.jactr.core.module.procedural.event.ProceduralModuleEvent;
+import org.jactr.core.module.procedural.storage.DefaultProductionStorage;
+import org.jactr.core.module.procedural.storage.IProductionStorage;
 import org.jactr.core.module.random.IRandomModule;
 import org.jactr.core.module.random.six.DefaultRandomModule;
 import org.jactr.core.production.IInstantiation;
@@ -81,19 +81,17 @@ import org.slf4j.LoggerFactory;
  * @see http://jactr.org/node/132
  * @author harrison
  */
-public class DefaultProceduralModule6 extends AbstractModule implements
-    IProceduralModule6, IParameterized
+public class DefaultProceduralModule6 extends AbstractModule
+    implements IProceduralModule6, IParameterized
 {
 
   /**
    * logger definition
    */
-  static public final transient org.slf4j.Logger                                                   LOGGER                               = LoggerFactory
-                                                                                                                     .getLogger(DefaultProceduralModule6.class);
+  static public final transient org.slf4j.Logger                            LOGGER                               = LoggerFactory
+      .getLogger(DefaultProceduralModule6.class);
 
   private ACTREventDispatcher<IProceduralModule, IProceduralModuleListener> _eventDispatcher;
-
-  protected Map<String, IProduction>                                        _allProductionsByName;
 
   // protected Map<IChunkType, Collection<IProduction>>
   // _allProductionsByChunkType;
@@ -102,7 +100,7 @@ public class DefaultProceduralModule6 extends AbstractModule implements
 
   protected ReentrantReadWriteLock                                          _readWriteLock;
 
-  protected double                                                          _productionFiringTime                = 0.05;                                     // 50ms
+  protected double                                                          _productionFiringTime                = 0.05;                          // 50ms
 
   protected long                                                            _productionsFired                    = 0;
 
@@ -122,6 +120,8 @@ public class DefaultProceduralModule6 extends AbstractModule implements
 
   private boolean                                                           _parallelizeInstantiationsEnabled    = false;
 
+  private IProductionStorage                                                _productionStorage;
+
   static public final String                                                ENABLE_PARALLEL_INSTANTIATIONS_PARAM = "EnableParallelInstantiations";
 
   // private Collection<Map<String, Object>> _provisionalBindings;
@@ -129,7 +129,7 @@ public class DefaultProceduralModule6 extends AbstractModule implements
   public DefaultProceduralModule6()
   {
     super("procedural");
-    _allProductionsByName = new TreeMap<String, IProduction>();
+
     // _allProductionsByChunkType = new HashMap<IChunkType,
     // Collection<IProduction>>();
     // _ambiguousProductions = new HashMap<String, Collection<IProduction>>();
@@ -142,6 +142,8 @@ public class DefaultProceduralModule6 extends AbstractModule implements
 
     setConflictSetAssembler(new DefaultConflictSetAssembler(false));
 
+    setProductionStorage(new DefaultProductionStorage());
+
     _comparator = new ProductionUtilityComparator() {
       @Override
       public int compare(IProduction one, IProduction two)
@@ -153,9 +155,8 @@ public class DefaultProceduralModule6 extends AbstractModule implements
          * we only break random ties if the two instantiations (which these
          * actually are) are not of the same production
          */
-        if (_breakExpectedUtilityTiesRandomly
-            && !((IInstantiation) one).getProduction().equals(
-                ((IInstantiation) two).getProduction()))
+        if (_breakExpectedUtilityTiesRandomly && !((IInstantiation) one)
+            .getProduction().equals(((IInstantiation) two).getProduction()))
           return _randomModule.randomBoolean() ? 1 : -1;
 
         // otherwise we maintain insertion order
@@ -201,6 +202,21 @@ public class DefaultProceduralModule6 extends AbstractModule implements
     return _conflictSetAssembler;
   }
 
+  @Override
+  public void setProductionStorage(IProductionStorage productionStorage)
+  {
+    if (_productionStorage != null)
+      _productionStorage.setProceduralModule(null);
+    _productionStorage = productionStorage;
+    _productionStorage.setProceduralModule(this);
+  }
+
+  @Override
+  public IProductionStorage getProductionStorage()
+  {
+    return _productionStorage;
+  }
+
   public void addListener(IProceduralModuleListener listener, Executor executor)
   {
     _eventDispatcher.addListener(listener, executor);
@@ -218,18 +234,6 @@ public class DefaultProceduralModule6 extends AbstractModule implements
     try
     {
       _readWriteLock.writeLock().lock();
-      // actually dispose of the productions
-      for (IProduction production : _allProductionsByName.values())
-        production.dispose();
-
-      // _ambiguousProductions.clear();
-      // _ambiguousProductions = null;
-      //
-      // _allProductionsByChunkType.clear();
-      // _allProductionsByChunkType = null;
-
-      _allProductionsByName.clear();
-      // _allProductionsByName = null;
 
       _eventDispatcher.clear();
       // _eventDispatcher = null;
@@ -258,18 +262,16 @@ public class DefaultProceduralModule6 extends AbstractModule implements
   {
     _eventDispatcher.fire(new ProceduralModuleEvent(this,
         ProceduralModuleEvent.Type.PRODUCTION_WILL_FIRE, instantiation));
-    if (Logger.hasLoggers(getModel()))
-      Logger.log(getModel(), Logger.Stream.PROCEDURAL, "Can fire "
-          + instantiation);
+    if (Logger.hasLoggers(getModel())) Logger.log(getModel(),
+        Logger.Stream.PROCEDURAL, "Can fire " + instantiation);
   }
 
   protected void fireProductionFired(IInstantiation instantiation)
   {
     _eventDispatcher.fire(new ProceduralModuleEvent(this,
         ProceduralModuleEvent.Type.PRODUCTION_FIRED, instantiation));
-    if (Logger.hasLoggers(getModel()))
-      Logger
-          .log(getModel(), Logger.Stream.PROCEDURAL, "Fired " + instantiation);
+    if (Logger.hasLoggers(getModel())) Logger.log(getModel(),
+        Logger.Stream.PROCEDURAL, "Fired " + instantiation);
   }
 
   protected void fireProductionsMerged(IProduction original,
@@ -286,9 +288,8 @@ public class DefaultProceduralModule6 extends AbstractModule implements
   {
     _eventDispatcher.fire(new ProceduralModuleEvent(this,
         ProceduralModuleEvent.Type.CONFLICT_SET_ASSEMBLED, instances));
-    if (Logger.hasLoggers(getModel()))
-      Logger.log(getModel(), Logger.Stream.PROCEDURAL, "Conflict Set "
-          + instances);
+    if (Logger.hasLoggers(getModel())) Logger.log(getModel(),
+        Logger.Stream.PROCEDURAL, "Conflict Set " + instances);
   }
 
   public void setParallelInstantiationsEnabled(boolean enable)
@@ -305,18 +306,7 @@ public class DefaultProceduralModule6 extends AbstractModule implements
   {
     ISymbolicProduction symProd = production.getSymbolicProduction();
 
-    // /*
-    // * we need all the chunktypes that this production matches against this
-    // info
-    // * is used to accelerate conflict set assembly
-    // */
-    // Set<IChunkType> candidateChunkTypes = new HashSet<IChunkType>();
-    /*
-     * in some cases where no chunktype can be infered, we just snag the buffer
-     * name
-     */
     Set<String> bufferNames = new HashSet<String>();
-    Set<String> ambiguousBufferNames = new HashSet<String>();
     for (ICondition condition : symProd.getConditions())
       if (condition instanceof ChunkTypeCondition)
       {
@@ -341,15 +331,8 @@ public class DefaultProceduralModule6 extends AbstractModule implements
         String bufferName = ((AbstractBufferCondition) condition)
             .getBufferName();
 
-        if (condition instanceof VariableCondition)
-          bufferNames.add(bufferName);
+        if (condition instanceof VariableCondition) bufferNames.add(bufferName);
 
-        /*
-         * this will catch all queries and variable conditions. These are
-         * production conditions from which we can't immediately determine the
-         * chunktype of the buffer contents
-         */
-        ambiguousBufferNames.add(bufferName);
       }
 
     /*
@@ -380,86 +363,29 @@ public class DefaultProceduralModule6 extends AbstractModule implements
             /*
              * if there is a modify or a remove, we don't have to do anything.
              */
-            if (action instanceof RemoveAction
-                || action instanceof ModifyAction
-                || action instanceof AddAction) actionFound = true;
+            if (action instanceof RemoveAction || action instanceof ModifyAction
+                || action instanceof AddAction)
+              actionFound = true;
             break;
           }
 
         if (!actionFound)
         {
-          if (LOGGER.isDebugEnabled())
-            LOGGER
-                .debug(bufferName
-                    + " requires strict harvest but "
-                    + symProd.getName()
-                    + " doesn't operate on the buffer after the match. Adding a remove");
+          if (LOGGER.isDebugEnabled()) LOGGER.debug(bufferName
+              + " requires strict harvest but " + symProd.getName()
+              + " doesn't operate on the buffer after the match. Adding a remove");
 
           symProd.addAction(new RemoveAction(bufferName));
         }
       }
     }
 
-    /*
-     * figure out all the children of the chunktypes.. since any production that
-     * could be fired for chunkTypeA could fire for chunkTypeB if chunkTypeB is
-     * a child (derived from) of chunkTypeA
-     */
-    // Set<IChunkType> chunkTypesToProcess = new HashSet<IChunkType>(
-    // candidateChunkTypes);
-    // for (IChunkType chunkType : candidateChunkTypes)
-    // chunkTypesToProcess
-    // .addAll(chunkType.getSymbolicChunkType().getChildren());
-
-    _readWriteLock.writeLock().lock();
-
-    /*
-     * make sure the name is unique
-     */
-    String productionName = getSafeName(symProd.getName(),
-        _allProductionsByName);
-    symProd.setName(productionName);
-
-    production.encode();
-
-    /*
-     * add it to the name map
-     */
-    _allProductionsByName.put(productionName.toLowerCase(), production);
-
-    // /*
-    // * add it to the chunktype maps
-    // */
-    // for (IChunkType chunkType : chunkTypesToProcess)
-    // {
-    // Collection<IProduction> productions = _allProductionsByChunkType
-    // .get(chunkType);
-    // if (productions == null)
-    // {
-    // productions = new ArrayList<IProduction>();
-    // _allProductionsByChunkType.put(chunkType, productions);
-    // }
-    // productions.add(production);
-    // }
-    //
-    // /*
-    // * now for the ambiguous conditions
-    // */
-    // for (String bufferName : ambiguousBufferNames)
-    // {
-    // Collection<IProduction> productions = _ambiguousProductions
-    // .get(bufferName);
-    // if (productions == null)
-    // {
-    // productions = new ArrayList<IProduction>();
-    // _ambiguousProductions.put(bufferName, productions);
-    // }
-    // productions.add(production);
-    // }
-
-    _readWriteLock.writeLock().unlock();
-
-    fireProductionAdded(production);
+    IProduction added = _productionStorage.add(production);
+    if (!added.isEncoded())
+    {
+      added.encode();
+      fireProductionAdded(added);
+    }
 
     return production;
   }
@@ -516,8 +442,7 @@ public class DefaultProceduralModule6 extends AbstractModule implements
         String bufferName = ((AbstractBufferCondition) condition)
             .getBufferName();
 
-        if (condition instanceof VariableCondition)
-          bufferNames.add(bufferName);
+        if (condition instanceof VariableCondition) bufferNames.add(bufferName);
 
         /*
          * this will catch all queries and variable conditions. These are
@@ -527,50 +452,7 @@ public class DefaultProceduralModule6 extends AbstractModule implements
         // ambiguousBufferNames.add(bufferName);
       }
 
-    /*
-     * figure out all the children of the chunktypes.. since any production that
-     * could be fired for chunkTypeA could fire for chunkTypeB if chunkTypeB is
-     * a child (derived from) of chunkTypeA
-     */
-    // Set<IChunkType> chunkTypesToProcess = new HashSet<IChunkType>(
-    // candidateChunkTypes);
-    // for (IChunkType chunkType : candidateChunkTypes)
-    // chunkTypesToProcess
-    // .addAll(chunkType.getSymbolicChunkType().getChildren());
-
-    _readWriteLock.writeLock().lock();
-
-    /*
-     * make sure the name is unique
-     */
-    String productionName = symProd.getName();
-
-    /*
-     * add it to the name map
-     */
-    _allProductionsByName.remove(productionName.toLowerCase());
-
-    // /*
-    // * add it to the chunktype maps
-    // */
-    // for (IChunkType chunkType : chunkTypesToProcess)
-    // {
-    // Collection<IProduction> productions = _allProductionsByChunkType
-    // .get(chunkType);
-    // if (productions != null) productions.remove(production);
-    // }
-
-    // /*
-    // * now for the ambiguous conditions
-    // */
-    // for (String bufferName : ambiguousBufferNames)
-    // {
-    // Collection<IProduction> productions = _ambiguousProductions
-    // .get(bufferName);
-    // if (productions != null) productions.remove(production);
-    // }
-
-    _readWriteLock.writeLock().unlock();
+    _productionStorage.remove(production);
 
     return production;
   }
@@ -592,8 +474,7 @@ public class DefaultProceduralModule6 extends AbstractModule implements
     IModel model = getModel();
 
     IProduction production = new DefaultProduction6(model);
-    production.getSymbolicProduction().setName(
-        getSafeName(name, _allProductionsByName));
+    production.getSymbolicProduction().setName(name);
 
     production.getSubsymbolicProduction()
         .setFiringTime(getDefaultProductionFiringTime());
@@ -636,7 +517,8 @@ public class DefaultProceduralModule6 extends AbstractModule implements
       Logger.log(model, Logger.Stream.PROCEDURAL, message);
     }
 
-    Collection<IInstantiation> keepers = createAndSortInstantiations(productions);
+    Collection<IInstantiation> keepers = createAndSortInstantiations(
+        productions);
 
     if (LOGGER.isDebugEnabled()) LOGGER.debug("Final conflict set " + keepers);
 
@@ -733,21 +615,13 @@ public class DefaultProceduralModule6 extends AbstractModule implements
     return delayedFuture(callable, getExecutor());
   }
 
-  protected IProduction getProductionInternal(String name)
-  {
-    _readWriteLock.readLock().lock();
-    IProduction rtn = _allProductionsByName.get(name.toLowerCase());
-    _readWriteLock.readLock().unlock();
-    return rtn;
-  }
-
   public CompletableFuture<IProduction> getProduction(final String name)
   {
     Callable<IProduction> callable = new Callable<IProduction>() {
 
       public IProduction call()
       {
-        return getProductionInternal(name);
+        return _productionStorage.getProduction(name);
       }
     };
     return delayedFuture(callable, getExecutor());
@@ -907,9 +781,8 @@ public class DefaultProceduralModule6 extends AbstractModule implements
   {
     double old = _expectedUtilityNoise;
     _expectedUtilityNoise = noise;
-    if (_eventDispatcher.hasListeners())
-      _eventDispatcher.fire(new ProceduralModuleEvent(this,
-          EXPECTED_UTILITY_NOISE, old, noise));
+    if (_eventDispatcher.hasListeners()) _eventDispatcher.fire(
+        new ProceduralModuleEvent(this, EXPECTED_UTILITY_NOISE, old, noise));
   }
 
   public void setNumberOfProductionsFired(long fired)
@@ -923,15 +796,7 @@ public class DefaultProceduralModule6 extends AbstractModule implements
 
   protected Collection<IProduction> getProductionsInternal()
   {
-    try
-    {
-      _readWriteLock.readLock().lock();
-      return new ArrayList<IProduction>(_allProductionsByName.values());
-    }
-    finally
-    {
-      _readWriteLock.readLock().unlock();
-    }
+    return _productionStorage.getProductions(new ArrayList<>());
   }
 
   public CompletableFuture<Collection<IProduction>> getProductions()
@@ -990,21 +855,20 @@ public class DefaultProceduralModule6 extends AbstractModule implements
   public void setParameter(String key, String value)
   {
     if (NUMBER_OF_PRODUCTIONS_FIRED.equalsIgnoreCase(key))
-      setNumberOfProductionsFired(ParameterHandler.numberInstance()
-          .coerce(value).longValue());
+      setNumberOfProductionsFired(
+          ParameterHandler.numberInstance().coerce(value).longValue());
     else if (EXPECTED_UTILITY_NOISE.equalsIgnoreCase(key))
-      setExpectedUtilityNoise(ParameterHandler.numberInstance().coerce(value)
-          .doubleValue());
+      setExpectedUtilityNoise(
+          ParameterHandler.numberInstance().coerce(value).doubleValue());
     else if (DEFAULT_PRODUCTION_FIRING_TIME.equalsIgnoreCase(key))
-      setDefaultProductionFiringTime(ParameterHandler.numberInstance()
-          .coerce(value).doubleValue());
+      setDefaultProductionFiringTime(
+          ParameterHandler.numberInstance().coerce(value).doubleValue());
     else if (ENABLE_PARALLEL_INSTANTIATIONS_PARAM.equalsIgnoreCase(key))
-      setParallelInstantiationsEnabled(ParameterHandler.booleanInstance()
-          .coerce(value).booleanValue());
-    else if (LOGGER.isWarnEnabled())
-      LOGGER.warn(String.format(
-          "%s doesn't recognize %s. Available parameters : %s", getClass()
-              .getSimpleName(), key, getSetableParameters()));
+      setParallelInstantiationsEnabled(
+          ParameterHandler.booleanInstance().coerce(value).booleanValue());
+    else if (LOGGER.isWarnEnabled()) LOGGER.warn(
+        String.format("%s doesn't recognize %s. Available parameters : %s",
+            getClass().getSimpleName(), key, getSetableParameters()));
 
   }
 
@@ -1095,4 +959,5 @@ public class DefaultProceduralModule6 extends AbstractModule implements
   {
     // noop
   }
+
 }
