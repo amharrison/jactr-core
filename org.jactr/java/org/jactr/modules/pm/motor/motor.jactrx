@@ -36,7 +36,7 @@
 			<chunk name="aborting" type="motor-constant" />
  
 			<chunk-type name="peck" parent="finger-command">
-				<slot name="r" equals="null"/>
+				<slot name="distance" equals="null"/>
 				<slot name="theta" equals="null"/>
 			</chunk-type>
  

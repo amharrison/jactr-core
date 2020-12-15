@@ -1,10 +1,5 @@
 package org.jactr.modules.pm.motor.command.translators;
 
-/*
- * default logging
- */
- 
-import org.slf4j.LoggerFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.efferent.ICompoundCommand;
 import org.commonreality.efferent.IEfferentCommand;
@@ -19,6 +14,12 @@ import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.slot.ISlot;
 import org.jactr.modules.pm.motor.IMotorModule;
+
+/*
+ * default logging
+ */
+ 
+import org.slf4j.LoggerFactory;
 
 public class PeckTranslator extends AbstractManualTranslator
 {
@@ -48,8 +49,6 @@ public class PeckTranslator extends AbstractManualTranslator
     }
   }
 
-
-
   protected double[] getTarget(ChunkTypeRequest request, IEfferentObject muscle)
   {
     double[] origin = MotorUtilities.getPosition(muscle);
@@ -57,14 +56,14 @@ public class PeckTranslator extends AbstractManualTranslator
     double theta = Double.NaN;
 
     for (ISlot slot : request.getSlots())
-      if (slot.getName().equalsIgnoreCase("r"))
+      if (slot.getName().equalsIgnoreCase("distance"))
         distance = ((Number) slot.getValue()).doubleValue();
       else if (slot.getName().equalsIgnoreCase("theta"))
         theta = ((Number) slot.getValue()).doubleValue();
 
     if (Double.isNaN(distance) || Double.isNaN(theta))
       throw new IllegalArgumentException(
-          "Both theta and r must be defined when computing finger trajectories");
+          "Both theta and distance must be defined when computing finger trajectories");
 
     double dX = Math.cos(theta) * distance;
     double dY = Math.sin(theta) * distance;

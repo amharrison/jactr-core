@@ -49,7 +49,8 @@ public class FluentMotor implements Supplier<IModel>
           .slot("state", definedChunks.get("starting")).encode();
 
       IChunkType sequence = FluentChunkType.from(model).named("sequence")
-          .slots("order", "command", "finger", "hand", "r", "theta", "key")
+          .slots("order", "command", "finger", "hand", "distance", "theta",
+              "key")
           .encode();
 
       /*
@@ -63,7 +64,7 @@ public class FluentMotor implements Supplier<IModel>
       FluentChunk.from(sequence).named("peck-g").slot("order", 2)
           .slot("command",
               model.getDeclarativeModule().getChunkType("peck").get())
-          .slot("finger", index).slot("hand", left).slot("r", 1)
+          .slot("finger", index).slot("hand", left).slot("distance", 1)
           .slot("theta", 0).encode();
 
       FluentChunk.from(sequence).named("punch-g").slot("order", 3)
@@ -74,7 +75,7 @@ public class FluentMotor implements Supplier<IModel>
       FluentChunk.from(sequence).named("peck-recoil-h").slot("order", 4)
           .slot("command",
               model.getDeclarativeModule().getChunkType("peck-recoil").get())
-          .slot("finger", index).slot("hand", right).slot("r", 1)
+          .slot("finger", index).slot("hand", right).slot("distance", 1)
           .slot("theta", 3.14).encode();
 
       FluentChunk.from(sequence).named("key-typed").slot("order", 5)
@@ -171,7 +172,8 @@ public class FluentMotor implements Supplier<IModel>
           .condition(FluentCondition.match("retrieval", sequence)
               .slot("command",
                   model.getDeclarativeModule().getChunkType("peck").get())
-              .slot("finger", "=finger").slot("hand", "=hand").slot("r", "=r")
+              .slot("finger", "=finger").slot("hand", "=hand")
+              .slot("distance", "=r")
               .slot("theta", "=theta").build())
           .condition(FluentCondition.query("motor").slot("state", free).build())
           .action(FluentAction.modify("goal")
@@ -181,7 +183,8 @@ public class FluentMotor implements Supplier<IModel>
           .action(FluentAction
               .add("motor",
                   model.getDeclarativeModule().getChunkType("peck").get())
-              .slot("hand", "=hand").slot("finger", "=finger").slot("r", "=r")
+              .slot("hand", "=hand").slot("finger", "=finger")
+              .slot("distance", "=r")
               .slot("theta", "=theta").build())
           .encode();
 
@@ -194,7 +197,7 @@ public class FluentMotor implements Supplier<IModel>
                       model.getDeclarativeModule().getChunkType("peck-recoil")
                           .get())
                   .slot("finger", "=finger").slot("hand", "=hand")
-                  .slot("r", "=r").slot("theta", "=theta").build())
+                  .slot("distance", "=r").slot("theta", "=theta").build())
           .condition(FluentCondition.query("motor").slot("state", free).build())
           .action(FluentAction.modify("goal")
               .slot("state", definedChunks.get("motor-started")).build())
@@ -203,7 +206,8 @@ public class FluentMotor implements Supplier<IModel>
               .add("motor",
                   model.getDeclarativeModule().getChunkType("peck-recoil")
                       .get())
-              .slot("hand", "=hand").slot("finger", "=finger").slot("r", "=r")
+              .slot("hand", "=hand").slot("finger", "=finger")
+              .slot("distance", "=r")
               .slot("theta", "=theta").build())
           .encode();
 

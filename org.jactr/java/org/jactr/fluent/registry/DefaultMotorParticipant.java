@@ -11,9 +11,9 @@ import org.jactr.fluent.FluentChunk;
 import org.jactr.fluent.FluentChunkType;
 import org.jactr.modules.pm.motor.AbstractMotorModule;
 import org.jactr.modules.pm.motor.command.translators.AbstractManualTranslator;
-import org.jactr.modules.pm.motor.command.translators.PressKeyTranslator;
 import org.jactr.modules.pm.motor.command.translators.PeckRecoilTranslator;
 import org.jactr.modules.pm.motor.command.translators.PeckTranslator;
+import org.jactr.modules.pm.motor.command.translators.PressKeyTranslator;
 import org.jactr.modules.pm.motor.command.translators.PunchTranslator;
 import org.jactr.modules.pm.motor.six.DefaultMotorModule6;
 
@@ -46,7 +46,7 @@ public class DefaultMotorParticipant implements Consumer<IModel>
           "mouse", "joystick1", "joystick2", "aborting");
 
       IChunkType peck = FluentChunkType.fromParent(fingerCommand).named("peck")
-          .slots("r", "theta").encode();
+          .slots("distance", "theta").encode();
       FluentChunkType.fromParent(peck).named("peck-recoil").encode();
 
       FluentChunkType.fromParent(fingerCommand).named("punch").encode();
