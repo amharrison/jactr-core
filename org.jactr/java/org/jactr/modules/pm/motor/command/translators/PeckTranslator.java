@@ -8,7 +8,6 @@ import org.commonreality.modalities.motor.TranslateCommand;
 import org.commonreality.object.IEfferentObject;
 import org.commonreality.sensors.keyboard.PressCommand;
 import org.commonreality.sensors.keyboard.ReleaseCommand;
-import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.runtime.ACTRRuntime;
@@ -30,23 +29,7 @@ public class PeckTranslator extends AbstractManualTranslator
 
   public boolean handles(ChunkTypeRequest request)
   {
-    try
-    {
-      IChunkType actual = request.getChunkType();
-      IChunkType punch = actual.getModel().getDeclarativeModule().getChunkType(
-          "peck").get();
-
-//      return actual.isA(punch);
-      return actual.equals(punch);
-    }
-    catch (Exception e)
-    {
-      /**
-       * Error :
-       */
-      LOGGER.error("Failed to get peck chunk type ", e);
-      return false;
-    }
+    return handles("peck", request);
   }
 
   protected double[] getTarget(ChunkTypeRequest request, IEfferentObject muscle)
@@ -74,14 +57,7 @@ public class PeckTranslator extends AbstractManualTranslator
     return target;
   }
   
-  protected double computeDistance(double[] origin, double[] target)
-  {
-    double rtn = 0;
-    for(int i=0;i<origin.length;i++)
-      rtn += Math.abs(origin[i]-target[i])*Math.abs(origin[i]-target[i]);
-    
-    return Math.sqrt(rtn);
-  }
+
 
 
   public IEfferentCommand translate(ChunkTypeRequest request,

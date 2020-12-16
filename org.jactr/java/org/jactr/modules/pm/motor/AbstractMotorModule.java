@@ -578,7 +578,7 @@ public abstract class AbstractMotorModule extends AbstractPerceptualModule
            * try to add
            */
           ICommandTranslatorDelegate delegate = (ICommandTranslatorDelegate) getClass()
-              .getClassLoader().loadClass(key).newInstance();
+              .getClassLoader().loadClass(key).getConstructor().newInstance();
           ((DefaultCommandTranslator) getCommandTranslator()).add(delegate);
         }
         catch (Exception e)

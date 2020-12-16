@@ -14,7 +14,6 @@ import org.commonreality.sensors.keyboard.PressCommand;
 import org.commonreality.sensors.keyboard.ReleaseCommand;
 import org.commonreality.sensors.keyboard.map.ACTRDeviceMap;
 import org.eclipse.collections.impl.block.factory.Comparators;
-import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.runtime.ACTRRuntime;
@@ -29,23 +28,7 @@ public class PressKeyTranslator extends AbstractManualTranslator
   @Override
   public boolean handles(ChunkTypeRequest request)
   {
-    try
-    {
-      IChunkType actual = request.getChunkType();
-      IChunkType punch = actual.getModel().getDeclarativeModule()
-          .getChunkType("press-key").get();
-
-//      return actual.isA(punch);
-      return actual.equals(punch);
-    }
-    catch (Exception e)
-    {
-      /**
-       * Error :
-       */
-      LOGGER.error("Failed to get peck chunk type ", e);
-      return false;
-    }
+    return handles("press-key", request);
   }
 
   private double[] getKeyLocation(ChunkTypeRequest request)

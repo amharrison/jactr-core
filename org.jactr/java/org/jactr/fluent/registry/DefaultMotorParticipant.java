@@ -11,10 +11,6 @@ import org.jactr.fluent.FluentChunk;
 import org.jactr.fluent.FluentChunkType;
 import org.jactr.modules.pm.motor.AbstractMotorModule;
 import org.jactr.modules.pm.motor.command.translators.AbstractManualTranslator;
-import org.jactr.modules.pm.motor.command.translators.PeckRecoilTranslator;
-import org.jactr.modules.pm.motor.command.translators.PeckTranslator;
-import org.jactr.modules.pm.motor.command.translators.PressKeyTranslator;
-import org.jactr.modules.pm.motor.command.translators.PunchTranslator;
 import org.jactr.modules.pm.motor.six.DefaultMotorModule6;
 
 public class DefaultMotorParticipant implements Consumer<IModel>
@@ -54,17 +50,18 @@ public class DefaultMotorParticipant implements Consumer<IModel>
           .slot("to-key").encode();
       FluentChunkType.fromParent(motorCommand).named("press-key").slot("key")
           .encode();
-      FluentChunkType.fromParent(motorCommand).named("click-mouse").encode();
+      FluentChunkType.fromParent(fingerCommand).named("click-mouse")
+          .slot("finger", definedChunks.get("index"))
+          .slot("hand", definedChunks.get("right")).encode();
       FluentChunkType.fromParent(handCommand).named("hand-to-mouse")
           .slot("hand", definedChunks.get("right")).encode();
       FluentChunkType.fromParent(handCommand).named("hand-to-home")
           .slot("hand", definedChunks.get("right")).encode();
       FluentChunkType.fromParent(motorCommand).named("move-cursor")
-          .slots("object", "loc", "device").encode();
+          .slots("object", "location", "device").encode();
       FluentChunkType
           .fromParent(model.getDeclarativeModule().getChunkType("clear").get())
-          .named("motor-clear")
-          .slot("muscle").encode();
+          .named("motor-clear").slot("muscle").encode();
 
       /*
        * do some parameter setting since this also installs default handlers
@@ -81,10 +78,6 @@ public class DefaultMotorParticipant implements Consumer<IModel>
           "0.05");
       motorModule.setParameter(AbstractManualTranslator.PECK_FITTS_COEFFICIENT,
           "0.075");
-      motorModule.setParameter(PunchTranslator.class.getName(), "true");
-      motorModule.setParameter(PeckTranslator.class.getName(), "true");
-      motorModule.setParameter(PeckRecoilTranslator.class.getName(), "true");
-      motorModule.setParameter(PressKeyTranslator.class.getName(), "true");
     }
     catch (Exception e)
     {

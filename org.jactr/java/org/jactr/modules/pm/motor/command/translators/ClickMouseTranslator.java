@@ -18,17 +18,17 @@ import org.jactr.modules.pm.motor.IMotorModule;
 
 import org.slf4j.LoggerFactory;
 
-public class PunchTranslator extends AbstractManualTranslator
+public class ClickMouseTranslator extends AbstractManualTranslator
 {
   /**
    * Logger definition
    */
   static final transient org.slf4j.Logger LOGGER = LoggerFactory
-      .getLogger(PunchTranslator.class);
+      .getLogger(ClickMouseTranslator.class);
 
   public boolean handles(ChunkTypeRequest request)
   {
-    return handles("punch", request);
+    return handles("click-mouse", request);
   }
 
   public IEfferentCommand translate(ChunkTypeRequest request,

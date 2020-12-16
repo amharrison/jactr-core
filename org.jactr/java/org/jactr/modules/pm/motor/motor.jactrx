@@ -54,7 +54,9 @@
 				<slot name="key" equals="null"/>
 			</chunk-type>
  
-			<chunk-type name="click-mouse" parent="motor-command">
+			<chunk-type name="click-mouse" parent="finger-command">
+			 <slot name="finger" equals="index"/>
+			 <slot name="hand" equals="right"/>
 			</chunk-type>
  
 			<chunk-type name="hand-to-mouse" parent="hand-command">
@@ -67,7 +69,7 @@
  
 			<chunk-type name="move-cursor" parent="motor-command">
 				<slot name="object" equals="null"/>
-				<slot name="loc" equals="null"/>
+				<slot name="location" equals="null"/>
 				<slot name="device" equals="null"/>
 			</chunk-type>
 			
