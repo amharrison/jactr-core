@@ -192,7 +192,7 @@ public class MuscleStateManager implements IEfferentListener
     {
       if (LOGGER.isWarnEnabled())
         LOGGER.warn("No position information available for "
-            + object.getIdentifier());
+            + MotorUtilities.getName(object));
       return;
     }
     if (LOGGER.isDebugEnabled())

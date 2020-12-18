@@ -162,8 +162,7 @@ public class VisualLocationManager implements IIndexManager
   private double getClosestXLocation(double x)
   {
     double half = _horizontalSpan / 2.0;
-    int xIndex = (int) Math
-        .ceil((x + half) / _horizontalSpan * _horizontalResolution);
+    int xIndex = (int) ((x + half) / _horizontalSpan * _horizontalResolution);
 
     return xIndex * _horizontalSpan / _horizontalResolution - half;
   }
@@ -171,8 +170,7 @@ public class VisualLocationManager implements IIndexManager
   private double getClosestYLocation(double y)
   {
     double half = _verticalSpan / 2.0;
-    int yIndex = (int) Math
-        .ceil((y + half) / _verticalSpan * _verticalResolution);
+    int yIndex = (int) ((y + half) / _verticalSpan * _verticalResolution);
 
     return yIndex * _verticalSpan / _verticalResolution - half;
   }
@@ -238,8 +236,8 @@ public class VisualLocationManager implements IIndexManager
     double xRes = _horizontalSpan / _horizontalResolution;
     double yRes = _verticalSpan / _verticalResolution;
 
-    int xIndex = (int) Math.ceil((x + halfWidth) / xRes);
-    int yIndex = (int) Math.ceil((y + halfHeight) / yRes);
+    int xIndex = (int) ((x + halfWidth) / xRes);
+    int yIndex = (int) ((y + halfHeight) / yRes);
 
     return yIndex * _verticalResolution + xIndex;
   }

@@ -58,7 +58,7 @@ public abstract class AbstractHandToTranslator extends AbstractManualTranslator
         IEfferentObject finger = agent.getEfferentObjectManager().get(fingerId);
   
         TranslateCommand fTranslate = (TranslateCommand) getTemplateNamed(
-            "translate", muscle).instantiate(agent, muscle);
+            "translate", muscle).instantiate(agent, finger);
   
         double[] fOrigin = MotorUtilities.getPosition(finger);
   

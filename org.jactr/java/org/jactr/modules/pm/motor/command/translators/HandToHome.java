@@ -28,7 +28,7 @@ public class HandToHome extends AbstractHandToTranslator
   @Override
   protected double[] getTarget(ChunkTypeRequest request)
   {
-    return new double[] { 28, 2 };
+    return new double[] { 7, 4 };
   }
 
 }

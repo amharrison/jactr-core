@@ -28,7 +28,7 @@ public class HandToMouse extends AbstractHandToTranslator
   @Override
   protected double[] getTarget(ChunkTypeRequest request)
   {
-    return new double[] { 7, 4 };
+    return new double[] { 28, 2 };
   }
 
 }

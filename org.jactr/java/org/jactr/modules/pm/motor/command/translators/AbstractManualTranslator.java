@@ -238,8 +238,8 @@ public abstract class AbstractManualTranslator extends AbstractTranslator
     double[] position = MotorUtilities.getPosition(rightHand);
     double tolerance = 0.1;
     // 7,4 is 'J'
-    return tolerance <= Math.abs(position[0] - 7)
-        && tolerance <= Math.abs(position[1] - 4);
+    return tolerance >= Math.abs(position[0] - 7)
+        && tolerance >= Math.abs(position[1] - 4);
   }
 
   protected boolean rightHandIsOnMouse(IModel model)
@@ -248,7 +248,7 @@ public abstract class AbstractManualTranslator extends AbstractTranslator
     double[] position = MotorUtilities.getPosition(rightHand);
     double tolerance = 0.1;
     // 28,2 is left mouse button
-    return tolerance <= Math.abs(position[0] - 28)
-        && tolerance <= Math.abs(position[1] - 2);
+    return tolerance >= Math.abs(position[0] - 28)
+        && tolerance >= Math.abs(position[1] - 2);
   }
 }
