@@ -8,8 +8,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
- 
-import org.slf4j.LoggerFactory;
 import org.commonreality.agents.IAgent;
 import org.jactr.core.buffer.six.IStatusBuffer;
 import org.jactr.core.chunk.IChunk;
@@ -55,6 +53,7 @@ import org.jactr.modules.pm.visual.memory.impl.map.PitchFeatureMap;
 import org.jactr.modules.pm.visual.memory.impl.map.SizeFeatureMap;
 import org.jactr.modules.pm.visual.memory.impl.map.ValueFeatureMap;
 import org.jactr.modules.pm.visual.memory.impl.map.VisibilityFeatureMap;
+import org.slf4j.LoggerFactory;
 
 public class DefaultVisualMemory extends AbstractPerceptualMemory implements
     IVisualMemory
@@ -290,8 +289,6 @@ public class DefaultVisualMemory extends AbstractPerceptualMemory implements
        */
       ISymbolicChunk sc = indexChunk.getSymbolicChunk();
       for (ISlot slot : expandedRequest.getSlots())
-        if (!slot.getName().equalsIgnoreCase(IVisualModule.SCREEN_X_SLOT)
-            && !slot.getName().equalsIgnoreCase(IVisualModule.SCREEN_Y_SLOT))
           try
           {
             value = slot.getValue();
