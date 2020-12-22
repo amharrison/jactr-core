@@ -2,6 +2,7 @@ package org.jactr.modules.pm.visual.memory.impl.encoder;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.commonreality.object.IAfferentObject;
@@ -14,6 +15,7 @@ import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.ISymbolicChunk;
 import org.jactr.core.module.declarative.IDeclarativeModule;
 import org.jactr.core.slot.IMutableSlot;
+import org.jactr.modules.pm.common.memory.IPerceptualMemory;
 import org.jactr.modules.pm.visual.memory.IVisualMemory;
 
 /**
@@ -68,6 +70,13 @@ public class ExtensibleVisualEncoder extends AbstractVisualEncoder
     _featureHandlers.put(Tuples.pair(crFeature, slotName), mapping);
   }
 
+  public void addFeatureHandler(String crFeature, String slotName)
+  {
+    addFeatureHandler(crFeature, slotName, (aff) -> {
+      return aff.getProperty(crFeature);
+    });
+  }
+
   /**
    * crFeature represents a 1:1 name match to named chunks (common for marking
    * chunks).
@@ -101,6 +110,30 @@ public class ExtensibleVisualEncoder extends AbstractVisualEncoder
     {
       return false;
     }
+  }
+
+  @Override
+  public boolean isDirty(IAfferentObject afferentObject, IChunk oldChunk,
+      IPerceptualMemory memory)
+  {
+    return super.isDirty(afferentObject, oldChunk, memory)
+        || handlersIsDirty(afferentObject, oldChunk, memory);
+  }
+
+  private boolean handlersIsDirty(IAfferentObject afferentObject,
+      IChunk oldChunk, IPerceptualMemory memory)
+  {
+    for (Pair<String, String> key : _featureHandlers.keySet())
+    {
+      /*
+       * first is common reality feature name, second is slot name.
+       */
+      Object slotValue = oldChunk.getSymbolicChunk().getSlot(key.getTwo())
+          .getValue();
+      Object resolvedCRValue = _featureHandlers.get(key).apply(afferentObject);
+      if (!Objects.equals(slotValue, resolvedCRValue)) return true;
+    }
+    return false;
   }
 
   @Override

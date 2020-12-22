@@ -46,6 +46,8 @@ public class DefaultMotorParticipant implements Consumer<IModel>
       FluentChunkType.fromParent(peck).named("peck-recoil").encode();
 
       FluentChunkType.fromParent(fingerCommand).named("punch").encode();
+      FluentChunkType.fromParent(fingerCommand).named("press").encode();
+      FluentChunkType.fromParent(fingerCommand).named("release").encode();
       FluentChunkType.fromParent(handCommand).named("point-hand-at-key")
           .slot("to-key").encode();
       FluentChunkType.fromParent(motorCommand).named("press-key").slot("key")

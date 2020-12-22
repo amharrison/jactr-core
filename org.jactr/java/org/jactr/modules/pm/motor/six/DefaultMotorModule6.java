@@ -21,7 +21,9 @@ import org.jactr.modules.pm.motor.command.translators.PeckRecoilTranslator;
 import org.jactr.modules.pm.motor.command.translators.PeckTranslator;
 import org.jactr.modules.pm.motor.command.translators.PointHandAtKey;
 import org.jactr.modules.pm.motor.command.translators.PressKeyTranslator;
+import org.jactr.modules.pm.motor.command.translators.PressTranslator;
 import org.jactr.modules.pm.motor.command.translators.PunchTranslator;
+import org.jactr.modules.pm.motor.command.translators.ReleaseTranslator;
 import org.slf4j.LoggerFactory;
 
 public class DefaultMotorModule6 extends AbstractMotorModule
@@ -90,6 +92,8 @@ public class DefaultMotorModule6 extends AbstractMotorModule
     translator.add(new PointHandAtKey());
     translator.add(new MoveCursorTranslator());
     translator.add(new ClickMouseTranslator());
+    translator.add(new PressTranslator());
+    translator.add(new ReleaseTranslator());
   }
 
 }

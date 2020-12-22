@@ -45,6 +45,12 @@
  
 			<chunk-type name="punch" parent="finger-command">
 			</chunk-type>
+			
+			<chunk-type name="press" parent="finger-command">
+      </chunk-type>
+      
+      <chunk-type name="release" parent="finger-command">
+      </chunk-type>
  
 			<chunk-type name="point-hand-at-key" parent="hand-command">
 				<slot name="to-key" equals="null"/>

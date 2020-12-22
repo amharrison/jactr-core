@@ -1,12 +1,10 @@
 package org.jactr.modules.pm.motor.command.translators;
 
 import org.commonreality.agents.IAgent;
-import org.commonreality.efferent.ICompoundCommand;
 import org.commonreality.efferent.IEfferentCommand;
 import org.commonreality.modalities.motor.MotorUtilities;
 import org.commonreality.object.IEfferentObject;
 import org.commonreality.sensors.keyboard.PressCommand;
-import org.commonreality.sensors.keyboard.ReleaseCommand;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.runtime.ACTRRuntime;
@@ -18,17 +16,17 @@ import org.jactr.modules.pm.motor.IMotorModule;
 
 import org.slf4j.LoggerFactory;
 
-public class PunchTranslator extends AbstractManualTranslator
+public class PressTranslator extends AbstractManualTranslator
 {
   /**
    * Logger definition
    */
   static final transient org.slf4j.Logger LOGGER = LoggerFactory
-      .getLogger(PunchTranslator.class);
+      .getLogger(PressTranslator.class);
 
   public boolean handles(ChunkTypeRequest request)
   {
-    return handles("punch", request);
+    return handles("press", request);
   }
 
   public IEfferentCommand translate(ChunkTypeRequest request,
@@ -38,11 +36,7 @@ public class PunchTranslator extends AbstractManualTranslator
     {
       IAgent agent = ACTRRuntime.getRuntime().getConnector().getAgent(model);
       IMotorModule motor = (IMotorModule) model.getModule(IMotorModule.class);
-      /*
-       * we need a compound, a press and a release
-       */
-      ICompoundCommand compound = (ICompoundCommand) getTemplateNamed(
-          "compound", muscle).instantiate(agent, muscle);
+
 
       double[] origin = MotorUtilities.getPosition(muscle);
       double[] target = new double[] { origin[0], origin[1], 0 };
@@ -52,14 +46,7 @@ public class PunchTranslator extends AbstractManualTranslator
           .instantiate(agent, muscle);
       press.press(origin, target, rate);
 
-      ReleaseCommand release = (ReleaseCommand) getTemplateNamed("release",
-          muscle).instantiate(agent, muscle);
-      release.release(target, origin, rate);
-
-      compound.add(press);
-      compound.add(release);
-
-      return compound;
+      return press;
     }
     catch (IllegalArgumentException iae)
     {
