@@ -4,16 +4,16 @@ package org.jactr.modules.pm.motor.six;
  * default logging
  */
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ISlot;
 import org.jactr.modules.pm.motor.IMotorModule;
 import org.jactr.modules.pm.motor.command.IMotorTimeEquation;
 import org.jactr.modules.pm.motor.command.IMovement;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author harrison
@@ -24,13 +24,13 @@ public class DefaultPreparationTimeEquation implements IMotorTimeEquation
    * Logger definition
    */
   static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
-                                                          .getLogger(DefaultPreparationTimeEquation.class);
+      .getLogger(DefaultPreparationTimeEquation.class);
 
-  static public final String         TIME_PER_FEATURE = "TimePerFeature";
+  static public final String                      TIME_PER_FEATURE = "TimePerFeature";
 
-  private double                     _timePerFeature  = 0.05;
+  private double                                  _timePerFeature  = 0.05;
 
-  private boolean                    _firstRun        = true;
+  private boolean                                 _firstRun        = true;
 
   public double compute(IMovement movement, IMotorModule module)
   {
@@ -38,8 +38,8 @@ public class DefaultPreparationTimeEquation implements IMotorTimeEquation
     {
       try
       {
-        _timePerFeature = Double.parseDouble(module
-            .getParameter(TIME_PER_FEATURE));
+        _timePerFeature = Double
+            .parseDouble(module.getParameter(TIME_PER_FEATURE));
       }
       catch (Exception e)
       {
@@ -56,20 +56,19 @@ public class DefaultPreparationTimeEquation implements IMotorTimeEquation
 
     if (last != null)
     {
-      if (LOGGER.isDebugEnabled())
-        LOGGER.debug("Comparing current movement " + movement
-            + " to last movement " + last);
+      if (LOGGER.isDebugEnabled()) LOGGER.debug("Comparing current movement "
+          + movement + " to last movement " + last);
       /*
        * calculate the savings
        */
       Map<String, Object> oldFeatures = generateSlotMap(last);
 
-      if (movement.getChunkTypeRequest().getChunkType() == last.getChunkTypeRequest()
-          .getChunkType())
+      if (movement.getChunkTypeRequest().getChunkType() == last
+          .getChunkTypeRequest().getChunkType())
       {
         prepTime -= _timePerFeature;
 
-        if (features.get(IMotorModule.MUSCLE_SLOT).equals(
+        if (Objects.equals(features.get(IMotorModule.MUSCLE_SLOT),
             oldFeatures.get(IMotorModule.MUSCLE_SLOT)))
         {
           prepTime -= _timePerFeature;
@@ -100,16 +99,13 @@ public class DefaultPreparationTimeEquation implements IMotorTimeEquation
       rtn.put(slot.getName(), slot.getValue());
 
     for (ISlot slot : movement.getChunkTypeRequest().getSlots())
-      if (((IConditionalSlot)slot).getCondition()==IConditionalSlot.EQUALS)
-      {
-        if (rtn.containsKey(slot.getName()))
-          rtn.put(slot.getName(), slot.getValue());
-        else if (LOGGER.isWarnEnabled())
-          LOGGER.warn("Ignoring invalid slot " + slot + " for chunk type "
-              + movementType);
-      }
-    
-    if (LOGGER.isDebugEnabled()) LOGGER.debug("Feature set for "+movement+" : "+rtn);
+      if (((IConditionalSlot) slot).getCondition() == IConditionalSlot.EQUALS) if (rtn.containsKey(slot.getName()))
+        rtn.put(slot.getName(), slot.getValue());
+      else if (LOGGER.isWarnEnabled()) LOGGER.warn("Ignoring invalid slot "
+          + slot + " for chunk type " + movementType);
+
+    if (LOGGER.isDebugEnabled())
+      LOGGER.debug("Feature set for " + movement + " : " + rtn);
 
     return rtn;
   }

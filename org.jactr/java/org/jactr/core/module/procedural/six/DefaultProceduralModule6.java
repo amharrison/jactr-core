@@ -380,14 +380,17 @@ public class DefaultProceduralModule6 extends AbstractModule
       }
     }
 
-    IProduction added = _productionStorage.add(production);
-    if (!added.isEncoded())
+    IProduction original = _productionStorage.add(production);
+    if (!original.isEncoded())
     {
-      added.encode();
-      fireProductionAdded(added);
+      original.encode();
+      fireProductionAdded(original);
     }
+    else
+      // merge and notify
+      fireProductionsMerged(original, production);
 
-    return production;
+    return original;
   }
 
   public CompletableFuture<IProduction> addProduction(
@@ -405,53 +408,6 @@ public class DefaultProceduralModule6 extends AbstractModule
 
   protected IProduction removeProductionInternal(IProduction production)
   {
-    ISymbolicProduction symProd = production.getSymbolicProduction();
-
-    /*
-     * we need all the chunktypes that this production matches against this info
-     * is used to accelerate conflict set assembly
-     */
-    // Set<IChunkType> candidateChunkTypes = new HashSet<IChunkType>();
-    /*
-     * in some cases where no chunktype can be infered, we just snag the buffer
-     * name
-     */
-    Set<String> bufferNames = new HashSet<String>();
-    // Set<String> ambiguousBufferNames = new HashSet<String>();
-    for (ICondition condition : symProd.getConditions())
-      if (condition instanceof ChunkTypeCondition)
-      {
-        ChunkTypeCondition ctc = (ChunkTypeCondition) condition;
-        ctc.getChunkType();
-
-        bufferNames.add(ctc.getBufferName());
-
-        // if (chunkType != null) candidateChunkTypes.add(chunkType);
-      }
-      else if (condition instanceof ChunkCondition)
-      {
-        ChunkCondition cc = (ChunkCondition) condition;
-        cc.getChunk().getSymbolicChunk().getChunkType();
-
-        bufferNames.add(cc.getBufferName());
-
-        // if (chunkType != null) candidateChunkTypes.add(chunkType);
-      }
-      else if (condition instanceof AbstractBufferCondition)
-      {
-        String bufferName = ((AbstractBufferCondition) condition)
-            .getBufferName();
-
-        if (condition instanceof VariableCondition) bufferNames.add(bufferName);
-
-        /*
-         * this will catch all queries and variable conditions. These are
-         * production conditions from which we can't immediately determine the
-         * chunktype of the buffer contents
-         */
-        // ambiguousBufferNames.add(bufferName);
-      }
-
     _productionStorage.remove(production);
 
     return production;

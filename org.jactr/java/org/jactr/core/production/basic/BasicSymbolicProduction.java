@@ -24,7 +24,6 @@ import org.jactr.core.production.action.IAction;
 import org.jactr.core.production.condition.ICondition;
 import org.jactr.core.production.event.ProductionEvent;
 import org.jactr.core.utils.DefaultAdaptable;
-import org.jactr.core.utils.collections.CachedCollection;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -53,8 +52,8 @@ public class BasicSymbolicProduction extends DefaultAdaptable implements
   public BasicSymbolicProduction(AbstractProduction production, IModel model)
   {
     _production = production;
-    _actions = new CachedCollection<IAction>(new ArrayList<IAction>(3));
-    _conditions = new CachedCollection<ICondition>(new ArrayList<ICondition>(3));
+    _actions = new ArrayList<IAction>(3);
+    _conditions = new ArrayList<ICondition>(3);
   }
 
   public void addAction(IAction cons)

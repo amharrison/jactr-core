@@ -38,7 +38,7 @@ public class ReleaseTranslator extends AbstractManualTranslator
       IMotorModule motor = (IMotorModule) model.getModule(IMotorModule.class);
 
       double[] origin = MotorUtilities.getPosition(muscle);
-      double[] target = new double[] { origin[0], origin[1] };
+      double[] target = new double[] { origin[0], origin[1], 1 };
       double[] rate = computeRate(origin, target, getMotorBurstTime(motor) / 2);
 
 
