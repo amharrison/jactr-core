@@ -13,11 +13,12 @@
  */
 package org.jactr.core.production.condition;
 
- 
-import org.slf4j.LoggerFactory;
+import java.util.Objects;
+
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.model.IModel;
 import org.jactr.core.utils.ModelerException;
+import org.slf4j.LoggerFactory;
 
 /**
  * @bug why is this not an interface with an abstract implementation like
@@ -30,9 +31,9 @@ public abstract class AbstractBufferCondition extends AbstractSlotCondition
    * Logger definition
    */
   static final private org.slf4j.Logger LOGGER = LoggerFactory
-                                      .getLogger(AbstractBufferCondition.class);
+      .getLogger(AbstractBufferCondition.class);
 
-  private String           _bufferName;
+  private String                        _bufferName;
 
   public AbstractBufferCondition(String bufferName)
   {
@@ -68,9 +69,8 @@ public abstract class AbstractBufferCondition extends AbstractSlotCondition
   public int hashCode()
   {
     final int prime = 31;
-    int result = 1;
-    result = prime * result
-        + (_bufferName == null ? 0 : _bufferName.hashCode());
+    int result = super.hashCode();
+    result = prime * result + Objects.hash(_bufferName);
     return result;
   }
 
@@ -78,15 +78,10 @@ public abstract class AbstractBufferCondition extends AbstractSlotCondition
   public boolean equals(Object obj)
   {
     if (this == obj) return true;
-    if (obj == null) return false;
+    if (!super.equals(obj)) return false;
     if (getClass() != obj.getClass()) return false;
     AbstractBufferCondition other = (AbstractBufferCondition) obj;
-    if (_bufferName == null)
-    {
-      if (other._bufferName != null) return false;
-    }
-    else if (!_bufferName.equals(other._bufferName)) return false;
-    return true;
+    return Objects.equals(_bufferName, other._bufferName);
   }
 
 }
