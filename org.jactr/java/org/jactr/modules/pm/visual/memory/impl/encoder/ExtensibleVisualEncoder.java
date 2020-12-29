@@ -64,6 +64,11 @@ public class ExtensibleVisualEncoder extends AbstractVisualEncoder
     _crTypeName = crTypeName;
   }
 
+  public String getCommonRealityTypeName()
+  {
+    return _crTypeName;
+  }
+
   public void addFeatureHandler(String crFeature, String slotName,
       Function<IAfferentObject, Object> mapping)
   {

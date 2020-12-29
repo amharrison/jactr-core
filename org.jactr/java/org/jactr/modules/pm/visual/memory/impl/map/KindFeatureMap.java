@@ -1,5 +1,6 @@
 package org.jactr.modules.pm.visual.memory.impl.map;
 
+import java.util.ArrayList;
 /*
  * default logging
  */
@@ -21,7 +22,9 @@ import org.jactr.core.slot.BasicSlot;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.utils.collections.FastCollectionFactory;
 import org.jactr.core.utils.collections.FastSetFactory;
+import org.jactr.modules.pm.common.memory.IPerceptualEncoder;
 import org.jactr.modules.pm.visual.IVisualModule;
+import org.jactr.modules.pm.visual.memory.impl.encoder.ExtensibleVisualEncoder;
 import org.slf4j.LoggerFactory;
 
 public class KindFeatureMap extends AbstractVisualFeatureMap<String[]>
@@ -29,8 +32,8 @@ public class KindFeatureMap extends AbstractVisualFeatureMap<String[]>
   /**
    * Logger definition
    */
-  static private final transient org.slf4j.Logger      LOGGER = LoggerFactory
-                                                                  .getLogger(KindFeatureMap.class);
+  static private final transient org.slf4j.Logger      LOGGER    = LoggerFactory
+      .getLogger(KindFeatureMap.class);
 
   private TreeMap<String, Collection<IIdentifier>>     _kindMap;
 
@@ -40,6 +43,10 @@ public class KindFeatureMap extends AbstractVisualFeatureMap<String[]>
 
   private Map<IIdentifier, Set<IChunkType>>            _currentCTKindMap;
 
+  private boolean                                      _firstRun = true;
+
+  private Map<String, String>                          _rewriteMap;
+
   public KindFeatureMap()
   {
     super(IVisualModule.KIND_SLOT, IVisualPropertyHandler.TYPE);
@@ -47,6 +54,7 @@ public class KindFeatureMap extends AbstractVisualFeatureMap<String[]>
     _currentKindMap = new HashMap<IIdentifier, String[]>();
     _ctKindMap = new HashMap<IChunkType, Collection<IIdentifier>>();
     _currentCTKindMap = new HashMap<IIdentifier, Set<IChunkType>>();
+    _rewriteMap = new TreeMap<>();
   }
 
   @Override
@@ -87,9 +95,26 @@ public class KindFeatureMap extends AbstractVisualFeatureMap<String[]>
   @Override
   protected String[] extractInformation(IAfferentObject afferentObject)
   {
+    if (_firstRun)
+    {
+      // grab the encoders
+      for (IPerceptualEncoder encoder : getPerceptualMemory()
+          .getEncoders(new ArrayList<>()))
+        if (encoder instanceof ExtensibleVisualEncoder)
+        {
+          ExtensibleVisualEncoder ave = (ExtensibleVisualEncoder) encoder;
+          _rewriteMap.put(ave.getCommonRealityTypeName(),
+              ave.getChunkTypeName());
+        }
+      _firstRun = false;
+    }
+
     try
     {
-      return getHandler().getTypes(afferentObject);
+      String[] rtn = getHandler().getTypes(afferentObject);
+      for (int i = 0; i < rtn.length; i++)
+        rtn[i] = _rewriteMap.getOrDefault(rtn[i], rtn[i]);
+      return rtn;
     }
     catch (UnknownPropertyNameException e)
     {
@@ -149,10 +174,10 @@ public class KindFeatureMap extends AbstractVisualFeatureMap<String[]>
       }
 
     IChunkType actualKind = transformKind(kind);
-    if (actualKind != null) for (Map.Entry<IChunkType, Collection<IIdentifier>> entry : _ctKindMap
-        .entrySet())
-      if(!entry.getKey().isA(actualKind))
-        container.addAll(entry.getValue());
+    if (actualKind != null)
+      for (Map.Entry<IChunkType, Collection<IIdentifier>> entry : _ctKindMap
+          .entrySet())
+      if (!entry.getKey().isA(actualKind)) container.addAll(entry.getValue());
   }
 
   private void equals(String kind, Set<IIdentifier> container)
@@ -161,8 +186,9 @@ public class KindFeatureMap extends AbstractVisualFeatureMap<String[]>
     if (ids != null) container.addAll(ids);
 
     IChunkType actualKind = transformKind(kind);
-    if (actualKind != null) for (Map.Entry<IChunkType, Collection<IIdentifier>> entry : _ctKindMap
-        .entrySet())
+    if (actualKind != null)
+      for (Map.Entry<IChunkType, Collection<IIdentifier>> entry : _ctKindMap
+          .entrySet())
       if (entry.getKey().isA(actualKind)) container.addAll(entry.getValue());
   }
 
@@ -180,8 +206,8 @@ public class KindFeatureMap extends AbstractVisualFeatureMap<String[]>
   {
     try
     {
-      return getPerceptualMemory().getModule().getModel()
-          .getDeclarativeModule().getChunkType(chunkTypeName).get();
+      return getPerceptualMemory().getModule().getModel().getDeclarativeModule()
+          .getChunkType(chunkTypeName).get();
     }
     catch (Exception e)
     {
@@ -249,31 +275,30 @@ public class KindFeatureMap extends AbstractVisualFeatureMap<String[]>
       try
       {
         // attempt to resolve it..
-      IChunkType chunkType = encodedChunk.getModel().getDeclarativeModule()
-          .getChunkType(kind).get();
+        IChunkType chunkType = encodedChunk.getModel().getDeclarativeModule()
+            .getChunkType(kind).get();
 
-      Object kindValue = kind;
-      if (chunkType != null)
-      {
-        if (LOGGER.isDebugEnabled())
-          LOGGER.debug("Got chunktype " + chunkType + " for " + kind);
-        kindValue = chunkType;
-      }
-      else if (LOGGER.isDebugEnabled())
-        LOGGER.debug("No chunktype matching " + kind
-            + " could be found, using string value");
+        Object kindValue = kind;
+        if (chunkType != null)
+        {
+          if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Got chunktype " + chunkType + " for " + kind);
+          kindValue = chunkType;
+        }
+        else if (LOGGER.isDebugEnabled()) LOGGER.debug("No chunktype matching "
+            + kind + " could be found, using string value");
 
-      if (kindMatchesPattern(originalSearchRequest, kindValue))
-      {
-        mutableRequest
-            .addSlot(new BasicSlot(IVisualModule.KIND_SLOT, kindValue));
-        return;
+        if (kindMatchesPattern(originalSearchRequest, kindValue))
+        {
+          mutableRequest
+              .addSlot(new BasicSlot(IVisualModule.KIND_SLOT, kindValue));
+          return;
+        }
       }
-    }
-    catch (Exception e)
-    {
-      throw new RuntimeException("Failed to get kind ", e);
-    }
+      catch (Exception e)
+      {
+        throw new RuntimeException("Failed to get kind ", e);
+      }
 
   }
 

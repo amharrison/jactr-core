@@ -48,6 +48,10 @@
   
 			<chunk-type name="text" parent="visual-object">
 			</chunk-type>
+			
+			<chunk-type name="button-object" parent="gui"/>
+			<chunk-type name="label-object" parent="gui"/>
+			<chunk-type name="menu-object" parent="gui"/>
   
 			<chunk-type name="empty-space" parent="visual-object">
 			</chunk-type>

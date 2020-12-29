@@ -64,6 +64,11 @@ public abstract class AbstractVisualEncoder implements IPerceptualEncoder
     _chunkTypeName = chunkTypeName;
   }
 
+  public String getChunkTypeName()
+  {
+    return _chunkTypeName;
+  }
+
   /**
    * return the visual location (defined by
    * {@link IVisualPropertyHandler#RETINAL_LOCATION}) of the object. If no

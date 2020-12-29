@@ -18,10 +18,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.Executor;
 
+import org.commonreality.agents.IAgent;
 import org.commonreality.identifier.IIdentifier;
+import org.commonreality.net.message.notification.NotificationMessage;
+import org.commonreality.notification.impl.SimpleMapNotification;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
@@ -45,6 +49,7 @@ import org.jactr.modules.pm.visual.buffer.IVisualLocationBuffer;
 import org.jactr.modules.pm.visual.event.IVisualModuleListener;
 import org.jactr.modules.pm.visual.event.VisualModuleEvent;
 import org.jactr.modules.pm.visual.memory.IVisualMemory;
+import org.jactr.modules.pm.visual.memory.impl.encoder.AbstractVisualEncoder;
 import org.jactr.modules.pm.visual.six.DefaultEncodingTimeEquation;
 import org.jactr.modules.pm.visual.six.DefaultSearchTimeEquation;
 import org.slf4j.LoggerFactory;
@@ -489,6 +494,34 @@ public abstract class AbstractVisualModule extends AbstractPerceptualModule
         else if (LOGGER.isDebugEnabled())
           LOGGER.debug("could not find identifier for " + visualChunk);
 
+        // visual-location
+        IChunk visLocation = AbstractVisualEncoder
+            .getVisualLocation(visualChunk, getVisualMemory());
+        notifyFixation(visLocation, identifier);
+      }
+
+      private void notifyFixation(IChunk visLocation,
+          IIdentifier fixationIdentifier)
+      {
+        double[] retino = AbstractVisualEncoder.getLocation(visLocation);
+        if (retino != null && fixationIdentifier != null)
+        {
+          // signal
+          Map<String, Object> notificationData = new TreeMap<String, Object>();
+          notificationData.put("fixation.point", retino);
+          notificationData.put("fixation.identifier", fixationIdentifier);
+
+          IAgent agent = ACTRRuntime.getRuntime().getConnector()
+              .getAgent(getModel());
+
+          NotificationMessage message = new NotificationMessage(
+              agent.getIdentifier(), fixationIdentifier.getOwner(),
+              new SimpleMapNotification<String, Object>(
+                  agent.getNotificationManager().createNotificationIdentifier(
+                      "fixation"),
+                  notificationData));
+          agent.send(message);
+        }
       }
 
       public void perceptIndexFound(IPerceptualMemoryModuleEvent event)
@@ -504,7 +537,15 @@ public abstract class AbstractVisualModule extends AbstractPerceptualModule
 
       public void trackedObjectMoved(VisualModuleEvent event)
       {
-        // TODO Auto-generated method stub
+        IChunk visualChunk = event.getChunk();
+        if (visualChunk.hasBeenDisposed()) return;
+
+        IIdentifier identifier = (IIdentifier) visualChunk
+            .getMetaData(IPerceptualEncoder.COMMONREALITY_IDENTIFIER_META_KEY);
+
+        IChunk visLocation = AbstractVisualEncoder
+            .getVisualLocation(visualChunk, getVisualMemory());
+        notifyFixation(visLocation, identifier);
 
       }
 

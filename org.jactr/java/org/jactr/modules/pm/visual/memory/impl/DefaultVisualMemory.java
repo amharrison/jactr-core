@@ -32,10 +32,12 @@ import org.jactr.modules.pm.common.memory.map.IFINSTFeatureMap;
 import org.jactr.modules.pm.common.memory.map.IFeatureMap;
 import org.jactr.modules.pm.visual.IVisualModule;
 import org.jactr.modules.pm.visual.memory.IVisualMemory;
+import org.jactr.modules.pm.visual.memory.impl.encoder.ButtonEncoder;
 import org.jactr.modules.pm.visual.memory.impl.encoder.CursorEncoder;
 import org.jactr.modules.pm.visual.memory.impl.encoder.EmptySpaceEncoder;
-import org.jactr.modules.pm.visual.memory.impl.encoder.GUIEncoder;
+import org.jactr.modules.pm.visual.memory.impl.encoder.LabelEncoder;
 import org.jactr.modules.pm.visual.memory.impl.encoder.LineEncoder;
+import org.jactr.modules.pm.visual.memory.impl.encoder.MenuEncoder;
 import org.jactr.modules.pm.visual.memory.impl.encoder.PhraseEncoder;
 import org.jactr.modules.pm.visual.memory.impl.encoder.TextEncoder;
 import org.jactr.modules.pm.visual.memory.impl.filter.AttendedVisualLocationFilter;
@@ -101,7 +103,9 @@ public class DefaultVisualMemory extends AbstractPerceptualMemory implements
     addEncoder(new TextEncoder());
     addEncoder(new PhraseEncoder());
     addEncoder(new LineEncoder());
-    addEncoder(new GUIEncoder());
+    addEncoder(new ButtonEncoder());
+    addEncoder(new MenuEncoder());
+    addEncoder(new LabelEncoder());
     addEncoder(new EmptySpaceEncoder());
     addEncoder(new CursorEncoder());
 
