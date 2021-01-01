@@ -3,20 +3,23 @@ package org.jactr.tools.async;
 import java.util.Map;
 import java.util.function.Supplier;
 
-/*
- * default logging
- */
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.model.IModel;
+import org.jactr.core.module.procedural.storage.DefaultProductionStorage;
+import org.jactr.core.module.procedural.storage.IProductionStorage;
 import org.jactr.fluent.FluentAction;
 import org.jactr.fluent.FluentChunk;
 import org.jactr.fluent.FluentChunkType;
 import org.jactr.fluent.FluentCondition;
 import org.jactr.fluent.FluentModel;
 import org.jactr.fluent.FluentProduction;
+
+/*
+ * default logging
+ */
+
+import org.slf4j.LoggerFactory;
 
 public class FluentSemantic implements Supplier<IModel>
 {
@@ -26,8 +29,14 @@ public class FluentSemantic implements Supplier<IModel>
   static private final transient org.slf4j.Logger LOGGER = LoggerFactory
       .getLogger(FluentSemantic.class);
 
+
   @Override
   public IModel get()
+  {
+    return get(new DefaultProductionStorage());
+  }
+
+  public IModel get(IProductionStorage productionStorage)
   {
     String[] chunkConstants = { "shark", "dangerous", "true", "locomotion",
         "swimming", "category", "fish", "salmon", "edible", "breathe", "gills",
@@ -57,6 +66,8 @@ public class FluentSemantic implements Supplier<IModel>
     try
     {
       IModel model = FluentModel.named("semantic").withCoreModules().build();
+
+      model.getProceduralModule().setProductionStorage(productionStorage);
 
       IChunkType propertyType = FluentChunkType.from(model)
           .slots("object", "attribute", "value").encode();
