@@ -124,6 +124,14 @@ public class DefaultProceduralModule6 extends AbstractModule
 
   static public final String                                                ENABLE_PARALLEL_INSTANTIATIONS_PARAM = "EnableParallelInstantiations";
 
+  static public final String                                                PRODUCTION_SELECTOR_PARAM            = "ProductionSelectorClass";
+
+  static public final String                                                PRODUCTION_INSTANTIATOR_PARAM        = "ProductionInstantiatorClass";
+
+  static public final String                                                CONFLICT_SET_ASSEMBLER_PARAM         = "ConflictSetAssemblerClass";
+
+  static public final String                                                PRODUCTION_STORAGE_PARAM             = "ProductionStorageClass";
+
   // private Collection<Map<String, Object>> _provisionalBindings;
 
   public DefaultProceduralModule6()
@@ -780,6 +788,14 @@ public class DefaultProceduralModule6 extends AbstractModule
       return "" + getDefaultProductionFiringTime();
     if (ENABLE_PARALLEL_INSTANTIATIONS_PARAM.equalsIgnoreCase(key))
       return "" + isParallelInstantiationsEnabled();
+    if (CONFLICT_SET_ASSEMBLER_PARAM.equalsIgnoreCase(key))
+      return getConflictSetAssembler().getClass().getName();
+    if (PRODUCTION_INSTANTIATOR_PARAM.equalsIgnoreCase(key))
+      return getProductionInstantiator().getClass().getName();
+    if (PRODUCTION_SELECTOR_PARAM.equalsIgnoreCase(key))
+      return getProductionSelector().getClass().getName();
+    if (PRODUCTION_STORAGE_PARAM.equalsIgnoreCase(key))
+      return getProductionStorage().getClass().getName();
     return null;
   }
 
@@ -801,6 +817,10 @@ public class DefaultProceduralModule6 extends AbstractModule
     rtn.add(DEFAULT_PRODUCTION_FIRING_TIME);
     rtn.add(NUMBER_OF_PRODUCTIONS_FIRED);
     rtn.add(ENABLE_PARALLEL_INSTANTIATIONS_PARAM);
+    rtn.add(PRODUCTION_STORAGE_PARAM);
+    rtn.add(PRODUCTION_INSTANTIATOR_PARAM);
+    rtn.add(PRODUCTION_SELECTOR_PARAM);
+    rtn.add(CONFLICT_SET_ASSEMBLER_PARAM);
     return rtn;
   }
 
@@ -808,6 +828,7 @@ public class DefaultProceduralModule6 extends AbstractModule
    * @see org.jactr.core.utils.parameter.IParameterized#setParameter(java.lang.String,
    *      java.lang.String)
    */
+  @SuppressWarnings("unchecked")
   public void setParameter(String key, String value)
   {
     if (NUMBER_OF_PRODUCTIONS_FIRED.equalsIgnoreCase(key))
@@ -822,6 +843,51 @@ public class DefaultProceduralModule6 extends AbstractModule
     else if (ENABLE_PARALLEL_INSTANTIATIONS_PARAM.equalsIgnoreCase(key))
       setParallelInstantiationsEnabled(
           ParameterHandler.booleanInstance().coerce(value).booleanValue());
+    else if (CONFLICT_SET_ASSEMBLER_PARAM.equalsIgnoreCase(key))
+      try
+      {
+        setConflictSetAssembler(((Class<IConflictSetAssembler>) ParameterHandler
+            .classInstance().coerce(value)).getConstructor().newInstance());
+      }
+      catch (Exception e)
+      {
+        LOGGER.error("DefaultProceduralModule6.setParameter " + key
+            + " threw Exception : ", e);
+      }
+    else if (PRODUCTION_INSTANTIATOR_PARAM.equalsIgnoreCase(key))
+      try
+      {
+        setProductionInstantiator(
+            ((Class<IProductionInstantiator>) ParameterHandler.classInstance()
+                .coerce(value)).getConstructor().newInstance());
+      }
+      catch (Exception e)
+      {
+        LOGGER.error("DefaultProceduralModule6.setParameter " + key
+            + " threw Exception : ", e);
+      }
+    else if (PRODUCTION_SELECTOR_PARAM.equalsIgnoreCase(key))
+      try
+      {
+        setProductionSelector(((Class<IProductionSelector>) ParameterHandler
+            .classInstance().coerce(value)).getConstructor().newInstance());
+      }
+      catch (Exception e)
+      {
+        LOGGER.error("DefaultProceduralModule6.setParameter " + key
+            + " threw Exception : ", e);
+      }
+    else if (PRODUCTION_STORAGE_PARAM.equalsIgnoreCase(key))
+      try
+      {
+        setProductionStorage(((Class<IProductionStorage>) ParameterHandler
+            .classInstance().coerce(value)).getConstructor().newInstance());
+      }
+      catch (Exception e)
+      {
+        LOGGER.error("DefaultProceduralModule6.setParameter " + key
+            + " threw Exception : ", e);
+      }
     else if (LOGGER.isWarnEnabled()) LOGGER.warn(
         String.format("%s doesn't recognize %s. Available parameters : %s",
             getClass().getSimpleName(), key, getSetableParameters()));

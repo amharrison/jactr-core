@@ -7,6 +7,7 @@ import org.jactr.core.production.condition.ICondition;
 import org.jactr.core.production.condition.ProxyCondition;
 import org.jactr.core.production.condition.VariableCondition;
 import org.jactr.core.slot.ISlotContainer;
+import org.jactr.scripting.condition.ScriptableCondition;
 
 import com.google.common.hash.Funnel;
 import com.google.common.hash.PrimitiveSink;
@@ -36,6 +37,9 @@ public enum ConditionFunnel implements Funnel<ICondition> {
 
     if (from instanceof VariableCondition)
       into.putUnencodedChars(((VariableCondition) from).getVariableName());
+
+    if (from instanceof ScriptableCondition)
+      into.putUnencodedChars(((ScriptableCondition) from).getScript());
   }
 
   private void bufferFunnel(IBufferCondition bufferCondition,

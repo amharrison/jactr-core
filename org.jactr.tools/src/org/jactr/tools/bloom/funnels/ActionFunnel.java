@@ -10,6 +10,7 @@ import org.jactr.core.production.action.OutputAction;
 import org.jactr.core.production.action.ProxyAction;
 import org.jactr.core.production.action.SetAction;
 import org.jactr.core.slot.ISlotContainer;
+import org.jactr.scripting.action.ScriptableAction;
 
 import com.google.common.hash.Funnel;
 import com.google.common.hash.PrimitiveSink;
@@ -55,6 +56,9 @@ public enum ActionFunnel implements Funnel<IAction> {
         referant = ((IChunk) referant).getSymbolicChunk().getName();
       into.putUnencodedChars(referant.toString());
     }
+
+    if (from instanceof ScriptableAction)
+      into.putUnencodedChars(((ScriptableAction) from).getScript());
   }
 
   private void bufferFunnel(IBufferAction bufferAction, PrimitiveSink into)
