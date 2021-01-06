@@ -32,7 +32,7 @@ public class DefaultVisualParticipant implements Consumer<IModel>
 
     IChunkType visLoc = FluentChunkType.from(model).named("visual-location")
         .slots("screen-x", "screen-y", "distance", "color", "size", "kind",
-            "nearest", "value")
+            "value")
         .encode();
 
     FluentChunkType.fromParent(visLoc).named("set-default-visual-search");

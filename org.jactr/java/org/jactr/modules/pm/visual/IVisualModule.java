@@ -102,7 +102,7 @@ public interface IVisualModule extends IPerceptualMemoryModule
   /**
    * Comment for <code>NEAREST</code>
    */
-  static public final String NEAREST_SLOT                     = "nearest";
+  static public final String NEAREST_SLOT               = ":nearest";
 
   /**
    * Comment for <code>OBJECTS</code>

@@ -20,9 +20,9 @@
 				<slot name="color" equals="null"/>
 				<slot name="size" equals="null"/>
 				<slot name="kind" equals="null"/>
-				<slot name="nearest" equals="null"/>
 				<slot name="value" equals="null"/>
    <!-- 
+				<slot name="nearest" equals="null"/>
 				<slot name="objects" equals="null"/>
     -->
 			</chunk-type>

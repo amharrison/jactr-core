@@ -70,7 +70,7 @@ public class FluentVisual implements Supplier<IModel>
 
           .action(FluentAction.add("visual-location", visLoc)
               .slot(":attended", null)
-              .slot("nearest",
+              .slot(":nearest",
                   model.getDeclarativeModule().getChunk("current").get())
               .slot("kind",
                   model.getDeclarativeModule().getChunkType("text").get())
