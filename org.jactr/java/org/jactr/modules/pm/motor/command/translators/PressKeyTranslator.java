@@ -74,7 +74,7 @@ public class PressKeyTranslator extends AbstractManualTranslator
         .map((id) -> {
           return manager.get(id);
         }).filter((eff) -> {
-          return MotorUtilities.isMotor(eff);
+          return MotorUtilities.isMotor(eff) && isEndEffector(eff);
         }).collect(Collectors.minBy(Comparators.byDoubleFunction((eff) -> {
           double[] muscleLocation = MotorUtilities.getPosition(eff);
           if (muscleLocation == null) return Double.MAX_VALUE;
@@ -85,6 +85,11 @@ public class PressKeyTranslator extends AbstractManualTranslator
       throw new IllegalArgumentException("No muscle close to key?");
 
     return closest.get();
+  }
+
+  protected boolean isEndEffector(IEfferentObject efferentObject)
+  {
+    return MotorUtilities.getChildIdentifiers(efferentObject).size() == 0;
   }
 
   /**
