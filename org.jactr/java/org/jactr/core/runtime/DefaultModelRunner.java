@@ -226,7 +226,7 @@ public class DefaultModelRunner implements Runnable
     if (rtn < waitForTime)
     {
       LOGGER
-          .error(String
+          .warn(String
               .format(
                   "WARNING: Time discrepancy detected. Clock regression : %.10f(returned) < %.10f(desired). Should be >=",
                   rtn, waitForTime));
