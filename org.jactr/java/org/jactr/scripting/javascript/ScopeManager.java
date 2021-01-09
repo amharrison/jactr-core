@@ -63,7 +63,9 @@ public class ScopeManager
     {
       if (_engine != null && _publicScope != null) return;
 
-      _engine = new ScriptEngineManager().getEngineByName("JavaScript");
+      System.setProperty("polyglot.js.nashorn-compat", "true");
+
+      _engine = new ScriptEngineManager().getEngineByName("graal.js");
       _publicScope = _engine.getContext();
 
       defineVariable(_publicScope, "out", System.out);

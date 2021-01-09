@@ -8,8 +8,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.logging.Logger;
 import org.jactr.core.model.IModel;
@@ -22,6 +20,7 @@ import org.jactr.core.queue.ITimedEvent;
 import org.jactr.core.queue.timedevents.AbstractTimedEvent;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.slot.IMutableSlot;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author harrison To change the template for this generated type comment go to
@@ -112,7 +111,7 @@ public class ScriptSupport
     return _bindings.get(variableName);
   }
 
-  public void requires(Object... variableNames) throws CannotMatchException
+  public void requires(String... variableNames) throws CannotMatchException
   {
     for (Object variableName : variableNames)
     {
