@@ -18,8 +18,6 @@ import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
- 
-import org.slf4j.LoggerFactory;
 import org.commonreality.time.impl.BasicClock;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.model.ICycleProcessor;
@@ -31,6 +29,7 @@ import org.jactr.core.production.IInstantiation;
 import org.jactr.core.queue.TimedEventQueue;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.utils.collections.FastCollectionFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * default cycle control for the model
@@ -42,18 +41,18 @@ public class DefaultCycleProcessor6 implements ICycleProcessor
   /**
    * logger definition
    */
-  static private final transient org.slf4j.Logger     LOGGER                            = LoggerFactory
+  static private final transient org.slf4j.Logger LOGGER                            = LoggerFactory
       .getLogger(DefaultCycleProcessor6.class);
 
-  private double               _nextPossibleProductionFiringTime = 0;
+  private double                                  _nextPossibleProductionFiringTime = 0;
 
-  private Collection<Runnable> _executeBefore;
+  private Collection<Runnable>                    _executeBefore;
 
-  private Collection<Runnable> _executeAfter;
+  private Collection<Runnable>                    _executeAfter;
 
-  private volatile boolean     _isExecuting                      = false;
+  private volatile boolean                        _isExecuting                      = false;
 
-  private final double         TEMPORAL_TOLERANCE                = 0.0001;
+  private final double                            TEMPORAL_TOLERANCE                = 0.0001;
 
   public DefaultCycleProcessor6()
   {
@@ -190,34 +189,34 @@ public class DefaultCycleProcessor6 implements ICycleProcessor
     if (Double.isInfinite(productionFiringTime)
         || Double.isNaN(productionFiringTime))
       if (queue.isEmpty() && !eventsHaveFired)
-      {
+    {
       if (!model.isPersistentExecutionEnabled())
       {
-      /*
-       * nothing to do, no production fired, and we aren't required to stay
-       * running. lets empty the goal buffer to permit empty productions (w/ no
-       * goal) to fire. if the goal buffer is already empty, signal quit
-       */
-      IActivationBuffer goalBuffer = model
-          .getActivationBuffer(IActivationBuffer.GOAL);
-      if (goalBuffer != null && goalBuffer.getSourceChunk() != null)
-      goalBuffer.clear();
-      else
-      return Double.NaN; // signal quit
+        /*
+         * nothing to do, no production fired, and we aren't required to stay
+         * running. lets empty the goal buffer to permit empty productions (w/
+         * no goal) to fire. if the goal buffer is already empty, signal quit
+         */
+        IActivationBuffer goalBuffer = model
+            .getActivationBuffer(IActivationBuffer.GOAL);
+        if (goalBuffer != null && goalBuffer.getSourceChunk() != null)
+          goalBuffer.clear();
+        else
+          return Double.NaN; // signal quit
       }
-      }
+    }
       /*
        * we only skip cycles if no events have fired. If events have fired, then
        * productions might be able to fire..
        */
       else if (model.isCycleSkippingEnabled())
-      {
+    {
       if (eventsHaveFired)
-      nextWaitTime = Math.min(nextEventFiringTime, nextProductionFiringTime);
+        nextWaitTime = Math.min(nextEventFiringTime, nextProductionFiringTime);
       else
       {
-      nextWaitTime = nextEventFiringTime;
-      nextProductionFiringTime = nextEventFiringTime;
+        nextWaitTime = nextEventFiringTime;
+        nextProductionFiringTime = nextEventFiringTime;
       }
 
       /*
@@ -227,7 +226,7 @@ public class DefaultCycleProcessor6 implements ICycleProcessor
           / model.getProceduralModule().getDefaultProductionFiringTime());
       cycleDelta--;
       model.setCycle(model.getCycle() + cycleDelta);
-      }
+    }
 
     /*
      * if the two are absurdly close, just take the larger of the two. this

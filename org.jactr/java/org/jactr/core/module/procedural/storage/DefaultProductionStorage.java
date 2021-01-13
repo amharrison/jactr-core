@@ -60,9 +60,9 @@ public class DefaultProductionStorage implements IProductionStorage
                                                                                          public void childAdded(
                                                                                              ChunkTypeEvent cte)
                                                                                          {
-                                                                                                                                                                /*
-                                                                                                                                                                 * reindex
-                                                                                                                                                                 */
+                                                                                                                                                                      /*
+                                                                                                                                                                       * reindex
+                                                                                                                                                                       */
                                                                                            Set<IProduction> candidates = FastSetFactory
                                                                                                .newInstance();
                                                                                            for (IActivationBuffer buffer : getProceduralModule()
@@ -118,13 +118,17 @@ public class DefaultProductionStorage implements IProductionStorage
 
   }
 
-  /* (non-Javadoc)
-   * @see org.jactr.core.module.procedural.storage.IProductionStorage#setProceduralModule(org.jactr.core.module.procedural.IProceduralModule)
+  /*
+   * (non-Javadoc)
+   * @see org.jactr.core.module.procedural.storage.IProductionStorage#
+   * setProceduralModule(org.jactr.core.module.procedural.IProceduralModule)
    */
   @Override
   public void setProceduralModule(IProceduralModule module)
   {
-    if (_module != null && module == null) // remove listeneer
+    if (_module != null && module == null
+        && _module.getModel().getDeclarativeModule() != null) // remove
+                                                              // listeneer
       _module.getModel().getDeclarativeModule()
           .removeListener(_declarativeListener);
 
@@ -132,8 +136,10 @@ public class DefaultProductionStorage implements IProductionStorage
 
   }
 
-  /* (non-Javadoc)
-   * @see org.jactr.core.module.procedural.storage.IProductionStorage#getProceduralModule()
+  /*
+   * (non-Javadoc)
+   * @see org.jactr.core.module.procedural.storage.IProductionStorage#
+   * getProceduralModule()
    */
   @Override
   public IProceduralModule getProceduralModule()
@@ -141,8 +147,11 @@ public class DefaultProductionStorage implements IProductionStorage
     return _module;
   }
 
-  /* (non-Javadoc)
-   * @see org.jactr.core.module.procedural.storage.IProductionStorage#add(org.jactr.core.production.IProduction)
+  /*
+   * (non-Javadoc)
+   * @see
+   * org.jactr.core.module.procedural.storage.IProductionStorage#add(org.jactr.
+   * core.production.IProduction)
    */
   @Override
   public IProduction add(IProduction productionToAdd)
@@ -194,8 +203,11 @@ public class DefaultProductionStorage implements IProductionStorage
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.jactr.core.module.procedural.storage.IProductionStorage#remove(org.jactr.core.production.IProduction)
+  /*
+   * (non-Javadoc)
+   * @see
+   * org.jactr.core.module.procedural.storage.IProductionStorage#remove(org.
+   * jactr.core.production.IProduction)
    */
   @Override
   public void remove(IProduction productionToRemove)
@@ -205,8 +217,11 @@ public class DefaultProductionStorage implements IProductionStorage
     });
   }
 
-  /* (non-Javadoc)
-   * @see org.jactr.core.module.procedural.storage.IProductionStorage#getProduction(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * @see
+   * org.jactr.core.module.procedural.storage.IProductionStorage#getProduction(
+   * java.lang.String)
    */
   @Override
   public IProduction getProduction(String productionName)
@@ -226,8 +241,11 @@ public class DefaultProductionStorage implements IProductionStorage
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.jactr.core.module.procedural.storage.IProductionStorage#getProductions(java.util.Collection)
+  /*
+   * (non-Javadoc)
+   * @see
+   * org.jactr.core.module.procedural.storage.IProductionStorage#getProductions(
+   * java.util.Collection)
    */
   @Override
   public Collection<IProduction> getProductions(
@@ -252,8 +270,11 @@ public class DefaultProductionStorage implements IProductionStorage
     return container;
   }
 
-  /* (non-Javadoc)
-   * @see org.jactr.core.module.procedural.storage.IProductionStorage#getProductions(java.lang.String, org.jactr.core.chunktype.IChunkType, java.util.Set)
+  /*
+   * (non-Javadoc)
+   * @see
+   * org.jactr.core.module.procedural.storage.IProductionStorage#getProductions(
+   * java.lang.String, org.jactr.core.chunktype.IChunkType, java.util.Set)
    */
   @Override
   public Set<IProduction> getProductions(String bufferName,
