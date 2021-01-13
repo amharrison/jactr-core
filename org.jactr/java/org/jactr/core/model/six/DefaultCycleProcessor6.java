@@ -285,7 +285,9 @@ public class DefaultCycleProcessor6 implements ICycleProcessor
      * production could fire. We need the tolerance just in case nextpossible is
      * 0.1000000002 and current is 0.100000
      */
-    if (_nextPossibleProductionFiringTime - currentTime > TEMPORAL_TOLERANCE)
+    double delta = BasicClock
+        .constrainPrecision(_nextPossibleProductionFiringTime - currentTime);
+    if (delta >= BasicClock.getPrecision())
     {
       if (LOGGER.isDebugEnabled()) LOGGER.debug(String.format(
           "nextPossibleFiringTime (%.4f) is greater than current time (%.4f), no production may fire yet.",
