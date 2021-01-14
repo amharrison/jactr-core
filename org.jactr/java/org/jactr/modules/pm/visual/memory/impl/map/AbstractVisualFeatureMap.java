@@ -21,7 +21,7 @@ public abstract class AbstractVisualFeatureMap<T> extends AbstractFeatureMap<T>
 
   static private final DefaultVisualPropertyHandler _propertyHandler = new DefaultVisualPropertyHandler();
 
-  static protected IVisualPropertyHandler getHandler()
+  static public IVisualPropertyHandler getHandler()
   {
     return _propertyHandler;
   }

@@ -135,7 +135,15 @@ public class ExtensibleVisualEncoder extends AbstractVisualEncoder
        */
       Object slotValue = oldChunk.getSymbolicChunk().getSlot(key.getTwo())
           .getValue();
-      Object resolvedCRValue = _featureHandlers.get(key).apply(afferentObject);
+      Object resolvedCRValue = null;
+      try
+      {
+        resolvedCRValue = _featureHandlers.get(key).apply(afferentObject);
+      }
+      catch (Exception e)
+      {
+        // leave it as null
+      }
       if (!Objects.equals(slotValue, resolvedCRValue)) return true;
     }
     return false;

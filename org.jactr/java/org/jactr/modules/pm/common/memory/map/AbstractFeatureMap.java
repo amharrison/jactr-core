@@ -122,8 +122,8 @@ public abstract class AbstractFeatureMap<T> implements IFeatureMap<T>
 
     if (value != null)
       mutableRequest.addSlot(new BasicSlot(slotName, value));
-    else if (LOGGER.isWarnEnabled())
-      LOGGER.warn("No " + slotName + " information for " + identifier);
+    else if (LOGGER.isDebugEnabled())
+      LOGGER.debug("No " + slotName + " information for " + identifier);
   }
 
   final public T getInformation(IIdentifier identifier)
