@@ -191,7 +191,7 @@ public class DefaultModelRunner implements Runnable
 
     IClock clock = ACTRRuntime.getRuntime().getClock(_model);
     double now = clock.getTime();
-    if (waitForTime <= now && !_firstRun)
+    if (waitForTime < now && !_firstRun)
     {
       LOGGER
           .warn(String
@@ -222,12 +222,13 @@ public class DefaultModelRunner implements Runnable
 
     // double rtn = ACTRRuntime.getRuntime().getClock(_model)
     // .waitForTime(waitForTime).get();
-    double delta = BasicClock.constrainPrecision(rtn - waitForTime);
-    if (delta <= BasicClock.getPrecision() && delta > 0) LOGGER
-        .warn(String
-            .format(
-                "WARNING: Time discrepancy detected. Clock regression : %.10f(returned) < %.10f(desired). Should be >=",
-                rtn, waitForTime));
+
+//    double delta = BasicClock.constrainPrecision(rtn - waitForTime);
+//    if (delta <= BasicClock.getPrecision() && delta > 0) LOGGER
+//        .warn(String
+//            .format(
+//                "WARNING: Time discrepancy detected. Clock regression : %.10f(returned) < %.10f(desired). Should be >=",
+//                rtn, waitForTime));
 
     return rtn;
   }
