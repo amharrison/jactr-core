@@ -184,4 +184,27 @@ public class VisualTest extends TestCase
 
   }
 
+  @Test
+  public void testVectorVisualSearch() throws Throwable
+  {
+    IModel model = new FluentVectorVisual().get();
+
+    String[] productionSequence = { "start", "search-between", "found-match",
+        "restart", "search-between", "found-match", "restart", "search-between",
+        "found-match", "restart", "search-between", "not-found-match",
+        "complete" };
+
+    String[] failures = { "found-mismatch", "not-found-mismatch" };
+
+    ExecutionTester tester = setup(model, productionSequence, true);
+
+    tester.setFailedProductions(Arrays.asList(failures));
+
+    run(model);
+    cleanup(tester, model, true);
+
+    for (Throwable thrown : tester.getExceptions())
+      fail(thrown.getMessage());
+  }
+
 }

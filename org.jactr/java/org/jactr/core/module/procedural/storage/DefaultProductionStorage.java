@@ -126,7 +126,7 @@ public class DefaultProductionStorage implements IProductionStorage
   @Override
   public void setProceduralModule(IProceduralModule module)
   {
-    if (_module != null && module == null
+    if (_module != null && module == null && _module.getModel() != null
         && _module.getModel().getDeclarativeModule() != null) // remove
                                                               // listeneer
       _module.getModel().getDeclarativeModule()
