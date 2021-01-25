@@ -31,8 +31,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.model.IModel;
 import org.jactr.core.model.event.ModelEvent;
@@ -42,6 +40,7 @@ import org.jactr.core.runtime.controller.IController;
 import org.jactr.core.runtime.event.IACTRRuntimeListener;
 import org.jactr.io.environment.EnvironmentParser;
 import org.jactr.io2.compilation.ICompilationUnit;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -57,6 +56,13 @@ public class IterativeMain
    */
   static private final transient org.slf4j.Logger  LOGGER        = LoggerFactory
                                               .getLogger(IterativeMain.class);
+
+  static private int                              _iteration = -1;
+
+  static public boolean isRunning()
+  {
+    return _iteration != -1;
+  }
 
   static private final long SECONDS       = 1000;
 
@@ -104,6 +110,8 @@ public class IterativeMain
       URL envURL, final Collection<IIterativeRunListener> listeners,
       final PrintWriter log) throws TerminateIterativeRunException
   {
+
+    _iteration = index;
 
     ExecutorServices.initialize();
 
