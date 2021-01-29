@@ -27,7 +27,7 @@ import org.junit.Test;
 /*
  * default logging
  */
- 
+
 import org.slf4j.LoggerFactory;
 
 import junit.framework.TestCase;
@@ -48,34 +48,33 @@ public class VisualTest extends TestCase
       System.err.println(sensor);
   }
 
-  protected void commonReality(String modelName) throws Exception
+  protected void commonReality(String modelName, String sensorData)
+      throws Exception
   {
     interrogateCR();
 
     try
     {
-    ICredentials a = new PlainTextCredentials("xml", "123"),
-        b = new PlainTextCredentials("model", "123");
+      ICredentials a = new PlainTextCredentials("xml", "123"),
+          b = new PlainTextCredentials("model", "123");
 
       RealityConfigurator config = new RealityConfigurator().credentials(a)
-        .credentials(b);
+          .credentials(b);
 
-    // model agent, linked through modelName
+      // model agent, linked through modelName
       config.agent(new ACTRAgent()).client().local().connectAt("997")
-        .configure().credentials(b)
-        .configure(Collections.singletonMap("ACTRAgent.ModelName", modelName));
+          .configure().credentials(b).configure(
+              Collections.singletonMap("ACTRAgent.ModelName", modelName));
 
-    // xml sensor to provide stimuli
+      // xml sensor to provide stimuli
       config.sensor(new XMLSensor()).client().local().connectAt("997")
-        .configure().credentials(a).configure(Collections.singletonMap(
-              "XMLSensor.DataURI",
-              "org/jactr/modules/pm/visual/sensorData.xml"));
+          .configure().credentials(a)
+          .configure(Collections.singletonMap("XMLSensor.DataURI", sensorData));
 
       Runnable startup = (Runnable) config.server().local().connectAt("997")
-          .configure()
-        .configure(Collections.emptyMap());
+          .configure().configure(Collections.emptyMap());
 
-    startup.run();
+      startup.run();
     }
     catch (Exception e)
     {
@@ -85,9 +84,9 @@ public class VisualTest extends TestCase
     }
   }
 
-  protected void run(IModel model) throws Exception
+  protected void run(IModel model, String sensorData) throws Exception
   {
-    commonReality(model.getName());
+    commonReality(model.getName(), sensorData);
 
     ACTRRuntime runtime = ACTRRuntime.getRuntime();
     runtime.setController(new DefaultController());
@@ -176,7 +175,7 @@ public class VisualTest extends TestCase
 
     tester.setFailedProductions(Arrays.asList(failures));
 
-    run(model);
+    run(model, "org/jactr/modules/pm/visual/sensorData.xml");
     cleanup(tester, model, true);
 
     for (Throwable thrown : tester.getExceptions())
@@ -191,8 +190,10 @@ public class VisualTest extends TestCase
 
     String[] productionSequence = { "start", "search-between", "found-match",
         "restart", "search-between", "found-match", "restart", "search-between",
+        "found-match", "restart", "search-between", "found-match", "restart",
+        "search-between", "found-match", "restart", "search-between",
         "found-match", "restart", "search-between", "not-found-match",
-        "complete" };
+        "restart", "search-between", "not-found-match", "completed" };
 
     String[] failures = { "found-mismatch", "not-found-mismatch" };
 
@@ -200,7 +201,7 @@ public class VisualTest extends TestCase
 
     tester.setFailedProductions(Arrays.asList(failures));
 
-    run(model);
+    run(model, "org/jactr/modules/pm/visual/sensorData2.xml");
     cleanup(tester, model, true);
 
     for (Throwable thrown : tester.getExceptions())

@@ -1,18 +1,25 @@
 package org.jactr.modules.pm.visual.memory.impl.filter;
 
+import java.awt.geom.Rectangle2D;
 /*
  * default logging
  */
 import java.util.Comparator;
+import java.util.Map;
+import java.util.TreeMap;
 
- 
-import org.slf4j.LoggerFactory;
+import org.commonreality.agents.IAgent;
+import org.commonreality.identifier.IIdentifier;
+import org.commonreality.net.message.notification.NotificationMessage;
+import org.commonreality.notification.impl.SimpleMapNotification;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.logging.Logger;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.request.ChunkTypeRequest;
+import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.modules.pm.common.memory.filter.IIndexFilter;
+import org.slf4j.LoggerFactory;
 
 /**
  * enables search along a path defined by one visual-location, an angle (from
@@ -22,37 +29,37 @@ import org.jactr.modules.pm.common.memory.filter.IIndexFilter;
  * 
  * @author harrison
  */
-public class VectorVisualLocationFilter extends
-    AbstractVisualLocationIndexFilter<Double>
+public class VectorVisualLocationFilter
+    extends AbstractVisualLocationIndexFilter<Double>
 {
   /**
    * Logger definition
    */
   static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
-                                                          .getLogger(VectorVisualLocationFilter.class);
+      .getLogger(VectorVisualLocationFilter.class);
 
-  static public final String         ANGLE_SLOT       = ":vector-angle";
+  static public final String                      ANGLE_SLOT       = ":vector-angle";
 
-  static public final String         ORIGIN_SLOT      = ":vector-origin";
+  static public final String                      ORIGIN_SLOT      = ":vector-origin";
 
-  static public final String         DESTINATION_SLOT = ":vector-destination";
+  static public final String                      DESTINATION_SLOT = ":vector-destination";
 
-  static public final String         THRESHOLD_SLOT   = ":vector-threshold";
+  static public final String                      THRESHOLD_SLOT   = ":vector-threshold";
 
-  private double[]                   _v0;
+  private double[]                                _v0;
 
-  private double[]                   _v1;
+  private double[]                                _v1;
 
-  private double                     _threshold       = Double.POSITIVE_INFINITY;
+  private double                                  _threshold       = Double.POSITIVE_INFINITY;
 
   /**
    * while the distance from the line-segment is our primary criterion, it is
    * possible that a point outside of search area could be the closest to the
    * line segment, so we still need some bounding points
    */
-  private double[]                   _minimumPosition;
+  private double[]                                _minimumPosition;
 
-  private double[]                   _maximumPosition;
+  private double[]                                _maximumPosition;
 
   public VectorVisualLocationFilter()
   {
@@ -72,15 +79,15 @@ public class VectorVisualLocationFilter extends
      * compute bounds... irrelevant
      */
     computeBounds(_v0, _v1, _threshold, angle, 0.001);
+
   }
 
   @Override
   protected Double compute(ChunkTypeRequest request)
   {
-    IChunk visualLocation = getVisualLocation(request);
-    if (visualLocation != null)
+    double[] ref = getCoordinates(request);
+    if (ref != null)
     {
-      double[] ref = getCoordinates(visualLocation);
 
       double a = ref[0] - _v0[0];
       double b = ref[1] - _v0[1];
@@ -93,11 +100,9 @@ public class VectorVisualLocationFilter extends
        */
       double distance = Math.abs(a * d - c * b) / Math.sqrt(d * d + c * c);
 
-      if (LOGGER.isDebugEnabled())
-        LOGGER.debug("(" + ref[0] + "," + ref[1] + ") is " + distance
-            + " from unit line segment defined by (" + _v0[0] + "," + _v0[1]
-            + ")-(" + _v1[0] + "," + _v1[1] + ")");
-
+      if (LOGGER.isDebugEnabled()) LOGGER.debug("(" + ref[0] + "," + ref[1] + ") is " + distance
+          + " from unit line segment defined by (" + _v0[0] + "," + _v0[1]
+          + ")-(" + _v1[0] + "," + _v1[1] + ")");
       return distance;
     }
 
@@ -109,20 +114,18 @@ public class VectorVisualLocationFilter extends
     Double distance = get(visualLocationTemplate);
     if (distance == null)
     {
-      if (LOGGER.isDebugEnabled())
-        LOGGER.debug(String.format(
-            "Rejecting %s because no distance was calculated",
-            visualLocationTemplate));
+      if (LOGGER.isDebugEnabled()) LOGGER.debug(
+          String.format("Rejecting %s because no distance was calculated",
+              visualLocationTemplate));
       return false;
     }
 
     IChunk visualLocation = getVisualLocation(visualLocationTemplate);
     if (visualLocation == null)
     {
-      if (LOGGER.isDebugEnabled())
-        LOGGER.debug(String.format(
-            "Rejecting %s because no visual-location could be accessed",
-            visualLocationTemplate));
+      if (LOGGER.isDebugEnabled()) LOGGER.debug(String.format(
+          "Rejecting %s because no visual-location could be accessed",
+          visualLocationTemplate));
       return false;
     }
 
@@ -134,31 +137,28 @@ public class VectorVisualLocationFilter extends
       if (distance < _threshold * 1.3)
       {
         IModel model = visualLocation.getModel();
-        if (Logger.hasLoggers(model))
-          Logger.log(model, Logger.Stream.VISUAL, String.format(
-              "%s was rejected but it's awfully close at %.2f", visualLocation,
-              distance));
+        if (Logger.hasLoggers(model)) Logger.log(model, Logger.Stream.VISUAL,
+            String.format("%s was rejected but it's awfully close at %.2f",
+                visualLocation, distance));
       }
 
-      if (LOGGER.isDebugEnabled())
-        LOGGER.debug(String.format(
-            "Rejecting %s because %.2f is too far away from threshold %.2f",
-            visualLocation, distance, _threshold));
+      if (LOGGER.isDebugEnabled()) LOGGER.debug(String.format(
+          "Rejecting %s because %.2f is too far away from threshold %.2f",
+          visualLocation, distance, _threshold));
       return false;
     }
 
-    double[] ref = getCoordinates(visualLocation);
+    double[] ref = getCoordinates(visualLocationTemplate);
 
     /*
      * is it _v0 or _v1? We want to exclude the boundaries..
      */
-    if (ref[0] == _v0[0] && ref[1] == _v0[1] || ref[0] == _v1[0]
-        && ref[1] == _v1[1])
+    if (ref[0] == _v0[0] && ref[1] == _v0[1]
+        || ref[0] == _v1[0] && ref[1] == _v1[1])
     {
-      if (LOGGER.isDebugEnabled())
-        LOGGER.debug(String.format(
-            "Rejecting %s because it is at the bounds of the visual field",
-            visualLocation));
+      if (LOGGER.isDebugEnabled()) LOGGER.debug(String.format(
+          "Rejecting %s because it is at the bounds of the visual field",
+          visualLocation));
       return false;
     }
 
@@ -167,21 +167,19 @@ public class VectorVisualLocationFilter extends
      * within the tolerance bounds of the line segment (prevents false positives
      * of targets that are closer to the line, but not the line segment)
      */
-    boolean rtn = _minimumPosition[0] <= ref[0]
-        && ref[0] <= _maximumPosition[0] && _minimumPosition[1] <= ref[1]
-        && ref[1] <= _maximumPosition[1];
+    boolean rtn = _minimumPosition[0] <= ref[0] && ref[0] <= _maximumPosition[0]
+        && _minimumPosition[1] <= ref[1] && ref[1] <= _maximumPosition[1];
 
-    if (LOGGER.isDebugEnabled()) if(rtn)
-      LOGGER.debug(String.format("Accepting %s because it is within maximum bounds (%.2f, %.2f)-(%.2f,%.2f)",
-                visualLocation, _minimumPosition[0], _minimumPosition[1],
-                _maximumPosition[0], _maximumPosition[1]));
+    if (LOGGER.isDebugEnabled()) if (rtn)
+      LOGGER.debug(String.format(
+          "Accepting %s because it is within maximum bounds (%.2f, %.2f)-(%.2f,%.2f)",
+          visualLocation, _minimumPosition[0], _minimumPosition[1],
+          _maximumPosition[0], _maximumPosition[1]));
     else
-    LOGGER
-        .debug(String
-            .format(
-                "Rejecting %s because it is outside maximum bounds (%.2f, %.2f)-(%.2f,%.2f)",
-                visualLocation, _minimumPosition[0], _minimumPosition[1],
-                _maximumPosition[0], _maximumPosition[1]));
+      LOGGER.debug(String.format(
+          "Rejecting %s because it is outside maximum bounds (%.2f, %.2f)-(%.2f,%.2f)",
+          visualLocation, _minimumPosition[0], _minimumPosition[1],
+          _maximumPosition[0], _maximumPosition[1]));
 
     return rtn;
   }
@@ -217,14 +215,14 @@ public class VectorVisualLocationFilter extends
       index++;
       if (cSlot.getCondition() == IConditionalSlot.EQUALS)
         if (cSlot.getName().equals(ORIGIN_SLOT))
-        {
-          origin = getCoordinates((IChunk) cSlot.getValue());
-          weight = index;
-        }
+      {
+        origin = getCoordinates((IChunk) cSlot.getValue());
+        weight = index;
+      }
         else if (cSlot.getName().equals(DESTINATION_SLOT))
-          destination = getCoordinates((IChunk) cSlot.getValue());
+        destination = getCoordinates((IChunk) cSlot.getValue());
         else if (cSlot.getName().equals(ANGLE_SLOT))
-          angle = ((Number) cSlot.getValue()).doubleValue();
+        angle = ((Number) cSlot.getValue()).doubleValue();
         else if (cSlot.getName().equals(THRESHOLD_SLOT))
           threshold = ((Number) cSlot.getValue()).doubleValue();
     }
@@ -254,8 +252,9 @@ public class VectorVisualLocationFilter extends
       {
         double dx = destination[0] - origin[0];
         double dy = destination[1] - origin[1];
-        // intentionally swapped since we are measuring from the vertical
-        angle = Math.toDegrees(Math.atan2(dx, dy));
+        // intentionally swapped since we are measuring from the vertical w/
+        // swapped y
+        angle = computeAngle(dx, dy);
       }
 
       filter = new VectorVisualLocationFilter(origin, destination, threshold,
@@ -264,12 +263,21 @@ public class VectorVisualLocationFilter extends
       filter.setPerceptualMemory(getVisualMemory());
 
       if (LOGGER.isDebugEnabled())
+      {
         LOGGER.debug("Will search from (" + origin[0] + "," + origin[1]
             + ") along " + angle + " (" + destination[0] + "," + destination[1]
             + ") +/- " + threshold);
+        filter.notifyMetaDebuggingInfo(
+            getPerceptualMemory().getModule().getModel());
+      }
     }
 
     return filter;
+  }
+
+  private double computeAngle(double deltaX, double deltaY)
+  {
+    return Math.toDegrees(Math.atan2(deltaY, deltaX));
   }
 
   /**
@@ -286,8 +294,8 @@ public class VectorVisualLocationFilter extends
      * and compute a new point from origin along angle
      */
     double[] tmp = new double[2];
-    tmp[0] = origin[0] + Math.sin(Math.toRadians(angle));
-    tmp[1] = origin[1] + Math.cos(Math.toRadians(angle));
+    tmp[0] = origin[0] + Math.cos(Math.toRadians(angle));
+    tmp[1] = origin[1] + Math.sin(Math.toRadians(angle));
 
     /*
      * compute the intersection of v0,tmp and the bounds of the visual field and
@@ -327,60 +335,24 @@ public class VectorVisualLocationFilter extends
   private void computeBounds(double[] v0, double[] v1, double threshold,
       double angle, double epsilon)
   {
-    // double minX = Math.min(v0[0], v1[0]);
-    // double minY = Math.min(v0[1], v1[1]);
-    // double maxX = Math.max(v0[0], v1[0]);
-    // double maxY = Math.max(v0[1], v1[1]);
-
-    // double xSign = 1;
-    // double ySign = 1;
-    //
-    // double absAngle = Math.abs(angle);
-    //
-    // if (Math.abs(absAngle - 0) <= epsilon
-    // || Math.abs(absAngle - 180) <= epsilon)
-    // {
-    // /*
-    // * vertical
-    // */
-    // xSign = -1;
-    // ySign = 0;
-    // }
-    // else if (Math.abs(absAngle - 90) <= epsilon)
-    // {
-    // /*
-    // * horizontal
-    // */
-    // xSign = 0;
-    // ySign = -1;
-    // }
-    // else
-    // {
-    // // angle > 0, subtract
-    // xSign = -Math.signum(angle);
-    // if (absAngle > 90)
-    // ySign = -1;
-    // else
-    // ySign = 1;
-    // }
 
     // we measure from the vertical CW, so a slight correction
-    double rotatedAngle = 90 - angle;
+    double rotatedAngle = 90 + angle;
     double rad = Math.toRadians(rotatedAngle);
     // how much we need to grow the bounds
-    double xShift = Math.abs(Math.sin(rad) * threshold);
-    double yShift = Math.abs(Math.cos(rad) * threshold);
+    double xShift = Math.abs(Math.cos(rad) * threshold);
+    double yShift = Math.abs(Math.sin(rad) * threshold);
 
-    double minX = Math.min(v0[0], v1[0]) - xShift;
-    double minY = Math.min(v0[1], v1[1]) - yShift;
-
-    double maxX = Math.max(v0[0], v1[0]) + xShift;
-    double maxY = Math.max(v0[1], v1[1]) + yShift;
-
-    _minimumPosition = new double[] { Math.min(minX, maxX),
-        Math.min(minY, maxY) };
-    _maximumPosition = new double[] { Math.max(minX, maxX),
-        Math.max(minY, maxY) };
+    Rectangle2D rectangle = new Rectangle2D.Double(v0[0], v0[1], 0, 0);
+    rectangle.add(v1[0] + xShift, v1[1] + yShift);
+    rectangle.add(v1[0] - xShift, v1[1] - yShift);
+    rectangle.add(v0[0] + xShift, v0[1] + yShift);
+    rectangle.add(v0[0] - xShift, v0[1] - yShift);
+    _minimumPosition = new double[] { rectangle.getMinX(),
+        rectangle.getMinY() };
+    _maximumPosition = new double[] {
+        _minimumPosition[0] + rectangle.getWidth(),
+        _minimumPosition[1] + rectangle.getHeight() };
   }
 
   /**
@@ -415,5 +387,47 @@ public class VectorVisualLocationFilter extends
   {
     // TODO Auto-generated method stub
 
+  }
+
+  public void dispose()
+  {
+    if (LOGGER.isDebugEnabled())
+    {
+      /*
+       * clear all our debugging, or not
+       */
+    }
+  }
+
+  private void notifyMetaDebuggingInfo(IModel model)
+  {
+
+    Map<String, Object> notificationData = new TreeMap<String, Object>();
+
+    double angle = computeAngle(_v1[0] - _v0[0], _v1[1] - _v0[1]);
+    double[] mid = new double[2];
+    mid[0] = (_v1[0] + _v0[0]) / 2;
+    mid[1] = (_v1[1] + _v0[1]) / 2;
+    notificationData.put(String.format("text.angle.%.2f", angle), mid);
+    notificationData.put("line.searchSegment",
+        new double[] { _v0[0], _v0[1], _v1[0], _v1[1] });
+    notificationData.put("circle.origin", new double[] { _v0[0], _v0[1], 0.5 });
+    notificationData.put("circle.destination",
+        new double[] { _v1[0], _v1[1], 0.5 });
+    notificationData.put("rectangle.bounds",
+        new double[] { _minimumPosition[0], _minimumPosition[1],
+            _maximumPosition[0] - _minimumPosition[0],
+            _maximumPosition[1] - _minimumPosition[1] });
+
+    IAgent agent = ACTRRuntime.getRuntime().getConnector().getAgent(model);
+
+    /*
+     * we send to all since we have no specific identifier to grab
+     */
+    NotificationMessage message = new NotificationMessage(agent.getIdentifier(),
+        IIdentifier.ALL,
+        new SimpleMapNotification<String, Object>(agent.getNotificationManager()
+            .createNotificationIdentifier("debugShape"), notificationData));
+    agent.send(message);
   }
 }

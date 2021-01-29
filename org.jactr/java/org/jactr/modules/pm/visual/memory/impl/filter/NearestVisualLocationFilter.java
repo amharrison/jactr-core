@@ -5,13 +5,13 @@ package org.jactr.modules.pm.visual.memory.impl.filter;
  */
 import java.util.Comparator;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.IConditionalSlot;
+import org.jactr.modules.pm.IPerceptualModule;
 import org.jactr.modules.pm.common.memory.filter.IIndexFilter;
 import org.jactr.modules.pm.visual.IVisualModule;
+import org.slf4j.LoggerFactory;
 
 /**
  * provides nearest filtering and also normalizes all references to current,
@@ -48,7 +48,7 @@ public class NearestVisualLocationFilter extends
     IChunk visualLocation = getVisualLocation(request);
     if (visualLocation != null)
     {
-      double[] coords = getCoordinates(visualLocation);
+      double[] coords = getCoordinates(request);
 
       double sqDistance = 0;
       // length may be 2 or 3 (if depth was provided)
@@ -150,18 +150,25 @@ public class NearestVisualLocationFilter extends
           cSlot.setValue(currentLocation.getSymbolicChunk().getSlot(
               cSlot.getName()).getValue());
       }
-      else if (IVisualModule.LESS_THAN_CURRENT_CHUNK.equals(chunkName))
+      else if (IPerceptualModule.LESS_THAN_CURRENT_CHUNK.equals(chunkName))
       {
         cSlot.setCondition(IConditionalSlot.LESS_THAN);
         cSlot.setValue(currentLocation.getSymbolicChunk().getSlot(
             cSlot.getName()).getValue());
       }
-      else if (IVisualModule.GREATER_THAN_CURRENT_CHUNK.equals(chunkName))
+      else if (IPerceptualModule.GREATER_THAN_CURRENT_CHUNK.equals(chunkName))
       {
         cSlot.setCondition(IConditionalSlot.GREATER_THAN);
         cSlot.setValue(currentLocation.getSymbolicChunk().getSlot(
             cSlot.getName()).getValue());
       }
     }
+  }
+
+  @Override
+  public void dispose()
+  {
+    // TODO Auto-generated method stub
+
   }
 }

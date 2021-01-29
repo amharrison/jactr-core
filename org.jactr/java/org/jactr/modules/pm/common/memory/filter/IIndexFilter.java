@@ -44,4 +44,6 @@ public interface IIndexFilter
   
   public boolean accept(ChunkTypeRequest template);
   public Comparator<ChunkTypeRequest> getComparator();
+
+  public void dispose();
 }

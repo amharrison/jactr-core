@@ -6,10 +6,9 @@ package org.jactr.modules.pm.common.memory.filter;
 import java.util.HashMap;
 import java.util.Map;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.modules.pm.common.memory.IPerceptualMemory;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractIndexFilter<T> implements IIndexFilter
 {
@@ -39,6 +38,11 @@ public abstract class AbstractIndexFilter<T> implements IIndexFilter
   protected void clearCache()
   {
     _cache.clear();
+  }
+
+  public void dispose()
+  {
+    clearCache();
   }
 
   /**
