@@ -25,7 +25,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
- 
 import org.slf4j.LoggerFactory;
 
 
@@ -74,6 +73,11 @@ public class ExecutorServices
     addExecutor(POOL, Executors.newFixedThreadPool(
         (int) Math.ceil(Runtime.getRuntime().availableProcessors() / 2.0),
             new GeneralThreadFactory("jACT-R Pool")));
+  }
+
+  static public boolean isShuttingDown()
+  {
+    return _isShuttingDown;
   }
 
   static public void removeExecutor(String name)

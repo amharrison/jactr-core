@@ -46,21 +46,24 @@ public class DefaultModelRunner implements Runnable
   /**
    * logger definition
    */
-  static private final transient org.slf4j.Logger  LOGGER = LoggerFactory
-                                       .getLogger(DefaultModelRunner.class);
+  static private final transient org.slf4j.Logger LOGGER                 = LoggerFactory
+      .getLogger(DefaultModelRunner.class);
 
-  static boolean            _enableTimeDiagnostics = Boolean
-                                                       .getBoolean("jactr.enableTimeDiagnostics");
+  static boolean                                  _enableTimeDiagnostics = Boolean
+      .getBoolean("jactr.enableTimeDiagnostics");
 
-  protected ExecutorService _service;
+  static boolean                                  _strictTiming          = Boolean
+      .getBoolean("jactr.strictTiming");
 
-  protected BasicModel      _model;
+  protected ExecutorService                       _service;
 
-  protected ICycleProcessor _cycleRunner;
+  protected BasicModel                            _model;
 
-  private NumberFormat      _format;
+  protected ICycleProcessor                       _cycleRunner;
 
-  private boolean           _firstRun              = true;
+  private NumberFormat                            _format;
+
+  private boolean                                 _firstRun              = true;
 
   public DefaultModelRunner(ExecutorService service, IModel model,
       ICycleProcessor cycleRunner)
@@ -109,9 +112,8 @@ public class DefaultModelRunner implements Runnable
 
     _cycleRunner.initialize(_model);
 
-    if (runtime.hasListeners())
-      runtime.dispatch(new ACTRRuntimeEvent(_model,
-          ACTRRuntimeEvent.Type.MODEL_STARTED, null));
+    if (runtime.hasListeners()) runtime.dispatch(new ACTRRuntimeEvent(_model,
+        ACTRRuntimeEvent.Type.MODEL_STARTED, null));
   }
 
   protected void shutDown(Exception deferred)
@@ -135,8 +137,8 @@ public class DefaultModelRunner implements Runnable
     }
     finally
     {
-      _model.dispatch(new ModelEvent(_model, ModelEvent.Type.DISCONNECTED,
-          deferred));
+      _model.dispatch(
+          new ModelEvent(_model, ModelEvent.Type.DISCONNECTED, deferred));
     }
   }
 
@@ -184,8 +186,8 @@ public class DefaultModelRunner implements Runnable
   {
     if (Double.isNaN(waitForTime))
     {
-      LOGGER
-          .error("Requested NaN? This should not happen unless we have no time control.");
+      LOGGER.error(
+          "Requested NaN? This should not happen unless we have no time control.");
       return 0;
     }
 
@@ -193,14 +195,12 @@ public class DefaultModelRunner implements Runnable
     double now = clock.getTime();
     if (waitForTime < now && !_firstRun)
     {
-      LOGGER
-          .warn(String
-              .format(
-                  "WARNING: Time discrepancy detected. Clock regression requested"
-                      + ": %.10f(desired) < %.10f(current). Should be >=. Incrementing request by 0.05",
-                  waitForTime, now));
+      if (_strictTiming) LOGGER.warn(String.format(
+          "WARNING: Time discrepancy detected. Clock regression requested"
+              + ": %.10f(desired) < %.10f(current). Should be >=. Using current time.",
+          waitForTime, now));
 
-      waitForTime = now + 0.05;
+      waitForTime = now;
 
       if (_enableTimeDiagnostics) Diagnostics.timeSanityCheck(waitForTime);
     }
@@ -309,12 +309,9 @@ public class DefaultModelRunner implements Runnable
 
         if (nextTime <= priorTime)
         {
-          if (LOGGER.isWarnEnabled())
-            LOGGER
-                .warn(String
-                    .format(
-                        "WARNING: Time discrepancy detected. Cycle time error : %.6f(next) <= %.6f(prior). Should be >. Incrementing",
-                        nextTime, priorTime));
+          if (LOGGER.isWarnEnabled()) LOGGER.warn(String.format(
+              "WARNING: Time discrepancy detected. Cycle time error : %.6f(next) <= %.6f(prior). Should be >. Incrementing",
+              nextTime, priorTime));
 
           if (_enableTimeDiagnostics) Diagnostics.timeSanityCheck(nextTime);
 

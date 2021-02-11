@@ -148,7 +148,7 @@ public class ACTREventDispatcher<S, L>
       catch (RejectedExecutionException ree)
       {
 
-        if (!_haveEncounteredREE)
+        if (!_haveEncounteredREE && !ExecutorServices.isShuttingDown())
         {
           if (LOGGER.isWarnEnabled())
           {

@@ -13,10 +13,9 @@
 
 package org.jactr.core.queue.timedevents;
 
- 
-import org.slf4j.LoggerFactory;
 import org.commonreality.time.impl.BasicClock;
 import org.jactr.core.queue.ITimedEvent;
+import org.slf4j.LoggerFactory;
 
 /**
  * Description of the Class
@@ -27,35 +26,34 @@ import org.jactr.core.queue.ITimedEvent;
 public class AbstractTimedEvent implements ITimedEvent
 {
   static private transient final org.slf4j.Logger LOGGER                = LoggerFactory
-                                                               .getLogger(AbstractTimedEvent.class
-                                                                   .getName());
+      .getLogger(AbstractTimedEvent.class.getName());
 
-  protected boolean                  _hasAborted           = false;
+  protected boolean                               _hasAborted           = false;
 
-  protected boolean                  _hasFired             = false;
-
-  /**
-   * Description of the Field
-   */
-  protected double                   _startTime;
+  protected boolean                               _hasFired             = false;
 
   /**
    * Description of the Field
    */
-  protected double                   _endTime;
+  protected double                                _startTime;
 
-  protected String                   _toString;
+  /**
+   * Description of the Field
+   */
+  protected double                                _endTime;
 
-  static private boolean             _shouldWarnOnSlippage = !Boolean
-                                                               .getBoolean("jactr.ignoreTimeSlips");
+  protected String                                _toString;
 
-  static private double              _timeSlipThreshold    = 0.05;
+  static private boolean                          _shouldWarnOnSlippage = Boolean
+      .getBoolean("jactr.strictTiming");
+
+  static private double                           _timeSlipThreshold    = 0.05;
   static
   {
     try
     {
-      _timeSlipThreshold = Double.parseDouble(System
-          .getProperty("jactr.timeSlipThreshold"));
+      _timeSlipThreshold = Double
+          .parseDouble(System.getProperty("jactr.timeSlipThreshold"));
     }
     catch (Exception e)
     {
@@ -125,29 +123,25 @@ public class AbstractTimedEvent implements ITimedEvent
 
   synchronized public void fire(double currentTime)
   {
-    if (hasAborted())
-      throw new IllegalStateException(
-          "timed event has been aborted, cannot fire");
+    if (hasAborted()) throw new IllegalStateException(
+        "timed event has been aborted, cannot fire");
 
     if (hasFired())
       throw new IllegalStateException("timed event has already been fired");
 
     if (Math.abs(getEndTime() - currentTime) > _timeSlipThreshold
         && shouldWarnOnTimeSlips())
- timeSlipExceedsTolerance(currentTime);
+      timeSlipExceedsTolerance(currentTime);
 
     _hasFired = true;
   }
 
   protected void timeSlipExceedsTolerance(double currentTime)
   {
-    if (LOGGER.isWarnEnabled())
-      LOGGER
-          .warn(String
-              .format(
-                  "%s (%s) : Time slippage (%.4f) detected. Event should have fired at %.2f, actually fired at %.2f",
-                  this, getClass().getSimpleName(), currentTime - getEndTime(),
-                  getEndTime(), currentTime));
+    if (LOGGER.isWarnEnabled()) LOGGER.warn(String.format(
+        "%s (%s) : Time slippage (%.4f) detected. Event should have fired at %.2f, actually fired at %.2f",
+        this, getClass().getSimpleName(), currentTime - getEndTime(),
+        getEndTime(), currentTime));
   }
 
   synchronized public boolean hasFired()
