@@ -41,9 +41,8 @@ public class PressKeyTranslator extends AbstractManualTranslator
     if (!keySlot.isPresent()) throw new IllegalArgumentException(
         "press-key needs slot named key to the defined");
 
-    char key = keySlot.get().getValue().toString().charAt(0);
-
-    int keyCode = _deviceMap.getKeyCode("" + Character.toUpperCase(key));
+    String key = keySlot.get().getValue().toString().toUpperCase();
+    int keyCode = _deviceMap.getKeyCode(key);
     return _deviceMap.getKeyLocation(keyCode);
   }
 

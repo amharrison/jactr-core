@@ -17,11 +17,11 @@ public class UniqueSlotContainer implements IUniqueSlotContainer
    * Logger definition
    */
   static private final transient org.slf4j.Logger LOGGER      = LoggerFactory
-                                                     .getLogger(UniqueSlotContainer.class);
+      .getLogger(UniqueSlotContainer.class);
 
-  private Map<String, ISlot>         _slotMap;
+  private Map<String, ISlot>                      _slotMap;
 
-  protected boolean                  _useMutable = false;
+  protected boolean                               _useMutable = false;
 
   public UniqueSlotContainer()
   {
@@ -36,6 +36,17 @@ public class UniqueSlotContainer implements IUniqueSlotContainer
     result = prime * result + (_slotMap == null ? 0 : _slotMap.hashCode());
     result = prime * result + (_useMutable ? 1231 : 1237);
     return result;
+  }
+
+  /**
+   * this is retained for BasicSymbolicChunk down the inheritance line. This
+   * exposes the default Object.hashCode
+   *
+   * @return
+   */
+  protected int originalHashCode()
+  {
+    return super.hashCode();
   }
 
   @Override

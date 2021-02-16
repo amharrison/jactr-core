@@ -280,6 +280,9 @@ public class DefaultCycleProcessor6 implements ICycleProcessor
   protected double evaluateAndFireProduction(BasicModel model,
       double currentTime) throws InterruptedException, ExecutionException
   {
+    if (currentTime < _nextPossibleProductionFiringTime)
+      return Double.NEGATIVE_INFINITY;
+
     /*
      * if current time less than nextpossible (w/ in tolerance) we know no
      * production could fire. We need the tolerance just in case nextpossible is

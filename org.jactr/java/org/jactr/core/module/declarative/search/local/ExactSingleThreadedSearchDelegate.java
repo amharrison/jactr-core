@@ -13,8 +13,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.SortedSet;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.module.declarative.search.filter.DelegatedFilter;
@@ -24,6 +22,7 @@ import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.utils.collections.SkipListSetFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * default single threaded search algorithm.
@@ -36,17 +35,17 @@ public class ExactSingleThreadedSearchDelegate implements ISearchDelegate
    * Logger definition
    */
   static private final transient org.slf4j.Logger LOGGER            = LoggerFactory
-                                                           .getLogger(ExactSingleThreadedSearchDelegate.class);
+      .getLogger(ExactSingleThreadedSearchDelegate.class);
 
-  protected final boolean            _enableNotFilters = Boolean
-                                                           .getBoolean("jactr.search.enableNotFilters");
+  protected final boolean                         _enableNotFilters = Boolean
+      .getBoolean("jactr.search.enableNotFilters");
 
   /**
    * will do all the filter processing, but not actually swap out the filter for
    * the search. this tests the overhead of building the filters.
    */
-  protected final boolean            _testNotFilter    = Boolean
-                                                           .getBoolean("jactr.search.testNotFilters");
+  protected final boolean                         _testNotFilter    = Boolean
+      .getBoolean("jactr.search.testNotFilters");
 
   public ExactSingleThreadedSearchDelegate()
   {
@@ -97,21 +96,23 @@ public class ExactSingleThreadedSearchDelegate implements ISearchDelegate
     {
       Collection<IChunk> localResults = searchSystem.find(chunkType, slot,
           candidates);
-
+      int localCandidates = localResults.size();
       if (first)
       {
         searchSystem.cleanAddAll(candidates, localResults);
         first = false;
         if (LOGGER.isDebugEnabled())
-          LOGGER.debug(String.format("Populating results from %s = %s", slot,
-              localResults));
+          LOGGER.debug(String.format("Populating %d results from %s.%d",
+              localCandidates, slot,
+              slot.getValue() != null ? slot.getValue().hashCode() : 0));
       }
       else
       {
         searchSystem.cleanRetainAll(candidates, localResults);
-        if (LOGGER.isDebugEnabled())
-          LOGGER.debug(String.format("Retained results from %s = %s", slot,
-              localResults));
+        if (LOGGER.isDebugEnabled()) LOGGER
+            .debug(String.format("Retained %d results from the %d from %s.%d",
+                candidates.size(), localCandidates, slot,
+                slot.getValue() != null ? slot.getValue().hashCode() : 0));
       }
 
       if (candidates.size() == 0)
@@ -128,25 +129,22 @@ public class ExactSingleThreadedSearchDelegate implements ISearchDelegate
      * just add all the chunks as the candidate set - but the kills performance.
      * it's quicker to search and start with a small set.
      */
-    if (sortedSlots.size() == 0)
-      if (chunkType != null)
-        candidates.addAll(chunkType.getSymbolicChunkType().getChunks());
-      else
-        try
-        {
-          // this is such a patholical case.
-          candidates.addAll(searchSystem._module.getChunks().get());
-          LOGGER
-              .error(String
-                  .format(
-                      "Warning: empty search specifications (%s) require full DM traversal. Please revise",
-                      pattern));
-        }
-        catch (Exception e)
-        {
-          LOGGER.error("Failed to fetch all chunks for null chunktype search ",
-              e);
-        }
+    if (sortedSlots.size() == 0) if (chunkType != null)
+      candidates.addAll(chunkType.getSymbolicChunkType().getChunks());
+    else
+      try
+      {
+        // this is such a patholical case.
+        candidates.addAll(searchSystem._module.getChunks().get());
+        LOGGER.error(String.format(
+            "Warning: empty search specifications (%s) require full DM traversal. Please revise",
+            pattern));
+      }
+      catch (Exception e)
+      {
+        LOGGER.error("Failed to fetch all chunks for null chunktype search ",
+            e);
+      }
 
     if (candidates.size() != 0)
     {
@@ -172,17 +170,16 @@ public class ExactSingleThreadedSearchDelegate implements ISearchDelegate
         if (chunkType == null || candidate.isA(chunkType))
           if (primaryFilter.accept(candidate))
             if (chunkFilter.accept(candidate))
-            // shouldn't we actually test this against the pattern, jsut to be
-            // sure?
+              // shouldn't we actually test this against the pattern, jsut to be
+              // sure?
               returnCandidates.add(candidate);
 
       searchSystem.recycleCollection(candidates);
       candidates = returnCandidates;
     }
 
-    if (LOGGER.isDebugEnabled())
-      LOGGER.debug("First pass candidates for " + pattern + " chunks: "
-          + candidates);
+    if (LOGGER.isDebugEnabled()) LOGGER.debug(
+        "First pass candidates for " + pattern + " chunks: " + candidates);
 
     return candidates;
   }
@@ -225,18 +222,18 @@ public class ExactSingleThreadedSearchDelegate implements ISearchDelegate
         IConditionalSlot cSlot = (IConditionalSlot) slot;
         if (cSlot.getCondition() == IConditionalSlot.NOT_EQUALS)
           if (safeToFilter)
+        {
+          if (LOGGER.isDebugEnabled())
+            LOGGER.debug(String.format("Converting %s to a filter", cSlot));
+
+          if (!_testNotFilter)
           {
-            if (LOGGER.isDebugEnabled())
-              LOGGER.debug(String.format("Converting %s to a filter", cSlot));
+            if (notFilter == null) notFilter = new DelegatedFilter();
 
-            if (!_testNotFilter)
-            {
-              if (notFilter == null) notFilter = new DelegatedFilter();
-
-              notFilter.add(new SlotFilter(cSlot));
-              sItr.remove();
-            }
+            notFilter.add(new SlotFilter(cSlot));
+            sItr.remove();
           }
+        }
           else if (LOGGER.isDebugEnabled())
             LOGGER.debug(String.format("Cannot convert %s to filter", cSlot));
       }

@@ -6,8 +6,6 @@ import java.util.List;
  */
 import java.util.concurrent.Future;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.concurrent.ExecutorServices;
@@ -29,6 +27,7 @@ import org.jactr.modules.pm.visual.IVisualModule;
 import org.jactr.modules.pm.visual.buffer.IVisualLocationBuffer;
 import org.jactr.modules.pm.visual.event.IVisualModuleListener;
 import org.jactr.modules.pm.visual.event.VisualModuleEvent;
+import org.slf4j.LoggerFactory;
 
 /**
  * handles visual-location requests by checking and managing the buffer states
@@ -133,7 +132,10 @@ public class VisualSearchRequestDelegate extends AbstractRequestDelegate
     /*
      * check to see if we are busy or not..
      */
-    if (isBusy(buffer) /* || isBusy(_module.getVisualActivationBuffer()) */)
+    if (isBusy(buffer) && !isBufferStuffPending()/*
+                                                  * || isBusy(_module.
+                                                  * getVisualActivationBuffer())
+                                                  */)
     {
       String msg = "Visual system is currently busy, cannot perform visual search";
       if (LOGGER.isDebugEnabled()) LOGGER.debug(msg);

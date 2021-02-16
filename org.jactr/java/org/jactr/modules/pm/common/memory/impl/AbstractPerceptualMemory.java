@@ -443,6 +443,10 @@ public abstract class AbstractPerceptualMemory implements IPerceptualMemory
 
           firstRun = false;
 
+          if (LOGGER.isDebugEnabled())
+            LOGGER.debug(String.format("Got %d candidates from %s",
+                candidates.size(), featureMap.getClass().getSimpleName()));
+
           if (container.size() == 0)
           {
             if (LOGGER.isDebugEnabled())
