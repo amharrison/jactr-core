@@ -635,13 +635,7 @@ public abstract class AbstractPerceptualMemory implements IPerceptualMemory
       // early exit
       if (earlyExit && prioritizedResults.size() > 1) break;
 
-      // object no longer exists
-      if (objectManager.get(identifier) == null)
-      {
-        if (LOGGER.isDebugEnabled())
-          LOGGER.debug("No afferent object associated with " + identifier);
-        continue;
-      }
+
 
       for (PerceptualEncoderBridge bridge : _bridges)
       {

@@ -22,8 +22,6 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
- 
-import org.slf4j.LoggerFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.commonreality.object.IAfferentObject;
 import org.commonreality.object.delta.IObjectDelta;
@@ -38,6 +36,7 @@ import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.utils.collections.FastSetFactory;
 import org.jactr.modules.pm.common.memory.IPerceptualMemory;
+import org.slf4j.LoggerFactory;
 
 /**
  * FINST tracking feature map that is used by both the aural and visual modules.
@@ -104,6 +103,19 @@ public class DefaultFINSTFeatureMap implements IFINSTFeatureMap
     _newIdentifiers = new HashMap<IIdentifier, FINST>();
     _oldIdentifiers = new HashMap<IIdentifier, FINST>();
     _attendedIdentifiers = new HashMap<IIdentifier, FINST>();
+  }
+
+  public boolean hasNew()
+  {
+    try
+    {
+      _lock.readLock().lock();
+      return _newIdentifiers.size() > 0;
+    }
+    finally
+    {
+      _lock.readLock().unlock();
+    }
   }
 
   public void addListener(IFeatureMapListener listener, Executor executor)

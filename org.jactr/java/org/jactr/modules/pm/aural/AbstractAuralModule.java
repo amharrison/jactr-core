@@ -20,8 +20,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.Executor;
 
- 
-import org.slf4j.LoggerFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
@@ -49,6 +47,7 @@ import org.jactr.modules.pm.common.memory.IActivePerceptListener;
 import org.jactr.modules.pm.common.memory.IPerceptualEncoder;
 import org.jactr.modules.pm.common.memory.IPerceptualMemory;
 import org.jactr.modules.pm.common.memory.map.IFINSTFeatureMap;
+import org.slf4j.LoggerFactory;
 
 /**
  * abstract implementation of the aural module that takes care of most of the
@@ -172,7 +171,8 @@ public abstract class AbstractAuralModule extends AbstractPerceptualModule
       @Override
       public void cycleStarted(ModelEvent me)
       {
-        if (isBufferStuffEnabled())
+        if (isBufferStuffEnabled()
+            && getAuralMemory().getFINSTFeatureMap().hasNew())
         {
           double lastTime = getAuralMemory().getLastChangeTime();
           if (lastTime >= _lastStuffAttempt)

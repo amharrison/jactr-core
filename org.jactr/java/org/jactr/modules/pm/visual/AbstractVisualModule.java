@@ -448,7 +448,8 @@ public abstract class AbstractVisualModule extends AbstractPerceptualModule
       {
         if (!_bufferStuffEnabled) return;
 
-        if (getVisualMemory().getLastChangeTime() >= _lastCheckTime)
+        if (getVisualMemory().getLastChangeTime() >= _lastCheckTime
+            && getVisualMemory().getFINSTFeatureMap().hasNew())
         {
           _visualLocationBuffer.checkForBufferStuff();
           _lastCheckTime = event.getSimulationTime();

@@ -49,6 +49,8 @@ public interface IFINSTFeatureMap extends IFeatureMap<FINSTState>
 
   public boolean isNew(IIdentifier identifier);
 
+  public boolean hasNew();
+
   public void getOld(Set<IIdentifier> destination);
 
   public boolean isOld(IIdentifier identifier);
