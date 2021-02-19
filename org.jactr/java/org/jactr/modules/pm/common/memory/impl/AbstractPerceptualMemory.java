@@ -20,7 +20,6 @@ import java.util.concurrent.FutureTask;
 
 import org.commonreality.agents.IAgent;
 import org.commonreality.identifier.IIdentifier;
-import org.commonreality.object.manager.IAfferentObjectManager;
 import org.eclipse.collections.impl.list.mutable.FastList;
 import org.jactr.core.buffer.six.IStatusBuffer;
 import org.jactr.core.chunk.IChunk;
@@ -578,24 +577,7 @@ public abstract class AbstractPerceptualMemory implements IPerceptualMemory
       return psr;
     }
 
-    /*
-     * now we need to check the actual chunks that have been encoded
-     */
-    IAfferentObjectManager objectManager = agent.getAfferentObjectManager();
 
-    /**
-     * nothing to match.
-     */
-    if (objectManager.getIdentifiers().size() == 0)
-    {
-      if (LOGGER.isDebugEnabled())
-        LOGGER.debug(String.format("Nothing to match"));
-      PerceptualSearchResult psr = new PerceptualSearchResult(null, null, null,
-          request, request);
-      psr.setErrorCode(
-          getNamedChunk(IStatusBuffer.ERROR_NOTHING_AVAILABLE_CHUNK));
-      return psr;
-    }
 
     /*
      * which then build the priority sort
