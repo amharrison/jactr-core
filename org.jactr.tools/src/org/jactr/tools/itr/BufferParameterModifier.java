@@ -13,7 +13,7 @@ public class BufferParameterModifier extends AbstractParameterModifier
 
   static public final String BUFFER_NAME = "BufferName";
 
-  private String             _bufferName;
+  protected String           _bufferName;
 
   static public void setBufferParameter(CommonTree modelDescriptor,
       String bufferName, String parameterName, String value)

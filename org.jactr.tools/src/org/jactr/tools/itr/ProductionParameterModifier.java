@@ -6,11 +6,10 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.antlr.runtime.tree.CommonTree;
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
 import org.jactr.io2.compilation.ICompilationUnit;
+import org.slf4j.LoggerFactory;
 
 public class ProductionParameterModifier extends AbstractParameterModifier
 {
@@ -22,7 +21,7 @@ public class ProductionParameterModifier extends AbstractParameterModifier
 
   static public final String   PRODUCTION_PATTERN = "ProductionPattern";
 
-  private Pattern              _production;
+  protected Pattern                         _production;
 
   @Override
   protected void setParameter(ICompilationUnit modelDescriptor,

@@ -9,11 +9,10 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.antlr.runtime.tree.CommonTree;
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
 import org.jactr.io2.compilation.ICompilationUnit;
+import org.slf4j.LoggerFactory;
 
 public class ChunkSlotModifier extends AbstractParameterModifier
 {
@@ -27,9 +26,10 @@ public class ChunkSlotModifier extends AbstractParameterModifier
 
   static public final String   CHUNKTYPE_PATTERN = "ChunkTypePattern";
 
-  private Pattern              _chunk;
+  protected Pattern                               _chunk;
 
-  private Pattern              _chunkType        = Pattern.compile(".*");
+  protected Pattern                               _chunkType        = Pattern
+      .compile(".*");
 
   @Override
   public String getParameterDisplayName()

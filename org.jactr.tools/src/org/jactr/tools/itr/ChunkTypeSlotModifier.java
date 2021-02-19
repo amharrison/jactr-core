@@ -6,11 +6,10 @@ package org.jactr.tools.itr;
 import java.util.Map;
 
 import org.antlr.runtime.tree.CommonTree;
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
 import org.jactr.io2.compilation.ICompilationUnit;
+import org.slf4j.LoggerFactory;
 
 public class ChunkTypeSlotModifier extends AbstractParameterModifier
 {
@@ -22,7 +21,7 @@ public class ChunkTypeSlotModifier extends AbstractParameterModifier
 
   static public final String         CHUNK_TYPE = "ChunkType";
 
-  private String                     _chunkTypeName;
+  protected String                                _chunkTypeName;
 
   @Override
   public void setParameter(String key, String value)
