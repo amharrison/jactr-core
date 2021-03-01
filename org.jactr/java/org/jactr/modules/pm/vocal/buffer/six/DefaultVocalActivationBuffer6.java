@@ -1,10 +1,5 @@
 package org.jactr.modules.pm.vocal.buffer.six;
 
-/*
- * default logging
- */
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.delegate.AddChunkRequestDelegate;
 import org.jactr.core.chunktype.IChunkType;
@@ -15,6 +10,12 @@ import org.jactr.modules.pm.vocal.IVocalModule;
 import org.jactr.modules.pm.vocal.buffer.IVocalActivationBuffer;
 import org.jactr.modules.pm.vocal.buffer.processor.ClearRequestDelegate;
 import org.jactr.modules.pm.vocal.buffer.processor.SpeechRequestDelegate;
+
+/*
+ * default logging
+ */
+ 
+import org.slf4j.LoggerFactory;
 
 public class DefaultVocalActivationBuffer6 extends AbstractPMActivationBuffer6 implements IVocalActivationBuffer
 {
@@ -53,9 +54,9 @@ public class DefaultVocalActivationBuffer6 extends AbstractPMActivationBuffer6 i
       
       AbstractVocalModule module = (AbstractVocalModule) getModule();
       
-//      addRequestDelegate(new SpeechRequestDelegate(module.getSpeakChunkType(), true, module));
-//      addRequestDelegate(new SpeechRequestDelegate(module.getSubvocalizeChunkType(), false, module));
       addRequestDelegate(new SpeechRequestDelegate(module, module.getSpeakChunkType()));
+      addRequestDelegate(
+          new SpeechRequestDelegate(module, module.getSubvocalizeChunkType()));
     }
     catch (Exception e)
     {

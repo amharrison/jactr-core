@@ -6,8 +6,6 @@ package org.jactr.modules.pm.vocal.delegate;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
- 
-import org.slf4j.LoggerFactory;
 import org.commonreality.efferent.IEfferentCommand;
 import org.commonreality.modalities.vocal.VocalizationCommand;
 import org.commonreality.object.IEfferentObject;
@@ -20,6 +18,7 @@ import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.modules.pm.vocal.AbstractVocalModule;
 import org.jactr.modules.pm.vocal.IVocalModule;
+import org.slf4j.LoggerFactory;
 
 public class VocalManagementDelegate
 {
@@ -87,10 +86,9 @@ public class VocalManagementDelegate
 
     for (IConditionalSlot cSlot : ctRequest.getConditionalSlots())
       if (cSlot.getName().equals(IVocalModule.STRING_SLOT)
-          && cSlot.getCondition() == IConditionalSlot.EQUALS
-          && cSlot.getValue() instanceof String)
+          && cSlot.getCondition() == IConditionalSlot.EQUALS)
       {
-        text = (String) cSlot.getValue();
+        text = cSlot.getValue().toString();
         break;
       }
 
@@ -99,11 +97,14 @@ public class VocalManagementDelegate
           + ", still preparing previous vocalization.");
 
     IEfferentObject vocalizationSource = _module.getVocalizationSource();
+    boolean isSubvocal = ctRequest.getChunkType()
+        .isA(_module.getSubvocalizeChunkType());
 
     if (vocalizationSource == null)
       return error("No vocalization source defined. I'm mute");
 
-    return _manager.newCommand(vocalizationSource, text, estimatedDuration);
+    return _manager.newCommand(vocalizationSource, text, estimatedDuration,
+        isSubvocal);
   }
 
   public Future<VocalizationCommand> execute(IEfferentCommand command)
