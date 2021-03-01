@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.ISymbolicChunk;
 import org.jactr.core.chunktype.IChunkType;
@@ -27,6 +25,7 @@ import org.jactr.core.slot.ISlotContainer;
 import org.jactr.core.slot.IUniqueSlotContainer;
 import org.jactr.core.slot.IVariableNameSlot;
 import org.jactr.core.utils.collections.FastListFactory;
+import org.slf4j.LoggerFactory;
 
 /*
  * default logging
@@ -359,17 +358,7 @@ public class SlotBasedRequest implements IRequest, ISlotContainer
 
           Object value = bindings.get(variableName);
           slotToResolve.setValue(value);
-
-          // test
-          // test moved down below
-          // if (!slotToResolve.matchesCondition(valueSlot.getValue()))
-          // {
-          // // cleanup. normally this isn't needed unless we're nested in
-          // // logicals
-          // throw new CannotMatchException(new SlotMatchFailure(null,
-          // slotContainer, slotToResolve, valueSlot,
-          // bindings.getSource(variableName)));
-          // }
+          // we will do the actual matchesCondition test below
         }
         else if (slotToResolve.getCondition() == IConditionalSlot.EQUALS)
           /*
@@ -420,14 +409,17 @@ public class SlotBasedRequest implements IRequest, ISlotContainer
             new ChunkTypeMatchFailure(ct, chunk.getParentChunk()));
 
         }
-        else if (!slotToResolve.matchesCondition(valueSlot.getValue()))
-        {
+
+      /**
+       * final check
+       */
+      if (!slotToResolve.matchesCondition(valueSlot.getValue()))
+      {
         if (locallyBound) bindings.unbind(variableName);
 
-        throw new CannotMatchException(
-            new SlotMatchFailure(slotContainer, slotToResolve, valueSlot));
-        }
-
+        throw new CannotMatchException(new SlotMatchFailure(null, slotContainer,
+            slotToResolve, valueSlot, bindings.getSource(variableName)));
+      }
     }
 
     return true;

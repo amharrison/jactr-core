@@ -144,6 +144,7 @@ public class VariableBindings
 
   public Object getSource(String variableName)
   {
+    if (variableName == null) return null;
     Object[] rtn = _bindings.get(variableName.toLowerCase());
     if (rtn != null) return rtn[1];
     return null;
