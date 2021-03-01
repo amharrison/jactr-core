@@ -1,15 +1,16 @@
 package org.jactr.tools.experiment.actions.common;
 
+import org.jactr.tools.experiment.IExperiment;
+import org.jactr.tools.experiment.actions.IAction;
+import org.jactr.tools.experiment.impl.IVariableContext;
+import org.jactr.tools.experiment.trial.ITrial;
+
 /*
  * default logging
  */
 
  
 import org.slf4j.LoggerFactory;
-import org.jactr.tools.experiment.IExperiment;
-import org.jactr.tools.experiment.actions.IAction;
-import org.jactr.tools.experiment.impl.IVariableContext;
-import org.jactr.tools.experiment.trial.ITrial;
 
 public class EndTrialAction implements IAction
 {
@@ -21,15 +22,23 @@ public class EndTrialAction implements IAction
 
   private IExperiment                _experiment;
 
+  private ITrial                                  _trial;
+
   public EndTrialAction(IExperiment experiment)
   {
     _experiment = experiment;
   }
 
-  public void fire(IVariableContext context)
+  public EndTrialAction(ITrial trial, IExperiment experiment)
   {
-    ITrial current = _experiment.getTrial();
-    if (current != null) if (current.isRunning()) current.stop();
+    _trial = trial;
+    _experiment = experiment;
   }
 
+  public void fire(IVariableContext context)
+  {
+    ITrial current = _trial;
+    if (current == null) current = _experiment.getTrial();
+    if (current != null) if (current.isRunning()) current.stop();
+  }
 }

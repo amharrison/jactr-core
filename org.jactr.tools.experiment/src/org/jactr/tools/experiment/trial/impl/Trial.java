@@ -9,11 +9,10 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.tools.experiment.IExperiment;
 import org.jactr.tools.experiment.trial.ITrial;
 import org.jactr.tools.experiment.triggers.ITrigger;
+import org.slf4j.LoggerFactory;
 
 public class Trial implements ITrial, Runnable
 {
@@ -21,29 +20,30 @@ public class Trial implements ITrial, Runnable
    * Logger definition
    */
   static private final transient org.slf4j.Logger LOGGER            = LoggerFactory
-                                                           .getLogger(Trial.class);
+      .getLogger(Trial.class);
 
-  private final String               _id;
+  private final String                            _id;
 
-  private ITrigger                   _start;
+  private ITrigger                                _start;
 
-  private ITrigger                   _end;
+  private ITrigger                                _end;
 
-  private Collection<ITrigger>       _triggers;
+  private Collection<ITrigger>                    _triggers;
 
-  private volatile boolean           _isRunning;
+  private volatile boolean                        _isRunning;
 
-  private volatile boolean           _shouldStop       = false;
+  private volatile boolean                        _shouldStop       = false;
 
-  private Lock                       _lock             = new ReentrantLock();
+  private Lock                                    _lock             = new ReentrantLock();
 
-  private Condition                  _runningCondition = _lock.newCondition();
+  private Condition                               _runningCondition = _lock
+      .newCondition();
 
-  private double                     _startTime;
+  private double                                  _startTime;
 
-  private double                     _stopTime;
+  private double                                  _stopTime;
 
-  private IExperiment                _experiment;
+  private IExperiment                             _experiment;
 
   public Trial(String id, IExperiment experiment)
   {
@@ -104,10 +104,17 @@ public class Trial implements ITrial, Runnable
     }
   }
 
+  public void initialize()
+  {
+
+  }
+
   public void start()
   {
     if (isRunning())
       throw new IllegalStateException(getId() + " is already running");
+
+    initialize();
 
     setRunning(true);
 
@@ -123,21 +130,18 @@ public class Trial implements ITrial, Runnable
 
     for (ITrigger trigger : _triggers)
       trigger.setArmed(true);
+
+    _startTime = _experiment.getTime();
   }
 
   public void stop()
   {
-    if (!isRunning())
-    {
-      if (LOGGER.isWarnEnabled())
-        LOGGER.warn(String.format("%s is not running. Issuing stop anyway",
-            getId()));
-    }
+    if (!isRunning()) if (LOGGER.isWarnEnabled()) LOGGER.warn(
+        String.format("%s is not running. Issuing stop anyway", getId()));
     try
     {
       _lock.lock();
       _shouldStop = true;
-
 
       _runningCondition.signalAll();
     }

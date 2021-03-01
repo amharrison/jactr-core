@@ -20,6 +20,11 @@ public interface ITrial
   public boolean isRunning();
   
   /**
+   * called just before start
+   */
+  public void initialize();
+
+  /**
    * start a trial that isnt running. should only be called by
    * the experiment thread
    */

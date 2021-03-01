@@ -8,11 +8,10 @@ import java.util.Collection;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 
- 
-import org.slf4j.LoggerFactory;
 import org.commonreality.time.IClock;
 import org.jactr.tools.experiment.IExperiment;
 import org.jactr.tools.experiment.actions.IAction;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 /**
@@ -130,6 +129,7 @@ public class TimeTrigger implements ITrigger
             + _isRelative + " now:" + now);
 
       Runnable runner = () -> {
+        if (!isArmed()) return; // we've been deactivated
         /*
          * zip through and fire all the actions
          */

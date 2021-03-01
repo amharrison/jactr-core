@@ -1,10 +1,5 @@
 package org.jactr.tools.experiment.misc;
 
-/*
- * default logging
- */
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.tools.experiment.IExperiment;
@@ -12,13 +7,19 @@ import org.jactr.tools.experiment.bootstrap.StartModelExperiments;
 import org.jactr.tools.experiment.impl.IVariableContext;
 import org.jactr.tools.experiment.impl.VariableResolver;
 
+/*
+ * default logging
+ */
+
+import org.slf4j.LoggerFactory;
+
 public class ExperimentUtilities
 {
   /**
    * Logger definition
    */
   static private final transient org.slf4j.Logger LOGGER = LoggerFactory
-                                                .getLogger(ExperimentUtilities.class);
+      .getLogger(ExperimentUtilities.class);
 
   static public IExperiment getModelsExperiment(IModel model)
   {
@@ -34,16 +35,18 @@ public class ExperimentUtilities
   {
     VariableResolver resolver = experiment.getVariableResolver();
     IVariableContext context = experiment.getVariableContext();
-    Object resolved = resolver
-        .resolve(
-            String.format("${%s}", StartModelExperiments.EXPERIMENT_MODEL),
-            context);
+    Object resolved = resolver.resolve(
+        String.format("${%s}", StartModelExperiments.EXPERIMENT_MODEL),
+        context);
     IModel model = null;
-    
-    if(resolved instanceof IModel)
-      model = (IModel) resolved;
 
-    if (model == null) model = (IModel) resolver.resolve("${=model}", context);
+    if (resolved instanceof IModel) model = (IModel) resolved;
+
+    if (model == null)
+    {
+      Object tmp = resolver.resolve("${=model}", context);
+      if (tmp instanceof IModel) model = (IModel) tmp;
+    }
 
     return model;
   }
