@@ -100,7 +100,7 @@ public abstract class AbstractVisualModule extends AbstractPerceptualModule
     params.add(IPerceptualMemory.NEW_FINST_ONSET_DURATION_TIME_PARAM);
     params.add(IVisualMemory.MOVEMENT_TOLERANCE_PARAM);
     params.add(ENABLE_BUFFER_STUFF_PARAM);
-    params.add(STRICT_SYNCHRONIZATION_PARAM);
+    // params.add(STRICT_SYNCHRONIZATION_PARAM);
     SETABLE_PARAMS = Collections.unmodifiableCollection(params);
   }
 

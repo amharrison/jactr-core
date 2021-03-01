@@ -32,6 +32,7 @@ import org.jactr.core.slot.ISlot;
 import org.jactr.modules.pm.buffer.IPerceptualBuffer;
 import org.jactr.modules.pm.common.buffer.AbstractPMActivationBuffer6;
 import org.jactr.modules.pm.common.memory.IPerceptualMemory;
+import org.jactr.modules.pm.visual.AbstractVisualModule;
 import org.jactr.modules.pm.visual.IVisualModule;
 import org.jactr.modules.pm.visual.buffer.IVisualActivationBuffer;
 import org.jactr.modules.pm.visual.buffer.IVisualLocationBuffer;
@@ -52,23 +53,22 @@ public class DefaultVisualLocationBuffer6 extends AbstractPMActivationBuffer6
   /**
    * logger definition
    */
-  static public final transient org.slf4j.Logger               LOGGER = LoggerFactory
-                                                   .getLogger(DefaultVisualLocationBuffer6.class);
+  static public final transient org.slf4j.Logger LOGGER             = LoggerFactory
+      .getLogger(DefaultVisualLocationBuffer6.class);
 
-  protected IChunk                      _currentVisualLocation;
+  protected IChunk                               _currentVisualLocation;
 
-  protected IChunk                      _lastVisualLocation;
+  protected IChunk                               _lastVisualLocation;
 
-  protected IChunkType                  _visualLocationChunkType;
+  protected IChunkType                           _visualLocationChunkType;
 
-  protected IVisualActivationBuffer     _visualActivationBuffer;
+  protected IVisualActivationBuffer              _visualActivationBuffer;
 
-  protected VisualSearchRequestDelegate _scanDelegate;
+  protected VisualSearchRequestDelegate          _scanDelegate;
 
-  protected ChunkTypeRequest            _defaultSearchRequest;
+  protected ChunkTypeRequest                     _defaultSearchRequest;
 
-  protected ICompilableContext _compilableContext = new VisualCompilableContext();
-
+  protected ICompilableContext                   _compilableContext = new VisualCompilableContext();
 
   public DefaultVisualLocationBuffer6(IVisualActivationBuffer visualBuffer,
       IVisualModule module)
@@ -93,18 +93,21 @@ public class DefaultVisualLocationBuffer6 extends AbstractPMActivationBuffer6
           .getChunkType(IVisualModule.VISUAL_LOCATION_CHUNK_TYPE).get();
 
       _defaultSearchRequest = new ChunkTypeRequest(_visualLocationChunkType);
-      _defaultSearchRequest.addSlot(new BasicSlot(
-          IVisualModule.ATTENDED_STATUS_SLOT, getModel().getDeclarativeModule()
-              .getNewChunk()));
+      _defaultSearchRequest
+          .addSlot(new BasicSlot(IVisualModule.ATTENDED_STATUS_SLOT,
+              getModel().getDeclarativeModule().getNewChunk()));
+      _defaultSearchRequest.addSlot(new BasicSlot(IVisualModule.NEAREST_SLOT,
+          ((AbstractVisualModule) getModule()).getCurrentChunk()));
 
-      addRequestDelegate(new SetDefaultSearchRequestDelegate(getModel()
-          .getDeclarativeModule().getChunkType("set-default-visual-search")
-          .get()));
+      addRequestDelegate(
+          new SetDefaultSearchRequestDelegate(getModel().getDeclarativeModule()
+              .getChunkType("set-default-visual-search").get()));
     }
     catch (Exception e)
     {
-      LOGGER.error("Could not get chunktype "
-          + IVisualModule.VISUAL_LOCATION_CHUNK_TYPE, e);
+      LOGGER.error(
+          "Could not get chunktype " + IVisualModule.VISUAL_LOCATION_CHUNK_TYPE,
+          e);
     }
     installDefaultChunkPatternProcessors();
     super.grabReferences();
@@ -117,8 +120,7 @@ public class DefaultVisualLocationBuffer6 extends AbstractPMActivationBuffer6
 
     _currentVisualLocation = null;
 
-    if (_scanDelegate.isBufferStuffPending())
-      _scanDelegate.cancelBufferStuff();
+    if (_scanDelegate.isBufferStuffPending()) _scanDelegate.cancelBufferStuff();
 
     clearLastLocation();
     return source;
@@ -152,20 +154,18 @@ public class DefaultVisualLocationBuffer6 extends AbstractPMActivationBuffer6
   @Override
   protected void setSourceChunkInternal(IChunk chunk)
   {
-    if (chunk != null
-        && !chunk.isA(((IVisualModule) getModule())
-            .getVisualLocationChunkType()))
-      throw new IllegalActivationBufferStateException(getName()
-          + " may only contain visual-location chunks not : "
-          + chunk.getSymbolicChunk().getChunkType());
+    if (chunk != null && !chunk
+        .isA(((IVisualModule) getModule()).getVisualLocationChunkType()))
+      throw new IllegalActivationBufferStateException(
+          getName() + " may only contain visual-location chunks not : "
+              + chunk.getSymbolicChunk().getChunkType());
 
     super.setSourceChunkInternal(chunk);
     _currentVisualLocation = getSourceChunk();
 
     IModel model = getModel();
-    if (Logger.hasLoggers(model))
-      Logger.log(model, Logger.Stream.VISUAL, getName()
-          + " current visual location " + _currentVisualLocation);
+    if (Logger.hasLoggers(model)) Logger.log(model, Logger.Stream.VISUAL,
+        getName() + " current visual location " + _currentVisualLocation);
 
     if (chunk != null && !chunk.equals(_lastVisualLocation))
       clearLastLocation();
@@ -173,33 +173,32 @@ public class DefaultVisualLocationBuffer6 extends AbstractPMActivationBuffer6
 
   protected void clearLastLocation()
   {
-    if (_lastVisualLocation != null)
-      synchronized (_lastVisualLocation)
-      {
-        if (LOGGER.isDebugEnabled())
-          LOGGER
-              .debug("clearing temporary slot values of prior visual-location "
-                  + _lastVisualLocation);
+    if (_lastVisualLocation != null) synchronized (_lastVisualLocation)
+    {
+      if (LOGGER.isDebugEnabled())
+        LOGGER.debug("clearing temporary slot values of prior visual-location "
+            + _lastVisualLocation);
 
-        /*
-         * it was in the buffer, zero the slot values that aren't persistent
-         */
-        ISymbolicChunk sc = _lastVisualLocation.getSymbolicChunk();
-        for (ISlot slot : sc.getSlots())
-          if (!slot.getName().equals(IVisualModule.SCREEN_X_SLOT)
-              && !slot.getName().equals(IVisualModule.SCREEN_Y_SLOT)) try
-          {
-            IMutableSlot ms = (IMutableSlot) sc.getSlot(slot.getName());
-            ms.setValue(null);
-          }
-          catch (Exception e)
-          {
+      /*
+       * it was in the buffer, zero the slot values that aren't persistent
+       */
+      ISymbolicChunk sc = _lastVisualLocation.getSymbolicChunk();
+      for (ISlot slot : sc.getSlots())
+        if (!slot.getName().equals(IVisualModule.SCREEN_X_SLOT)
+            && !slot.getName().equals(IVisualModule.SCREEN_Y_SLOT))
+          try
+        {
+          IMutableSlot ms = (IMutableSlot) sc.getSlot(slot.getName());
+          ms.setValue(null);
+        }
+        catch (Exception e)
+        {
 
-          }
+        }
 
-        _lastVisualLocation.setMetaData(
-            IPerceptualMemory.SEARCH_RESULT_IDENTIFIER_KEY, null);
-      }
+      _lastVisualLocation
+          .setMetaData(IPerceptualMemory.SEARCH_RESULT_IDENTIFIER_KEY, null);
+    }
 
     _lastVisualLocation = null;
   }
@@ -239,9 +238,9 @@ public class DefaultVisualLocationBuffer6 extends AbstractPMActivationBuffer6
      */
     try
     {
-      addRequestDelegate(new SetDefaultSearchRequestDelegate(getModel()
-          .getDeclarativeModule().getChunkType("set-default-visual-search")
-          .get()));
+      addRequestDelegate(
+          new SetDefaultSearchRequestDelegate(getModel().getDeclarativeModule()
+              .getChunkType("set-default-visual-search").get()));
     }
     catch (Exception e)
     {
@@ -249,8 +248,8 @@ public class DefaultVisualLocationBuffer6 extends AbstractPMActivationBuffer6
           e);
     }
 
-    _scanDelegate = new VisualSearchRequestDelegate(
-        (IVisualModule) getModule(), true);
+    _scanDelegate = new VisualSearchRequestDelegate((IVisualModule) getModule(),
+        true);
     addRequestDelegate(_scanDelegate);
   }
 
@@ -293,16 +292,15 @@ public class DefaultVisualLocationBuffer6 extends AbstractPMActivationBuffer6
     // IVisualModule.NEAREST_SLOT, module.getVisualMemory()
     // .getVisualLocationChunkAt(0, 0)));
 
-    locationBufferStuffPattern.addSlot(new BasicSlot(
-        IPerceptualBuffer.IS_BUFFER_STUFF_REQUEST, true));
+    locationBufferStuffPattern.addSlot(
+        new BasicSlot(IPerceptualBuffer.IS_BUFFER_STUFF_REQUEST, true));
 
     IModel model = getModel();
-    if (Logger.hasLoggers(model))
-      Logger.log(model, Logger.Stream.VISUAL, "Attempting a stuff search with "
-          + locationBufferStuffPattern);
+    if (Logger.hasLoggers(model)) Logger.log(model, Logger.Stream.VISUAL,
+        "Attempting a stuff search with " + locationBufferStuffPattern);
 
-    request(locationBufferStuffPattern, ACTRRuntime.getRuntime().getClock(
-        getModel()).getTime());
+    request(locationBufferStuffPattern,
+        ACTRRuntime.getRuntime().getClock(getModel()).getTime());
   }
 
   /**
@@ -336,7 +334,7 @@ public class DefaultVisualLocationBuffer6 extends AbstractPMActivationBuffer6
   {
     return _defaultSearchRequest;
   }
-  
+
   @Override
   public ICompilableContext getCompilableContext()
   {

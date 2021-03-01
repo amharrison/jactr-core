@@ -61,7 +61,7 @@ public abstract class AbstractAuralModule extends AbstractPerceptualModule
     implements IAuralModule, IParameterized
 {
 
-  static public final String                                      ENABLE_BUFFER_STUFF_PARAM    = "EnableBufferStuff";
+  static public final String                                      ENABLE_BUFFER_STUFF_PARAM    = "EnableAuralBufferStuff";
 
   static public final String                                      AURAL_DECAY_TIME_PARAM       = "AuralDecayTime";
 
@@ -208,7 +208,7 @@ public abstract class AbstractAuralModule extends AbstractPerceptualModule
     _internalChunk = getNamedChunk(INTERNAL_CHUNK);
     _externalChunk = getNamedChunk(EXTERNAL_CHUNK);
 
-    setRecodeTime(getNamedChunkType(TONE_CHUNK_TYPE), 0.5);
+    setRecodeTime(getNamedChunkType(TONE_CHUNK_TYPE), 0.285);
     setRecodeTime(getNamedChunkType(DIGIT_CHUNK_TYPE), 0.285);
     setRecodeTime(getNamedChunkType(SPEECH_CHUNK_TYPE), 1);
     setRecodeTime(getNamedChunkType(WORD_CHUNK_TYPE), 0.3);

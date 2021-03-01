@@ -6,8 +6,6 @@ package org.jactr.modules.pm.vocal.six;
 import java.util.ArrayList;
 import java.util.Collection;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.utils.parameter.NumericParameterHandler;
 import org.jactr.core.utils.parameter.ParameterHandler;
 import org.jactr.modules.pm.vocal.AbstractVocalModule;
@@ -15,6 +13,7 @@ import org.jactr.modules.pm.vocal.IVocalExecutionTimeEquation;
 import org.jactr.modules.pm.vocal.IVocalModule;
 import org.jactr.modules.pm.vocal.IVocalPreparationTimeEquation;
 import org.jactr.modules.pm.vocal.IVocalProcessingTimeEquation;
+import org.slf4j.LoggerFactory;
 
 public class DefaultVocalModule6 extends AbstractVocalModule
 {
@@ -24,7 +23,7 @@ public class DefaultVocalModule6 extends AbstractVocalModule
   static private final transient org.slf4j.Logger LOGGER                           = LoggerFactory
                                                                           .getLogger(DefaultVocalModule6.class);
 
-  static public final String         SYLLABLE_RATE_PARAM              = "SyllableRate";
+  static public final String                      SYLLABLE_RATE_PARAM              = "SyllableDuration";
 
   static public final String         CHARACTERS_PER_SYLLABLE_PARAM    = "CharactersPerSyllable";
 
@@ -46,7 +45,7 @@ public class DefaultVocalModule6 extends AbstractVocalModule
 
   private double                     _processingTime                  = 0.05;
 
-  private double                     _syllableRate                    = 6.66;
+  private double                                  _syllableRate                    = 0.15;
 
   private double                     _charactersPerSyllable           = 3;
 
@@ -87,7 +86,7 @@ public class DefaultVocalModule6 extends AbstractVocalModule
       {
         if (text.trim().length() == 0) return _processingTime;
 
-        return text.length() / _charactersPerSyllable / _syllableRate;
+        return text.length() / _charactersPerSyllable * _syllableRate;
       }
 
     });
