@@ -53,8 +53,7 @@ public class DefaultSubsymbolicChunk5 extends DefaultSubsymbolicChunk4
   public final static String                          SIMILARITY_ACTIVATION = "SimilarityActivation";
 
   private static transient org.slf4j.Logger           LOGGER                = LoggerFactory
-                                                                                .getLogger(DefaultSubsymbolicChunk5.class
-                                                                                    .getName());
+      .getLogger(DefaultSubsymbolicChunk5.class.getName());
 
   protected double                                    _similarityActivation;
 
@@ -64,7 +63,7 @@ public class DefaultSubsymbolicChunk5 extends DefaultSubsymbolicChunk4
    * last pattern used to calculate similarity activation
    */
   protected transient SoftReference<ChunkTypeRequest> _lastPattern          = new SoftReference<ChunkTypeRequest>(
-                                                                                null);
+      null);
 
   static private boolean                              _warnedSimilarity     = false;
 
@@ -95,17 +94,23 @@ public class DefaultSubsymbolicChunk5 extends DefaultSubsymbolicChunk4
   {
 
     if (SIMILARITY_ACTIVATION.equalsIgnoreCase(key))
-      setSimilarityActivation(ParameterHandler.numberInstance().coerce(value)
-          .doubleValue());
+      setSimilarityActivation(
+          ParameterHandler.numberInstance().coerce(value).doubleValue());
     else if (SIMILARITIES.equalsIgnoreCase(key))
     {
-      ACTRParameterHandler actrph = new ACTRParameterHandler(getParentChunk()
-          .getModel());
+      ACTRParameterHandler actrph = new ACTRParameterHandler(
+          getParentChunk().getModel());
       SimilarityParameterHandler sph = new SimilarityParameterHandler(actrph);
       CollectionParameterHandler<Object[]> aph = new CollectionParameterHandler<Object[]>(
           sph);
       for (Object[] similarity : aph.coerce(value))
-        setSimilarity((IChunk) similarity[0], (Double) similarity[1]);
+      {
+        IChunk chunk = (IChunk) similarity[0];
+        Double simValue = (Double) similarity[1];
+        setSimilarity(chunk, simValue);
+        chunk.getAdapter(ISubsymbolicChunk5.class).setSimilarity(_parentChunk,
+            simValue);
+      }
     }
     else
       super.setParameter(key, value);
@@ -165,9 +170,9 @@ public class DefaultSubsymbolicChunk5 extends DefaultSubsymbolicChunk4
     }
 
     if (_parentChunk.hasParameterListeners())
-      _parentChunk.dispatch(new ParameterEvent(this, ACTRRuntime.getRuntime()
-          .getClock(_parentChunk.getModel()).getTime(), SIMILARITY_ACTIVATION,
-          oldSim, _similarityActivation));
+      _parentChunk.dispatch(new ParameterEvent(this,
+          ACTRRuntime.getRuntime().getClock(_parentChunk.getModel()).getTime(),
+          SIMILARITY_ACTIVATION, oldSim, _similarityActivation));
   }
 
   /**
@@ -185,16 +190,16 @@ public class DefaultSubsymbolicChunk5 extends DefaultSubsymbolicChunk4
   {
     if (SIMILARITIES.equalsIgnoreCase(key))
     {
-      ACTRParameterHandler actrph = new ACTRParameterHandler(getParentChunk()
-          .getModel());
+      ACTRParameterHandler actrph = new ACTRParameterHandler(
+          getParentChunk().getModel());
       SimilarityParameterHandler sph = new SimilarityParameterHandler(actrph);
       CollectionParameterHandler<Object[]> aph = new CollectionParameterHandler<Object[]>(
           sph);
       return aph.toString(getSimilarities(null));
     }
     else if (SIMILARITY_ACTIVATION.equalsIgnoreCase(key))
-      return ParameterHandler.numberInstance().toString(
-          getSimilarityActivation());
+      return ParameterHandler.numberInstance()
+          .toString(getSimilarityActivation());
 
     return super.getParameter(key);
   }
@@ -257,7 +262,7 @@ public class DefaultSubsymbolicChunk5 extends DefaultSubsymbolicChunk4
     {
       readLock().lock();
       if (_similarityMap != null)
-      for (Map.Entry<IChunk, Double> entry : _similarityMap.entrySet())
+        for (Map.Entry<IChunk, Double> entry : _similarityMap.entrySet())
         container.add(new Object[] { entry.getKey(), entry.getValue() });
       return container;
     }
@@ -286,7 +291,6 @@ public class DefaultSubsymbolicChunk5 extends DefaultSubsymbolicChunk4
       readLock().unlock();
     }
   }
-
 
   /**
    * Gets the Activation attribute of the DefaultSubsymbolicChunk5 object
@@ -321,8 +325,7 @@ public class DefaultSubsymbolicChunk5 extends DefaultSubsymbolicChunk4
     super.dispose();
 
     _lastPattern = null;
-    if (_similarityMap != null)
-    _similarityMap.clear();
+    if (_similarityMap != null) _similarityMap.clear();
     _similarityMap = null;
 
   }
@@ -339,8 +342,8 @@ public class DefaultSubsymbolicChunk5 extends DefaultSubsymbolicChunk4
     if (p == null) return 0;
 
     IModel parentModel = _parentChunk.getModel();
-    IDeclarativeModule5 idm = parentModel
-        .getDeclarativeModule().getAdapter(IDeclarativeModule5.class);
+    IDeclarativeModule5 idm = parentModel.getDeclarativeModule()
+        .getAdapter(IDeclarativeModule5.class);
 
     if (idm == null && !_warnedSimilarity)
     {
@@ -369,8 +372,8 @@ public class DefaultSubsymbolicChunk5 extends DefaultSubsymbolicChunk4
           Object chunkSlotValue = sc.getSlot(slotName).getValue();
           double similarityDiscount = 0;
           if (!s.matchesCondition(chunkSlotValue))
-            similarityDiscount = idm
-                .getSimilarity(s.getValue(), chunkSlotValue);
+            similarityDiscount = idm.getSimilarity(s.getValue(),
+                chunkSlotValue);
           else
             similarityDiscount = maxSim;
 

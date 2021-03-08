@@ -5,12 +5,11 @@ package org.jactr.core.module.declarative.six.learning;
  */
 import java.util.Collection;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.module.declarative.basic.DefaultAssociativeLinkageSystem;
 import org.jactr.core.module.declarative.four.learning.DefaultDeclarativeLearningModule4;
 import org.jactr.core.module.declarative.six.associative.DefaultAssociativeLinkageSystem6;
 import org.jactr.core.utils.parameter.ParameterHandler;
+import org.slf4j.LoggerFactory;
 
 /**
  * uses the {@link DefaultAssociativeLinkageSystem6} which handles most of the
@@ -31,7 +30,9 @@ public class DefaultDeclarativeLearningModule6 extends
 
 
 
-  private double                     _maximumStrength;
+  private double                                  _maximumStrength = Double.NaN;  // off
+                                                                                  // by
+                                                                                  // default
 
   public DefaultDeclarativeLearningModule6()
   {

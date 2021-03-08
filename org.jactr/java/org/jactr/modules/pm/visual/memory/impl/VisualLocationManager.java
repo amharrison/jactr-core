@@ -184,7 +184,8 @@ public class VisualLocationManager implements IIndexManager
     nf.setMinimumFractionDigits(2);
     nf.setMaximumFractionDigits(2);
 
-    String name = "Loc:" + nf.format(x) + "x" + nf.format(y);
+    String name = "Loc" + nf.format(x).replace('.', '_') + "x"
+        + nf.format(y).replace('.', '_');
     Future<IChunk> created = _module.getModel().getDeclarativeModule()
         .createChunk(_module.getVisualLocationChunkType(), name);
     Double xLoc = x;

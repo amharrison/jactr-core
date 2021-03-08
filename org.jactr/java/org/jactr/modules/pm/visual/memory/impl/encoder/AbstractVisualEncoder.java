@@ -341,8 +341,9 @@ public abstract class AbstractVisualEncoder implements IPerceptualEncoder
   protected String guessChunkName(IAfferentObject afferentObject)
   {
     String candidateName = afferentObject.getIdentifier().getName();
-    if (candidateName == null || candidateName.length() == 0)
-      candidateName = _chunkTypeName;
+    if (candidateName == null || candidateName.length() < 2
+        || !Character.isAlphabetic(candidateName.charAt(0)))
+      candidateName = _chunkTypeName + "-" + candidateName;
     candidateName += "-"
         + _chunkType.getSymbolicChunkType().getNumberOfChunks();
     return candidateName;

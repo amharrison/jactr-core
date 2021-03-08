@@ -119,6 +119,10 @@ public class DefaultSourceActivationSpreader implements
           for (IAssociativeLink link : jLinks)
           {
             IChunk jChunk = link.getJChunk();
+
+            // we don't spread to ourselves.
+            if (jChunk.equals(link.getIChunk())) continue;
+
             if (jChunk.hasBeenDisposed()) continue;
 
             /*

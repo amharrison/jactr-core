@@ -1,10 +1,5 @@
 package org.jactr.modules.pm.visual.memory.impl.encoder;
 
-/*
- * default logging
- */
- 
-import org.slf4j.LoggerFactory;
 import org.commonreality.object.IAfferentObject;
 import org.commonreality.object.UnknownPropertyNameException;
 import org.jactr.core.chunk.IChunk;
@@ -13,6 +8,12 @@ import org.jactr.modules.pm.common.memory.IPerceptualMemory;
 import org.jactr.modules.pm.visual.IVisualModule;
 import org.jactr.modules.pm.visual.memory.IVisualMemory;
 
+/*
+ * default logging
+ */
+
+import org.slf4j.LoggerFactory;
+
 public class BasicTextEncoder extends AbstractVisualEncoder
 {
 
@@ -20,9 +21,9 @@ public class BasicTextEncoder extends AbstractVisualEncoder
    * Logger definition
    */
   static private final transient org.slf4j.Logger LOGGER = LoggerFactory
-                                                .getLogger(BasicTextEncoder.class);
+      .getLogger(BasicTextEncoder.class);
 
-  private final String               _commonTypeName;
+  private final String                            _commonTypeName;
 
   public BasicTextEncoder(String chunkTypeName, String commonTypeName)
   {
@@ -65,6 +66,7 @@ public class BasicTextEncoder extends AbstractVisualEncoder
     return textHasChanged(afferentObject, oldChunk);
   }
 
+  @Override
   protected void updateSlots(IAfferentObject afferentObject, IChunk encoding,
       IVisualMemory memory)
   {
@@ -72,23 +74,27 @@ public class BasicTextEncoder extends AbstractVisualEncoder
     /*
      * now set the value...
      */
-    ((IMutableSlot) encoding.getSymbolicChunk().getSlot(
-        IVisualModule.VALUE_SLOT)).setValue(getHandler()
-        .getText(afferentObject));
+    ((IMutableSlot) encoding.getSymbolicChunk()
+        .getSlot(IVisualModule.VALUE_SLOT))
+            .setValue(getHandler().getText(afferentObject));
   }
 
+  @Override
   protected String guessChunkName(IAfferentObject afferentObject)
   {
-    String text =getHandler().getText(afferentObject); 
-    return ((text==null || text.length()==0)?super.guessChunkName(afferentObject):text);
+    String text = getHandler().getText(afferentObject);
+    return text == null || text.length() < 2
+        || !Character.isAlphabetic(text.charAt(0))
+            ? super.guessChunkName(afferentObject)
+            : text;
   }
 
   protected boolean textHasChanged(IAfferentObject afferentObject,
       IChunk encoding)
   {
     String currentText = getHandler().getText(afferentObject);
-    Object oldValue = encoding.getSymbolicChunk().getSlot(
-        IVisualModule.VALUE_SLOT).getValue();
+    Object oldValue = encoding.getSymbolicChunk()
+        .getSlot(IVisualModule.VALUE_SLOT).getValue();
     String oldText = "";
     if (oldValue != null) oldText = oldValue.toString();
 

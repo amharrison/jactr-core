@@ -38,14 +38,17 @@ public class AssociativeLinkEquation6 implements IAssociativeLinkEquation
 
     double max = _declarativeLearningModule.getMaximumStrength();
 
-    /**
-     * In theory, this is Sji = Smax - ln(fanj). However, the lisp manual
-     * mentions fanj = fanj+1 / count
-     */
-    double fanj = link.getJChunk().getAdapter(IAssociativeLinkContainer.class)
-        .getNumberOfOutboundLinks();
+    Collection<IAssociativeLink> links = FastCollectionFactory.newInstance();
+    link.getJChunk().getAdapter(IAssociativeLinkContainer.class)
+        .getOutboundLinks(links);
 
-    // fanj++;
+    double fanj = links.stream().filter(l -> {
+      return l.getIChunk().isEncoded();
+    }).count();
+
+    FastCollectionFactory.recycle(links);
+    links = null;
+
     fanj = fanj / ((Link4) link).getCount();
 
     double ln = Math.log(fanj);
