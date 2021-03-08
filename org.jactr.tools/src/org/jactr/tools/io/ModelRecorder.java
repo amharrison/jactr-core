@@ -13,28 +13,23 @@
  */
 package org.jactr.tools.io;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.function.Function;
 
-import org.antlr.runtime.tree.CommonTree;
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.model.IModel;
 import org.jactr.core.model.event.ModelEvent;
 import org.jactr.core.model.event.ModelListenerAdaptor;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.utils.parameter.IParameterized;
-import org.jactr.core.utils.parameter.ParameterHandler;
 import org.jactr.instrument.IInstrument;
-import org.jactr.io.generator.CodeGeneratorFactory;
-import org.jactr.io.generator.ICodeGenerator;
-import org.jactr.io.resolver.ASTResolver;
+import org.jactr.io2.ast.ASTGeneratorManager;
+import org.jactr.io2.ast.IASTGenerator;
+import org.jactr.io2.source.ISourceGenerator;
+import org.jactr.io2.source.SourceGeneratorManager;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple instrument that saves the state of the model before it starts and
@@ -47,34 +42,24 @@ public class ModelRecorder implements IInstrument, IParameterized
   /**
    * logger definition
    */
-  static private final transient org.slf4j.Logger             LOGGER                   = LoggerFactory
-                                                                    .getLogger(ModelRecorder.class);
+  static private final transient org.slf4j.Logger LOGGER                   = LoggerFactory
+      .getLogger(ModelRecorder.class);
 
-  static final public String           SAVE_AS_PARAM            = "SaveAsExtension";
+  static final public String                      SAVE_AS_PARAM            = "SaveAsExtension";
 
-  static final public String           START_PARAM              = "StartDirectory";
+  static final public String                      START_PARAM              = "StartDirectory";
 
-  static final public String           STOP_PARAM               = "StopDirectory";
+  static final public String                      STOP_PARAM               = "StopDirectory";
 
-  static final public String           TRIM_CONTRIBUTIONS_PARAM = "TrimModuleContributions";
+  static final public String                      TRIM_CONTRIBUTIONS_PARAM = "TrimModuleContributions";
 
-  static final public String                        AST_GENERATOR            = "ASTGenerator";
+  private String                                  _saveAsExtension         = "jactr";
 
-  private String                       _saveAsExtension         = "jactr";
+  private String                                  _startDirectory          = "start";
 
-  private String                       _startDirectory          = "start";
+  private String                                  _stopDirectory           = "stop";
 
-  private String                       _stopDirectory           = "stop";
-
-  private boolean                      _trimModuleContributions = true;
-
-  static final private Function<IModel, CommonTree> _defaultASTGenerator     = (m) -> {
-                                                                  return ASTResolver
-                                                                      .toAST(m,
-                                                                          true);
-                                                                };
-
-  private Function<IModel, CommonTree>              _astGenerator            = _defaultASTGenerator;
+  private boolean                                 _trimModuleContributions = true;
 
   /**
    * IInstruments should always have a zero arg constructor
@@ -101,16 +86,12 @@ public class ModelRecorder implements IInstrument, IParameterized
       @Override
       public void modelStarted(ModelEvent me)
       {
-        // saveModel(me.getSource(), _startDirectory, _saveAsExtension,
-        // _trimModuleContributions);
         save(me.getSource(), _startDirectory);
       }
 
       @Override
       public void modelStopped(ModelEvent me)
       {
-        // saveModel(me.getSource(), _stopDirectory, _saveAsExtension,
-        // _trimModuleContributions);
         save(me.getSource(), _stopDirectory);
       }
     }, ExecutorServices.INLINE_EXECUTOR);
@@ -123,16 +104,10 @@ public class ModelRecorder implements IInstrument, IParameterized
   {
   }
 
-  protected CommonTree generateAST(IModel model)
-  {
-    CommonTree modelDescriptor = _astGenerator.apply(model);
-
-    return modelDescriptor;
-  }
 
   protected void save(IModel model, String directory)
   {
-    saveModel(model, generateAST(model), directory, _saveAsExtension,
+    saveModel(model, directory, _saveAsExtension,
         _trimModuleContributions);
   }
 
@@ -146,9 +121,6 @@ public class ModelRecorder implements IInstrument, IParameterized
     if (STOP_PARAM.equalsIgnoreCase(key)) return _stopDirectory;
     if (TRIM_CONTRIBUTIONS_PARAM.equalsIgnoreCase(key))
       return "" + _trimModuleContributions;
-    if (AST_GENERATOR.equalsIgnoreCase(key))
-      return _astGenerator == _defaultASTGenerator ? "default" : _astGenerator
-          .getClass().getName();
     return null;
   }
 
@@ -158,7 +130,7 @@ public class ModelRecorder implements IInstrument, IParameterized
   public Collection<String> getPossibleParameters()
   {
     return Arrays.asList(new String[] { SAVE_AS_PARAM, START_PARAM, STOP_PARAM,
-        TRIM_CONTRIBUTIONS_PARAM, AST_GENERATOR });
+        TRIM_CONTRIBUTIONS_PARAM });
   }
 
   /**
@@ -186,87 +158,35 @@ public class ModelRecorder implements IInstrument, IParameterized
       _stopDirectory = value;
     else if (TRIM_CONTRIBUTIONS_PARAM.equalsIgnoreCase(key))
       _trimModuleContributions = Boolean.parseBoolean(value);
-    else if (AST_GENERATOR.equalsIgnoreCase(key))
-    {
-      value = value.trim();
-      if (value.equalsIgnoreCase("default") || value.equals(""))
-        _astGenerator = _defaultASTGenerator;
-      else
-        try
-        {
-          _astGenerator = (Function<IModel, CommonTree>) ParameterHandler
-              .classInstance().coerce(value).newInstance();
-        }
-        catch (Exception e)
-        {
-          LOGGER.error(
-              String.format("Failed to set ast generator to %s ", value), e);
-          _astGenerator = _defaultASTGenerator;
-        }
-    }
     else if (LOGGER.isWarnEnabled())
       LOGGER.warn("No clue what to do with " + key + "=" + value);
   }
 
-  static public void saveModel(IModel model, String directory,
-      String extension, boolean trim)
+  static public void saveModel(IModel model, String directory, String extension,
+      boolean trim)
   {
-    saveModel(model, ASTResolver.toAST(model, true), directory, extension, trim);
-  }
+    IASTGenerator astGen = ASTGeneratorManager.get().getASTGenerator(extension)
+        .get();
+    Object ast = astGen.generate(model, extension, trim);
+    ISourceGenerator srcGen = SourceGeneratorManager.get()
+        .getSourceGenerator(ast, extension).get();
 
-  /*
-   * here is where we actually save the model
-   */
-  static public void saveModel(IModel model, CommonTree modelDescriptor,
-      String directory, String extension, boolean trim)
-  {
+    File root = new File(ACTRRuntime.getRuntime().getWorkingDirectory(),
+        directory);
+    if (!root.exists()) root.mkdirs();
 
-    ICodeGenerator generator = CodeGeneratorFactory.getCodeGenerator(extension);
+    File toBeWritten = new File(root, model.getName() + "." + extension);
 
-    if (generator == null)
-    {
-      if (LOGGER.isWarnEnabled())
-        LOGGER.warn("Could not find a code generator for " + extension);
-      return;
-    }
-
-    String destination = null;
     try
     {
-      /*
-       * ok, now let's create the directory
-       */
-      File root = new File(ACTRRuntime.getRuntime().getWorkingDirectory(),
-          directory);
-      destination = root.getCanonicalPath();
-
-      if (!root.exists()) root.mkdirs();
-
-      File toBeWritten = new File(root, model.getName() + "." + extension);
-      destination = toBeWritten.getCanonicalPath();
-
-      PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(
-          toBeWritten)));
-
-      /*
-       * now before we dump we should make sure that the buffer contents are
-       * written
-       */
-
-      /*
-       * we dump the full model
-       */
-      for (StringBuilder line : generator.generate(modelDescriptor, trim))
-        pw.println(line.toString());
-
-      pw.flush();
-      pw.close();
+      srcGen.save(ast, toBeWritten.toURI());
     }
-    catch (Exception ioe)
+    catch (IOException e)
     {
-      LOGGER
-          .error("Could not write " + model + " to " + destination + " ", ioe);
+
     }
   }
+
+
 
 }

@@ -12,7 +12,7 @@ public interface ICompilationUnit
   public Object getAST();
 
   /**
-   * return the AST with all its imports normalized
+   * return the AST with all its imports resolved
    * 
    * @return
    */
