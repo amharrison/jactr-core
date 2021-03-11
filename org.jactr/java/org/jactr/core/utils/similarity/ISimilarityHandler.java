@@ -20,7 +20,7 @@ package org.jactr.core.utils.similarity;
  * @author harrison
  * @created April 18, 2003
  */
-public interface SimilarityHandler
+public interface ISimilarityHandler
 {
 
   /**

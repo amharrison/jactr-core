@@ -18,9 +18,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jactr.core.chunk.IChunk;
-import org.jactr.core.chunk.ISymbolicChunk;
 import org.jactr.core.chunk.five.ISubsymbolicChunk5;
-import org.jactr.core.slot.ISlot;
 
 /**
  * The DefaultSimilarityHandler handles basic similarity computations and
@@ -29,20 +27,20 @@ import org.jactr.core.slot.ISlot;
  * @author harrison
  * @created April 18, 2003
  */
-public class DefaultSimilarityHandler implements SimilarityHandler
+public class DefaultSimilarityHandler implements ISimilarityHandler
 {
 
   /**
    * Description of the Field
    */
-  protected List<SimilarityHandler> _handlers;
+  protected List<ISimilarityHandler> _handlers;
 
   /**
    * Constructor for the DefaultSimilarityHandler object
    */
   public DefaultSimilarityHandler()
   {
-    _handlers = new ArrayList<SimilarityHandler>();
+    _handlers = new ArrayList<ISimilarityHandler>();
     addHandler(this);
   }
 
@@ -53,7 +51,7 @@ public class DefaultSimilarityHandler implements SimilarityHandler
    * @param sm
    *            The feature to be added to the Handler attribute
    */
-  public void addHandler(SimilarityHandler sm)
+  public void addHandler(ISimilarityHandler sm)
   {
     _handlers.add(0, sm);
   }
@@ -64,9 +62,16 @@ public class DefaultSimilarityHandler implements SimilarityHandler
    * @param sm
    *            Description of the Parameter
    */
-  public void removeHandler(SimilarityHandler sm)
+  public void removeHandler(ISimilarityHandler sm)
   {
     _handlers.remove(sm);
+  }
+
+  public Collection<ISimilarityHandler> getHandlers()
+  {
+    ArrayList<ISimilarityHandler> rtn = new ArrayList<>(_handlers);
+    rtn.remove(this);
+    return rtn;
   }
 
   /**
@@ -85,7 +90,7 @@ public class DefaultSimilarityHandler implements SimilarityHandler
   public double getSimilarity(Object one, Object two, double maxDiff,
       double maxSim)
   {
-    for (SimilarityHandler sm : _handlers)
+    for (ISimilarityHandler sm : _handlers)
       if (sm.handles(one, two))
       {
         // if the handler can do it, delegate
@@ -108,7 +113,7 @@ public class DefaultSimilarityHandler implements SimilarityHandler
    */
   public boolean handles(Object one, Object two)
   {
-    return true;
+    return one instanceof IChunk && two instanceof IChunk;
   }
 
   /**
@@ -127,10 +132,7 @@ public class DefaultSimilarityHandler implements SimilarityHandler
   public double computeSimilarity(Object one, Object two, double maxDiff,
       double maxSim)
   {
-    if (!(one instanceof IChunk) && !(two instanceof IChunk))
-    {
-      return maxDiff;
-    }
+    if (!(one instanceof IChunk) && !(two instanceof IChunk)) return maxDiff;
 
     /*
      * both chunks must have ISubsymbolicChunk5
@@ -142,36 +144,17 @@ public class DefaultSimilarityHandler implements SimilarityHandler
         || !(c2.getSubsymbolicChunk() instanceof ISubsymbolicChunk5))
       return maxDiff;
 
+    // return the existing value if it exists
     double lastSim = ((ISubsymbolicChunk5) c1.getSubsymbolicChunk())
         .getSimilarity(c2);
-    if (!Double.isNaN(lastSim))
-    {
-      return lastSim;
-    }
+    if (!Double.isNaN(lastSim)) return lastSim;
 
-    Collection<? extends ISlot> oneSlots = ((IChunk) one).getSymbolicChunk()
-        .getSlots();
-    ISlot tmpSlot = null;
-    ISymbolicChunk twoSC = ((IChunk) two).getSymbolicChunk();
-    double sim = maxSim;
-    for (ISlot slot : oneSlots)
-    {
-      if ((tmpSlot = twoSC.getSlot(slot.getName())) != null)
-      {
-        if (!tmpSlot.equalValues(slot))
-        {
-          sim = maxDiff;
-          break;
-        }
-      }
-      else
-      {
-        sim = maxDiff;
-      }
-    }
-
+    /*
+     * otherwise maxDiff
+     */
+    double sim = maxDiff;
     setSimilarity((IChunk) one, (IChunk) two, sim);
-    // the only way we get this far is if all is good..
+
     return sim;
   }
 

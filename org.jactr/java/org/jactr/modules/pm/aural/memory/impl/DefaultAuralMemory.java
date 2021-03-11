@@ -6,8 +6,6 @@ package org.jactr.modules.pm.aural.memory.impl;
 import java.util.Collection;
 import java.util.Iterator;
 
- 
-import org.slf4j.LoggerFactory;
 import org.commonreality.agents.IAgent;
 import org.jactr.core.buffer.six.IStatusBuffer;
 import org.jactr.core.chunk.IChunk;
@@ -30,6 +28,7 @@ import org.jactr.modules.pm.aural.memory.impl.map.AudibleFeatureMap;
 import org.jactr.modules.pm.aural.memory.impl.map.DurationFeatureMap;
 import org.jactr.modules.pm.aural.memory.impl.map.FINSTAuralFeatureMap;
 import org.jactr.modules.pm.aural.memory.impl.map.KindFeatureMap;
+import org.jactr.modules.pm.aural.memory.impl.map.LocationFeatureMap;
 import org.jactr.modules.pm.aural.memory.impl.map.OffsetFeatureMap;
 import org.jactr.modules.pm.aural.memory.impl.map.OnsetFeatureMap;
 import org.jactr.modules.pm.common.memory.IActivePerceptListener;
@@ -40,6 +39,7 @@ import org.jactr.modules.pm.common.memory.filter.NumericIndexFilter;
 import org.jactr.modules.pm.common.memory.impl.AbstractPerceptualMemory;
 import org.jactr.modules.pm.common.memory.impl.DelayableAfferentObjectListener;
 import org.jactr.modules.pm.common.memory.map.IFeatureMap;
+import org.slf4j.LoggerFactory;
 
 public class DefaultAuralMemory extends AbstractPerceptualMemory implements
     IAuralMemory
@@ -72,6 +72,7 @@ public class DefaultAuralMemory extends AbstractPerceptualMemory implements
     addFeatureMap(new DurationFeatureMap());
     addFeatureMap(new AudibleFeatureMap());
     addFeatureMap(new FINSTAuralFeatureMap(module.getModel()));
+    addFeatureMap(new LocationFeatureMap());
 
     addEncoder(new SpeechAuralEncoder());
     addEncoder(new ToneAuralEncoder());

@@ -24,6 +24,8 @@ public interface IDeclarativeModule5 extends IDeclarativeModule
   static public final String MAXIMUM_SIMILARITY = "MaximumSimilarity";
   static public final String MAXIMUM_DIFFERENCE = "MaximumDifference";
 
+  static public final String SIMILARITY_HANDLERS = "SimilarityHandlers";
+
   public double getMismatchPenalty();
   
   public void setMismatchPenalty(double mismatch);

@@ -35,23 +35,25 @@ public class AuralEventIndexManager implements IIndexManager
    * Logger definition
    */
   static private final transient org.slf4j.Logger LOGGER                = LoggerFactory
-                                                                   .getLogger(AuralEventIndexManager.class);
+      .getLogger(AuralEventIndexManager.class);
 
-  final private IAuralModule             _module;
+  final private IAuralModule                      _module;
 
   /*
    * listener allows us to create and remove audio-event chunks as they are
    * needed.
    */
-  final private IAfferentObjectListener  _afferentListener;
+  final private IAfferentObjectListener           _afferentListener;
 
-  final private Map<IIdentifier, IChunk> _existingIndexChunks;
+  final private Map<IIdentifier, IChunk>          _existingIndexChunks;
 
-  final private IAuralPropertyHandler    _auralPropertyHandler = new DefaultAuralPropertyHandler();
+  final private IAuralPropertyHandler             _auralPropertyHandler = new DefaultAuralPropertyHandler();
 
-  final private Lock                     _lock                 = new ReentrantLock();
+  final private Lock                              _lock                 = new ReentrantLock();
 
-  final private IChunkListener           _encodingListener;
+  final private IChunkListener                    _encodingListener;
+
+  private long                                    _count                = 0;
 
   public AuralEventIndexManager(IAuralModule module)
   {
@@ -145,8 +147,10 @@ public class AuralEventIndexManager implements IIndexManager
     IChunk event = null;
     try
     {
-      event = decM.createChunk(audioEventType,
-          String.format("ae-%s", identifier.getName())).get();
+      String name = identifier.getName();
+      if (name == null || name.length() == 0) name = "" + _count++;
+      event = decM.createChunk(audioEventType, String.format("ae-%s", name))
+          .get();
     }
     catch (Exception e)
     {
@@ -212,8 +216,8 @@ public class AuralEventIndexManager implements IIndexManager
   {
     try
     {
-      ISlot event = encodedChunk.getSymbolicChunk().getSlot(
-          IAuralModule.EVENT_SLOT);
+      ISlot event = encodedChunk.getSymbolicChunk()
+          .getSlot(IAuralModule.EVENT_SLOT);
       return (IChunk) event.getValue();
     }
     catch (Exception e)
@@ -232,10 +236,9 @@ public class AuralEventIndexManager implements IIndexManager
       IChunk event = _existingIndexChunks.get(auralEvent.getIdentifier());
       if (event == null && _auralPropertyHandler.hasModality(auralEvent))
       {
-        if (LOGGER.isDebugEnabled())
-          LOGGER.debug(String.format(
-              "System missed the encoding of aural event %s, coding now",
-              auralEvent.getIdentifier()));
+        if (LOGGER.isDebugEnabled()) LOGGER.debug(String.format(
+            "System missed the encoding of aural event %s, coding now",
+            auralEvent.getIdentifier()));
 
         event = addIndex(auralEvent);
       }

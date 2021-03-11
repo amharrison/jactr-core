@@ -33,10 +33,13 @@ import org.jactr.core.module.declarative.four.IRandomActivationEquation;
 import org.jactr.core.module.declarative.four.ISpreadingActivationEquation;
 import org.jactr.core.module.declarative.four.learning.IDeclarativeLearningModule4;
 import org.jactr.core.module.random.IRandomModule;
+import org.jactr.core.utils.parameter.CollectionParameterHandler;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.core.utils.parameter.ParameterHandler;
 import org.jactr.core.utils.references.IOptimizedReferences;
 import org.jactr.core.utils.references.IReferences;
+import org.jactr.core.utils.similarity.DefaultSimilarityHandler;
+import org.jactr.core.utils.similarity.ISimilarityHandler;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -103,6 +106,8 @@ public class DefaultDeclarativeModule6 extends DefaultDeclarativeModule
   private ISpreadingActivationEquation    _spreadingActivationEquation;
 
   private int                             _optimizationLevel      = 10;
+
+  private DefaultSimilarityHandler        _similarityHandler      = new DefaultSimilarityHandler();
 
   public DefaultDeclarativeModule6()
   {
@@ -306,12 +311,23 @@ public class DefaultDeclarativeModule6 extends DefaultDeclarativeModule
       if (!Double.isNaN(value)) return value;
     }
 
-    return _maximumDifference;
+    return _similarityHandler.getSimilarity(one, two, _maximumDifference,
+        _maximumSimilarity);
   }
 
   public void setSimilarity(Object one, Object two, double sim)
   {
     _similarities.put(new Pair(one, two), sim);
+  }
+
+  public void addSimilarityHandler(ISimilarityHandler handler)
+  {
+    if (handler != null) _similarityHandler.addHandler(handler);
+  }
+
+  public Collection<ISimilarityHandler> getSimilarityHandlers()
+  {
+    return _similarityHandler.getHandlers();
   }
 
   /**
@@ -334,6 +350,9 @@ public class DefaultDeclarativeModule6 extends DefaultDeclarativeModule
       return "" + getMaximumDifference();
     if (MAXIMUM_SIMILARITY.equalsIgnoreCase(key))
       return "" + getMaximumSimilarity();
+    if (SIMILARITY_HANDLERS.equalsIgnoreCase(key))
+      return new CollectionParameterHandler(ParameterHandler.classInstance())
+          .toString(getSimilarityHandlers());
     return super.getParameter(key);
   }
 
@@ -351,6 +370,7 @@ public class DefaultDeclarativeModule6 extends DefaultDeclarativeModule
     rtn.add(MISMATCH_PENALTY);
     rtn.add(MAXIMUM_DIFFERENCE);
     rtn.add(MAXIMUM_SIMILARITY);
+    rtn.add(SIMILARITY_HANDLERS);
     return rtn;
   }
 
@@ -382,6 +402,22 @@ public class DefaultDeclarativeModule6 extends DefaultDeclarativeModule
     else if (MAXIMUM_SIMILARITY.equalsIgnoreCase(key))
       setMaximumSimilarity(
           ParameterHandler.numberInstance().coerce(value).doubleValue());
+    else if (SIMILARITY_HANDLERS.equalsIgnoreCase(key))
+    {
+      @SuppressWarnings({ "unchecked", "unused", "rawtypes" })
+      Collection<Class<? extends ISimilarityHandler>> handlers = new CollectionParameterHandler(
+          ParameterHandler.classInstance()).coerce(value);
+      handlers.stream().map(c -> {
+        try
+        {
+          return (ISimilarityHandler) c.getConstructor().newInstance();
+        }
+        catch (Exception e)
+        {
+          return null;
+        }
+      }).forEach(this::addSimilarityHandler);
+    }
     else
       super.setParameter(key, value);
   }

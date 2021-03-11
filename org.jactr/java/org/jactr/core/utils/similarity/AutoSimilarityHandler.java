@@ -34,7 +34,7 @@ import org.jactr.core.slot.ISlot;
  * @created April 18, 2003
  */
 public class AutoSimilarityHandler implements
-    SimilarityHandler
+    ISimilarityHandler
 {
 
   /**
@@ -117,24 +117,16 @@ public class AutoSimilarityHandler implements
       double maxSim, int depth)
   {
     if (one == two)
-    {
       return maxSim;
-    }
-    //identical
     else if (depth == 0)
-    {
       return maxDiff;
-    }
-    //we've drilled alway down
     else if ((one == null || two != null) && (one != null || two == null))
-    {
       return maxDiff;
-    }
     else if (one instanceof Number)
     {
       //two numbers??
 
-      if (!(two instanceof Number)) { return maxDiff; }
+      if (!(two instanceof Number)) return maxDiff;
       //nope, just one
       int first = ((Number) one).intValue();
       int second = ((Number) two).intValue();
@@ -144,7 +136,7 @@ public class AutoSimilarityHandler implements
     }
     else if (one instanceof String)
     {
-      if (!(two instanceof String)) { return maxDiff; }
+      if (!(two instanceof String)) return maxDiff;
       // String first = (String) one;
       // String second = (String) two;
       //how do we numerically compare two strings?
@@ -152,7 +144,7 @@ public class AutoSimilarityHandler implements
     }
     else if (one instanceof IChunk)
     {
-      if (!(two instanceof IChunk)) { return maxDiff; }
+      if (!(two instanceof IChunk)) return maxDiff;
       
       
       /*
@@ -178,7 +170,7 @@ public class AutoSimilarityHandler implements
 
       //same chunk types?
       if (!first.isA(second.getChunkType())
-          && !second.isA(first.getChunkType())) { return maxDiff; }
+          && !second.isA(first.getChunkType())) return maxDiff;
 
       Collection<? extends ISlot> fSlots = first.getSlots();
       Collection<? extends ISlot> sSlots = second.getSlots();
@@ -198,7 +190,6 @@ public class AutoSimilarityHandler implements
       }
       double sim = maxDiff * diffSlots;
       for(ISlot slot : slots)
-      {
         try
         {
           Object sOne = slot.getValue();
@@ -210,14 +201,11 @@ public class AutoSimilarityHandler implements
           sim += maxDiff;
           //slot error
         }
-      }
-      sim /= (slots.size() + diffSlots);
+      sim /= slots.size() + diffSlots;
       return sim;
     }
     else
-    {
       return maxDiff;
-    }
   }
 }
 
