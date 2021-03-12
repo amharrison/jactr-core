@@ -7,8 +7,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
- 
-import org.slf4j.LoggerFactory;
 import org.commonreality.net.handler.IMessageHandler;
 import org.commonreality.net.session.ISessionInfo;
 import org.jactr.core.concurrent.ExecutorServices;
@@ -23,6 +21,7 @@ import org.jactr.core.utils.parameter.ParameterHandler;
 import org.jactr.instrument.IInstrument;
 import org.jactr.tools.async.controller.RemoteInterface;
 import org.jactr.tools.misc.ModelsLock;
+import org.slf4j.LoggerFactory;
 
 /**
  * The wonder of asynchronous messaging is that you don't have to wait, giving
@@ -172,10 +171,6 @@ public class SynchronizationManager implements IInstrument, IParameterized
 
   public void setParameter(String key, String value)
   {
-    // if (SYNC_AT_START.equalsIgnoreCase(key))
-    // _syncAtStart = ParameterHandler.booleanInstance().coerce(value)
-    // .booleanValue();
-    // else
     if (INTERVAL.equalsIgnoreCase(key))
       _delay = ParameterHandler.numberInstance().coerce(value).doubleValue() / 1000.0;
   }
@@ -225,45 +220,6 @@ public class SynchronizationManager implements IInstrument, IParameterized
 
       closeFuture.thenRunAsync(_messageProcessor,
           ExecutorServices.getExecutor(ExecutorServices.BACKGROUND));
-
-      // try
-      // {
-      // /*
-      // * wait until everyone has blocked and then send the message.
-      // */
-      // if (LOGGER.isDebugEnabled())
-      // LOGGER.debug(String.format("Attempting to get result of close"));
-      //
-      // closeFuture.get(1000, TimeUnit.MILLISECONDS);
-      //
-      // if (LOGGER.isDebugEnabled())
-      // LOGGER.debug(String.format("Sending message"));
-      // /*
-      // * we send the message on the back ground thread since it is the thread
-      // * that likely has all the pending requests on it. If we sent from here,
-      // * there synch message would arrive before all the pending messages on
-      // * the background thread, negating the intended purpose
-      // */
-      // Executor executor = ExecutorServices
-      // .getExecutor(ExecutorServices.BACKGROUND);
-      // if (executor != null) executor.execute(_messageProcessor);
-      //
-      // }
-      // catch (TimeoutException e)
-      // {
-      // LOGGER
-      // .error("Waiting for all models to close took too long, stumbling forward");
-      // _message = null;
-      // }
-      // catch (Exception e)
-      // {
-      // LOGGER
-      // .error(
-      // "SynchronizationManager.synchronize threw InterruptedException. Aborting synchronization",
-      // e);
-      //
-      // _message = null;
-      // }
 
     }
     else

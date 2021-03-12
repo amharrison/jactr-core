@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.five.ISubsymbolicChunk5;
+import org.jactr.core.module.declarative.five.IDeclarativeModule5;
 
 /**
  * The DefaultSimilarityHandler handles basic similarity computations and
@@ -35,11 +36,14 @@ public class DefaultSimilarityHandler implements ISimilarityHandler
    */
   protected List<ISimilarityHandler> _handlers;
 
+  protected IDeclarativeModule5      _decMod;
+
   /**
    * Constructor for the DefaultSimilarityHandler object
    */
-  public DefaultSimilarityHandler()
+  public DefaultSimilarityHandler(IDeclarativeModule5 decMod)
   {
+    _decMod = decMod;
     _handlers = new ArrayList<ISimilarityHandler>();
     addHandler(this);
   }
@@ -96,6 +100,7 @@ public class DefaultSimilarityHandler implements ISimilarityHandler
         // if the handler can do it, delegate
 
         double sim = sm.computeSimilarity(one, two, maxDiff, maxSim);
+        _decMod.setSimilarity(one, two, sim);
         return sim;
       }
     // otherwise return maxDiff

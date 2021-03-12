@@ -107,7 +107,8 @@ public class DefaultDeclarativeModule6 extends DefaultDeclarativeModule
 
   private int                             _optimizationLevel      = 10;
 
-  private DefaultSimilarityHandler        _similarityHandler      = new DefaultSimilarityHandler();
+  private DefaultSimilarityHandler        _similarityHandler      = new DefaultSimilarityHandler(
+      this);
 
   public DefaultDeclarativeModule6()
   {
