@@ -1,14 +1,15 @@
 package org.jactr.modules.pm.common.memory.filter;
 
+import java.util.Collection;
+import java.util.Collections;
 /*
  * default logging
  */
 import java.util.Comparator;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.IConditionalSlot;
+import org.slf4j.LoggerFactory;
 
 public class NumericIndexFilter extends AbstractIndexFilter<Double>
 {
@@ -71,7 +72,7 @@ public class NumericIndexFilter extends AbstractIndexFilter<Double>
     };
   }
 
-  public IIndexFilter instantiate(ChunkTypeRequest request)
+  public Collection<IIndexFilter> instantiate(ChunkTypeRequest request)
   {
     int weight = -1;
     int count = 0;
@@ -85,14 +86,14 @@ public class NumericIndexFilter extends AbstractIndexFilter<Double>
       }
     }
 
-    if (weight == -1) return null;
+    if (weight == -1) return Collections.emptyList();
 
     NumericIndexFilter instance = new NumericIndexFilter(_slotName,
         _sortAscending);
     instance.setWeight(weight);
     instance.setPerceptualMemory(getPerceptualMemory());
 
-    return instance;
+    return Collections.singleton((IIndexFilter) instance);
   }
 
 }

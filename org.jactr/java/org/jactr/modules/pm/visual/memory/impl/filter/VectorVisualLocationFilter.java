@@ -1,6 +1,8 @@
 package org.jactr.modules.pm.visual.memory.impl.filter;
 
 import java.awt.geom.Rectangle2D;
+import java.util.Collection;
+import java.util.Collections;
 /*
  * default logging
  */
@@ -200,7 +202,7 @@ public class VectorVisualLocationFilter
     };
   }
 
-  public IIndexFilter instantiate(ChunkTypeRequest request)
+  public Collection<IIndexFilter> instantiate(ChunkTypeRequest request)
   {
     double angle = Double.NaN;
     double threshold = Double.POSITIVE_INFINITY;
@@ -231,7 +233,7 @@ public class VectorVisualLocationFilter
      * nothing was defined..
      */
     if (origin == null && destination == null && Double.isNaN(angle))
-      return null;
+      return Collections.emptyList();
 
     if (origin == null || destination == null && Double.isNaN(angle))
     {
@@ -272,7 +274,7 @@ public class VectorVisualLocationFilter
       }
     }
 
-    return filter;
+    return Collections.singleton((IIndexFilter) filter);
   }
 
   private double computeAngle(double deltaX, double deltaY)

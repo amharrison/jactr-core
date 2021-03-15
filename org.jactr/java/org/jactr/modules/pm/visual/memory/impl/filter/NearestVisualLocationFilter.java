@@ -1,5 +1,7 @@
 package org.jactr.modules.pm.visual.memory.impl.filter;
 
+import java.util.Collection;
+import java.util.Collections;
 /*
  * default logging
  */
@@ -86,7 +88,7 @@ public class NearestVisualLocationFilter extends
     };
   }
 
-  public IIndexFilter instantiate(ChunkTypeRequest request)
+  public Collection<IIndexFilter> instantiate(ChunkTypeRequest request)
   {
     int index = 0;
     double[] location = null;
@@ -110,14 +112,14 @@ public class NearestVisualLocationFilter extends
       }
     }
 
-    if (location == null) return null;
+    if (location == null) return Collections.emptyList();
 
     NearestVisualLocationFilter filter = new NearestVisualLocationFilter(
         location);
     filter.setWeight(index);
     filter.setPerceptualMemory(getVisualMemory());
 
-    return filter;
+    return Collections.singleton((IIndexFilter) filter);
   }
 
   public void normalizeRequest(ChunkTypeRequest searchRequest)

@@ -63,7 +63,7 @@ public class ValueVisualLocationFilter extends
     return null;
   }
 
-  public IIndexFilter instantiate(ChunkTypeRequest request)
+  public Collection<IIndexFilter> instantiate(ChunkTypeRequest request)
   {
     List<IConditionalSlot> conditionals = FastListFactory.newInstance();
 
@@ -79,14 +79,14 @@ public class ValueVisualLocationFilter extends
     if (conditionals.size() == 0)
     {
       FastListFactory.recycle(conditionals);
-      return null;
+      return Collections.emptyList();
     }
 
     ValueVisualLocationFilter rtn = new ValueVisualLocationFilter(conditionals);
     rtn.setWeight(index);
     rtn.setPerceptualMemory(getPerceptualMemory());
 
-    return rtn;
+    return Collections.singleton((IIndexFilter) rtn);
   }
 
   @Override

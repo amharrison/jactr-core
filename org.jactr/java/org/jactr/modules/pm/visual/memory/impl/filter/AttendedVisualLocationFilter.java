@@ -1,17 +1,18 @@
 package org.jactr.modules.pm.visual.memory.impl.filter;
 
+import java.util.Collection;
+import java.util.Collections;
 /*
  * default logging
  */
 import java.util.Comparator;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.modules.pm.common.memory.filter.AbstractIndexFilter;
 import org.jactr.modules.pm.common.memory.filter.IIndexFilter;
 import org.jactr.modules.pm.visual.IVisualModule;
+import org.slf4j.LoggerFactory;
 
 public class AttendedVisualLocationFilter extends
     AbstractIndexFilter<Boolean>
@@ -49,14 +50,15 @@ public class AttendedVisualLocationFilter extends
     return null;
   }
 
-  public IIndexFilter instantiate(ChunkTypeRequest request)
+  public Collection<IIndexFilter> instantiate(ChunkTypeRequest request)
   {
     /*
      * no need for an instantiated copy
      */
-    return this;
+    return Collections.singleton((IIndexFilter) this);
   }
 
+  @Override
   public void normalizeRequest(ChunkTypeRequest request)
   {
     /**
@@ -70,6 +72,6 @@ public class AttendedVisualLocationFilter extends
       {
         cSlot.setValue(Boolean.TRUE);
         cSlot.setCondition(IConditionalSlot.NOT_EQUALS);
-      }    
+      }
   }
 }

@@ -15,6 +15,7 @@ import org.jactr.core.chunk.ISymbolicChunk;
 import org.jactr.core.chunk.IllegalChunkStateException;
 import org.jactr.core.logging.IMessageBuilder;
 import org.jactr.core.logging.Logger;
+import org.jactr.core.module.declarative.IDeclarativeModule;
 import org.jactr.core.module.random.IRandomModule;
 import org.jactr.core.module.random.six.DefaultRandomModule;
 import org.jactr.core.production.request.ChunkTypeRequest;
@@ -25,6 +26,7 @@ import org.jactr.core.utils.parameter.NumericParameterHandler;
 import org.jactr.core.utils.parameter.ParameterHandler;
 import org.jactr.modules.pm.common.memory.IPerceptualEncoder;
 import org.jactr.modules.pm.common.memory.PerceptualSearchResult;
+import org.jactr.modules.pm.common.memory.filter.HighestLowestIndexFilter;
 import org.jactr.modules.pm.common.memory.filter.IIndexFilter;
 import org.jactr.modules.pm.common.memory.filter.NumericIndexFilter;
 import org.jactr.modules.pm.common.memory.impl.AbstractPerceptualMemory;
@@ -216,6 +218,10 @@ public class DefaultVisualMemory extends AbstractPerceptualMemory implements
 
     try
     {
+      IDeclarativeModule decMod = getModule().getModel().getDeclarativeModule();
+      addFilter(new HighestLowestIndexFilter(decMod.getChunk("highest").get(),
+          decMod.getChunk("lowest").get()));
+
       _notAvailableChunk = getModule().getModel().getDeclarativeModule()
           .getChunk(IStatusBuffer.ERROR_NO_LONGER_AVAILABLE_CHUNK).get();
     }

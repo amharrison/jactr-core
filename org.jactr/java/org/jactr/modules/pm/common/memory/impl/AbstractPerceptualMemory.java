@@ -402,15 +402,17 @@ public abstract class AbstractPerceptualMemory implements IPerceptualMemory
       // normalize
       filter.normalizeRequest(request);
 
-      IIndexFilter actualFilter = filter.instantiate(request);
+      for (IIndexFilter actualFilter : filter.instantiate(request))
+      {
 
-      if (actualFilter == null) continue;
+        if (actualFilter == null) continue;
 
-      int weight = actualFilter.getWeight();
-      while (sorted.containsKey(weight))
-        weight++;
+        int weight = actualFilter.getWeight();
+        while (sorted.containsKey(weight))
+          weight++;
 
-      sorted.put(weight, actualFilter);
+        sorted.put(weight, actualFilter);
+      }
     }
 
     FastListFactory.recycle(filters);
@@ -577,8 +579,6 @@ public abstract class AbstractPerceptualMemory implements IPerceptualMemory
       return psr;
     }
 
-
-
     /*
      * which then build the priority sort
      */
@@ -616,8 +616,6 @@ public abstract class AbstractPerceptualMemory implements IPerceptualMemory
     {
       // early exit
       if (earlyExit && prioritizedResults.size() > 1) break;
-
-
 
       for (PerceptualEncoderBridge bridge : _bridges)
       {

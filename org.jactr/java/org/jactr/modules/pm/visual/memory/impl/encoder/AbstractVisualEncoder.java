@@ -344,8 +344,7 @@ public abstract class AbstractVisualEncoder implements IPerceptualEncoder
     if (candidateName == null || candidateName.length() < 2
         || !Character.isAlphabetic(candidateName.charAt(0)))
       candidateName = _chunkTypeName + "-" + candidateName;
-    candidateName += "-"
-        + _chunkType.getSymbolicChunkType().getNumberOfChunks();
+    candidateName += _chunkType.getSymbolicChunkType().getNumberOfChunks();
     return candidateName;
   }
 
