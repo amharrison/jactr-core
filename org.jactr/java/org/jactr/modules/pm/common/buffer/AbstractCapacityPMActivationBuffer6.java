@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.delegate.IDelegatedRequestableBuffer;
 import org.jactr.core.buffer.delegate.IRequestDelegate;
 import org.jactr.core.buffer.six.AbstractCapacityBuffer6;
@@ -37,6 +35,7 @@ import org.jactr.core.queue.event.TimedEventListenerAdaptor;
 import org.jactr.core.slot.BasicSlot;
 import org.jactr.modules.pm.buffer.IEventTrackingActivationBuffer;
 import org.jactr.modules.pm.buffer.IPerceptualBuffer;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author developer
@@ -244,6 +243,7 @@ public abstract class AbstractCapacityPMActivationBuffer6 extends
   @Override
   protected boolean requestInternal(IRequest request, double requestTime) throws IllegalArgumentException
   {
+    request = request.clone();
     for(IRequestDelegate delegate : getRequestDelegates())
       if(delegate.willAccept(request) && delegate.request(request, this, requestTime))
         return true;

@@ -618,7 +618,7 @@ public class SlotBasedRequest implements IRequest, ISlotContainer
   {
     if (!_locked) return _slots;
 
-    return Collections.unmodifiableCollection(_slots);
+    return new ArrayList<>(_slots);
   }
 
   public void removeSlot(ISlot slot)

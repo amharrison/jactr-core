@@ -83,15 +83,16 @@ public abstract class AbstractActivationBuffer extends DefaultAdaptable
   /**
    * Comment for <code>GOAL_VALUE</code>
    */
+  @Deprecated
   static public final String                                                      GOAL_VALUE_PARAM         = "G";
 
   static public final String                                                      STRICT_HARVESTING_PARAM  = "StrictHarvestingEnabled";
 
   static private final String[]                                                   SETTABLE                 = {
-      ACTIVATION_PARAM, GOAL_VALUE_PARAM, STRICT_HARVESTING_PARAM                                         };
+      ACTIVATION_PARAM, STRICT_HARVESTING_PARAM };
 
   static private final String[]                                                   GETTABLE                 = {
-      ACTIVATION_PARAM, GOAL_VALUE_PARAM, STRICT_HARVESTING_PARAM                                         };
+      ACTIVATION_PARAM, STRICT_HARVESTING_PARAM };
 
   public AbstractActivationBuffer(String name, IModel model, IModule module)
   {

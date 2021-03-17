@@ -95,6 +95,8 @@ public abstract class AbstractManualTranslator extends AbstractTranslator
     ISlot muscleSlot = null;
     
     _recycledSlotContainer.clear();
+    request.getChunkType().getSymbolicChunkType()
+        .getSlots(_recycledSlotContainer); // grab the defaults
     _recycledSlotContainer = request.getSlots(_recycledSlotContainer);
 
     for (ISlot slot : _recycledSlotContainer)

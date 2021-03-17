@@ -49,7 +49,7 @@ public class ProductionUtilityComparator implements
      * work with, not expected.
      */
     if (Double.isNaN(base1)) base1 = sp1.getUtility();
-    if (Double.isNaN(base2)) base2 = sp1.getUtility();
+    if (Double.isNaN(base2)) base2 = sp2.getUtility();
 
     if (base1 == base2)
       return 0;

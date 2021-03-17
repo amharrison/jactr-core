@@ -41,14 +41,14 @@ import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.core.utils.collections.FastSetFactory;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractProduction extends DefaultAdaptable implements
-    IProduction
+public abstract class AbstractProduction extends DefaultAdaptable
+    implements IProduction
 {
   /**
    * logger definition
    */
-  static private final transient org.slf4j.Logger                                        LOGGER = LoggerFactory
-                                                                             .getLogger(AbstractProduction.class);
+  static private final transient org.slf4j.Logger                 LOGGER = LoggerFactory
+      .getLogger(AbstractProduction.class);
 
   protected ACTREventDispatcher<IProduction, IProductionListener> _eventDispatcher;
 
@@ -162,9 +162,8 @@ public abstract class AbstractProduction extends DefaultAdaptable implements
       Collection<VariableBindings> provisionalBindings)
       throws CannotInstantiateException
   {
-    if (!isEncoded())
-      throw new CannotInstantiateException(this,
-          "Cannot instantiate an unencoded production");
+    if (!isEncoded()) throw new CannotInstantiateException(this,
+        "Cannot instantiate an unencoded production");
 
     // we call this enough in loop to warrant this
     boolean debugEnabled = LOGGER.isDebugEnabled();
@@ -188,9 +187,8 @@ public abstract class AbstractProduction extends DefaultAdaptable implements
       Collection<ICondition> originals = sp.getConditions();
 
       for (ICondition condition : originals)
-        if (condition instanceof IBufferCondition)
-          missingBuffers.remove("="
-              + ((IBufferCondition) condition).getBufferName());
+        if (condition instanceof IBufferCondition) missingBuffers
+            .remove("=" + ((IBufferCondition) condition).getBufferName());
 
       /*
        * missingBuffers now contains the variable names bound to buffers that
@@ -201,23 +199,21 @@ public abstract class AbstractProduction extends DefaultAdaptable implements
       VariableBindings tmpBindings = VariableBindingsFactory.newInstance();
 
       for (VariableBindings variableBindings : provisionalBindings)
-       try
+        try
         {
           /*
            * we recycle the tmpBindings for efficiency purposes
            */
           tmpBindings.clear();
           tmpBindings.copy(variableBindings);
-          
+
           tmpBindings.bind("=production", this);
 
           for (String missing : missingBuffers)
             tmpBindings.unbind(missing);
 
-
-          if (debugEnabled)
-            LOGGER.debug("Attempting resolution of " + sp.getName()
-                + " with provisional binding: " + tmpBindings);
+          if (debugEnabled) LOGGER.debug("Attempting resolution of "
+              + sp.getName() + " with provisional binding: " + tmpBindings);
           /*
            * first we need to duplicate the conditions
            */
@@ -256,14 +252,14 @@ public abstract class AbstractProduction extends DefaultAdaptable implements
              */
             if (totalUnresolved == lastTotalUnresolved)
               for (ICondition condition : cloned)
-                condition.bind(m, tmpBindings, false);
+              condition.bind(m, tmpBindings, false);
 
             lastTotalUnresolved = totalUnresolved;
           }
 
           if (debugEnabled)
-            LOGGER.debug("Instantiated " + sp.getName() + " after "
-                + iterations + " iterations, bindings : " + tmpBindings);
+            LOGGER.debug("Instantiated " + sp.getName() + " after " + iterations
+                + " iterations, bindings : " + tmpBindings);
 
           /*
            * we can instantiate
@@ -281,10 +277,9 @@ public abstract class AbstractProduction extends DefaultAdaptable implements
         }
         catch (CannotMatchException cme)
         {
-          if (debugEnabled)
-            LOGGER.debug("Could not instantiate " + sp.getName() + " after "
-                + totalIterations + " iterations with binding: " + tmpBindings
-                + " ", cme);
+          if (debugEnabled) LOGGER.debug("Could not instantiate " + sp.getName()
+              + " after " + totalIterations + " iterations with binding: "
+              + tmpBindings + " ", cme);
 
           /*
            * hold onto the CME for passing to CNI
@@ -299,13 +294,13 @@ public abstract class AbstractProduction extends DefaultAdaptable implements
 
       VariableBindingsFactory.recycle(tmpBindings);
 
-      if (instantiations.size() == 0) throw new CannotInstantiateException(this, exceptions);
+      if (instantiations.size() == 0)
+        throw new CannotInstantiateException(this, exceptions);
 
       // event
-      if (hasListeners())
-        for (IInstantiation instance : instantiations)
-          dispatch(new ProductionEvent(this, ProductionEvent.Type.INSTANTIATED,
-              instance));
+      if (hasListeners()) for (IInstantiation instance : instantiations)
+        dispatch(new ProductionEvent(this, ProductionEvent.Type.INSTANTIATED,
+            instance));
 
       return instantiations;
     }
@@ -356,8 +351,8 @@ public abstract class AbstractProduction extends DefaultAdaptable implements
   {
     if (arg0 == this) return 0;
     // else lexical
-    return getSymbolicProduction().getName().compareTo(
-        arg0.getSymbolicProduction().getName());
+    return getSymbolicProduction().getName()
+        .compareTo(arg0.getSymbolicProduction().getName());
   }
 
   public String getComment()
@@ -372,9 +367,8 @@ public abstract class AbstractProduction extends DefaultAdaptable implements
 
   public void encode()
   {
-    if (isEncoded())
-      throw new IllegalProductionStateException(
-          "Cannot encoded an encoded production");
+    if (isEncoded()) throw new IllegalProductionStateException(
+        "Cannot encoded an encoded production");
 
     getSymbolicProduction().encode();
     getSubsymbolicProduction().encode();
@@ -393,7 +387,18 @@ public abstract class AbstractProduction extends DefaultAdaptable implements
       return getSubsymbolicProduction();
     else if (ISymbolicProduction.class.equals(adapterClass))
       return getSymbolicProduction();
+
     else
-      return super.getAdapter(adapterClass);
+    {
+      // test to see if our sub or sym implement
+      Class clazz = getSymbolicProduction().getClass();
+      if (adapterClass.isAssignableFrom(clazz)) return getSymbolicProduction();
+
+      clazz = getSubsymbolicProduction().getClass();
+      if (adapterClass.isAssignableFrom(clazz))
+        return getSubsymbolicProduction();
+    }
+
+    return super.getAdapter(adapterClass);
   }
 }

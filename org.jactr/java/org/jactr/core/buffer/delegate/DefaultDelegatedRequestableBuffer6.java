@@ -61,6 +61,7 @@ public abstract class DefaultDelegatedRequestableBuffer6 extends
   protected boolean requestInternal(IRequest request, double requestTime)
       throws IllegalArgumentException
   {
+    request = request.clone();
     for (IRequestDelegate delegate : getRequestDelegates())
       if (delegate.willAccept(request) && delegate.request(request, this, requestTime))
         return true;

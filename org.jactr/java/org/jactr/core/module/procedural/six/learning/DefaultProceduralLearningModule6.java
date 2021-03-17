@@ -24,8 +24,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.Executor;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.event.ACTREventDispatcher;
 import org.jactr.core.logging.Logger;
 import org.jactr.core.model.IModel;
@@ -46,6 +44,7 @@ import org.jactr.core.production.condition.ICondition;
 import org.jactr.core.production.six.ISubsymbolicProduction6;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.core.utils.parameter.ParameterHandler;
+import org.slf4j.LoggerFactory;
 
 /**
  * production learning is accomplished by listening to the procedural module for
@@ -123,6 +122,7 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
     _firedProductions = new TreeMap<Double, IProduction>();
     _kindergarden = new HashMap<IProduction, IProduction>();
     _includeBuffers = new TreeSet<String>();
+    _utilityEquation = new DefaultExpectedUtilityEquation();
   }
 
   public boolean isProductionCompilationEnabled()
@@ -304,8 +304,11 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
       Logger.log(model, Logger.Stream.PROCEDURAL, msg);
     }
 
-    // double now = ACTRRuntime.getRuntime().getClock(model).getTime();
-    double now = model.getAge();
+    // to be consistent with the Lisp, which applies the reward after time has
+    // advanced, we fudge
+    // our current time to be one cycle ahead for the calculations.
+    double now = model.getAge()
+        + model.getProceduralModule().getDefaultProductionFiringTime();
     IExpectedUtilityEquation equation = getExpectedUtilityEquation();
 
     if (_dispatcher.hasListeners())
@@ -353,8 +356,9 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
 
           if (log)
           {
-            String msg = "Discounted reward for " + p + " to "
-                + discountedReward + " for a learned utility of " + utility;
+            String msg = String.format(
+                "Discount reward for %s to %.2f for a learned utility of %.2f",
+                p, discountedReward, utility);
             if (LOGGER.isDebugEnabled()) LOGGER.debug(msg);
             if (Logger.hasLoggers(model))
               Logger.log(model, Logger.Stream.PROCEDURAL, msg);
