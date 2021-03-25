@@ -24,6 +24,7 @@ import org.jactr.core.logging.Logger;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.procedural.five.learning.ICompilableBuffer;
 import org.jactr.core.module.procedural.five.learning.ICompilableContext;
+import org.jactr.core.module.procedural.six.learning.DefaultCompilableContext;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.slot.BasicSlot;
@@ -68,7 +69,6 @@ public class DefaultVisualLocationBuffer6 extends AbstractPMActivationBuffer6
 
   protected ChunkTypeRequest                     _defaultSearchRequest;
 
-  protected ICompilableContext                   _compilableContext = new VisualCompilableContext();
 
   public DefaultVisualLocationBuffer6(IVisualActivationBuffer visualBuffer,
       IVisualModule module)
@@ -338,6 +338,6 @@ public class DefaultVisualLocationBuffer6 extends AbstractPMActivationBuffer6
   @Override
   public ICompilableContext getCompilableContext()
   {
-    return _compilableContext;
+    return new DefaultCompilableContext(true, false, false, false, false, true);
   }
 }

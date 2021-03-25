@@ -1,16 +1,12 @@
 package org.jactr.modules.pm.motor.buffer.six;
 
-/*
- * default logging
- */
-
- 
-import org.slf4j.LoggerFactory;
 import org.commonreality.object.IEfferentObject;
 import org.jactr.core.buffer.delegate.AddChunkTypeRequestDelegate;
 import org.jactr.core.buffer.delegate.ExpandChunkRequestDelegate;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.module.IllegalModuleStateException;
+import org.jactr.core.module.procedural.five.learning.ICompilableContext;
+import org.jactr.core.module.procedural.six.learning.DefaultCompilableContext;
 import org.jactr.core.production.VariableBindings;
 import org.jactr.core.production.condition.CannotMatchException;
 import org.jactr.core.production.condition.match.GeneralMatchFailure;
@@ -27,6 +23,12 @@ import org.jactr.modules.pm.motor.buffer.processor.ClearRequestDelegate;
 import org.jactr.modules.pm.motor.buffer.processor.MotorClearRequestDelegate;
 import org.jactr.modules.pm.motor.buffer.processor.MotorRequestDelegate;
 import org.jactr.modules.pm.motor.managers.MuscleState;
+
+/*
+ * default logging
+ */
+
+import org.slf4j.LoggerFactory;
 
 public class DefaultMotorActivationBuffer6 extends AbstractPMActivationBuffer6
     implements IMotorActivationBuffer
@@ -150,6 +152,12 @@ public class DefaultMotorActivationBuffer6 extends AbstractPMActivationBuffer6
 
     return request.bind(getModel(), muscleName, slotContainer, bindings,
         isIterative);
+  }
+
+  @Override
+  public ICompilableContext getCompilableContext()
+  {
+    return new DefaultCompilableContext(false, false, true, false, true, false);
   }
 
 }

@@ -20,6 +20,8 @@ import org.jactr.core.chunk.ISymbolicChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.logging.Logger;
 import org.jactr.core.model.IModel;
+import org.jactr.core.module.procedural.five.learning.ICompilableContext;
+import org.jactr.core.module.procedural.six.learning.DefaultCompilableContext;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.queue.ITimedEvent;
 import org.jactr.core.slot.IMutableSlot;
@@ -218,5 +220,11 @@ public class DefaultAuralLocationBuffer extends AbstractPMActivationBuffer6
       return true;
     }
     return false;
+  }
+
+  @Override
+  public ICompilableContext getCompilableContext()
+  {
+    return new DefaultCompilableContext(true, false, false, false, false, true);
   }
 }

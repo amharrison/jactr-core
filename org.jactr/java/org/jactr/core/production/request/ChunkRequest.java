@@ -6,10 +6,9 @@ package org.jactr.core.production.request;
 import java.util.Collection;
 import java.util.Collections;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.slot.ISlot;
+import org.slf4j.LoggerFactory;
 
 public class ChunkRequest extends ChunkTypeRequest
 {
@@ -33,6 +32,12 @@ public class ChunkRequest extends ChunkTypeRequest
     _chunk = chunk;
   }
   
+  @Override
+  public ChunkRequest clone()
+  {
+    return new ChunkRequest(_chunk, _slots);
+  }
+
   public IChunk getChunk()
   {
     return _chunk;

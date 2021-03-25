@@ -15,8 +15,6 @@ package org.jactr.core.module.procedural.six.learning;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
@@ -32,7 +30,6 @@ import org.jactr.core.module.procedural.IProceduralModule;
 import org.jactr.core.module.procedural.event.ProceduralModuleEvent;
 import org.jactr.core.module.procedural.event.ProceduralModuleListenerAdaptor;
 import org.jactr.core.module.procedural.five.learning.IProductionCompiler;
-import org.jactr.core.module.procedural.six.DefaultProceduralModule6;
 import org.jactr.core.module.procedural.six.learning.event.IProceduralLearningModule6Listener;
 import org.jactr.core.module.procedural.six.learning.event.ProceduralLearningEvent;
 import org.jactr.core.production.IInstantiation;
@@ -94,16 +91,9 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
 
   protected SortedMap<Double, IProduction>                                                    _firedProductions;
 
-  /**
-   * used to track new productions. Keyed on the first parent, if the first
-   * parent is ever part of the conflict set, but one of its children isn't,
-   * that child is invalid and should be removed
-   */
-  private Map<IProduction, IProduction>                                                       _kindergarden;
 
   private IProduction                                                                         _justFired;
 
-  private IProduction                                                                         _oneBack;
 
   private IProceduralModule                                                                   _proceduralModule;
 
@@ -120,7 +110,7 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
   {
     super("ProceduralLearningV6");
     _firedProductions = new TreeMap<Double, IProduction>();
-    _kindergarden = new HashMap<IProduction, IProduction>();
+
     _includeBuffers = new TreeSet<String>();
     _utilityEquation = new DefaultExpectedUtilityEquation();
   }
@@ -173,45 +163,7 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
     _proceduralModule = getModel().getProceduralModule();
     _proceduralModule.addListener(new ProceduralModuleListenerAdaptor() {
 
-      @Override
-      public void conflictSetAssembled(ProceduralModuleEvent pme)
-      {
-        /**
-         * check through the productions that might fire, if any are parents,
-         * check to see if their children are represented too...
-         */
-        if (_kindergarden.size() == 0) return;
 
-        HashSet<IProduction> masterList = new HashSet<IProduction>();
-        for (IProduction production : pme.getProductions())
-          masterList.add(((IInstantiation) production).getProduction());
-
-        IModel model = getModel();
-
-        for (IProduction production : masterList)
-          if (_kindergarden.containsKey(production))
-          {
-            IProduction child = _kindergarden.get(production);
-
-            if (child != null && !masterList.contains(child))
-            {
-              String msg = production
-                  + " produced "
-                  + child
-                  + " who could not be instantiated with its parent. Bad children shall be killed!";
-
-              if (Logger.hasLoggers(model))
-                Logger.log(model, Logger.Stream.PROCEDURAL, msg);
-
-              if (LOGGER.isDebugEnabled()) LOGGER.debug(msg);
-
-              ((DefaultProceduralModule6) model.getProceduralModule())
-                  .removeProduction(child);
-            }
-
-            _kindergarden.remove(production);
-          }
-      }
 
       @Override
       public void productionFired(ProceduralModuleEvent pme)
@@ -225,17 +177,10 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
         {
           IProduction newProduction = getProductionCompiler().productionFired(
               instantiation, pme.getSource());
-          if (newProduction != null)
-          {
-            /**
-             * add the new production
-             */
-            pme.getSource().addProduction(newProduction);
-            /**
-             * hop back two productions to get its initial parent
-             */
-            if (_oneBack != null) _kindergarden.put(_oneBack, newProduction);
-          }
+          if (newProduction != null) /**
+           * add the new production
+           */
+          pme.getSource().addProduction(newProduction);
         }
       }
     }, getExecutor());
@@ -243,7 +188,6 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
 
   protected void productionFired(IProduction production, double when)
   {
-    _oneBack = _justFired;
     _justFired = production;
 
     if (isParameterLearningEnabled())
@@ -450,7 +394,7 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
 
   public Collection<String> getSetableParameters()
   {
-    return Arrays.asList(PARAMETER_LEARNING_RATE, OPTIMIZED_LEARNING,
+    return Arrays.asList(PARAMETER_LEARNING_RATE,
         PRODUCTION_COMPILATION_PARAM, EXPECTED_UTILITY_EQUATION_PARAM,
         INCLUDE_BUFFERS_PARAM, PRODUCTION_COMPILER_PARAM);
   }

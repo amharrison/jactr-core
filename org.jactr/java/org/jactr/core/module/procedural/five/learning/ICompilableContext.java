@@ -38,4 +38,24 @@ public interface ICompilableContext
    * @return
    */
   public boolean canCompileOut(IRequest request);
+
+  /**
+   * does this request result in a command only and no chunk in the buffer, such
+   * as motor or vocal
+   *
+   * @param request
+   * @return
+   */
+  public boolean isCommandOnly(IRequest request);
+
+  /**
+   * The resulting chunk in the buffer can change due to internal/external
+   * events other than production manipulation. You want to avoid compiling
+   * try-harvests for these buffers. The perceptual style buffers (visual,
+   * visual-location, aural, aural-location) fall under this category.
+   * 
+   * @param request
+   * @return
+   */
+  public boolean chunksCanChange(IRequest request);
 }

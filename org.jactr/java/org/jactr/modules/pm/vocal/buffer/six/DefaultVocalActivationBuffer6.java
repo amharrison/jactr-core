@@ -4,6 +4,8 @@ import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.delegate.AddChunkRequestDelegate;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.module.declarative.IDeclarativeModule;
+import org.jactr.core.module.procedural.five.learning.ICompilableContext;
+import org.jactr.core.module.procedural.six.learning.DefaultCompilableContext;
 import org.jactr.modules.pm.common.buffer.AbstractPMActivationBuffer6;
 import org.jactr.modules.pm.vocal.AbstractVocalModule;
 import org.jactr.modules.pm.vocal.IVocalModule;
@@ -69,6 +71,12 @@ public class DefaultVocalActivationBuffer6 extends AbstractPMActivationBuffer6 i
   protected boolean isValidChunkType(IChunkType chunkType)
   {
     return false;
+  }
+
+  @Override
+  public ICompilableContext getCompilableContext()
+  {
+    return new DefaultCompilableContext(false, false, true, false, true, false);
   }
 
 }

@@ -1,10 +1,5 @@
 package org.jactr.core.module.imaginal.six.buffer;
 
-/*
- * default logging
- */
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.delegate.DefaultDelegatedRequestableBuffer6;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.logging.Logger;
@@ -12,6 +7,13 @@ import org.jactr.core.module.IModule;
 import org.jactr.core.module.imaginal.IImaginalModule;
 import org.jactr.core.module.procedural.five.learning.ICompilableBuffer;
 import org.jactr.core.module.procedural.five.learning.ICompilableContext;
+import org.jactr.core.module.procedural.six.learning.DefaultCompilableContext;
+
+/*
+ * default logging
+ */
+
+import org.slf4j.LoggerFactory;
 
 public class DefaultImaginalBuffer extends DefaultDelegatedRequestableBuffer6
     implements ICompilableBuffer
@@ -44,7 +46,6 @@ public class DefaultImaginalBuffer extends DefaultDelegatedRequestableBuffer6
 
   public ICompilableContext getCompilableContext()
   {
-    return null;
+    return new DefaultCompilableContext(false, true, true, false, false, false);
   }
-
 }
