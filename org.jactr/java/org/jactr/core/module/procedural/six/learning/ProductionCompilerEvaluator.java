@@ -92,10 +92,12 @@ public class ProductionCompilerEvaluator
   private boolean isPerceptualTypeBuffer(ICompilableContext context,
       IRequest req)
   {
-    if (!context.isImmediate(req) && !context.isDeterministic(req)
-        && context.isJammable(req) && !context.canCompileOut(req))
-      return true;
-    return false;
+    return context.chunksCanChange(req);
+  }
+
+  private boolean isMotorTypeBuffer(ICompilableContext context, IRequest req)
+  {
+    return context.isCommandOnly(req);
   }
 
   public boolean canCompile(BufferStruct one, BufferStruct two,

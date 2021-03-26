@@ -6,8 +6,6 @@ package org.jactr.core.module.procedural.six.learning;
 import java.util.Arrays;
 import java.util.Collection;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.extensions.IExtension;
 import org.jactr.core.model.IModel;
@@ -15,6 +13,7 @@ import org.jactr.core.module.procedural.six.IProceduralModule6;
 import org.jactr.core.module.procedural.six.learning.event.IProceduralLearningModule6Listener;
 import org.jactr.core.module.procedural.six.learning.event.ProceduralLearningEvent;
 import org.jactr.core.utils.parameter.ParameterHandler;
+import org.slf4j.LoggerFactory;
 
 public class UtilityNoiseLearningExtension implements IExtension,
     IProceduralLearningModule6Listener
@@ -189,6 +188,13 @@ public class UtilityNoiseLearningExtension implements IExtension,
   }
 
   public void stopReward(ProceduralLearningEvent event)
+  {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void productionCompiled(ProceduralLearningEvent event)
   {
     // TODO Auto-generated method stub
 

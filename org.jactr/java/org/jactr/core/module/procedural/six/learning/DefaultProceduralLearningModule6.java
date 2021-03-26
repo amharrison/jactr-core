@@ -60,8 +60,8 @@ import org.slf4j.LoggerFactory;
  * @see http://jactr.org/node/67
  * @author developer
  */
-public class DefaultProceduralLearningModule6 extends AbstractModule implements
-    IProceduralLearningModule6, IParameterized
+public class DefaultProceduralLearningModule6 extends AbstractModule
+    implements IProceduralLearningModule6, IParameterized
 {
   static public final double                                                                  SKIP_REWARD                   = Double.NEGATIVE_INFINITY;
 
@@ -76,14 +76,16 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
   /**
    * logger definition
    */
-  static final transient org.slf4j.Logger                                                                            LOGGER                        = LoggerFactory
-                                                                                                                                .getLogger(DefaultProceduralLearningModule6.class);
+  static final transient org.slf4j.Logger                                                     LOGGER                        = LoggerFactory
+      .getLogger(DefaultProceduralLearningModule6.class);
 
   protected boolean                                                                           _productionCompilationEnabled = false;
 
   protected double                                                                            _parameterLearningRate        = Double.NaN;
 
-  protected int                                                                               _optimizationLevel            = 0;
+  protected int                                                                               _optimizationLevel            = 10;
+
+  private double                                                                              _initialUtility               = 0;
 
   protected IExpectedUtilityEquation                                                          _utilityEquation;
 
@@ -91,9 +93,9 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
 
   protected SortedMap<Double, IProduction>                                                    _firedProductions;
 
-
   private IProduction                                                                         _justFired;
 
+  private IProduction                                                                         _oneBack;
 
   private IProceduralModule                                                                   _proceduralModule;
 
@@ -104,7 +106,6 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
    * or RHS
    */
   private Set<String>                                                                         _includeBuffers;
-
 
   public DefaultProceduralLearningModule6()
   {
@@ -163,8 +164,6 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
     _proceduralModule = getModel().getProceduralModule();
     _proceduralModule.addListener(new ProceduralModuleListenerAdaptor() {
 
-
-
       @Override
       public void productionFired(ProceduralModuleEvent pme)
       {
@@ -175,19 +174,69 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
 
         if (isProductionCompilationEnabled())
         {
-          IProduction newProduction = getProductionCompiler().productionFired(
-              instantiation, pme.getSource());
-          if (newProduction != null) /**
-           * add the new production
-           */
-          pme.getSource().addProduction(newProduction);
+          IProduction newProduction = getProductionCompiler()
+              .productionFired(instantiation, pme.getSource());
+          if (newProduction != null)
+          {
+            if (_dispatcher.hasListeners())
+              _dispatcher.fire(new ProceduralLearningEvent(
+                  DefaultProceduralLearningModule6.this, _oneBack, _justFired,
+                  newProduction));
+
+            ISubsymbolicProduction6 ssp = newProduction
+                .getAdapter(ISubsymbolicProduction6.class);
+            ssp.setPrimaryParent(_oneBack);
+            ssp.setUtility(_initialUtility);
+
+            /**
+             * add the new production
+             */
+            pme.getSource().addProduction(newProduction);
+          }
         }
       }
+
+      @Override
+      public void productionsMerged(ProceduralModuleEvent pme)
+      {
+        /*
+         * each time we merge, we apply the expected utility equation using the
+         * primary parent's current utility as the reward value
+         */
+        IExpectedUtilityEquation equation = getExpectedUtilityEquation();
+        IProduction production = pme.getProduction(); // first is the older
+        ISubsymbolicProduction6 ssp = production
+            .getAdapter(ISubsymbolicProduction6.class);
+        IProduction primaryParent = ssp.getPrimaryParent();
+        double oldUtility = ssp.getExpectedUtility();
+        double reward = primaryParent.getAdapter(ISubsymbolicProduction6.class)
+            .getExpectedUtility();
+
+        if (Double.isNaN(reward)) // possible if we haven't been rewarded yet
+          reward = primaryParent.getAdapter(ISubsymbolicProduction6.class)
+              .getUtility();
+
+        double newUtility = equation.computeExpectedUtility(production,
+            getModel(), reward);
+        ssp.setExpectedUtility(newUtility);
+
+        boolean log = LOGGER.isDebugEnabled() || Logger.hasLoggers(getModel());
+
+        if (log)
+        {
+          String msg = String.format("%s expected utility was %.2f, now %.2f",
+              production, oldUtility, newUtility);
+          LOGGER.debug(msg);
+          Logger.log(getModel(), Logger.Stream.PROCEDURAL, msg);
+        }
+      }
+
     }, getExecutor());
   }
 
   protected void productionFired(IProduction production, double when)
   {
+    _oneBack = _justFired;
     _justFired = production;
 
     if (isParameterLearningEnabled())
@@ -308,32 +357,31 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
               Logger.log(model, Logger.Stream.PROCEDURAL, msg);
           }
 
-          if (_dispatcher.hasListeners())
-            _dispatcher.fire(new ProceduralLearningEvent(this, p,
-                discountedReward));
+          if (_dispatcher.hasListeners()) _dispatcher
+              .fire(new ProceduralLearningEvent(this, p, discountedReward));
         }
         else if (productionsReward < 0) // negative inf, skip
         {
-          if(log)
+          if (log)
           {
-            String msg = String.format("Skipping rewarding of %s",p);
+            String msg = String.format("Skipping rewarding of %s", p);
             if (LOGGER.isDebugEnabled()) LOGGER.debug(msg);
             if (Logger.hasLoggers(model))
               Logger.log(model, Logger.Stream.PROCEDURAL, msg);
           }
-          continue; //skip
+          continue; // skip
         }
         else
         // pos inf, stop
         {
-          if(log)
+          if (log)
           {
-            String msg = String.format("Stopping reward crediation at %s",p);
+            String msg = String.format("Stopping reward crediation at %s", p);
             if (LOGGER.isDebugEnabled()) LOGGER.debug(msg);
             if (Logger.hasLoggers(model))
               Logger.log(model, Logger.Stream.PROCEDURAL, msg);
           }
-          break; //stop entirely
+          break; // stop entirely
         }
 
       }
@@ -352,9 +400,9 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
   {
     for (ICondition condition : production.getSymbolicProduction()
         .getConditions())
-      if (condition instanceof IBufferCondition)
-        if (_includeBuffers.contains(((IBufferCondition) condition)
-            .getBufferName())) return true;
+      if (condition instanceof IBufferCondition) if (_includeBuffers.contains(
+          ((IBufferCondition) condition).getBufferName()))
+        return true;
 
     for (IAction action : production.getSymbolicProduction().getActions())
       if (action instanceof IBufferAction)
@@ -383,6 +431,8 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
       if (sb.length() > 2) sb.delete(sb.length() - 2, sb.length());
       return sb.toString();
     }
+    else if (INITIAL_UTILITY_PARAM.equalsIgnoreCase(key))
+      return "" + _initialUtility;
 
     return null;
   }
@@ -394,9 +444,9 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
 
   public Collection<String> getSetableParameters()
   {
-    return Arrays.asList(PARAMETER_LEARNING_RATE,
-        PRODUCTION_COMPILATION_PARAM, EXPECTED_UTILITY_EQUATION_PARAM,
-        INCLUDE_BUFFERS_PARAM, PRODUCTION_COMPILER_PARAM);
+    return Arrays.asList(PARAMETER_LEARNING_RATE, PRODUCTION_COMPILATION_PARAM,
+        EXPECTED_UTILITY_EQUATION_PARAM, INCLUDE_BUFFERS_PARAM,
+        PRODUCTION_COMPILER_PARAM, INITIAL_UTILITY_PARAM);
   }
 
   public void setParameter(String key, String value)
@@ -409,9 +459,8 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
       }
       catch (Exception e)
       {
-        if (LOGGER.isWarnEnabled())
-          LOGGER.warn(String.format("Could not instantiate %s, using default",
-              value));
+        if (LOGGER.isWarnEnabled()) LOGGER.warn(
+            String.format("Could not instantiate %s, using default", value));
         setExpectedUtilityEquation(new DefaultExpectedUtilityEquation());
       }
     else if (PRODUCTION_COMPILER_PARAM.equalsIgnoreCase(key))
@@ -422,20 +471,22 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
       }
       catch (Exception e)
       {
-        if (LOGGER.isWarnEnabled())
-          LOGGER.warn(String.format("Could not instantiate %s, using default",
-              value));
+        if (LOGGER.isWarnEnabled()) LOGGER.warn(
+            String.format("Could not instantiate %s, using default", value));
         setProductionCompiler(new DefaultProductionCompiler6());
       }
+    else if (INITIAL_UTILITY_PARAM.equalsIgnoreCase(key))
+      setInitialLearnedUtility(
+          ParameterHandler.numberInstance().coerce(value).doubleValue());
     else if (PARAMETER_LEARNING_RATE.equalsIgnoreCase(key))
-      setParameterLearning(ParameterHandler.numberInstance().coerce(value)
-          .doubleValue());
+      setParameterLearning(
+          ParameterHandler.numberInstance().coerce(value).doubleValue());
     else if (OPTIMIZED_LEARNING.equalsIgnoreCase(key))
-      setOptimizationLevel(ParameterHandler.numberInstance().coerce(value)
-          .intValue());
+      setOptimizationLevel(
+          ParameterHandler.numberInstance().coerce(value).intValue());
     else if (PRODUCTION_COMPILATION_PARAM.equalsIgnoreCase(key))
-      setProductionCompilationEnabled(ParameterHandler.booleanInstance()
-          .coerce(value).booleanValue());
+      setProductionCompilationEnabled(
+          ParameterHandler.booleanInstance().coerce(value).booleanValue());
     else if (INCLUDE_BUFFERS_PARAM.equalsIgnoreCase(key))
     {
       String[] buffers = value.split(",");
@@ -446,10 +497,9 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
         _includeBuffers.add(bufferName);
       }
     }
-    else if (LOGGER.isWarnEnabled())
-      LOGGER.warn(String.format(
-          "%s doesn't recognize %s. Available parameters : %s", getClass()
-              .getSimpleName(), key, getSetableParameters()));
+    else if (LOGGER.isWarnEnabled()) LOGGER.warn(
+        String.format("%s doesn't recognize %s. Available parameters : %s",
+            getClass().getSimpleName(), key, getSetableParameters()));
   }
 
   public void addListener(IProceduralLearningModule6Listener listener,
@@ -466,5 +516,17 @@ public class DefaultProceduralLearningModule6 extends AbstractModule implements
   public void reset()
   {
     // noop
+  }
+
+  @Override
+  public void setInitialLearnedUtility(double initialUtility)
+  {
+    _initialUtility = initialUtility;
+  }
+
+  @Override
+  public double getInitialLearnedUtility()
+  {
+    return _initialUtility;
   }
 }

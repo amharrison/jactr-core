@@ -22,4 +22,6 @@ public interface IProceduralLearningModule6Listener extends EventListener
    * @param event
    */
   public void stopReward(ProceduralLearningEvent event);
+
+  public void productionCompiled(ProceduralLearningEvent event);
 }

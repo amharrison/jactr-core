@@ -23,6 +23,8 @@ public class ProceduralLearningEvent
 
   final private IProduction _production;
 
+  final private IProduction _parentA, _parentB;
+
   public ProceduralLearningEvent(IProceduralLearningModule6 source, Type type,
       double reward)
   {
@@ -31,6 +33,7 @@ public class ProceduralLearningEvent
     _type = type;
     _production = null;
     _reward = reward;
+    _parentA = _parentB = null;
   }
 
   public ProceduralLearningEvent(IProceduralLearningModule6 source,
@@ -41,6 +44,19 @@ public class ProceduralLearningEvent
     _type = Type.REWARDED;
     _production = production;
     _reward = reward;
+    _parentA = _parentB = null;
+  }
+
+  public ProceduralLearningEvent(IProceduralLearningModule6 source,
+      IProduction parentA, IProduction parentB, IProduction production)
+  {
+    super(source,
+        ACTRRuntime.getRuntime().getClock(source.getModel()).getTime());
+    _type = Type.REWARDED;
+    _production = production;
+    _reward = Double.NaN;
+    _parentA = parentA;
+    _parentB = parentB;
   }
 
   @Override
@@ -68,6 +84,12 @@ public class ProceduralLearningEvent
   public IProduction getProduction()
   {
     return _production;
+  }
+
+  public IProduction[] getParents()
+  {
+    if (_parentA != null) return new IProduction[] { _parentA, _parentB };
+    return new IProduction[0];
   }
 
   public double getReward()

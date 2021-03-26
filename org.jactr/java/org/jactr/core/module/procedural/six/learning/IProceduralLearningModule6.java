@@ -27,6 +27,8 @@ public interface IProceduralLearningModule6 extends IProceduralLearningModule5,
 {
   static public final String EXPECTED_UTILITY_EQUATION_PARAM = "ExpectedUtilityEquation";
 
+  static public final String INITIAL_UTILITY_PARAM           = "InitialLearnedUtility";
+
   public IExpectedUtilityEquation getExpectedUtilityEquation();
 
   public void reward(double reward);
@@ -35,4 +37,8 @@ public interface IProceduralLearningModule6 extends IProceduralLearningModule5,
       Executor executor);
 
   public void removeListener(IProceduralLearningModule6Listener listener);
+
+  public void setInitialLearnedUtility(double initialUtility);
+
+  public double getInitialLearnedUtility();
 }

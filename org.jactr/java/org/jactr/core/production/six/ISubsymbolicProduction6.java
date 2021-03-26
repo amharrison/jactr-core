@@ -1,5 +1,6 @@
 package org.jactr.core.production.six;
 
+import org.jactr.core.production.IProduction;
 /*
  * default logging
  */
@@ -13,6 +14,8 @@ public interface ISubsymbolicProduction6 extends ISubsymbolicProduction
   static public final String UTILITY_PARAM          = "Utility";
 
   static public final String REWARD_PARAM           = "Reward";
+
+  static public final String PARENT_PRODUCTION_PARAM = "ParentProduction";
 
   /**
    * return the computed expected utility
@@ -40,4 +43,14 @@ public interface ISubsymbolicProduction6 extends ISubsymbolicProduction
   public double getReward();
 
   public void setReward(double reward);
+
+  /**
+   * null if hand coded production, otherwise its the first parent from
+   * compilation
+   *
+   * @return
+   */
+  public IProduction getPrimaryParent();
+
+  public void setPrimaryParent(IProduction production);
 }
