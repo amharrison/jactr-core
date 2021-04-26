@@ -23,7 +23,7 @@ public class CommonTreeSourceGenerator implements ISourceGenerator
   @Override
   public boolean canGenerate(Object astNode, String format)
   {
-    boolean isCommonTree = astNode instanceof CommonTree;
+    boolean isCommonTree = astNode == null || astNode instanceof CommonTree;
     if (!isCommonTree) return false;
 
     // now check the installed generators..

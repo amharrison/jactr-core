@@ -112,7 +112,8 @@ public class InstantiationTask implements Callable<Collection<IInstantiation>>
             message.delete(0, message.length());
             message.append("Instantiated ").append(production)
                 .append(" expected utility ");
-            message.append(utility + noise).append(" (").append(noise)
+            message.append(String.format("%.4f", utility + noise)).append(" (")
+                .append(String.format("%.4f", noise))
                 .append(" noise)");
 
             String msg = message.toString();

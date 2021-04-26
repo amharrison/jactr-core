@@ -26,6 +26,7 @@ import org.jactr.core.module.procedural.four.learning.IProbabilityEquation;
 import org.jactr.core.production.IProduction;
 import org.jactr.core.production.ISubsymbolicProduction;
 import org.jactr.core.production.event.ProductionEvent;
+import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.utils.DefaultAdaptable;
 import org.jactr.core.utils.parameter.ParameterHandler;
 import org.slf4j.LoggerFactory;
@@ -224,7 +225,8 @@ public class BasicSubsymbolicProduction extends DefaultAdaptable implements
 
   public void encode()
   {
-    // noop
+    setCreationTime(ACTRRuntime.getRuntime()
+        .getClock(getProduction().getModel()).getTime());
   }
 
 }

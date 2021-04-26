@@ -241,7 +241,7 @@ public class DefaultCycleProcessor6 implements ICycleProcessor
         nextProductionFiringTime - nextEventFiringTime) < TEMPORAL_TOLERANCE)
     {
       nextWaitTime = Math.max(nextProductionFiringTime, nextEventFiringTime);
-      if (LOGGER.isDebugEnabled()) LOGGER.warn(String.format(
+      if (LOGGER.isDebugEnabled()) LOGGER.debug(String.format(
           "Dangerously close timing : nextProd (%.5f) and nextEvent (%.5f) are insanely close, using larger (%.5f)",
           nextProductionFiringTime, nextEventFiringTime, nextWaitTime));
     }
@@ -251,7 +251,10 @@ public class DefaultCycleProcessor6 implements ICycleProcessor
       double newWaitTime = now;
       if (!queue.isEmpty()) newWaitTime = queue.getNextEndTime();
 
-      if (LOGGER.isWarnEnabled()) LOGGER.warn(String.format(
+      if (newWaitTime <= now) newWaitTime += model.getProceduralModule()
+          .getDefaultProductionFiringTime();
+
+      if (LOGGER.isDebugEnabled()) LOGGER.debug(String.format(
           "nextWaitTime (%.5f) is less than or equal to the time (%.5f), incrementing to (%.5f). eventsFired=%s nextEvent=%.2f productionFiringTime=%.2f",
           nextWaitTime, now, newWaitTime, eventsHaveFired,
           queue.getNextEndTime(), productionFiringTime));

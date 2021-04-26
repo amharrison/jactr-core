@@ -77,8 +77,7 @@ public class AddAction extends DefaultAction
   private Collection<IMutableSlot> _slots;
 
   /**
-   * referant can be either a chunkname, a variable name, a chunktype or a chunk
-   * proper
+   * referant can be a chunk, chunktype, string (variable name), or null.
    * 
    * @since
    */
@@ -168,6 +167,11 @@ public class AddAction extends DefaultAction
   public void setReferant(Object o)
   {
     _referant = o;
+  }
+
+  public boolean isDelayedRequest()
+  {
+    return _referant == null;
   }
 
   public IAction bind(VariableBindings bindings)
@@ -364,8 +368,12 @@ public class AddAction extends DefaultAction
   }
 
   /**
-   * return a mutable copy of the request that underlies this action.
-   * 
+   * return a mutable copy of the request that underlies this action. This is
+   * only valid after binding. If {@link #getReferant()} is null, this will
+   * return an untyped SlotBasedRequest. If it was a string, it represented a
+   * variable name that at binding was changed to a chunk. If it is a chunk, the
+   * request will be a ChunkRequest. Chunktypes will yield ChunkTypeRequests
+   *
    * @return
    */
   public IRequest getRequest()
@@ -378,21 +386,13 @@ public class AddAction extends DefaultAction
     IRequest request = null;
     Object referant = getReferant();
 
-    if (referant instanceof IRequest)
+    if (referant instanceof IRequest) // meta support
       request = (IRequest) referant;
     else if (referant instanceof IChunk)
-      /*
-       * +buffer> chunk (or =chunk)
-       */
       request = new ChunkRequest((IChunk) referant, _slots);
-    else if (referant instanceof IChunkType) /*
-                                              * +buffer> isa chunk
-                                              */
+    else if (referant instanceof IChunkType)
       request = new ChunkTypeRequest((IChunkType) referant, _slots);
     else
-      /*
-       * +buffer> slot value
-       */
       request = new SlotBasedRequest(_slots);
 
     return request;

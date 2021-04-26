@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.commons.collections.map.LRUMap;
 import org.eclipse.collections.impl.factory.Lists;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
@@ -37,6 +38,7 @@ import org.jactr.core.production.request.ChunkRequest;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.production.request.IRequest;
 import org.jactr.core.production.request.SlotBasedRequest;
+import org.jactr.core.production.six.ISubsymbolicProduction6;
 import org.jactr.core.slot.BasicSlot;
 import org.jactr.core.slot.DefaultMutableSlot;
 import org.jactr.core.slot.IMutableSlot;
@@ -72,8 +74,53 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
     evaluator = new ProductionCompilerEvaluator();
   }
 
+  protected LRUMap getLRUMap(IInstantiation instantiation)
+  {
+    LRUMap map = (LRUMap) instantiation.getProduction()
+        .getMetaData("compilation.LRUMap");
+    if (map == null)
+    {
+      map = new LRUMap(5);
+      instantiation.getProduction().setMetaData("compilation.LRUMap", map);
+    }
+    return map;
+  }
+
+  protected boolean quickTest(IInstantiation current, IInstantiation last)
+      throws CannotCompileException
+  {
+    IProduction lastProduction = last.getProduction();
+    LRUMap currentLRU = getLRUMap(current);
+
+    CannotCompileException canCompile = (CannotCompileException) currentLRU
+        .get(lastProduction);
+    if (canCompile == null) return true;
+
+    throw canCompile;
+  }
+
+  protected void updateQuickTest(IInstantiation current, IInstantiation last,
+      IProduction compiled)
+  {
+    IProduction lastProduction = last.getProduction();
+    LRUMap currentLRU = getLRUMap(current);
+
+    currentLRU.remove(lastProduction);
+  }
+
+  protected void updateQuickTest(IInstantiation current, IInstantiation last,
+      CannotCompileException cce)
+  {
+    IProduction lastProduction = last.getProduction();
+    LRUMap currentLRU = getLRUMap(current);
+
+    if (cce instanceof CanNeverCompileException)
+      currentLRU.put(lastProduction, cce);
+    // cannot compile could be due to anything else, so we don't cache it
+  }
+
   public IProduction productionFired(IInstantiation instantiation,
-      IProceduralModule proceduralModule)
+      IProceduralModule proceduralModule) throws CannotCompileException
   {
     LOGGER.debug("Got that production " + instantiation
         + " fired; last fired was " + _lastInstantiation);
@@ -84,83 +131,30 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
 
     try
     {
-      if (_lastInstantiation != null && canCompile(_lastInstantiation,
-          instantiation, compilationMapOne, compilationMapTwo))
+      if (_lastInstantiation != null
+          && quickTest(instantiation, _lastInstantiation)
+          && canCompile(_lastInstantiation, instantiation, compilationMapOne,
+              compilationMapTwo))
       {
         compiled = doCompilation(_lastInstantiation, instantiation,
             compilationMapOne, compilationMapTwo);
-        if (compiled != null)
-        {
-          LOGGER.info("Compiled ");
 
-          LOGGER
-              .info(_lastInstantiation.getSymbolicProduction().getName() + ":");
-          for (ICondition condition : _lastInstantiation.getSymbolicProduction()
-              .getConditions())
-            LOGGER.info(condition.toString());
-          LOGGER.info("===>");
-          for (IAction action : _lastInstantiation.getSymbolicProduction()
-              .getActions())
-            LOGGER.info(action.toString());
-
-          // for (StringBuilder line :
-          // _codeGenerator.generate(ASTResolver.toAST(_lastInstantiation.getProduction()),
-          // false))
-          // {
-          // LOGGER.info(line.toString());
-          // line.delete(0, line.length());
-          // }
-          // for (BufferStruct s : compilationMapOne.values()) {
-          // LOGGER.info(s.bufferName + ": " + s.bindingsToString());
-          // }
-
-          LOGGER.info(" and ");
-
-          LOGGER.info(instantiation.getSymbolicProduction().getName() + ":");
-          for (ICondition condition : instantiation.getSymbolicProduction()
-              .getConditions())
-            LOGGER.info(condition.toString());
-          LOGGER.info("===>");
-          for (IAction action : instantiation.getSymbolicProduction()
-              .getActions())
-            LOGGER.info(action.toString());
-
-//				  for (StringBuilder line : _codeGenerator.generate(ASTResolver.toAST(instantiation.getProduction()), false))
-//				    {
-//				      LOGGER.info(line.toString());
-//				      line.delete(0, line.length());
-//				    }
-//				  for (BufferStruct s : compilationMapTwo.values()) {
-//					  LOGGER.info(s.bufferName + ": " + s.bindingsToString());
-//				  }
-
-          LOGGER.info(" into ");
-
-          LOGGER.info(compiled.getSymbolicProduction().getName() + ":");
-          for (ICondition condition : compiled.getSymbolicProduction()
-              .getConditions())
-            LOGGER.info(condition.toString());
-          LOGGER.info("===>");
-          for (IAction action : compiled.getSymbolicProduction().getActions())
-            LOGGER.info(action.toString());
-
-//				  for (StringBuilder line : _codeGenerator.generate(ASTResolver.toAST(compiled), false))
-//				    {
-//				      LOGGER.info(line.toString());
-//				      line.delete(0, line.length());
-//				    }
-
-        }
-
+        updateQuickTest(instantiation, _lastInstantiation, compiled);
       }
+    }
+    catch (CannotCompileException cce)
+    {
+      updateQuickTest(instantiation, _lastInstantiation, cce);
+      throw cce;
     }
     catch (Exception e)
     {
       LOGGER.warn("got an exception: ", e);
     }
-
-    _lastInstantiation = instantiation;
-
+    finally
+    {
+      _lastInstantiation = instantiation;
+    }
     return compiled; // for now, for testing
   }
 
@@ -168,16 +162,20 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
       IInstantiation instantiationTwo,
       Map<ICompilableBuffer, BufferStruct> compilationMapOne,
       Map<ICompilableBuffer, BufferStruct> compilationMapTwo)
+      throws CannotCompileException
   {
     HashSet<ICompilableBuffer> buffers = new HashSet<ICompilableBuffer>();
     // check individually; return false if buffers involved aren't
     // ICompilableBuffers
-    if (!(checkBuffers(instantiationOne, compilationMapOne)
-        && checkBuffers(instantiationTwo, compilationMapTwo)))
-      return false;
+    if (!checkBuffers(instantiationOne, compilationMapOne, false))
+      throw new CanNeverCompileException(
+          String.format("parentA %s can never compile due to contents.",
+              instantiationOne.getProduction()));
 
-    // LOGGER.debug("Checking to see whether productions can be compiled (via
-    // Evaluators)...");
+    if (!checkBuffers(instantiationTwo, compilationMapTwo, true))
+      throw new CanNeverCompileException(
+          String.format("parentB %s can never compile due to contents.",
+              instantiationTwo.getProduction()));
 
     // now check the maps
     buffers.addAll(compilationMapOne.keySet());
@@ -193,10 +191,13 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
       if (!evaluator.canCompile(compilationMapOne.get(buffer),
           compilationMapTwo.get(buffer), buffer))
       {
-        LOGGER.info(
-            "Cannot compile because not the right conditions/actions for buffer "
-                + buffer);
-        return false;
+        String type = evaluator.getType(buffer.getCompilableContext(),
+            compilationMapOne.get(buffer).getIRequest());
+
+        throw new CanNeverCompileException(String.format(
+            "Cannot compile due to LHS/RHS conditions on %s (%s, %d, %d)",
+            buffer, type, compilationMapOne.get(buffer).index,
+            compilationMapTwo.get(buffer).index));
       }
     }
     // LOGGER.debug("can compile!");
@@ -207,7 +208,7 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
       IInstantiation instantiationTwo,
       Map<ICompilableBuffer, BufferStruct> compilationMapOne,
       Map<ICompilableBuffer, BufferStruct> compilationMapTwo)
-      throws InterruptedException, ExecutionException
+      throws InterruptedException, ExecutionException, CannotCompileException
   {
     ArrayList<ICondition> tempTwoConditions = new ArrayList<ICondition>();
     ArrayList<IAction> tempTwoActions = new ArrayList<IAction>();
@@ -216,22 +217,27 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
     // Step 1: rename duplicate variables
     HashMap<String, Object> mapping = findDuplicateVariableMapping(
         compilationMapOne, compilationMapTwo);
-    if (mapping == null) return null;
-    if (!renameVariables(compilationMapTwo, mapping)) return null;
+    if (mapping == null) throw new CannotCompileException(
+        "Duplicate variable mappings returned null");
+    if (!renameVariables(compilationMapTwo, mapping))
+      throw new CannotCompileException("Rename variables returned falsed");
 
     // Step 2: do buffer mappings
     HashMap<ICompilableBuffer, Map<String, Object>> bufferMappings = new HashMap<ICompilableBuffer, Map<String, Object>>();
     if (!extractBufferMappings(bufferMappings, compilationMapOne,
         compilationMapTwo, instantiationOne, tempTwoConditions, tempTwoActions))
-      return null;
+      throw new CannotCompileException("extractBufferMappings returned false");
 
     // Step 3: Merge Mappings
     Map<String, Object> mergedMapping = mergeBufferMappings(bufferMappings);
-    if (mergedMapping == null) return null;
+    if (mergedMapping == null)
+      throw new CannotCompileException("mergeBufferMappings returned null");
 
     // SECOND: Substitution - just reuse earlier code.
-    if (!renameVariables(compilationMapOne, mergedMapping)) return null;
-    if (!renameVariables(compilationMapTwo, mergedMapping)) return null;
+    if (!renameVariables(compilationMapOne, mergedMapping))
+      throw new CannotCompileException("renameVariables one returned false");
+    if (!renameVariables(compilationMapTwo, mergedMapping))
+      throw new CannotCompileException("renameVariables two returned false");
 
     // THIRD: Collapsing
     IProduction p = collapseProductions(compilationMapOne, compilationMapTwo,
@@ -239,17 +245,23 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
             .createProduction(instantiationOne.getSymbolicProduction().getName()
                 + "-" + instantiationTwo.getSymbolicProduction().getName())
             .get());
-    if (p == null) return null;
+    if (p == null)
+      throw new CannotCompileException("collapseProductions returned null");
+
+    // FOURTH: set reward of new production to be the reward of the second
+    // parent
+    ((ISubsymbolicProduction6) p.getSubsymbolicProduction())
+        .setReward(((ISubsymbolicProduction6) instantiationTwo.getProduction()
+            .getSubsymbolicProduction()).getReward());
 
     return bindFreeVariables(p, compilationMapTwo, instantiationTwo);
   }
 
   private IProduction bindFreeVariables(IProduction p,
       Map<ICompilableBuffer, BufferStruct> compilationMapTwo,
-      IInstantiation instantiation)
+      IInstantiation instantiation) throws CannotCompileException
   {
     HashSet<String> boundVariables = new HashSet<String>();
-    // LOGGER.debug("production is " + p);
     if (!getConditionVariables(p.getSymbolicProduction().getConditions(),
         boundVariables))
       return null;
@@ -259,12 +271,9 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
           && ((AddAction) action).getChunkName() != null)
       {
         if (!boundVariables.contains(((AddAction) action).getChunkName()))
-        {
-          LOGGER.warn(
+          throw new CannotCompileException(
               "Should never be here where AddAction's chunk name isn't resolved "
                   + action);
-          return null;
-        }
       }
       else if (action instanceof ISlotContainer)
       {
@@ -273,13 +282,10 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
         {
           if (s.getName().startsWith("=")
               && !boundVariables.contains(s.getName()))
-          {
-            LOGGER.warn(
+            throw new CannotCompileException(
                 "Variable name in condition slot name... we don't currently handle this. "
                     + s);
-            return null;
-          }
-          if (s.getValue().toString().startsWith("=")
+          if (s.getValue() != null && s.getValue().toString().startsWith("=")
               && !boundVariables.contains(s.getValue().toString()))
           {
             // LOGGER.debug("found an unbound variable..." + s);
@@ -321,9 +327,11 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
         for (ICondition condition : result.conditions)
           newProduction.getSymbolicProduction().addCondition(condition);
         for (IAction action : result.actions)
-          // if(action instanceof ISlotContainer) LOGGER.debug("adding action "
-          // + action + ((ISlotContainer)action).getSlots());
+        {
+          if (action instanceof ISlotContainer) LOGGER.debug(
+              "adding action " + action + ((ISlotContainer) action).getSlots());
           newProduction.getSymbolicProduction().addAction(action);
+        }
       }
 
     }
@@ -408,6 +416,7 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
       }
 
     }
+
     return true;
   }
 
@@ -418,8 +427,8 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
       if (condition instanceof ChunkTypeCondition)
         for (ISlot s : ((ChunkTypeCondition) condition).getSlots(__slotList))
         {
-          // LOGGER.debug("checking slot " + s + " while getting condition
-          // variables.");
+          // first, add variable for the buffer itself
+          variables.add("=" + ((ChunkTypeCondition) condition).getBufferName());
           if (s.getName().startsWith("="))
           {
             // oneVariables.add(s.getName()); //ALTHOUGH this should NEVER be
@@ -434,6 +443,8 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
         }
       else if (condition instanceof VariableCondition)
         variables.add(((VariableCondition) condition).getVariableName());
+
+    LOGGER.debug("condition variables are " + variables);
     return true;
 
   }
@@ -525,11 +536,14 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
               else
                 name = s.getName();
 
-              if (mapping.containsKey(s.getValue()))
+              if (mapping.containsKey(s.getValue())) // LOGGER.debug("mapping
+                                                     // includes " +
+                                                     // s.getValue() + " so
+                // putting that in");
                 value = mapping.get(s.getValue());
               else
+                // LOGGER.debug("mapping doesn't include " + s.getValue());
                 value = s.getValue();
-
               // don't handle the first case for conditions.
               // if(s instanceof IMutableVariableNameSlot && s instanceof
               // IMutableSlot && s instanceof BasicSlot) {
@@ -620,9 +634,18 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
                 name = s.getName();
 
               if (mapping.containsKey(s.getValue()))
+              {
+                LOGGER.debug("in actions, mapping includes " + s.getValue()
+                    + " so putting that in.");
                 value = mapping.get(s.getValue());
+              }
               else
+              {
+                LOGGER
+                    .debug("in actions, mapping doesn't include " + s.getValue()
+                        + " so putting " + name + " as " + s.getValue());
                 value = s.getValue();
+              }
 
               if (s instanceof IMutableVariableNameSlot
                   && s instanceof IMutableSlot && s instanceof BasicSlot)
@@ -648,11 +671,14 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
               }
             }
 
+            IAction newAct = null;
             if (action instanceof ModifyAction)
-              newActs.add(new ModifyAction(struct.bufferName, newSlots));
+              newAct = new ModifyAction(struct.bufferName, newSlots);
             else
-              newActs.add(new AddAction(struct.bufferName,
-                  ((AddAction) action).getReferant(), newSlots));
+              newAct = new AddAction(struct.bufferName,
+                  ((AddAction) action).getReferant(), newSlots);
+            LOGGER.debug("newAct is " + newAct);
+            newActs.add(newAct);
           }
           else
             // nothing to do for the others; Remove doesn't refer to anything
@@ -662,19 +688,24 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
         struct.actions.clear();
         struct.actions.addAll(newActs);
 
-        // LOGGER.debug("updating bindings " + struct.bindings + " with " +
-        // mapping);
+        LOGGER
+            .debug("updating bindings " + struct.bindings + " with " + mapping);
         // Now do for variable bindings
         Collection<String> vars = new ArrayList<String>();
         vars.addAll(struct.bindings.getVariables());
         for (String s : vars)
-          if (mapping.containsKey(s))
-            if (mapping.get(s).toString().startsWith("="))
+          if (mapping.containsKey(s)) if (mapping.get(s) != null
+              && mapping.get(s).toString().startsWith("=")) // LOGGER.debug("binding"
+                                                            // +
+                                                            // mapping.get(s).toString()
+                                                            // + " to " +
+            // struct.bindings.get(s) + " and " + struct.bindings.getSource(s));
             struct.bindings.bind(mapping.get(s).toString(),
                 struct.bindings.get(s), struct.bindings.getSource(s));
-            else
+          else
             // otherwise, might be a different value so update. doesn't really
             // matter though since we're getting rid of this variable anyway.
+            // LOGGER.debug("binding " + s + " to " + mapping.get(s));
             struct.bindings.bind(s, mapping.get(s));
       }
     }
@@ -683,8 +714,18 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
   }
 
   protected boolean checkBuffers(IInstantiation instantiation,
-      Map<ICompilableBuffer, BufferStruct> compilationMap)
+      Map<ICompilableBuffer, BufferStruct> compilationMap,
+      boolean canHaveReward)
   {
+
+    if (Double.isFinite(((ISubsymbolicProduction6) instantiation.getProduction()
+        .getSubsymbolicProduction()).getReward()) && !canHaveReward)
+    {
+      LOGGER.debug(
+          "returning false because production has a finite reward and we aren't allowing rewards for this production");
+      return false;
+    }
+
     for (ICondition condition : instantiation.getProduction()
         .getSymbolicProduction().getConditions())
       if (condition instanceof IBufferCondition)
@@ -751,6 +792,10 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
         else if (action instanceof ModifyAction)
           compilationMap.put(cBuffer, compilationMap.get(cBuffer)
               .update(ProductionCompilerEvaluator.modify, action));
+        else if (action instanceof AddAction
+            && ((AddAction) action).isDelayedRequest())
+          compilationMap.put(cBuffer, compilationMap.get(cBuffer)
+              .update(ProductionCompilerEvaluator.delayed_modify, action));
         else if (action instanceof AddAction
             && ((AddAction) action).getReferant() instanceof IChunkType)
           compilationMap.put(cBuffer, compilationMap.get(cBuffer)

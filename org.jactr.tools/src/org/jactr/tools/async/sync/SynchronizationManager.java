@@ -6,12 +6,13 @@ package org.jactr.tools.async.sync;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.commonreality.net.handler.IMessageHandler;
 import org.commonreality.net.session.ISessionInfo;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.model.IModel;
-import org.jactr.core.queue.timedevents.RunnableTimedEvent;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.runtime.event.ACTRRuntimeAdapter;
 import org.jactr.core.runtime.event.ACTRRuntimeEvent;
@@ -38,23 +39,23 @@ public class SynchronizationManager implements IInstrument, IParameterized
    * Logger definition
    */
   static private final transient org.slf4j.Logger LOGGER   = LoggerFactory
-                                                  .getLogger(SynchronizationManager.class);
+      .getLogger(SynchronizationManager.class);
 
   // static public final String SYNC_AT_START = "SynchronizeOnStartUp";
 
-  static public final String         INTERVAL = "SynchronizationDelayInMS";
+  static public final String                      INTERVAL = "SynchronizationDelayInMS";
 
-  private ModelsLock                 _modelsLock;
+  private ModelsLock                              _modelsLock;
 
-  private double                     _delay   = 30;                                     // s
+  private double                                  _delay   = 1;                         // s
 
-  private Runnable                   _blockProcessor;
+  private Runnable                                _blockProcessor;
 
-  private Runnable                   _messageProcessor;
+  private Runnable                                _messageProcessor;
 
-  private SynchronizationMessage     _message;
+  private SynchronizationMessage                  _message;
 
-  private IACTRRuntimeListener       _runtimeListener;
+  private IACTRRuntimeListener                    _runtimeListener;
 
   public SynchronizationManager()
   {
@@ -80,18 +81,17 @@ public class SynchronizationManager implements IInstrument, IParameterized
             RemoteInterface ri = RemoteInterface.getActiveRemoteInterface();
 
             if (ri == null)
-              LOGGER
-                  .warn(String
-                      .format(
-                          "%s requires the RemoteInterface to be running, will not attempt to synchronize",
-                          getClass().getName()));
+              LOGGER.warn(String.format(
+                  "%s requires the RemoteInterface to be running, will not attempt to synchronize",
+                  getClass().getName()));
             else
             {
               /*
                * install our handler into the active session (if connected) or
                * the default handler set
                */
-              IMessageHandler<SynchronizationMessage> handler = (s, m) -> synchronizationPointReached(m);
+              IMessageHandler<SynchronizationMessage> handler = (s,
+                  m) -> synchronizationPointReached(m);
 
               ISessionInfo session = ri.getActiveSession();
               if (session != null)
@@ -116,8 +116,11 @@ public class SynchronizationManager implements IInstrument, IParameterized
               {
                 try
                 {
-                  RemoteInterface.getActiveRemoteInterface().getActiveSession()
-                      .write(_message);
+                  ISessionInfo<?> sessionInfo = RemoteInterface
+                      .getActiveRemoteInterface().getActiveSession();
+                  if (sessionInfo != null && !sessionInfo.isClosing()
+                      && sessionInfo.isConnected())
+                    sessionInfo.write(_message);
                 }
                 catch (Exception e)
                 {
@@ -172,7 +175,8 @@ public class SynchronizationManager implements IInstrument, IParameterized
   public void setParameter(String key, String value)
   {
     if (INTERVAL.equalsIgnoreCase(key))
-      _delay = ParameterHandler.numberInstance().coerce(value).doubleValue() / 1000.0;
+      _delay = ParameterHandler.numberInstance().coerce(value).doubleValue()
+          / 1000.0;
   }
 
   protected void scheduleProcess()
@@ -184,17 +188,21 @@ public class SynchronizationManager implements IInstrument, IParameterized
        * reschedule
        */
       try
-      {
-        IModel model = ACTRRuntime.getRuntime().getController()
-            .getRunningModels().iterator().next();
-        double when = model.getAge() + _delay;
-        RunnableTimedEvent rte = new RunnableTimedEvent(when, _blockProcessor);
-        model.getTimedEventQueue().enqueue(rte);
-      }
+    {
+      ScheduledExecutorService ses = (ScheduledExecutorService) ExecutorServices
+          .getExecutor(ExecutorServices.PERIODIC);
+      ses.schedule(_blockProcessor, (long) _delay, TimeUnit.SECONDS);
+
+//      IModel model = ACTRRuntime.getRuntime().getController().getRunningModels()
+//          .iterator().next();
+//      double when = model.getAge() + _delay;
+//      RunnableTimedEvent rte = new RunnableTimedEvent(when, _blockProcessor);
+//      model.getTimedEventQueue().enqueue(rte);
+    }
       catch (Exception e)
-      {
-        LOGGER.debug("No model to attach to, irrelevant ", e);
-      }
+    {
+      LOGGER.debug("No model to attach to, irrelevant ", e);
+    }
   }
 
   synchronized protected void synchronize()
@@ -227,10 +235,8 @@ public class SynchronizationManager implements IInstrument, IParameterized
       /*
        * some are blocked? that's weird, lets reschedule
        */
-      if (LOGGER.isWarnEnabled())
-        LOGGER
-            .warn(String
-                .format("Deferring synchronization request until all models are free"));
+      if (LOGGER.isWarnEnabled()) LOGGER.warn(String.format(
+          "Deferring synchronization request until all models are free"));
 
       scheduleProcess();
     }
@@ -251,10 +257,9 @@ public class SynchronizationManager implements IInstrument, IParameterized
       return;
     }
 
-    if (LOGGER.isDebugEnabled())
-      LOGGER.debug(String.format(
-          "Synchronized, releasing the hounds. Synchronization took %d ms",
-          reply.getTimestamp() - _message.getTimestamp()));
+    if (LOGGER.isDebugEnabled()) LOGGER.debug(String.format(
+        "Synchronized, releasing the hounds. Synchronization took %d ms",
+        reply.getTimestamp() - _message.getTimestamp()));
 
     _modelsLock.open();
 

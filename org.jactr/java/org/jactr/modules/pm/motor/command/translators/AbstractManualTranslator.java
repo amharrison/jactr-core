@@ -103,20 +103,11 @@ public abstract class AbstractManualTranslator extends AbstractTranslator
     {
       String slotName = slot.getName();
       if (slotName.equalsIgnoreCase("hand"))
-      {
         hand = (IChunk) slot.getValue();
-        request.removeSlot(slot);
-      }
       else if (slotName.equalsIgnoreCase("finger"))
-      {
         finger = (IChunk) slot.getValue();
-        request.removeSlot(slot);
-      }
       else if (slotName.equalsIgnoreCase("device"))
-      {
         device = (IChunk) slot.getValue();
-        request.removeSlot(slot);
-      }
       else if (slotName.equalsIgnoreCase("muscle")) muscleSlot = slot;
     }
 

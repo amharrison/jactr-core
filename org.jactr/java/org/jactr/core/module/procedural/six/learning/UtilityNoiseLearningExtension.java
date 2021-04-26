@@ -200,4 +200,11 @@ public class UtilityNoiseLearningExtension implements IExtension,
 
   }
 
+  @Override
+  public void productionNotCompiled(ProceduralLearningEvent event)
+  {
+    // TODO Auto-generated method stub
+
+  }
+
 }

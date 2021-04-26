@@ -14,6 +14,7 @@
 package org.jactr.core.module.procedural.five.learning;
 
 import org.jactr.core.module.procedural.IProceduralModule;
+import org.jactr.core.module.procedural.six.learning.CannotCompileException;
 import org.jactr.core.production.IInstantiation;
 import org.jactr.core.production.IProduction;
 /**
@@ -22,7 +23,8 @@ import org.jactr.core.production.IProduction;
  */
 public interface IProductionCompiler
 {
-  public IProduction productionFired(IInstantiation instantiation, IProceduralModule proceduralModule);
+  public IProduction productionFired(IInstantiation instantiation,
+      IProceduralModule proceduralModule) throws CannotCompileException;
 }
 
 

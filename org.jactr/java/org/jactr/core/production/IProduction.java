@@ -21,6 +21,7 @@ import org.jactr.core.production.event.IProductionListener;
 import org.jactr.core.production.event.ProductionEvent;
 import org.jactr.core.utils.IAdaptable;
 import org.jactr.core.utils.ICommentable;
+import org.jactr.core.utils.IMetaContainer;
 
 /**
  * Description of the Interface
@@ -29,7 +30,7 @@ import org.jactr.core.utils.ICommentable;
  * @created February 5, 2003
  */
 public interface IProduction extends Comparable<IProduction>, ICommentable,
-    IAdaptable
+    IAdaptable, IMetaContainer
 {
 
   public void addListener(IProductionListener pl, Executor executor);

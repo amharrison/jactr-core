@@ -114,6 +114,8 @@ public class DefaultProceduralLearningModule6 extends AbstractModule
 
     _includeBuffers = new TreeSet<String>();
     _utilityEquation = new DefaultExpectedUtilityEquation();
+
+    // setExecutor(ExecutorServices.getExecutor(ExecutorServices.POOL));
   }
 
   public boolean isProductionCompilationEnabled()
@@ -149,20 +151,20 @@ public class DefaultProceduralLearningModule6 extends AbstractModule
   }
 
   @Override
-  public void initialize()
+  public void install(IModel model)
   {
-    /*
-     * use default set of buffer includes
-     */
-    if (_includeBuffers.size() == 0)
-    {
-      _includeBuffers.add("goal");
-      _includeBuffers.add("retrieval");
-      _includeBuffers.add("imaginal");
-    }
+    super.install(model);
 
     _proceduralModule = getModel().getProceduralModule();
     _proceduralModule.addListener(new ProceduralModuleListenerAdaptor() {
+
+      @Override
+      public void productionAdded(ProceduralModuleEvent pme)
+      {
+        ISubsymbolicProduction6 ssp = pme.getProduction()
+            .getAdapter(ISubsymbolicProduction6.class);
+        ssp.setUtility(_initialUtility);
+      }
 
       @Override
       public void productionFired(ProceduralModuleEvent pme)
@@ -172,27 +174,34 @@ public class DefaultProceduralLearningModule6 extends AbstractModule
         DefaultProceduralLearningModule6.this.productionFired(
             instantiation.getProduction(), pme.getSimulationTime());
 
-        if (isProductionCompilationEnabled())
+        if (isProductionCompilationEnabled()) try
         {
           IProduction newProduction = getProductionCompiler()
               .productionFired(instantiation, pme.getSource());
-          if (newProduction != null)
-          {
-            if (_dispatcher.hasListeners())
-              _dispatcher.fire(new ProceduralLearningEvent(
-                  DefaultProceduralLearningModule6.this, _oneBack, _justFired,
-                  newProduction));
 
-            ISubsymbolicProduction6 ssp = newProduction
-                .getAdapter(ISubsymbolicProduction6.class);
-            ssp.setPrimaryParent(_oneBack);
-            ssp.setUtility(_initialUtility);
+          if (newProduction == null && _oneBack != null)
+            throw new CannotCompileException("Other unknown reason.");
 
-            /**
-             * add the new production
-             */
-            pme.getSource().addProduction(newProduction);
-          }
+          if (newProduction == null) return;
+
+          if (_dispatcher.hasListeners()) _dispatcher.fire(
+              new ProceduralLearningEvent(DefaultProceduralLearningModule6.this,
+                  _oneBack, _justFired, newProduction));
+
+          ISubsymbolicProduction6 ssp = newProduction
+              .getAdapter(ISubsymbolicProduction6.class);
+          ssp.setPrimaryParent(_oneBack);
+
+          /**
+           * add the new production
+           */
+          pme.getSource().addProduction(newProduction);
+        }
+        catch (CannotCompileException cce)
+        {
+          if (_dispatcher.hasListeners()) _dispatcher.fire(
+              new ProceduralLearningEvent(DefaultProceduralLearningModule6.this,
+                  _oneBack, _justFired, cce.getMessage()));
         }
       }
 
@@ -224,14 +233,27 @@ public class DefaultProceduralLearningModule6 extends AbstractModule
 
         if (log)
         {
-          String msg = String.format("%s expected utility was %.2f, now %.2f",
-              production, oldUtility, newUtility);
+          String msg = String.format(
+              "%s merged, expected utility was %.2f, now %.2f.", production,
+              oldUtility, newUtility);
           LOGGER.debug(msg);
           Logger.log(getModel(), Logger.Stream.PROCEDURAL, msg);
         }
       }
 
     }, getExecutor());
+  }
+
+  @Override
+  public void initialize()
+  {
+    /*
+     * use default set of buffer includes
+     */
+    if (_includeBuffers.size() == 0)
+      getModel().getActivationBuffers().forEach(b -> {
+        _includeBuffers.add(b.getName());
+      });
   }
 
   protected void productionFired(IProduction production, double when)

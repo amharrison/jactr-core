@@ -34,7 +34,7 @@ public enum ActionFunnel implements Funnel<IAction> {
         referant = ((IChunkType) referant).getSymbolicChunkType().getName();
       if (referant instanceof IChunk)
         referant = ((IChunk) referant).getSymbolicChunk().getName();
-      into.putUnencodedChars(referant.toString());
+      if (referant != null) into.putUnencodedChars(referant.toString());
     }
 
     if (from instanceof ExecuteAction)
@@ -54,7 +54,7 @@ public enum ActionFunnel implements Funnel<IAction> {
         referant = ((IChunkType) referant).getSymbolicChunkType().getName();
       if (referant instanceof IChunk)
         referant = ((IChunk) referant).getSymbolicChunk().getName();
-      into.putUnencodedChars(referant.toString());
+      if (referant != null) into.putUnencodedChars(referant.toString());
     }
 
     if (from instanceof ScriptableAction)

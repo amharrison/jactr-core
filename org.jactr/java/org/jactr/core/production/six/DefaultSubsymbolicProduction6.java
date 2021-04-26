@@ -104,7 +104,7 @@ public class DefaultSubsymbolicProduction6 extends BasicSubsymbolicProduction
     else if (REWARD_PARAM.equalsIgnoreCase(key))
       return "" + getReward();
     else if (PARENT_PRODUCTION_PARAM.equalsIgnoreCase(key))
-      return "" + _parentProduction;
+      return "" + _primaryParentProduction;
     return super.getParameter(key);
   }
 

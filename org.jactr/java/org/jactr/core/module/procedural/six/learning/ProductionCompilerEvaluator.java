@@ -44,12 +44,16 @@ public class ProductionCompilerEvaluator
 
   public static Integer                           remove        = 2;
 
+  public static Integer                           delayed_modify = 32;
+
   public static Integer[]                         bufferActions = { empty,
-      match, query, modify, add, remove };
+      match, query, modify, add, remove, delayed_modify };
 
   private Evaluator[][]                           simpleEvaluatorTable;
 
   private Evaluator[][]                           retrievalEvaluatorTable;
+
+  private Evaluator[][]                           imaginalEvaluatorTable;
 
   private Evaluator[][]                           perceptualEvaluatorTable;
 
@@ -57,11 +61,15 @@ public class ProductionCompilerEvaluator
 
   private Mapper[][]                              retrievalMapperTable;
 
+  private Mapper[][]                              imaginalMapperTable;
+
   private Mapper[][]                              perceptualMapperTable;
 
   private Collapser[][]                           simpleCollapserTable;
 
   private Collapser[][]                           retrievalCollapserTable;
+
+  private Collapser[][]                           imaginalCollapserTable;
 
   private Collapser[][]                           perceptualCollapserTable;
 
@@ -89,6 +97,14 @@ public class ProductionCompilerEvaluator
     return false;
   }
 
+  private boolean isImaginalTypeBuffer(ICompilableContext context, IRequest req)
+  {
+    if (!context.isImmediate(req) && context.isDeterministic(req)
+        && context.isJammable(req) && !context.canCompileOut(req))
+      return true;
+    return false;
+  }
+
   private boolean isPerceptualTypeBuffer(ICompilableContext context,
       IRequest req)
   {
@@ -100,10 +116,31 @@ public class ProductionCompilerEvaluator
     return context.isCommandOnly(req);
   }
 
+  public String getType(ICompilableContext context, IRequest req)
+  {
+
+    // LOGGER.debug("characteristics: isImmediate " + context.isImmediate(req) +
+    // " is deterministic " + context.isDeterministic(req) +
+    // " isJammable " + context.isJammable(req) + " cancompileout " +
+    // context.canCompileOut(req) + " chunksCanChange " +
+    // context.chunksCanChange(req) +
+    // " iscommandonly " + context.isCommandOnly(req));
+    String type = "unknown";
+    if (isSimpleType(context, req)) type = "simple";
+    if (isRetrievalTypeBuffer(context, req)) type = "retrieval";
+    if (isPerceptualTypeBuffer(context, req)) type = "perceptual";
+    if (isImaginalTypeBuffer(context, req)) type = "imaginal";
+    if (isMotorTypeBuffer(context, req)) type = "motor";
+
+    return type;
+  }
+
   public boolean canCompile(BufferStruct one, BufferStruct two,
       ICompilableBuffer buffer)
   {
-    LOGGER.debug("indices are " + one.index + " and " + two.index);
+    LOGGER.debug(
+        "indices are " + one.index + " and " + two.index + " for buffer type "
+            + getType(buffer.getCompilableContext(), one.getIRequest()));
     if (isSimpleType(buffer.getCompilableContext(), one.getIRequest())) // LOGGER.debug("checking
                                                                         // goal
                                                                         // type
@@ -133,6 +170,22 @@ public class ProductionCompilerEvaluator
                                                                                  // +
                                                                                  // two.index);
       return retrievalEvaluatorTable[one.index][two.index].canCompile(one, two,
+          buffer.getName());
+    if (isImaginalTypeBuffer(buffer.getCompilableContext(), one.getIRequest())) // LOGGER.debug("checking
+      // imaginal
+      // type
+      // compilation
+      // map
+      // for
+      // indices
+      // "
+      // +
+      // one.index
+      // +
+      // ","
+      // +
+      // two.index);
+      return imaginalEvaluatorTable[one.index][two.index].canCompile(one, two,
           buffer.getName());
     if (isPerceptualTypeBuffer(buffer.getCompilableContext(),
         one.getIRequest())) // LOGGER.debug("checking perceptual type
@@ -178,6 +231,24 @@ public class ProductionCompilerEvaluator
                                                                                  // two.index);
       return retrievalMapperTable[one.index][two.index].extractMap(one, two,
           buffer.getName());
+
+    if (isImaginalTypeBuffer(buffer.getCompilableContext(), one.getIRequest())) // LOGGER.debug("checking
+      // imaginal
+      // type
+      // compilation
+      // map
+      // for
+      // indices
+      // "
+      // +
+      // one.index
+      // +
+      // ","
+      // +
+      // two.index);
+      return imaginalMapperTable[one.index][two.index].extractMap(one, two,
+          buffer.getName());
+
     if (isPerceptualTypeBuffer(buffer.getCompilableContext(),
         one.getIRequest())) // LOGGER.debug("checking perceptual type
                             // compilation map for indices " + one.index + "," +
@@ -196,6 +267,10 @@ public class ProductionCompilerEvaluator
 
     if (isRetrievalTypeBuffer(buffer.getCompilableContext(), one.getIRequest()))
       return retrievalCollapserTable[one.index][two.index].collapseBuffer(one,
+          two, buffer.getName());
+
+    if (isImaginalTypeBuffer(buffer.getCompilableContext(), one.getIRequest()))
+      return imaginalCollapserTable[one.index][two.index].collapseBuffer(one,
           two, buffer.getName());
 
     if (isPerceptualTypeBuffer(buffer.getCompilableContext(),
@@ -374,6 +449,17 @@ public class ProductionCompilerEvaluator
       return true;
     }
 
+    static private boolean slotValueEquals(ISlot s1, ISlot s2)
+    {
+      boolean matches = false;
+      if (s1.getValue() == null)
+      {
+        if (s2.getValue() == null) matches = true;
+      }
+      else if (s1.getValue().equals(s2.getValue())) matches = true;
+      return matches;
+    }
+
     // adds all slots that are in sc1 that aren't in sc2 to sc2
     static public boolean unionSlots(ISlotContainer sc1, ISlotContainer sc2)
     {
@@ -387,7 +473,7 @@ public class ProductionCompilerEvaluator
           if (s1.getName().equals(s2.getName())
               && ((IConditionalSlot) s1)
                   .getCondition() == IConditionalSlot.EQUALS
-              && s1.getValue().equals(s2.getValue()))
+              && slotValueEquals(s1, s2))
             matched = true;
         if (!matched) sc2.addSlot(s1);
       }
@@ -401,8 +487,12 @@ public class ProductionCompilerEvaluator
 
       if (!minusSlots(c2, a1, newCondition)) return false;
       // LOGGER.debug("Conditions one is " + c1 + " and two is " + c2+ " and
-      // slots is " + slots);
+      // slots is " + slots + " and action one is " + a1 + " and newCondition "
+      // + newCondition);
       if (!unionSlots(c1, newCondition)) return false;
+      // LOGGER.debug("Conditions one is " + c1 + " and two is " + c2+ " and
+      // slots is " + slots + " and action one is " + a1 + " and newCondition "
+      // + newCondition);
       // for(ISlot s : slots) newCondition.addSlot(s);
       // LOGGER.debug("Found new condition " + newCondition);
 
@@ -804,7 +894,8 @@ public class ProductionCompilerEvaluator
 
   // TODO: this (and others) assumes no remove. but I guess that is reasonable
   // in this case, otherwise wouldn't need mapping.
-  static public Mapper    mapper_no_add_p1                           = new Mapper() {
+  //This was originally mapper_no_add_p1 -- it assumes only one condition/action/etc.                                                                 
+  static public Mapper    mapper_simple_no_add_p1                           = new Mapper() {
                                                                        @Override
                                                                        public Map<String, Object> extractMap(
                                                                            BufferStruct one,
@@ -905,7 +996,118 @@ public class ProductionCompilerEvaluator
                                                                          }
                                                                        }
                                                                      };
+                                                                     
+//new version of the above; because we now support match/queries in P1 with other actual stuff in P2, we need this one
+static public Mapper    mapper_no_add_p1                              = new Mapper() {
+                                                                         @Override
+                                                                         public Map<String, Object> extractMap(
+                                                                             BufferStruct one,
+                                                                             BufferStruct two,
+                                                                             String bufferName)
+                                                                         {
+                                                                           
+                                                                        	 if (one.getActions().size() > 1
+                                                                                    || (one.getActions().size() > 0 &&
+                                                                                    		one.getActions().iterator().next() instanceof AddAction))
+                                                                             {
+                                                                        		 LOGGER
+                                                                                 .warn(
+                                                                                     "Should not be here in ProductionCompilerEvaluator.Mapper.match_no_add_p1; there is an add action in the first production or there is more than one action."
+                                                                                         + one
+                                                                                             .getActions());
+                                                                        		 return null;
+                                                                            }
+                                                                        	 ICondition conditionOne = null;
+                                                                             for (ICondition condition : one.getConditions())
+                                                                               if (!(condition instanceof QueryCondition))
+                                                                               {
+                                                                                 if (conditionOne != null)
+                                                                                 {
+                                                                                   LOGGER
+                                                                                       .warn(
+                                                                                           "somehow got to mapper_no_add_p1 incorrectly... more than one non-query conditionOne "
+                                                                                               + one.getConditions());
+                                                                                   return null;
+                                                                                 }
+                                                                                 conditionOne = condition;
+                                                                               }
+                                                                        	 ICondition conditionTwo = null;
+                                                                             for (ICondition condition : two
+                                                                                 .getConditions())
+                                                                               if (!(condition instanceof QueryCondition))
+                                                                               {
+                                                                                 if (conditionTwo != null)
+                                                                                 {
+                                                                                   LOGGER
+                                                                                       .warn(
+                                                                                           "somehow got to mapper_no_add_p1 incorrectly... more than one non-query conditionTwo "
+                                                                                               + two
+                                                                                                   .getConditions());
+                                                                                   return null;
+                                                                                 }
+                                                                                 conditionTwo = condition;
+                                                                               }
+                                                                        	 
+                                                                           // fold
+                                                                           // conditions
+                                                                           // into
+                                                                           // actions
+                                                                           // for
+                                                                           // a
+                                                                           // good
+                                                                           // snapshot
 
+                                                                            if (one.conditions.size() > 0
+                                                                                 && one.actions.size() > 0) {
+                                                                                       
+                                                                             if (!Collapser
+                                                                                 .minusSlots(
+                                                                                     (ISlotContainer) conditionOne,
+                                                                                     (ISlotContainer) one.actions
+                                                                                         .iterator()
+                                                                                         .next(),
+                                                                                     (ISlotContainer) one.actions
+                                                                                         .iterator()
+                                                                                         .next()))
+                                                                               return null;
+                                                                             else return Mapper
+                                                                                 .match(
+                                                                                     ((ISlotContainer) one.actions
+                                                                                         .iterator()
+                                                                                         .next())
+                                                                                             .getSlots(),
+                                                                                     ((ISlotContainer) conditionTwo)
+                                                                                             .getSlots(),
+                                                                                     two.getVariableBindings());
+                                                                           }
+                                                                           else if (one.conditions
+                                                                               .size() > 0)
+                                                                             // if
+                                                                             // only
+                                                                             // condition
+                                                                             // in
+                                                                             // first
+                                                                             // production
+                                                                             return Mapper
+                                                                                 .match(
+                                                                                     ((ISlotContainer) conditionOne).getSlots(),
+                                                                                     ((ISlotContainer) conditionTwo).getSlots(),
+                                                                                     two.getVariableBindings());
+                                                                           else
+                                                                           {
+                                                                             // only
+                                                                             // action
+                                                                             // in
+                                                                             // first
+                                                                             // production
+                                                                             LOGGER
+                                                                                 .warn(
+                                                                                     "Should not be here in ProductionCompilerEvaluator.Mapper.match_no_add_p1 - only actions (not conditions)  p1, yet not an add?");
+                                                                             return null;
+                                                                           }
+                                                                         }
+                                                                       };
+                                                                       
   static public Mapper    mapper_add_p1                              = new Mapper() {
                                                                        @Override
                                                                        public Map<String, Object> extractMap(
@@ -1087,7 +1289,7 @@ public class ProductionCompilerEvaluator
                                                                          {
                                                                            LOGGER
                                                                                .warn(
-                                                                                   "something is wrong in collapse_no_add_in_p1... more than two actionOnes (and we know there is no add).");
+                                                                                   "something is wrong in collapse_no_add_in_p1... more than two actionOnes (and we know there is no add): " + one.getActions());
                                                                            return null;
                                                                          }
 
@@ -1132,20 +1334,21 @@ public class ProductionCompilerEvaluator
 
                                                                            for (IAction a1 : one
                                                                                .getActions())
-                                                                             if (a1 instanceof ModifyAction)
+                                                                             if (a1 instanceof ModifyAction || a1 instanceof AddAction && ((AddAction)a1).isDelayedRequest())
                                                                              {
                                                                                boolean modded = false;
                                                                                for (IAction a2 : two
                                                                                    .getActions())
-                                                                                 if (a2 instanceof ModifyAction)
+                                                                                 if (a2 instanceof ModifyAction || a2 instanceof AddAction && ((AddAction)a2).isDelayedRequest())
                                                                                  {
                                                                                    modded = true;
-                                                                                   ModifyAction mod = new ModifyAction(
-                                                                                       bufferName);
+                                                                                   IAction mod;
+                                                                                   if (a2 instanceof ModifyAction) mod = new ModifyAction(bufferName);
+                                                                                   else mod = new AddAction(bufferName, null);
                                                                                    if (!calcNewAction(
                                                                                        (ISlotContainer) a1,
                                                                                        (ISlotContainer) a2,
-                                                                                       mod))
+                                                                                       (ISlotContainer) mod))
                                                                                      return null;
                                                                                    newStruct.actions
                                                                                        .add(
@@ -1167,8 +1370,7 @@ public class ProductionCompilerEvaluator
                                                                                    .add(
                                                                                        clone(
                                                                                            a1));
-                                                                             else
-                                                                             {
+                                                                             else {
                                                                                LOGGER
                                                                                    .warn(
                                                                                        "uncaught case - something other than a modify (and we know it's not an add) in production one's action "
@@ -1397,6 +1599,57 @@ public class ProductionCompilerEvaluator
                                                                        }
                                                                      };
 
+  static public Collapser collapse_compileout_add_p1_no_remove       = new Collapser() {
+                                                                       @Override
+                                                                       public BufferStruct collapseBuffer(
+                                                                           BufferStruct one,
+                                                                           BufferStruct two,
+                                                                           String bufferName)
+                                                                       {
+                                                                         BufferStruct newStruct = new BufferStruct(
+                                                                             bufferName,
+                                                                             one.hasStrictHarvesting(),
+                                                                             null);
+
+                                                                         findQueryCondition(
+                                                                             one,
+                                                                             two,
+                                                                             newStruct);
+                                                                         for (ICondition c : one
+                                                                             .getConditions())
+                                                                           if (!(c instanceof QueryCondition))
+                                                                             newStruct.conditions
+                                                                                 .add(
+                                                                                     clone(
+                                                                                         c));
+
+                                                                         // exclude
+                                                                         // modify
+                                                                         // actions
+                                                                         for (IAction a : two
+                                                                             .getActions())
+                                                                           if (a instanceof ModifyAction
+                                                                               && !(a instanceof RemoveAction))
+                                                                           {
+                                                                             LOGGER
+                                                                                 .warn(
+                                                                                     "Encountered a modify action in action 2 when collapsing retrieval buffer - this is illegal."
+                                                                                         + two
+                                                                                             .getActions()
+                                                                                         + ","
+                                                                                         + a);
+                                                                             return null;
+                                                                           }
+                                                                           else if (a instanceof AddAction)
+                                                                             newStruct.actions
+                                                                                 .add(
+                                                                                     clone(
+                                                                                         a));
+
+                                                                         return newStruct;
+                                                                       }
+                                                                     };
+
   // p2 is fired before chunk is actually retrieved
   // p2 has a query or nothing, p1 has an add and whatever else.
   static public Collapser collapse_nonimmediate_add_p1_not_harvested = new Collapser() {
@@ -1456,6 +1709,9 @@ public class ProductionCompilerEvaluator
     retrievalEvaluatorTable = new Evaluator[(int) (Math.pow(2,
         bufferActions.length) - 1)][(int) Math.pow(2, bufferActions.length)
             - 1];
+    imaginalEvaluatorTable = new Evaluator[(int) (Math.pow(2,
+        bufferActions.length) - 1)][(int) Math.pow(2, bufferActions.length)
+            - 1];
     perceptualEvaluatorTable = new Evaluator[(int) (Math.pow(2,
         bufferActions.length) - 1)][(int) Math.pow(2, bufferActions.length)
             - 1];
@@ -1463,12 +1719,17 @@ public class ProductionCompilerEvaluator
         - 1)][(int) Math.pow(2, bufferActions.length) - 1];
     retrievalMapperTable = new Mapper[(int) (Math.pow(2, bufferActions.length)
         - 1)][(int) Math.pow(2, bufferActions.length) - 1];
+    imaginalMapperTable = new Mapper[(int) (Math.pow(2, bufferActions.length)
+        - 1)][(int) Math.pow(2, bufferActions.length) - 1];
     perceptualMapperTable = new Mapper[(int) (Math.pow(2, bufferActions.length)
         - 1)][(int) Math.pow(2, bufferActions.length) - 1];
     simpleCollapserTable = new Collapser[(int) (Math.pow(2,
         bufferActions.length) - 1)][(int) Math.pow(2, bufferActions.length)
             - 1];
     retrievalCollapserTable = new Collapser[(int) (Math.pow(2,
+        bufferActions.length) - 1)][(int) Math.pow(2, bufferActions.length)
+            - 1];
+    imaginalCollapserTable = new Collapser[(int) (Math.pow(2,
         bufferActions.length) - 1)][(int) Math.pow(2, bufferActions.length)
             - 1];
     perceptualCollapserTable = new Collapser[(int) (Math.pow(2,
@@ -1480,20 +1741,24 @@ public class ProductionCompilerEvaluator
       {
         simpleEvaluatorTable[i][j] = Evaluator.FALSE;
         retrievalEvaluatorTable[i][j] = Evaluator.FALSE;
+        imaginalEvaluatorTable[i][j] = Evaluator.FALSE;
         perceptualEvaluatorTable[i][j] = Evaluator.FALSE;
         simpleMapperTable[i][j] = Mapper.ERROR;
         retrievalMapperTable[i][j] = Mapper.ERROR;
+        imaginalMapperTable[i][j] = Mapper.ERROR;
         perceptualMapperTable[i][j] = Mapper.ERROR;
         simpleCollapserTable[i][j] = Collapser.ERROR;
         retrievalCollapserTable[i][j] = Collapser.ERROR;
+        imaginalCollapserTable[i][j] = Collapser.ERROR;
         perceptualCollapserTable[i][j] = Collapser.ERROR;
       }
 
     // collapse equivalent rows/columns to save time
     Object[][][] tableArray = { simpleEvaluatorTable, simpleMapperTable,
         simpleCollapserTable, retrievalEvaluatorTable, retrievalMapperTable,
-        retrievalCollapserTable, perceptualEvaluatorTable,
-        perceptualMapperTable, perceptualCollapserTable };
+        retrievalCollapserTable, imaginalEvaluatorTable, imaginalMapperTable,
+        imaginalCollapserTable, perceptualEvaluatorTable, perceptualMapperTable,
+        perceptualCollapserTable };
     for (int i = 0; i < tableArray.length; i++)
     {
       // first do rows
@@ -1532,6 +1797,10 @@ public class ProductionCompilerEvaluator
     simpleEvaluatorTable[empty][match + modify] = Evaluator.TRUE;
     simpleEvaluatorTable[empty][match + add] = Evaluator.TRUE;
     simpleEvaluatorTable[empty][match + modify + add] = Evaluator.TRUE;
+    simpleEvaluatorTable[empty][match + delayed_modify] = Evaluator.TRUE; // TODO:
+                                                                          // fill
+                                                                          // in
+                                                                          // collapser/mapper
 
     simpleMapperTable[empty][match] = Mapper.EMPTY;
     simpleMapperTable[empty][add] = Mapper.EMPTY;
@@ -1555,15 +1824,21 @@ public class ProductionCompilerEvaluator
     simpleEvaluatorTable[match][match + add] = Evaluator.TRUE;
     simpleEvaluatorTable[match][match + remove] = Evaluator.TRUE;
     simpleEvaluatorTable[match][match + modify + add] = Evaluator.TRUE;
+    simpleEvaluatorTable[match][match + delayed_modify] = Evaluator.TRUE;
+    simpleEvaluatorTable[match][match + delayed_modify
+        + remove] = Evaluator.TRUE;
 
     simpleMapperTable[match][empty] = Mapper.EMPTY;
-    simpleMapperTable[match][match] = mapper_no_add_p1;
+    simpleMapperTable[match][match] = mapper_simple_no_add_p1;
     simpleMapperTable[match][add] = Mapper.EMPTY;
     simpleMapperTable[match][remove] = Mapper.EMPTY;
-    simpleMapperTable[match][match + modify] = mapper_no_add_p1; // tested
-    simpleMapperTable[match][match + add] = mapper_no_add_p1;
-    simpleMapperTable[match][match + remove] = mapper_no_add_p1;
-    simpleMapperTable[match][match + modify + add] = mapper_no_add_p1;
+    simpleMapperTable[match][match + modify] = mapper_simple_no_add_p1; // tested
+    simpleMapperTable[match][match + add] = mapper_simple_no_add_p1;
+    simpleMapperTable[match][match + remove] = mapper_simple_no_add_p1;
+    simpleMapperTable[match][match + modify + add] = mapper_simple_no_add_p1;
+    simpleMapperTable[match][match + delayed_modify] = mapper_simple_no_add_p1;
+    simpleMapperTable[match][match + delayed_modify
+        + remove] = mapper_simple_no_add_p1;
 
     simpleCollapserTable[match][empty] = collapse_no_add_p1;
     simpleCollapserTable[match][match] = collapse_no_add_p1;
@@ -1573,18 +1848,33 @@ public class ProductionCompilerEvaluator
     simpleCollapserTable[match][match + add] = collapse_no_add_p1;
     simpleCollapserTable[match][match + remove] = collapse_no_add_p1;
     simpleCollapserTable[match][match + modify + add] = collapse_no_add_p1;
+    simpleCollapserTable[match][match + delayed_modify] = collapse_no_add_p1;
+    simpleCollapserTable[match][match + delayed_modify
+        + remove] = collapse_no_add_p1;
 
     simpleEvaluatorTable[add][empty] = Evaluator.TRUE;
-    simpleEvaluatorTable[add][match] = no_rhs_reference;
-    simpleEvaluatorTable[add][match + modify] = no_rhs_reference;
+    simpleEvaluatorTable[add][match] = no_rhs_reference; // FIXME: Tony says
+                                                         // this is now True?
+    simpleEvaluatorTable[add][match + modify] = no_rhs_reference; // FIXME: Tony
+                                                                  // says this
+                                                                  // is now
+                                                                  // True?
+    simpleEvaluatorTable[add][match + delayed_modify] = no_rhs_reference; // FIXME:
+                                                                          // Tony
+                                                                          // has
+                                                                          // this
+                                                                          // as
+                                                                          // true?
 
     simpleMapperTable[add][empty] = Mapper.EMPTY;
     simpleMapperTable[add][match] = mapper_add_p1;
     simpleMapperTable[add][match + modify] = mapper_add_p1;
+    simpleMapperTable[add][match + delayed_modify] = mapper_add_p1;
 
     simpleCollapserTable[add][empty] = collapse_add_p1;
     simpleCollapserTable[add][match] = collapse_add_p1;
     simpleCollapserTable[add][match + modify] = collapse_add_p1;
+    simpleCollapserTable[add][match + delayed_modify] = collapse_add_p1;
 
     simpleEvaluatorTable[remove][empty] = Evaluator.TRUE;
     simpleEvaluatorTable[remove][remove] = Evaluator.TRUE;
@@ -1616,15 +1906,15 @@ public class ProductionCompilerEvaluator
         + remove] = Evaluator.TRUE;
 
     simpleMapperTable[match + modify][empty] = Mapper.EMPTY;
-    simpleMapperTable[match + modify][match] = mapper_no_add_p1;
+    simpleMapperTable[match + modify][match] = mapper_simple_no_add_p1;
     simpleMapperTable[match + modify][add] = Mapper.EMPTY;
     simpleMapperTable[match + modify][remove] = Mapper.EMPTY;
-    simpleMapperTable[match + modify][match + modify] = mapper_no_add_p1; // tested
-    simpleMapperTable[match + modify][match + add] = mapper_no_add_p1; // tested
-    simpleMapperTable[match + modify][match + remove] = mapper_no_add_p1;
-    simpleMapperTable[match + modify][match + modify + add] = mapper_no_add_p1;
+    simpleMapperTable[match + modify][match + modify] = mapper_simple_no_add_p1; // tested
+    simpleMapperTable[match + modify][match + add] = mapper_simple_no_add_p1; // tested
+    simpleMapperTable[match + modify][match + remove] = mapper_simple_no_add_p1;
+    simpleMapperTable[match + modify][match + modify + add] = mapper_simple_no_add_p1;
     simpleMapperTable[match + modify][match + modify
-        + remove] = mapper_no_add_p1;
+        + remove] = mapper_simple_no_add_p1;
 
     simpleCollapserTable[match + modify][empty] = collapse_no_add_p1;
     simpleCollapserTable[match + modify][match] = collapse_no_add_p1;
@@ -1685,6 +1975,15 @@ public class ProductionCompilerEvaluator
 
     simpleCollapserTable[match + modify + remove][remove] = collapse_no_add_p1;
 
+    simpleEvaluatorTable[match + delayed_modify][empty] = Evaluator.TRUE; // TODO:
+                                                                          // fill
+                                                                          // in
+                                                                          // collapser/mapper
+    simpleEvaluatorTable[match + delayed_modify][match] = Evaluator.TRUE; // TODO:
+                                                                          // fill
+                                                                          // in
+                                                                          // collapser/mapper
+
     // Now for "retrieval types"
     retrievalEvaluatorTable[empty][match] = Evaluator.TRUE;
     retrievalEvaluatorTable[empty][add] = Evaluator.TRUE; // tested
@@ -1728,15 +2027,15 @@ public class ProductionCompilerEvaluator
     retrievalEvaluatorTable[match][match + remove + query] = Evaluator.TRUE;
 
     retrievalMapperTable[match][empty] = Mapper.EMPTY;
-    retrievalMapperTable[match][match] = mapper_no_add_p1;
+    retrievalMapperTable[match][match] = mapper_simple_no_add_p1;
     retrievalMapperTable[match][add] = Mapper.EMPTY;
     retrievalMapperTable[match][query] = Mapper.EMPTY;
-    retrievalMapperTable[match][match + add] = mapper_no_add_p1;
-    retrievalMapperTable[match][match + remove] = mapper_no_add_p1;
-    retrievalMapperTable[match][match + query] = mapper_no_add_p1;
+    retrievalMapperTable[match][match + add] = mapper_simple_no_add_p1;
+    retrievalMapperTable[match][match + remove] = mapper_simple_no_add_p1;
+    retrievalMapperTable[match][match + query] = mapper_simple_no_add_p1;
     retrievalMapperTable[match][add + query] = Mapper.EMPTY;
-    retrievalMapperTable[match][match + add + query] = mapper_no_add_p1;
-    retrievalMapperTable[match][match + remove + query] = mapper_no_add_p1;
+    retrievalMapperTable[match][match + add + query] = mapper_simple_no_add_p1;
+    retrievalMapperTable[match][match + remove + query] = mapper_simple_no_add_p1;
 
     retrievalCollapserTable[match][empty] = collapse_no_add_p1;
     retrievalCollapserTable[match][match] = collapse_no_add_p1;
@@ -1884,6 +2183,12 @@ public class ProductionCompilerEvaluator
         + query] = collapse_compileout_add_p1;
     retrievalCollapserTable[match + add][match + add
         + query] = collapse_compileout_add_p1;
+    
+    retrievalEvaluatorTable[match + remove][empty] = Evaluator.TRUE;
+    
+    retrievalMapperTable[match + remove][empty] = Mapper.EMPTY;
+    
+    retrievalCollapserTable[match + remove][empty] = collapse_no_add_p1;
 
     retrievalEvaluatorTable[match + query][empty] = Evaluator.TRUE;
     retrievalEvaluatorTable[match + query][match] = Evaluator.TRUE;
@@ -1895,11 +2200,11 @@ public class ProductionCompilerEvaluator
     retrievalEvaluatorTable[match + query][remove + query] = same_queries;
 
     retrievalMapperTable[match + query][empty] = Mapper.EMPTY;
-    retrievalMapperTable[match + query][match] = mapper_no_add_p1;
+    retrievalMapperTable[match + query][match] = mapper_simple_no_add_p1;
     retrievalMapperTable[match + query][add] = Mapper.EMPTY;
     retrievalMapperTable[match + query][remove] = Mapper.EMPTY;
     retrievalMapperTable[match + query][query] = Mapper.EMPTY;
-    retrievalMapperTable[match + query][match + query] = mapper_no_add_p1;
+    retrievalMapperTable[match + query][match + query] = mapper_simple_no_add_p1;
     retrievalMapperTable[match + query][add + query] = Mapper.EMPTY;
     retrievalMapperTable[match + query][remove + query] = Mapper.EMPTY;
 
@@ -1949,10 +2254,13 @@ public class ProductionCompilerEvaluator
     retrievalCollapserTable[add + query][match
         + add] = collapse_compileout_add_p1;
     retrievalCollapserTable[add + query][match
-        + remove] = collapse_compileout_add_p1; // tested //remove just lets us
-                                                // pretend that there is strict
-                                                // harvesting, even if there is
-                                                // not
+        + remove] = collapse_compileout_add_p1_no_remove; // FIXME: this
+                                                          // modified version
+                                                          // isn't correct
+                                                          // because it can
+                                                          // technically have a
+    // chunk in the buffer after firing; the original two productions guaranteed
+    // no chunk.
     retrievalCollapserTable[add + query][match + query] = collapse_add_p1;
     retrievalCollapserTable[add + query][add
         + query] = collapse_compileout_add_p1;
@@ -2014,6 +2322,58 @@ public class ProductionCompilerEvaluator
 
     retrievalCollapserTable[match + remove + query][empty] = collapse_no_add_p1; // tested
 
+    // imaginal table
+    imaginalEvaluatorTable[empty][match] = Evaluator.TRUE;
+    imaginalEvaluatorTable[empty][add] = Evaluator.TRUE;
+    imaginalEvaluatorTable[empty][query + add] = Evaluator.TRUE;
+    imaginalEvaluatorTable[empty][match + query + modify] = Evaluator.TRUE;
+    imaginalEvaluatorTable[empty][match + query + delayed_modify] = Evaluator.TRUE;
+
+    imaginalMapperTable[empty][match] = Mapper.EMPTY;
+    imaginalMapperTable[empty][add] = Mapper.EMPTY;
+    imaginalMapperTable[empty][query + add] = Mapper.EMPTY;
+    imaginalMapperTable[empty][match + query + modify] = Mapper.EMPTY;
+    imaginalMapperTable[empty][match + query + delayed_modify] = Mapper.EMPTY;
+
+    imaginalCollapserTable[empty][match] = collapse_no_add_p1;
+    imaginalCollapserTable[empty][add] = collapse_no_add_p1;
+    imaginalCollapserTable[empty][query + add] = collapse_add_p1;
+    imaginalCollapserTable[empty][match + query + modify] = collapse_no_add_p1;
+    imaginalCollapserTable[empty][match + query + delayed_modify] = collapse_no_add_p1;
+
+    imaginalEvaluatorTable[match][match] = Evaluator.TRUE;
+    imaginalEvaluatorTable[match][match + modify] = Evaluator.TRUE;
+    imaginalEvaluatorTable[match][match + query] = Evaluator.TRUE;
+    imaginalEvaluatorTable[match][match + query + delayed_modify] = Evaluator.TRUE;
+
+    imaginalMapperTable[match][match] = mapper_simple_no_add_p1;
+    imaginalMapperTable[match][match + modify] = mapper_simple_no_add_p1;
+    imaginalMapperTable[match][match + query] = mapper_no_add_p1;
+    imaginalMapperTable[match][match + query + delayed_modify] = mapper_no_add_p1; 
+
+    imaginalCollapserTable[match][match] = collapse_no_add_p1;
+    imaginalCollapserTable[match][match + modify] = collapse_no_add_p1;
+    imaginalCollapserTable[match][match + query] = collapse_no_add_p1;
+    imaginalCollapserTable[match][match + query + delayed_modify] = collapse_no_add_p1;
+    
+    imaginalEvaluatorTable[match + query + modify][empty] = Evaluator.TRUE;
+
+    imaginalMapperTable[match + query + modify][empty] = Mapper.EMPTY;
+
+    imaginalCollapserTable[match + query + modify][empty] = collapse_no_add_p1;
+    
+    imaginalEvaluatorTable[match + query + delayed_modify][empty] = Evaluator.TRUE;
+    imaginalEvaluatorTable[match + query + delayed_modify][match + query] = Evaluator.TRUE;
+
+    imaginalMapperTable[match + query + delayed_modify][empty] = Mapper.EMPTY;
+    imaginalMapperTable[match + query + delayed_modify][match + query] = mapper_add_p1; //FIXME: hack because some weird thing where we can only have one condition per production in mapper_no_add_p1
+
+    imaginalCollapserTable[match + query + delayed_modify][empty] = collapse_no_add_p1;
+    imaginalCollapserTable[match + query + delayed_modify][match + query] = collapse_no_add_p1; // tested but might not be correct;
+    																						 // productions following the original sequences wouldn't need a query before matching
+    																						 // now they will.
+    
+
     // Now for perceptual ones.
     perceptualEvaluatorTable[empty][match] = Evaluator.TRUE;
     perceptualEvaluatorTable[empty][add] = Evaluator.TRUE;
@@ -2068,9 +2428,9 @@ public class ProductionCompilerEvaluator
 
     perceptualMapperTable[match][empty] = Mapper.EMPTY;
     perceptualMapperTable[match][query] = Mapper.EMPTY;
-    perceptualMapperTable[match][match + remove] = mapper_no_add_p1;
-    perceptualMapperTable[match][match + query] = mapper_no_add_p1;
-    perceptualMapperTable[match][match + remove + query] = mapper_no_add_p1;
+    perceptualMapperTable[match][match + remove] = mapper_simple_no_add_p1;
+    perceptualMapperTable[match][match + query] = mapper_simple_no_add_p1;
+    perceptualMapperTable[match][match + remove + query] = mapper_simple_no_add_p1;
 
     perceptualCollapserTable[match][empty] = collapse_no_add_p1;
     perceptualCollapserTable[match][query] = collapse_no_add_p1;
@@ -2153,10 +2513,10 @@ public class ProductionCompilerEvaluator
 
     perceptualMapperTable[match + query][empty] = Mapper.EMPTY;
     perceptualMapperTable[match + query][query] = Mapper.EMPTY;
-    perceptualMapperTable[match + query][match + remove] = mapper_no_add_p1;
-    perceptualMapperTable[match + query][match + query] = mapper_no_add_p1;
+    perceptualMapperTable[match + query][match + remove] = mapper_simple_no_add_p1;
+    perceptualMapperTable[match + query][match + query] = mapper_simple_no_add_p1;
     perceptualMapperTable[match + query][match + remove
-        + query] = mapper_no_add_p1;
+        + query] = mapper_simple_no_add_p1;
 
     perceptualCollapserTable[match + query][empty] = collapse_no_add_p1;
     perceptualCollapserTable[match + query][query] = collapse_no_add_p1;

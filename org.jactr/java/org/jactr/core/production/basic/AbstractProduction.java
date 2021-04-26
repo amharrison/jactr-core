@@ -17,7 +17,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.Executor;
 
 import org.jactr.core.buffer.IActivationBuffer;
@@ -47,7 +49,7 @@ public abstract class AbstractProduction extends DefaultAdaptable
   /**
    * logger definition
    */
-  static private final transient org.slf4j.Logger                 LOGGER = LoggerFactory
+  static private final transient org.slf4j.Logger                 LOGGER    = LoggerFactory
       .getLogger(AbstractProduction.class);
 
   protected ACTREventDispatcher<IProduction, IProductionListener> _eventDispatcher;
@@ -61,6 +63,8 @@ public abstract class AbstractProduction extends DefaultAdaptable
   protected String                                                _comment;
 
   protected boolean                                               _encoded;
+
+  protected Map<String, Object>                                   _metaData = new TreeMap<>();
 
   public AbstractProduction(IModel model)
   {
@@ -108,55 +112,6 @@ public abstract class AbstractProduction extends DefaultAdaptable
   {
     return _symbolicProduction.equals(other.getSymbolicProduction());
   }
-
-  // public IInstantiation instantiate() throws CannotInstantiateException
-  // {
-  // if (!isEncoded())
-  // throw new CannotInstantiateException(
-  // "Cannot instantiate an unencoded production");
-  //
-  // HashMap<String, Object> bindings = new HashMap<String, Object>();
-  // ISymbolicProduction sp = getSymbolicProduction();
-  //
-  // IModel m = getModel();
-  //
-  // bindings.put("=model", m);
-  // bindings.put("=production", this);
-  // Collection<ICondition> conditions = sp.getConditions();
-  //
-  // ArrayList<ICondition> boundConditions = new ArrayList<ICondition>(
-  // conditions.size());
-  //
-  // if (LOGGER.isDebugEnabled()) LOGGER.debug("Instantiating " + this);
-  //
-  // for (ICondition condition : conditions)
-  // try
-  // {
-  // condition = condition.bind(m, bindings);
-  // boundConditions.add(condition);
-  // }
-  // catch (CannotMatchException cme)
-  // {
-  // // cleanup
-  // for (ICondition bound : boundConditions)
-  // bound.dispose();
-  //
-  // if (LOGGER.isDebugEnabled())
-  // LOGGER.debug("Cannot instantiate " + this
-  // + ": Failed to match condition " + condition, cme);
-  // throw new CannotInstantiateException(cme.getMessage(), cme);
-  // }
-  //
-  // IInstantiation instance = createInstantiation(this, boundConditions,
-  // bindings);
-  //
-  // // event
-  // if (hasListeners())
-  // dispatch(new ProductionEvent(this, ProductionEvent.Type.INSTANTIATED,
-  // instance));
-  //
-  // return instance;
-  // }
 
   public Collection<IInstantiation> instantiateAll(
       Collection<VariableBindings> provisionalBindings)
@@ -355,6 +310,43 @@ public abstract class AbstractProduction extends DefaultAdaptable
         .compareTo(arg0.getSymbolicProduction().getName());
   }
 
+  /**
+   * Gets the MetaData attribute of the MetaContainer object
+   * 
+   * @param key
+   *          Description of Parameter
+   * @return The MetaData value
+   * @since
+   */
+  public Object getMetaData(String key)
+  {
+    return _metaData.get(key);
+  }
+
+  /**
+   * Sets the MetaData attribute of the MetaContainer object
+   * 
+   * @param key
+   *          The new MetaData value
+   * @param value
+   *          The new MetaData value
+   * @since
+   */
+  public void setMetaData(String key, Object value)
+  {
+    _metaData.put(key, value);
+  }
+
+  /**
+   * return all the keys
+   * 
+   * @return
+   */
+  public Collection<String> getMetaDataKeys()
+  {
+    return Collections.unmodifiableCollection(_metaData.keySet());
+  }
+
   public String getComment()
   {
     return _comment;
@@ -378,6 +370,40 @@ public abstract class AbstractProduction extends DefaultAdaptable
   public boolean isEncoded()
   {
     return _encoded;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + (_subsymbolicProduction == null ? 0
+        : _subsymbolicProduction.hashCode());
+    result = prime * result
+        + (_symbolicProduction == null ? 0 : _symbolicProduction.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
+    AbstractProduction other = (AbstractProduction) obj;
+    if (_subsymbolicProduction == null)
+    {
+      if (other._subsymbolicProduction != null) return false;
+    }
+    else if (!_subsymbolicProduction.equals(other._subsymbolicProduction))
+      return false;
+    if (_symbolicProduction == null)
+    {
+      if (other._symbolicProduction != null) return false;
+    }
+    else if (!_symbolicProduction.equals(other._symbolicProduction))
+      return false;
+    return true;
   }
 
   @Override

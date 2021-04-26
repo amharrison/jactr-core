@@ -13,6 +13,7 @@ import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.ISourceActivationSpreader;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.ISubsymbolicChunk;
+import org.jactr.core.chunk.ISymbolicChunk;
 import org.jactr.core.chunk.four.ISubsymbolicChunk4;
 import org.jactr.core.chunk.four.Link4;
 import org.jactr.core.chunk.link.IAssociativeLink;
@@ -20,6 +21,7 @@ import org.jactr.core.logging.IMessageBuilder;
 import org.jactr.core.logging.Logger;
 import org.jactr.core.logging.Logger.Stream;
 import org.jactr.core.model.IModel;
+import org.jactr.core.slot.ISlot;
 import org.jactr.core.utils.collections.FastCollectionFactory;
 import org.slf4j.LoggerFactory;
 
@@ -29,20 +31,22 @@ import org.slf4j.LoggerFactory;
  * 
  * @author harrison
  */
-public class DefaultSourceActivationSpreader implements
-    ISourceActivationSpreader
+public class DefaultSourceActivationSpreader
+    implements ISourceActivationSpreader
 {
   /**
    * Logger definition
    */
-  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
-                                                .getLogger(DefaultSourceActivationSpreader.class);
+  static private final transient org.slf4j.Logger LOGGER             = LoggerFactory
+      .getLogger(DefaultSourceActivationSpreader.class);
 
-  private final IActivationBuffer    _buffer;
+  private final IActivationBuffer                 _buffer;
 
-  private final Map<IChunk, Integer> _activatedChunks;
+  private final Map<IChunk, Integer>              _activatedChunks;
 
-  private double                     _activationPortion;
+  private double                                  _activationPortion;
+
+  private boolean                                 _lispCompatibility = true;
 
   public DefaultSourceActivationSpreader(IActivationBuffer buffer)
   {
@@ -81,6 +85,7 @@ public class DefaultSourceActivationSpreader implements
      */
     Collection<IAssociativeLink> jLinks = FastCollectionFactory.newInstance();
     Collection<IChunk> sourceChunks = FastCollectionFactory.newInstance();
+    Collection<ISlot> slots = FastCollectionFactory.newInstance();
 
     try
     {
@@ -88,13 +93,9 @@ public class DefaultSourceActivationSpreader implements
 
       if (sourceChunks.size() == 0) return;
 
-      if (LOGGER.isDebugEnabled())
-        LOGGER
-            .debug(String
-                .format(
-                    "Calculating source activation to propogate through %s to %s @ %.2f",
-                    _buffer.getName(), sourceChunks, _buffer.getModel()
-                        .getAge()));
+      if (LOGGER.isDebugEnabled()) LOGGER.debug(String.format(
+          "Calculating source activation to propogate through %s to %s @ %.2f",
+          _buffer.getName(), sourceChunks, _buffer.getModel().getAge()));
 
       /*
        * we need to get each chunk that the source contains. We could use the
@@ -106,10 +107,19 @@ public class DefaultSourceActivationSpreader implements
        * determine the sources of activation
        */
       int numLinks = 0;
+      int numSlots = 0;
       for (IChunk sourceChunk : sourceChunks)
       {
         ISubsymbolicChunk4 ssc4 = sourceChunk
             .getAdapter(ISubsymbolicChunk4.class);
+        ISymbolicChunk sc = sourceChunk.getAdapter(ISymbolicChunk.class);
+
+        if (_lispCompatibility)
+        {
+          numSlots += sc.getSlots(slots).size();
+          slots.clear();
+        }
+
         if (ssc4 != null)
         {
           jLinks.clear();
@@ -152,6 +162,13 @@ public class DefaultSourceActivationSpreader implements
       }
 
       /*
+       * Wait, what? The lisp uses the number of slots, filled or not, to
+       * determine the amount of spread. We use the number of links, which
+       * ignores null slots.
+       */
+      if (_lispCompatibility) numLinks = Math.max(numLinks, numSlots);
+
+      /*
        * now we zip through the links
        */
       if (numLinks != 0)
@@ -168,10 +185,9 @@ public class DefaultSourceActivationSpreader implements
           logMsg.append(" to each ");
         }
 
-        if (LOGGER.isDebugEnabled())
-          LOGGER.debug(String.format(
-              "Activating associated chunks %s with %.2f", _activatedChunks,
-              _activationPortion));
+        if (LOGGER.isDebugEnabled()) LOGGER
+            .debug(String.format("Activating associated chunks %s with %.2f",
+                _activatedChunks, _activationPortion));
 
         for (Map.Entry<IChunk, Integer> entry : _activatedChunks.entrySet())
         {
@@ -180,9 +196,8 @@ public class DefaultSourceActivationSpreader implements
           ISubsymbolicChunk ssc = chunk.getSubsymbolicChunk();
           ssc.setSourceActivation(_buffer, source);
 
-          if (LOGGER.isDebugEnabled())
-            LOGGER.debug(String.format("%s has %.2f", entry.getKey(),
-                ssc.getSourceActivation()));
+          if (LOGGER.isDebugEnabled()) LOGGER.debug(String.format("%s has %.2f",
+              entry.getKey(), ssc.getSourceActivation()));
 
           if (logMsg != null)
             logMsg.append(chunk.getSymbolicChunk().getName()).append(" ");
@@ -195,6 +210,7 @@ public class DefaultSourceActivationSpreader implements
     }
     finally
     {
+      FastCollectionFactory.recycle(slots);
       FastCollectionFactory.recycle(jLinks);
       FastCollectionFactory.recycle(sourceChunks);
     }
@@ -204,11 +220,10 @@ public class DefaultSourceActivationSpreader implements
   {
     if (_activatedChunks.size() == 0) return;
 
-    if (LOGGER.isDebugEnabled())
-      LOGGER.debug(String.format(
-          "Clearing source activation (%.2f) propogated from %s to %s @ %.2f",
-          _activationPortion, _buffer.getName(), _activatedChunks, _buffer
-              .getModel().getAge()));
+    if (LOGGER.isDebugEnabled()) LOGGER.debug(String.format(
+        "Clearing source activation (%.2f) propogated from %s to %s @ %.2f",
+        _activationPortion, _buffer.getName(), _activatedChunks,
+        _buffer.getModel().getAge()));
 
     for (IChunk chunk : _activatedChunks.keySet())
     {
@@ -218,9 +233,8 @@ public class DefaultSourceActivationSpreader implements
       ISubsymbolicChunk ssc = chunk.getSubsymbolicChunk();
       // double activation = ssc.getSourceActivation() - _activationPortion;
       ssc.setSourceActivation(_buffer, 0);
-      if (LOGGER.isDebugEnabled())
-        LOGGER.debug(String.format("%s has %.2f", chunk,
-            ssc.getSourceActivation()));
+      if (LOGGER.isDebugEnabled()) LOGGER.debug(
+          String.format("%s has %.2f", chunk, ssc.getSourceActivation()));
     }
 
     _activatedChunks.clear();
