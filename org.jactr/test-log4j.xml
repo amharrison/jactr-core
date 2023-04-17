@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<!--
+		<appender name="CONSOLE" class="org.apache.log4j.net.SocketAppender">
+		<param name="RemoteHost" value="localhost"/> <param name="Port"
+		value="4445"/> <layout class="org.apache.log4j.PatternLayout"> <param
+		name="ConversionPattern" value="%n%p %t : %c %d{ABSOLUTE} - %m"/>
+		</layout> </appender>
+	-->
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.err" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%n%-5p %d{ABSOLUTE}(%t) [%c.%M] %m" />
+		</layout>
+	</appender>
+	<appender name="DebugFileAppender" class="org.apache.log4j.FileAppender">
+		<param name="File" value="jactr-debug.log" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%n%-5p %d{ABSOLUTE}(%t) [%c.%M] %m" />
+		</layout>
+	</appender>
+
+	<logger name="org.jactr.core.module.procedural.storage">
+		<level value="debug" />
+	</logger>
+	<root>
+		<level value="warn" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="DebugFileAppender" />
+	</root>
+</log4j:configuration>
