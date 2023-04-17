@@ -615,8 +615,9 @@ public class EnvironmentConfigurator
         /*
          * auto install the synch manager..
          */
-        pw.println("<!-- since we are connecting to the IDE, we'll auto install the sync tool -->");
-        pw.println(String.format("<attachment class=\"%s\" />",
+        pw.println(
+            "<!-- since we are connecting to the IDE, we'll auto install the sync tool -->");
+        pw.println(String.format("<attachment class=\"%s\" attach=\"all\"/>",
             SynchronizationManager.class.getName()));
       }
     }

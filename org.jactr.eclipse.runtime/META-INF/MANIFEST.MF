@@ -71,10 +71,11 @@ Require-Bundle: org.eclipse.debug.core,
  org.jactr.io2.jactr;bundle-version="1.0.0",
  org.eclipse.emf.common,
  org.slf4j.api;bundle-version="1.7.2",
- org.jactr.io2;bundle-version="2.5.1"
+ org.jactr.io2;bundle-version="2.5.1",
+ org.eclipse.pde.core
 Bundle-ActivationPolicy: lazy
 Eclipse-RegisterBuddy: org.commonreality.mina.core, org.apache.log4j
 Plugin-Class: org.jactr.eclipse.runtime.RuntimePlugin
 Bundle-ClassPath: .
 Import-Package: org.jactr.eclipse.runtime.session
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11

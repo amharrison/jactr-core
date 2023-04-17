@@ -19,8 +19,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.logging.Log;
@@ -36,13 +36,11 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
+import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.PluginRegistry;
-import org.eclipse.pde.core.plugin.PluginRegistry.PluginFilter;
 import org.eclipse.pde.core.plugin.TargetPlatform;
-import org.eclipse.pde.internal.core.DependencyManager;
 import org.eclipse.pde.internal.launching.IPDEConstants;
-import org.eclipse.pde.internal.launching.launcher.RequirementHelper;
 import org.jactr.eclipse.core.CorePlugin;
 import org.jactr.eclipse.core.bundles.BundleUtilities;
 import org.jactr.eclipse.core.bundles.descriptors.InstrumentDescriptor;
@@ -64,8 +62,6 @@ import org.jactr.io.antlr3.misc.ASTSupport;
 import org.jactr.io2.jactr.modelFragment.ModelFragment;
 import org.jactr.io2.jactr.modelFragment.ModelModule;
 import org.jactr.io2.jactr.ui.util.JactrUIUtilities;
-import org.osgi.framework.Version;
-import org.osgi.framework.VersionRange;
 
 /**
  * builds a valid ILaunchConfiguration for the ACTR launch environment, which
@@ -365,8 +361,8 @@ public class ACTRLaunchConfigurationUtils
         ACTRLaunchConstants.NORMAL_CONFIGURATION_LOCATION + project.getName()
             + "/" + configName);
 
-    RuntimePlugin.info("Command line args " + workingCopy
-        .getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, ""));
+//    RuntimePlugin.info("Command line args " + workingCopy
+//        .getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, ""));
 
     if (LOGGER.isDebugEnabled())
       LOGGER.debug("Applied persistent attributes " + workingCopy);
@@ -665,63 +661,46 @@ public class ACTRLaunchConfigurationUtils
 
     if (projectName.length() != 0) sourceProject = root.getProject(projectName);
 
-    /*
-     * find all the dependencies for the launching application
-     */
+    Set<BundleDescription> requirements = new HashSet<>();
+    requirements = BundleUtilities
+        .getSelfAndDependencies(ACTRLaunchConstants.DEFAULT_APPLICATION_BUNDLE);
+    if (configuration.getAttribute(ACTRLaunchConstants.ATTR_ITERATIONS, 0) > 0)
+      requirements = BundleUtilities.getSelfAndDependencies(
+          ACTRLaunchConstants.ITERATIVE_APPLICATION_BUNDLE);
 
-    Map<String, VersionRange> bundleDependencies = new TreeMap<>();
+    // this should get all the descriptors..
+    if (sourceProject != null && sourceProject.exists()) requirements
+        .addAll(BundleUtilities.getSelfAndDependencies(sourceProject));
 
-    /*
-     * eclipse's own dependency calculator
-     */
-    String[] requirements = RequirementHelper
-        .getApplicationRequirements(configuration);
-
-    for (String requiredId : requirements)
-    {
-      BundleUtilities.getDependencies(requiredId, bundleDependencies, true);
-
-      IPluginModelBase[] modelBases = PluginRegistry.findModels(requiredId,
-          null, null);
-      Set<String> additionalIds = DependencyManager.getDependencies(modelBases,
-          true, null);
-      for (String dep : additionalIds)
-        BundleUtilities.getDependencies(dep, bundleDependencies, true);
-    }
-
-    if (configuration.getAttribute(ACTRLaunchConstants.ATTR_ITERATIONS, 0) == 0)
-      BundleUtilities.getDependencies(
-          ACTRLaunchConstants.DEFAULT_APPLICATION_BUNDLE, bundleDependencies,
-          true);
-    else
-      BundleUtilities.getDependencies(
-          ACTRLaunchConstants.ITERATIVE_APPLICATION_BUNDLE, bundleDependencies,
-          true);
-
-    if (sourceProject != null && sourceProject.exists()) // workspaceBundles.add(projectName
-                                                         // +
-                                                         // "@default:default");
-      BundleUtilities.getDependencies(sourceProject, bundleDependencies, true);
-
-    /*
-     * now for the sensors
-     */
     for (SensorDescriptor sensor : getRequiredSensors(configuration))
-      BundleUtilities.getDependencies(sensor.getContributor(),
-          bundleDependencies, true);
+      requirements.addAll(
+          BundleUtilities.getSelfAndDependencies(sensor.getContributor()));
 
     /*
      * and instruments
      */
     for (InstrumentDescriptor instrument : getRequiredInstruments(
         configuration))
-      BundleUtilities.getDependencies(instrument.getContributor(),
-          bundleDependencies, true);
+      requirements.addAll(
+          BundleUtilities.getSelfAndDependencies(instrument.getContributor()));
 
     /*
      * for logging
      */
-    configureLogging(configuration, bundleDependencies);
+    configureLogging(configuration, requirements);
+
+    /**
+     * Strip out known logging providers
+     */
+    Set<String> strip = Set.of("org.eclipse.m2e.logback.appender",
+        "org.eclipse.m2e.logback.configuration", "ch.qos.logback.core",
+        "ch.qos.logback.classic", "ch.qos.logback.slf4j");
+
+    requirements = requirements.stream().filter(bd -> {
+      return !strip.contains(bd.getName());
+    }).collect(Collectors.toSet());
+
+    new HashSet<>();
 
     /*
      * now we determine where they are coming from, we preference workspace
@@ -729,89 +708,46 @@ public class ACTRLaunchConfigurationUtils
      */
     for (IPluginModelBase modelBase : PluginRegistry.getWorkspaceModels())
     {
+      BundleDescription bd = modelBase.getBundleDescription();
       String pluginId = modelBase.getPluginBase(true).getId();
 
-      // not entirely clear how to get the project from the model..
-      // this matters because if the project is closed, we shouldn't use it
-      // IProject requiredProject = root.getProject();
-      // if (requiredProject.isAccessible())
-      if (pluginId != null && bundleDependencies.remove(pluginId) != null)
+      if (pluginId != null && requirements.remove(bd))
         workspaceBundles.add(pluginId + "@default:default");
-
     }
 
     /*
-     * now we need to iterate over the dependencies, find the plugins that
-     * satisfy it, choose the highest satisfying version
+     * now we iterate over the remaining (non workspace) dependencies to build
+     * the targetBundles string, which includes startlevel and autostart
      */
-    for (Map.Entry<String, VersionRange> entry : bundleDependencies.entrySet())
-    {
+    requirements.forEach(bd -> {
+      String name = bd.getName();
       String startLevel = "default";
       String autoStart = "default";
 
-      if (entry.getKey().equals("org.eclipse.osgi"))
-      {
-        startLevel = "-1";
+      /*
+       * force some start levels to be safe
+       */
+      if (name.equals("org.eclipse.osgi"))
+        // startLevel = "-1";
         autoStart = "true";
-      }
-      else if (entry.getKey().equals("org.eclipse.core.runtime"))
+      else if (name.equals("org.eclipse.core.runtime"))
+        // startLevel = "0";
         autoStart = "true";
-      else if (entry.getKey().equals("org.eclipse.equinox.common"))
+      else if (name.equals("org.eclipse.equinox.common"))
       {
         startLevel = "2";
+        autoStart = "true";
+      }
+      else if (name.equals("org.eclipse.equinox.simpleconfigurator"))
+      {
+        startLevel = "1";
         autoStart = "true";
       }
 
       String startUp = "@" + startLevel + ":" + autoStart;
 
-      org.eclipse.osgi.service.resolver.VersionRange newRange = new org.eclipse.osgi.service.resolver.VersionRange(
-          entry.getValue().toString());
-
-      IPluginModelBase[] plugins = PluginRegistry.findModels(entry.getKey(),
-          newRange, new PluginFilter() {
-            @Override
-            public boolean accept(IPluginModelBase base)
-            {
-              return true;
-            }
-          });
-
-      if (plugins.length == 0)
-      {
-        RuntimePlugin.warn("no plugin " + entry.getKey() + " for " + newRange
-            + " was found, blundering ahead");
-        targetBundles.add(entry.getKey() + startUp);
-      }
-      else if (plugins.length == 1)
-        targetBundles.add(entry.getKey() + "*"
-            + plugins[0].getBundleDescription().getVersion().toString()
-            + startUp); // no need for
-      // version
-      else
-      {
-        /*
-         * select the latest
-         */
-        IPluginModelBase latest = plugins[0];
-        Version current = latest.getBundleDescription().getVersion();
-        for (IPluginModelBase base : plugins)
-          if (base.getBundleDescription().getVersion().compareTo(current) > 0)
-          {
-            latest = base;
-            current = base.getBundleDescription().getVersion();
-          }
-
-        RuntimePlugin.warn("Multiple versions of "
-            + latest.getBundleDescription().getSymbolicName()
-            + " were found. Using " + current.toString());
-        targetBundles.add(entry.getKey() + "*" + current.toString() + startUp);
-      }
-
-    }
-
-    RuntimePlugin
-        .info("Launching workspace bundles " + workspaceBundles.toString());
-    RuntimePlugin.info("Launching target bundles " + targetBundles.toString());
+      targetBundles.add(name + "*" + bd.getVersion().toString() + startUp);
+    });
 
     if (LOGGER.isDebugEnabled())
     {
@@ -820,9 +756,9 @@ public class ACTRLaunchConfigurationUtils
     }
   }
 
-  static private void configureLogging(
+  static private boolean configureLogging(
       ILaunchConfigurationWorkingCopy configuration,
-      Map<String, VersionRange> bundleDependencies) throws CoreException
+      Set<BundleDescription> bundleDependencies) throws CoreException
   {
     IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
     String projectName = configuration
@@ -856,21 +792,10 @@ public class ACTRLaunchConfigurationUtils
             ACTRLaunchConstants.ATTR_DEBUG_CORE_LOGGER,
             ACTRLaunchConstants.DEFAULT_CORE_LOGGER);
 
-        BundleUtilities.getDependencies(defaultLoggerImpl, bundleDependencies,
-            true);
-        BundleUtilities.getDependencies("org.apache.log4j", bundleDependencies,
-            true);
-
-//        IPluginModelBase modelBase = PluginRegistry.findModel("org.slf4j.api");
-//        for (BundleDescription fragment : modelBase.getBundleDescription()
-//            .getFragments())
-//          if (fragment.getSymbolicName().equals(defaultLoggerImpl))
-//          {
-//            Version version = fragment.getVersion();
-//            bundleDependencies.put(defaultLoggerImpl,
-//                new VersionRange(VersionRange.LEFT_CLOSED, version, version,
-//                    VersionRange.RIGHT_CLOSED));
-//          }
+        bundleDependencies
+            .addAll(BundleUtilities.getSelfAndDependencies(defaultLoggerImpl));
+        bundleDependencies
+            .addAll(BundleUtilities.getSelfAndDependencies("org.apache.log4j"));
 
         StringBuilder vmArg = new StringBuilder();
 
@@ -896,7 +821,9 @@ public class ACTRLaunchConfigurationUtils
         logging = false;
     }
 
-    if (!logging) BundleUtilities.getDependencies("org.slf4j.binding.nop",
-        bundleDependencies, true);
+    if (!logging) bundleDependencies.addAll(
+        BundleUtilities.getSelfAndDependencies("org.slf4j.binding.nop"));
+
+    return logging;
   }
 }
