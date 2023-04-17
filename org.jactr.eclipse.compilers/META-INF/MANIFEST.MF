@@ -13,4 +13,4 @@ Eclipse-RegisterBuddy: org.jactr.eclipse.bundles,
  org.jactr.eclipse.core, org.jactr.io
 Bundle-Vendor: jactr.org
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11

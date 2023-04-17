@@ -190,7 +190,7 @@
       </menuContribution>
       <menuContribution
             allPopups="true"
-            locationURI="popup:org.jactr.eclipse.ui.menu?after=org.jactr.eclipse.ui.menu.convert">
+            locationURI="popup:org.jactr.eclipse.ui.menu">
          <command
                commandId="org.jactr.eclipse.runtime.ui.command.playback"
                helpContextId="Playback archived session data"
@@ -212,7 +212,7 @@
       </menuContribution>
       <menuContribution
             allPopups="true"
-            locationURI="popup:org.jactr.eclipse.ui.menu?after=org.jactr.eclipse.ui.menu.convert">
+            locationURI="popup:org.jactr.eclipse.ui.menu?after=org.jactr.eclipse.runtime.ui.command.playback">
          <command
                commandId="org.jactr.eclipse.runtime.ui.command.extractProbeData"
                helpContextId="Extract archived session probe data"

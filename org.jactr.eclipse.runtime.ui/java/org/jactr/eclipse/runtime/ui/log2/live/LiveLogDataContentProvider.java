@@ -206,6 +206,8 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
       if (lastData != null)
       {
         Table table = _viewer.getTable();
+        if (table.isDisposed()) return;
+
         int item = table.getItemCount() - 1;
         // disable automatic selection for performance reasons
         // table.select(item);
@@ -228,20 +230,27 @@ public class LiveLogDataContentProvider implements IStructuredContentProvider
       for (TableColumn column : _viewer.getTable().getColumns())
       _knownColumns.add(column.getText());
 
-    Set<String> streamsInData = data.getStreamNames();
-    for (String stream : streamsInData)
-      if (!_knownColumns.contains(stream))
-      {
-        /*
-         * new column
-         */
-        Table table = _viewer.getTable();
-        TableColumn column = new TableColumn(table, SWT.LEFT);
-        column.setText(stream);
-        _knownColumns.add(stream);
-        for (ColumnListener listener : _columnListeners)
-          listener.added(column);
-      }
+    try
+    {
+      Set<String> streamsInData = data.getStreamNames();
+      for (String stream : streamsInData)
+        if (!_knownColumns.contains(stream))
+        {
+          /*
+           * new column
+           */
+          Table table = _viewer.getTable();
+          TableColumn column = new TableColumn(table, SWT.LEFT);
+          column.setText(stream);
+          _knownColumns.add(stream);
+          for (ColumnListener listener : _columnListeners)
+            listener.added(column);
+        }
+    }
+    catch (Exception e)
+    {
+
+    }
 
   }
 

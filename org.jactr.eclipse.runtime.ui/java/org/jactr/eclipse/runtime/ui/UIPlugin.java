@@ -7,6 +7,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.eclipse.core.builder.LaunchConfigurationCleaner;
@@ -50,7 +51,8 @@ public class UIPlugin extends AbstractUIPlugin
   {
     super.start(context);
 
-    _imageRegistry = new ImageRegistry(plugin.getWorkbench().getDisplay());
+
+    _imageRegistry = new ImageRegistry(PlatformUI.getWorkbench().getDisplay());
 
     try
     {
@@ -74,12 +76,14 @@ public class UIPlugin extends AbstractUIPlugin
         .addListener(new SynchronizationSessionListener(),
             ExecutorServices.INLINE_EXECUTOR);
 
+    org.jactr.eclipse.ui.UIPlugin.log("Attached session listener");
+
     initializeRegistry();
 
     /*
      * add a clean up mechanism
      */
-    getWorkbench().addWorkbenchListener(new IWorkbenchListener() {
+    PlatformUI.getWorkbench().addWorkbenchListener(new IWorkbenchListener() {
 
       public boolean preShutdown(IWorkbench workbench, boolean forced)
       {
@@ -97,7 +101,7 @@ public class UIPlugin extends AbstractUIPlugin
      * prefetch this one
      */
 
-    new MarkerUI(plugin.getWorkbench().getDisplay());
+    new MarkerUI(PlatformUI.getWorkbench().getDisplay());
   }
 
   /**

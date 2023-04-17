@@ -23,6 +23,7 @@ import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
 import org.eclipse.nebula.visualization.xygraph.figures.ZoomType;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.progress.UIJob;
@@ -211,9 +212,11 @@ public class XYGraphProbeContainer extends
       trace.setPointStyle(values[hash % values.length]);
       trace.setPointSize(6);
 
-
-      Color traceColor = new Color(Display.getCurrent(), hash / 2 % 256,
-          hash / 3 % 256, hash / 4 % 256);
+      float saturation = hash % 4f / 8f + 0.5f; // 0.5 - 1
+      float brightness = hash % 3f / 6f + 0.5f; // 0.5 - 1
+      RGB rgb = new RGB(hash % 360f, saturation,
+          brightness);
+      Color traceColor = new Color(Display.getCurrent(), rgb);
       trace.setTraceColor(traceColor);
 
       trace.setTraceType(TraceType.SOLID_LINE);

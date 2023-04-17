@@ -34,4 +34,4 @@ Bundle-ActivationPolicy: lazy
 Eclipse-BuddyPolicy: registered
 Eclipse-RegisterBuddy: org.apache.mina, org.apache.log4j
 Plugin-Class: org.jactr.eclipse.core.CorePlugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11

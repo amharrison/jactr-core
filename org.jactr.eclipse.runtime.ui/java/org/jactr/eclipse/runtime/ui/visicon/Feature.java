@@ -39,7 +39,8 @@ public class Feature
 
   private Map<String, Object>        _allData;
 
-  public Feature(IIdentifier identifier, Device device, Map<String, Object> data)
+  public Feature(IIdentifier identifier, Device device,
+      Map<String, Object> data)
   {
     _allData = new TreeMap<String, Object>();
     _identifier = identifier;
@@ -76,6 +77,8 @@ public class Feature
 
   protected Path update(Device device, Map<String, Object> data)
   {
+    if (device.isDisposed()) return null;
+
     synchronized (data)
     {
       _allData.putAll(data);
@@ -117,7 +120,7 @@ public class Feature
   public void dispose()
   {
     _allData.clear();
-    _path.dispose();
+    if (_path != null && !_path.isDisposed()) _path.dispose();
     _path = null;
   }
 
@@ -164,10 +167,10 @@ public class Feature
   {
     try
     {
-      double pitch = (Double) _allData.get(PitchFeatureMap.class
-          .getSimpleName());
-      double heading = (Double) _allData.get(HeadingFeatureMap.class
-          .getSimpleName());
+      double pitch = (Double) _allData
+          .get(PitchFeatureMap.class.getSimpleName());
+      double heading = (Double) _allData
+          .get(HeadingFeatureMap.class.getSimpleName());
       return new Point2D(heading, pitch);
     }
     catch (Exception e)
@@ -180,8 +183,8 @@ public class Feature
   {
     try
     {
-      return (Dimension2D) _allData.get(DimensionFeatureMap.class
-          .getSimpleName());
+      return (Dimension2D) _allData
+          .get(DimensionFeatureMap.class.getSimpleName());
     }
     catch (Exception e)
     {

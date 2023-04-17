@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: jACT-R Probe View Plug-in
 Bundle-SymbolicName: org.jactr.eclipse.runtime.ui.probe;singleton:=true
 Bundle-Version: 1.0.1.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.jactr.eclipse.runtime,
  org.jactr.eclipse.runtime.ui,
  org.jactr.eclipse.ui,
@@ -23,6 +23,4 @@ Export-Package:
 Bundle-Vendor: jactr.org
 Bundle-ActivationPolicy: lazy
 Eclipse-RegisterBuddy: org.apache.log4j
-Import-Package: com.ibm.icu.impl.locale,
- com.ibm.icu.util;version="4.4.2.2"
 Bundle-Activator: org.jactr.eclipse.runtime.ui.probe.ProbeUIPlugin

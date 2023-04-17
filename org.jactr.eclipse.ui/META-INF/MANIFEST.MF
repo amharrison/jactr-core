@@ -62,4 +62,4 @@ Eclipse-RegisterBuddy: org.apache.log4j
 Eclipse-BuddyPolicy: registered
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11

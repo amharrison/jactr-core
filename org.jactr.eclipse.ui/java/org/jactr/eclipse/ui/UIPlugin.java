@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.templates.persistence.TemplateStore;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
 import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -153,7 +154,7 @@ public class UIPlugin extends AbstractUIPlugin
 
   public static Display getStandardDisplay()
   {
-    return getDefault().getWorkbench().getDisplay();
+    return PlatformUI.getWorkbench().getDisplay();
   }
 
   /**

@@ -196,6 +196,8 @@ public class VisiconComponent extends Canvas
   @Override
   public void dispose()
   {
+    if (isDisposed()) return;
+
     removePaintListener(_painter);
     removeControlListener(_scaler);
     super.dispose();

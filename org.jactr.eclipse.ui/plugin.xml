@@ -29,11 +29,6 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            icon="icons/full/basic/jactr.gif"
-            class="org.jactr.eclipse.ui.perspective.ACTRPerspective"
-            name="%ACTRPerspective.name"
-            id="org.jactr.eclipse.ui.perspective.ACTRPerspective"/>
-      <perspective
             class="org.jactr.eclipse.ui.perspective.ACTRRuntimePerspective"
             icon="icons/full/basic/jactr-run.gif"
             id="org.jactr.eclipse.ui.perspective.ACTRRuntimePerspective"

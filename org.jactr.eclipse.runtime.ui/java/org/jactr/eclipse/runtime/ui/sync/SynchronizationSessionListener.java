@@ -5,13 +5,15 @@ package org.jactr.eclipse.runtime.ui.sync;
  */
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.commonreality.net.handler.IMessageHandler;
 import org.commonreality.net.session.ISessionInfo;
 import org.jactr.eclipse.runtime.launching.norm.ACTRSession;
 import org.jactr.eclipse.runtime.launching.session.AbstractSession;
 import org.jactr.eclipse.runtime.session.ISession;
 import org.jactr.eclipse.runtime.session.impl.Session2SessionAdapter;
 import org.jactr.eclipse.runtime.session.manager.ISessionManagerListener;
-import org.jactr.eclipse.runtime.ui.UIPlugin;
+import org.jactr.eclipse.ui.UIPlugin;
+import org.jactr.eclipse.ui.concurrent.UIJobExecutor;
 import org.jactr.tools.async.sync.SynchronizationMessage;
 
 public class SynchronizationSessionListener implements ISessionManagerListener
@@ -20,19 +22,28 @@ public class SynchronizationSessionListener implements ISessionManagerListener
    * Logger definition
    */
   static private final transient Log LOGGER = LogFactory
-                                                .getLog(SynchronizationSessionListener.class);
+      .getLog(SynchronizationSessionListener.class);
 
   public void sessionAdded(ISession session)
   {
-    ACTRSession actr = getACTRSession(session);
-    if (actr != null)
+    try
     {
-      ISessionInfo<?> netSession = actr.getShadowController()
-          .getActiveSession();
-      netSession.addHandler(
+      ACTRSession actr = getACTRSession(session);
+      if (actr != null) // we haven't connected yet..
+      actr.getShadowController().getDefaultHandlers().put(
           SynchronizationMessage.class,
-          (s, m) -> synchronizationMessageReceived(s,
-              m));
+          new IMessageHandler<SynchronizationMessage>() {
+
+            @Override
+            public void accept(ISessionInfo<?> t, SynchronizationMessage u)
+            {
+              synchronizationMessageReceived(t, u);
+            }
+          });
+    }
+    catch (Exception e)
+    {
+      UIPlugin.log(e);
     }
 
   }
@@ -51,8 +62,7 @@ public class SynchronizationSessionListener implements ISessionManagerListener
       {
         try
         {
-          if (session.isConnected())
-            session.write(new SynchronizationMessage(message));
+          if (session.isConnected()) session.write(new SynchronizationMessage(message));
         }
         catch (Exception e)
         {
@@ -60,8 +70,12 @@ public class SynchronizationSessionListener implements ISessionManagerListener
         }
       }
     };
+    UIJobExecutor executor = new UIJobExecutor("Synchronizing with runtime");
+    executor.execute(synch);
+//    UIPlugin.getDefault().getLog().info("Synchronizing with runtime");
+
     // run this on the display thread when we get a chance.
-    UIPlugin.getDefault().getWorkbench().getDisplay().asyncExec(synch);
+//    PlatformUI.getWorkbench().getDisplay().asyncExec(synch);
   }
 
   public void sessionRemoved(ISession session)
