@@ -43,7 +43,7 @@ public class InstrumentRegistry extends
 
   private InstrumentRegistry()
   {
-    super("org.jactr.osgi.instruments");
+    super("org.jactr.core.instruments");
   }
 
   @Override

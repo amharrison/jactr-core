@@ -43,7 +43,7 @@ public abstract class AbstractExtensionPointRegistry<T extends ExtensionDescript
    */
 
   static private final transient Log           LOGGER = LogFactory
-                                                          .getLog(AbstractExtensionPointRegistry.class);
+      .getLog(AbstractExtensionPointRegistry.class);
 
   private final String                         _extensionPointId;
 
@@ -113,9 +113,12 @@ public abstract class AbstractExtensionPointRegistry<T extends ExtensionDescript
   {
     ArrayList<T> rtn = new ArrayList<T>();
 
-    for (String reqId : BundleUtilities.getDependencies(modelBase
-        .getPluginBase().getId()))
-      rtn.addAll(getExtensionDescriptors(PluginRegistry.findModel(reqId)));
+    BundleUtilities.getSelfAndDependencies(modelBase.getPluginBase().getId())
+        .stream().map(bd -> {
+          return bd.getName();
+        }).forEach(reqId -> {
+          rtn.addAll(getExtensionDescriptors(PluginRegistry.findModel(reqId)));
+        });
 
     return rtn;
   }
@@ -141,26 +144,25 @@ public abstract class AbstractExtensionPointRegistry<T extends ExtensionDescript
       {
         if (isWorkspaceModel(modelBase))
         {
-          if (LOGGER.isDebugEnabled())
-            LOGGER.debug(modelBase.getPluginBase().getName()
-                + " is in workspace");
-          descriptors = createFromPluginExtension(getPluginExtensions(modelBase));
+          if (LOGGER.isDebugEnabled()) LOGGER
+              .debug(modelBase.getPluginBase().getName() + " is in workspace");
+          descriptors = createFromPluginExtension(
+              getPluginExtensions(modelBase));
         }
         else
           descriptors = createFromExtension(getInstalledExtensions(modelBase));
       }
       catch (Exception e)
       {
-        if (LOGGER.isDebugEnabled())
-          LOGGER.debug(
-              "Failed to get extesnion descriptors for, creating empty", e);
+        if (LOGGER.isDebugEnabled()) LOGGER.debug(
+            "Failed to get extesnion descriptors for, creating empty", e);
       }
 
       /*
        * add to the cache
        */
-      _map.put(modelBase.getPluginBase().getId(), new CachedInformation(
-          descriptors));
+      _map.put(modelBase.getPluginBase().getId(),
+          new CachedInformation(descriptors));
     }
     else
       descriptors = information.getDescriptors();
@@ -212,10 +214,9 @@ public abstract class AbstractExtensionPointRegistry<T extends ExtensionDescript
             BundleTools.error(message, e);
           }
         }
-        else if (LOGGER.isDebugEnabled())
-          LOGGER
-              .debug("No clue what to do with non IPluginElement children. Got : "
-                  + child + " [" + child.getClass().getName() + "]");
+        else if (LOGGER.isDebugEnabled()) LOGGER
+            .debug("No clue what to do with non IPluginElement children. Got : "
+                + child + " [" + child.getClass().getName() + "]");
 
     return rtn;
   }
@@ -240,9 +241,8 @@ public abstract class AbstractExtensionPointRegistry<T extends ExtensionDescript
     for (IPluginExtension extensionPoint : extensions)
       if (extensionPoint.getChildCount() == 0)
       {
-        if (LOGGER.isWarnEnabled())
-          LOGGER.warn("Extension " + extensionPoint
-              + " is defined, but has no children?");
+        if (LOGGER.isWarnEnabled()) LOGGER.warn("Extension " + extensionPoint
+            + " is defined, but has no children?");
       }
       else
         for (IPluginObject child : extensionPoint.getChildren())
@@ -261,14 +261,13 @@ public abstract class AbstractExtensionPointRegistry<T extends ExtensionDescript
               BundleTools.error(message, e);
             }
           }
-          else if (LOGGER.isDebugEnabled())
-            LOGGER
-                .debug("No clue what to do with non IPluginElement children. Got : "
-                    + child + " [" + child.getClass().getName() + "]");
+          else if (LOGGER.isDebugEnabled()) LOGGER.debug(
+              "No clue what to do with non IPluginElement children. Got : "
+                  + child + " [" + child.getClass().getName() + "]");
 
     if (LOGGER.isDebugEnabled() && rtn.size() == 0 && extensions.size() != 0)
-      LOGGER
-          .debug("Could not make an descriptors from extensions. Something may have gone quietly wrong above. ext:"
+      LOGGER.debug(
+          "Could not make an descriptors from extensions. Something may have gone quietly wrong above. ext:"
               + extensions);
 
     return rtn;
@@ -293,9 +292,8 @@ public abstract class AbstractExtensionPointRegistry<T extends ExtensionDescript
         .getExtensions())
       if (_extensionPointId.equals(extension.getPoint())) rtn.add(extension);
 
-    if (LOGGER.isDebugEnabled())
-      LOGGER.debug("Returning extensions of "
-          + modelBase.getPluginBase().getName() + ": " + rtn);
+    if (LOGGER.isDebugEnabled()) LOGGER.debug("Returning extensions of "
+        + modelBase.getPluginBase().getName() + ": " + rtn);
 
     return rtn;
   }
@@ -338,8 +336,8 @@ public abstract class AbstractExtensionPointRegistry<T extends ExtensionDescript
     }
     catch (Exception e)
     {
-      LOGGER.error("Could not retrieve extensions for point:"
-          + _extensionPointId, e);
+      LOGGER.error(
+          "Could not retrieve extensions for point:" + _extensionPointId, e);
     }
     return rtn;
   }
@@ -359,8 +357,8 @@ public abstract class AbstractExtensionPointRegistry<T extends ExtensionDescript
     public CachedInformation(Collection<T> descriptors)
     {
       _timeStamp = System.currentTimeMillis();
-      _descriptors = Collections.unmodifiableCollection(new ArrayList<T>(
-          descriptors));
+      _descriptors = Collections
+          .unmodifiableCollection(new ArrayList<T>(descriptors));
     }
 
     public boolean isStale()

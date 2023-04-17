@@ -28,7 +28,7 @@ public class SensorDescriptor extends CommonExtensionDescriptor
   public SensorDescriptor(String contributor, String name, String className,
       String description, boolean isClockOwner, Map<String, String> properties)
   {
-    super("org.commonreality.osgi.sensors", contributor, name, className,
+    super("org.commonreality.api.sensors", contributor, name, className,
         description);
     _properties = new TreeMap<String, String>(properties);
     _isClockOwner = isClockOwner;

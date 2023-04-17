@@ -24,7 +24,7 @@ public class RuntimeTracerDescriptor extends CommonExtensionDescriptor
       String name, String className, String description,
       Map<String, String> parameters)
   {
-    super("org.jactr.osgi.tracers", contributor, name, className, description);
+    super("org.jactr.tools.tracers", contributor, name, className, description);
     _parameters = new TreeMap<String, String>(parameters);
   }
 

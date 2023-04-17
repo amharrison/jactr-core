@@ -40,7 +40,7 @@ public class ExtensionRegistry extends
 
   private ExtensionRegistry()
   {
-    super("org.jactr.osgi.extensions");
+    super("org.jactr.core.extensions");
   }
 
   @Override

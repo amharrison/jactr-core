@@ -26,7 +26,7 @@ public class ModelExtensionDescriptor extends CommonExtensionDescriptor
   public ModelExtensionDescriptor(String contributor, String name,
       String className, String desc)
   {
-    super("org.jactr.osgi.extensions", contributor, name, className, desc);
+    super("org.jactr.core.extensions", contributor, name, className, desc);
   }
 
 }

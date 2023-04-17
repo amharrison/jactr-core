@@ -24,7 +24,7 @@ public class ModuleDescriptor extends CommonExtensionDescriptor
   
   public ModuleDescriptor(String contributor, String name, String className, String desc, boolean defaultEnabled, boolean requiresCR)
   {
-    super("org.jactr.osgi.modules", contributor, name, className, desc);
+    super("org.jactr.core.modules", contributor, name, className, desc);
     _enabled = defaultEnabled;
     _requiresCR = requiresCR;
   }

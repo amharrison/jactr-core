@@ -38,7 +38,7 @@ public class ASTParticipantRegistry extends
 
   private ASTParticipantRegistry()
   {
-    super("org.jactr.osgi.astparticipants");
+    super("org.jactr.io.astparticipants");
   }
 
   @Override

@@ -22,4 +22,4 @@ Eclipse-RegisterBuddy: org.apache.log4j
 Eclipse-BuddyPolicy: registered
 Bundle-Activator: org.jactr.eclipse.core.bundles.BundlesActivator
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
