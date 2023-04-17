@@ -377,8 +377,9 @@ public class InstantiationCache
       Object variableSource = smf.getVariableDefinition();
 
       if (variableSource == null)
-        throw new IllegalStateException(
-            "Could not find source of variable binding, cannot track");
+        throw new IllegalStateException(String.format(
+            "Could not find source of variable binding (%s), cannot track",
+            smf.getConditionalSlot()));
 
       if (variableSource instanceof IActivationBuffer)
       {

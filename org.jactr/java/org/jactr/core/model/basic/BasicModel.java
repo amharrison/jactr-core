@@ -23,8 +23,6 @@ import java.util.TreeSet;
 import java.util.concurrent.Executor;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.event.ACTREventDispatcher;
 import org.jactr.core.event.IParameterListener;
@@ -42,19 +40,18 @@ import org.jactr.core.module.procedural.IProceduralModule;
 import org.jactr.core.queue.TimedEventQueue;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.utils.DefaultAdaptable;
-import org.jactr.core.utils.collections.CachedCollection;
-import org.jactr.core.utils.collections.CachedMap;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.core.utils.parameter.ParameterHandler;
 import org.jactr.instrument.IInstrument;
+import org.slf4j.LoggerFactory;
 
 public class BasicModel extends DefaultAdaptable implements IModel
 {
   /**
    * logger definition
    */
-  static private final transient org.slf4j.Logger                                          LOGGER                = LoggerFactory
-                                                                                              .getLogger(BasicModel.class);
+  static private final transient org.slf4j.Logger                   LOGGER                = LoggerFactory
+      .getLogger(BasicModel.class);
 
   static public final String                                        CYCLE_SKIPPING_PARAM  = "EnableUnusedCycleSkipping";
 
@@ -63,18 +60,12 @@ public class BasicModel extends DefaultAdaptable implements IModel
   static public final String                                        AGE_PARAM             = "Age";
 
   static private final Collection<String>                           READABLE_PARAMETERS   = Collections
-                                                                                              .unmodifiableCollection(Arrays
-                                                                                                  .asList(
-                                                                                                      AGE_PARAM,
-                                                                                                      CYCLE_SKIPPING_PARAM,
-                                                                                                      PERSISTENT_PARAM));
+      .unmodifiableCollection(
+          Arrays.asList(AGE_PARAM, CYCLE_SKIPPING_PARAM, PERSISTENT_PARAM));
 
   static private final Collection<String>                           WRITABLE_PARAMETERS   = Collections
-                                                                                              .unmodifiableCollection(Arrays
-                                                                                                  .asList(
-                                                                                                      AGE_PARAM,
-                                                                                                      CYCLE_SKIPPING_PARAM,
-                                                                                                      PERSISTENT_PARAM));
+      .unmodifiableCollection(
+          Arrays.asList(AGE_PARAM, CYCLE_SKIPPING_PARAM, PERSISTENT_PARAM));
 
   protected boolean                                                 _isInitialized        = false;
 
@@ -84,13 +75,13 @@ public class BasicModel extends DefaultAdaptable implements IModel
 
   protected IProceduralModule                                       _proceduralModule;
 
-  protected CachedMap<String, IActivationBuffer>                    _buffers;
+  protected Map<String, IActivationBuffer>                          _buffers;
 
-  protected CachedCollection<IModule>                               _modules;
+  protected Collection<IModule>                                     _modules;
 
-  protected CachedCollection<IExtension>                            _extensions;
+  protected Collection<IExtension>                                  _extensions;
 
-  protected CachedCollection<IInstrument>                           _installedInstruments;
+  protected Collection<IInstrument>                                 _installedInstruments;
 
   protected boolean                                                 _cycleSkippingEnabled = true;
 
@@ -119,12 +110,10 @@ public class BasicModel extends DefaultAdaptable implements IModel
   public BasicModel()
   {
     _timedEventQueue = new TimedEventQueue(this);
-    _buffers = new CachedMap<String, IActivationBuffer>(
-        new TreeMap<String, IActivationBuffer>());
-    _modules = new CachedCollection<IModule>(new ArrayList<IModule>());
-    _extensions = new CachedCollection<IExtension>(new ArrayList<IExtension>());
-    _installedInstruments = new CachedCollection<IInstrument>(
-        new ArrayList<IInstrument>());
+    _buffers = new TreeMap<String, IActivationBuffer>();
+    _modules = new ArrayList<IModule>();
+    _extensions = new ArrayList<IExtension>();
+    _installedInstruments = new ArrayList<IInstrument>();
     _eventDispatcher = new ACTREventDispatcher<IModel, IModelListener>();
     _parameterEventDispatcher = new ACTREventDispatcher<IParameterized, IParameterListener>();
     _metaData = new TreeMap<String, Object>();
@@ -263,7 +252,7 @@ public class BasicModel extends DefaultAdaptable implements IModel
     {
       // lock
       _lock.readLock().lock();
-      _buffers.getValues(container);
+      container.addAll(_buffers.values());
     }
     finally
     {
@@ -413,18 +402,16 @@ public class BasicModel extends DefaultAdaptable implements IModel
 
       if (module instanceof IDeclarativeModule)
       {
-        if (_declarativeModule != null)
-          throw new IllegalModelStateException(
-              "Only one declarative module may exist in a model at a time");
+        if (_declarativeModule != null) throw new IllegalModelStateException(
+            "Only one declarative module may exist in a model at a time");
 
         _declarativeModule = (IDeclarativeModule) module;
       }
 
       if (module instanceof IProceduralModule)
       {
-        if (_proceduralModule != null)
-          throw new IllegalModelStateException(
-              "Only one procedural module may exist in a model at a time");
+        if (_proceduralModule != null) throw new IllegalModelStateException(
+            "Only one procedural module may exist in a model at a time");
 
         _proceduralModule = (IProceduralModule) module;
       }
@@ -476,16 +463,15 @@ public class BasicModel extends DefaultAdaptable implements IModel
          * install out of the lock in case this takes a sig amount of time
          */
         extension.install(this);
-        if (hasBeenInitialized())
-          try
-          {
-            extension.initialize();
-          }
-          catch (Exception e)
-          {
-            throw new IllegalModelStateException(
-                "Exception while initializing extension " + extension, e);
-          }
+        if (hasBeenInitialized()) try
+        {
+          extension.initialize();
+        }
+        catch (Exception e)
+        {
+          throw new IllegalModelStateException(
+              "Exception while initializing extension " + extension, e);
+        }
 
         dispatch(new ModelEvent(this, extension));
       }
@@ -564,8 +550,8 @@ public class BasicModel extends DefaultAdaptable implements IModel
   public String getParameter(String key)
   {
     if (CYCLE_SKIPPING_PARAM.equalsIgnoreCase(key))
-      return ParameterHandler.booleanInstance().toString(
-          isCycleSkippingEnabled());
+      return ParameterHandler.booleanInstance()
+          .toString(isCycleSkippingEnabled());
     else if (AGE_PARAM.equalsIgnoreCase(key))
       return "" + getAge();
     else if (PERSISTENT_PARAM.equalsIgnoreCase(key))
@@ -606,8 +592,8 @@ public class BasicModel extends DefaultAdaptable implements IModel
     }
     else if (PERSISTENT_PARAM.equalsIgnoreCase(key))
     {
-      setPersistentExecutionEnabled(ParameterHandler.booleanInstance().coerce(
-          value));
+      setPersistentExecutionEnabled(
+          ParameterHandler.booleanInstance().coerce(value));
       handled = true;
     }
     else
@@ -615,14 +601,13 @@ public class BasicModel extends DefaultAdaptable implements IModel
       for (IModule module : _modules)
         if (module instanceof IParameterized)
           if (((IParameterized) module).getSetableParameters().contains(key))
-          {
-            // route it
-            if (LOGGER.isWarnEnabled())
-              LOGGER
-                  .warn("You should not use the model as the parameter nexus, rather assigned it to the module directly");
-            ((IParameterized) module).setParameter(key, value);
-            handled = true;
-          }
+        {
+          // route it
+          if (LOGGER.isWarnEnabled()) LOGGER.warn(
+              "You should not use the model as the parameter nexus, rather assigned it to the module directly");
+          ((IParameterized) module).setParameter(key, value);
+          handled = true;
+        }
 
     if (!handled)
     {
@@ -733,9 +718,8 @@ public class BasicModel extends DefaultAdaptable implements IModel
     try
     {
       _lock.writeLock().lock();
-      if (hasBeenInitialized())
-        throw new IllegalModelStateException(
-            "Model has already been initialized");
+      if (hasBeenInitialized()) throw new IllegalModelStateException(
+          "Model has already been initialized");
 
       _isInitialized = true;
 
@@ -813,9 +797,9 @@ public class BasicModel extends DefaultAdaptable implements IModel
   protected void fireParameterEvent(String parameterName, Object oldValue,
       Object newValue)
   {
-    if (hasParameterListeners())
-      dispatch(new ParameterEvent(this, ACTRRuntime.getRuntime().getClock(this)
-          .getTime(), parameterName, oldValue, newValue));
+    if (hasParameterListeners()) dispatch(new ParameterEvent(this,
+        ACTRRuntime.getRuntime().getClock(this).getTime(), parameterName,
+        oldValue, newValue));
   }
 
   public String getName()

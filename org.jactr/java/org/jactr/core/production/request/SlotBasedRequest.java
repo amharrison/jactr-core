@@ -43,11 +43,11 @@ public class SlotBasedRequest implements IRequest, ISlotContainer
   static private final transient org.slf4j.Logger LOGGER  = LoggerFactory
       .getLogger(SlotBasedRequest.class);
 
-  protected Collection<ISlot>        _slots;
+  protected Collection<ISlot>                     _slots;
 
-  protected Collection<ISlot>        _unresolved;
+  protected Collection<ISlot>                     _unresolved;
 
-  private boolean                    _locked = false;
+  private boolean                                 _locked = false;
 
   @SuppressWarnings("unchecked")
   public SlotBasedRequest()
@@ -365,13 +365,13 @@ public class SlotBasedRequest implements IRequest, ISlotContainer
            * since the slot was not previously bound, we will do so here.
            */
           if (slotToResolve.matchesCondition(valueSlot.getValue()))
-          {
+        {
           locallyBound = true;
           bindings.bind(variableName, valueSlot.getValue(), valueSlot);
 
           if (LOGGER.isDebugEnabled()) LOGGER.debug(
               String.format("Bound %s %s", variableName, valueSlot.getValue()));
-          }
+        }
           else
           /*
            * it doesn't match, this is likely a slotName =toBeBound, but
@@ -389,7 +389,7 @@ public class SlotBasedRequest implements IRequest, ISlotContainer
          * this will not test ISA correctly.
          */
         if (slotToResolve.getName().equalsIgnoreCase(ISlot.ISA))
-        {
+      {
         /*
          * isa s must have a chunk as the container and a chunk type as the
          * value/
@@ -408,7 +408,7 @@ public class SlotBasedRequest implements IRequest, ISlotContainer
         if (!chunk.isA(ct)) throw new CannotMatchException(
             new ChunkTypeMatchFailure(ct, chunk.getParentChunk()));
 
-        }
+      }
 
       /**
        * final check
@@ -417,8 +417,14 @@ public class SlotBasedRequest implements IRequest, ISlotContainer
       {
         if (locallyBound) bindings.unbind(variableName);
 
-        throw new CannotMatchException(new SlotMatchFailure(null, slotContainer,
-            slotToResolve, valueSlot, bindings.getSource(variableName)));
+        if (locallyBound) bindings.unbind(variableName);
+        if (variableName != null)
+          throw new CannotMatchException(
+              new SlotMatchFailure(null, slotContainer, slotToResolve,
+                  valueSlot, bindings.getSource(variableName)));
+        else
+          throw new CannotMatchException(
+              new SlotMatchFailure(slotContainer, slotToResolve, valueSlot));
       }
     }
 
