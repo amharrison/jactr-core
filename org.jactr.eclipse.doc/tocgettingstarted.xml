@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?NLS TYPE="org.eclipse.help.toc"?>
-
-<toc label="Getting Started" link_to="toc.xml#gettingstarted"> 
-	<topic label="ACT-R and Eclipse"  href="org/jactr/eclipse/using/index.html">
-		<topic label="Eclipse Basics" href="org/jactr/eclipse/using/eclipse.html" /> 
-		<topic label="ACT-R Integration" href="org/jactr/eclipse/using/actr.html" /> 
-	</topic>
-</toc>
