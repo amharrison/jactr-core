@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Predicate;
 
 import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.impl.factory.Sets;
@@ -60,9 +61,9 @@ public class DefaultProductionStorage implements IProductionStorage
                                                                                          public void childAdded(
                                                                                              ChunkTypeEvent cte)
                                                                                          {
-                                                                                                                                                                      /*
-                                                                                                                                                                       * reindex
-                                                                                                                                                                       */
+                                                                                                                                                   /*
+                                                                                                                                                    * reindex
+                                                                                                                                                    */
                                                                                            Set<IProduction> candidates = FastSetFactory
                                                                                                .newInstance();
                                                                                            for (IActivationBuffer buffer : getProceduralModule()
@@ -278,21 +279,32 @@ public class DefaultProductionStorage implements IProductionStorage
    */
   @Override
   public Set<IProduction> getProductions(String bufferName,
-      IChunkType chunkType, Set<IProduction> container)
+      IChunkType chunkType, Set<IProduction> container,
+      Predicate<IProduction> selector)
   {
     if (container == null) container = Sets.mutable.empty();
-    final Set<IProduction> fContainer = container;
+
     if (bufferName == null) bufferName = "null";
+
     final String fBufferName = bufferName;
     try
     {
-      container = readLocked(() -> {
+      Set<IProduction> tmpContainer = readLocked(() -> {
         // specified
+        Set<IProduction> fContainer = Sets.mutable.empty();
         fContainer.addAll(
             _productionMap.getOrDefault(fBufferName, Collections.emptyMap())
                 .getOrDefault(chunkType, Collections.emptySet()));
         return fContainer;
       });
+
+      if (selector != null) tmpContainer.removeIf((p) -> {
+        return !selector.test(p);
+      });
+
+      container.addAll(tmpContainer);
+      return container;
+
     }
     catch (Exception e)
     {

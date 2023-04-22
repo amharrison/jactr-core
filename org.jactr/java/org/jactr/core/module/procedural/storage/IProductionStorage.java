@@ -2,6 +2,7 @@ package org.jactr.core.module.procedural.storage;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.module.procedural.IProceduralModule;
@@ -29,6 +30,6 @@ public interface IProductionStorage
   Collection<IProduction> getProductions(Collection<IProduction> container);
 
   Set<IProduction> getProductions(String bufferName, IChunkType chunkType,
-      Set<IProduction> container);
+      Set<IProduction> container, Predicate<IProduction> selector);
 
 }

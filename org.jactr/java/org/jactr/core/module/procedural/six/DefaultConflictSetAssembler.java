@@ -1,13 +1,21 @@
 package org.jactr.core.module.procedural.six;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
+import org.eclipse.collections.impl.factory.Maps;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.module.procedural.IConflictSetAssembler;
 import org.jactr.core.module.procedural.IProceduralModule;
 import org.jactr.core.production.IProduction;
+import org.jactr.core.production.condition.ChunkTypeCondition;
+import org.jactr.core.production.condition.ICondition;
 import org.jactr.core.utils.collections.FastSetFactory;
 import org.slf4j.LoggerFactory;
 
@@ -29,12 +37,10 @@ public class DefaultConflictSetAssembler implements IConflictSetAssembler
   /**
    * Logger definition
    */
-  static private final transient org.slf4j.Logger        LOGGER                       = LoggerFactory
-                                                                                          .getLogger(DefaultConflictSetAssembler.class);
+  static private final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(DefaultConflictSetAssembler.class);
 
-  private IProceduralModule                              _module;
-
-
+  private IProceduralModule                       _module;
 
   public DefaultConflictSetAssembler(boolean useFullIndexing)
   {
@@ -45,91 +51,139 @@ public class DefaultConflictSetAssembler implements IConflictSetAssembler
     _module = module;
   }
 
-
   public IProceduralModule getProceduralModule()
   {
     return _module;
   }
 
+  private Map<String, Collection<IChunkType>> bufferContentMap()
+  {
+    Map<String, Collection<IChunkType>> rtn = Maps.mutable.empty();
+    Collection<IChunk> source = new ArrayList<>(2);
+
+    for (IActivationBuffer buffer : getProceduralModule().getModel()
+        .getActivationBuffers())
+    {
+      source.clear();
+      buffer.getSourceChunks(source);
+      source.forEach((c) -> {
+        rtn.computeIfAbsent(buffer.getName(), (key) -> {
+          return new ArrayList<>();
+        }).add(c.getSymbolicChunk().getChunkType());
+      });
+    }
+
+    return rtn;
+  }
+
+  private Predicate<IProduction> getSelectionPredicate(
+      Map<String, Collection<IChunkType>> bufferContents)
+  {
+    return (p) -> {
+
+      for (ICondition condition : p.getSymbolicProduction().getConditions())
+        if (condition instanceof ChunkTypeCondition)
+        {
+          ChunkTypeCondition ctc = (ChunkTypeCondition) condition;
+          Collection<IChunkType> currentTypes = bufferContents
+              .getOrDefault(ctc.getBufferName(), Collections.emptyList());
+          boolean matches = currentTypes.stream().anyMatch(ct -> {
+            return ct.isA(ctc.getChunkType());
+          });
+
+          if (!matches) return false;
+        }
+      return true;
+    };
+
+  }
+
   public Set<IProduction> getConflictSet(Set<IProduction> container)
   {
-      Set<IProduction> candidates = FastSetFactory.newInstance();
-      for (IActivationBuffer buffer : getProceduralModule().getModel()
-          .getActivationBuffers())
+    Set<IProduction> candidates = FastSetFactory.newInstance();
+    Map<String, Collection<IChunkType>> chunkTypesInBuffers = bufferContentMap();
+    Predicate<IProduction> selector = getSelectionPredicate(
+        chunkTypesInBuffers);
+    for (IActivationBuffer buffer : getProceduralModule().getModel()
+        .getActivationBuffers())
+    {
+      candidates.clear();
+
+      String bufferName = buffer.getName().toLowerCase();
+
+      /*
+       * first, the buffer ambiguous
+       */
+      getPossibleProductions(bufferName, null, candidates, selector);
+
+      if (candidates.size() != 0)
+      {
+        if (LOGGER.isDebugEnabled())
+          LOGGER.debug(String.format("%s yielded %s", buffer, candidates));
+        container.addAll(candidates);
+      }
+      else if (LOGGER.isDebugEnabled()) LOGGER.debug(String
+          .format("%s buffer yielded no ambiguous buffer productions", buffer));
+
+      // get the source contents
+      for (IChunk chunk : buffer.getSourceChunks())
       {
         candidates.clear();
 
-        String bufferName = buffer.getName().toLowerCase();
-
-        /*
-         * first, the buffer ambiguous
-         */
-        getPossibleProductions(bufferName, null, candidates);
+        IChunkType chunkType = chunk.getSymbolicChunk().getChunkType();
+        getPossibleProductions(buffer.getName(), chunkType, candidates,
+            selector);
 
         if (candidates.size() != 0)
         {
           if (LOGGER.isDebugEnabled())
-            LOGGER.debug(String.format("%s yielded %s", buffer, candidates));
+            LOGGER.debug(String.format("Chunktype : %s in %s yielded %s",
+                chunkType, buffer, candidates));
+
           container.addAll(candidates);
         }
-        else if (LOGGER.isDebugEnabled())
-          LOGGER.debug(String.format(
-              "%s buffer yielded no ambiguous buffer productions", buffer));
-
-        // get the source contents
-        for (IChunk chunk : buffer.getSourceChunks())
-        {
-          candidates.clear();
-
-          IChunkType chunkType = chunk.getSymbolicChunk().getChunkType();
-          getPossibleProductions(buffer.getName(), chunkType, candidates);
-
-          if (candidates.size() != 0)
-          {
-            if (LOGGER.isDebugEnabled())
-              LOGGER.debug(String.format("Chunktype : %s in %s yielded %s",
-                  chunkType, buffer, candidates));
-
-            container.addAll(candidates);
-          }
-          else if (LOGGER.isDebugEnabled())
-            LOGGER.debug(String.format(
-                "%s in %s buffer yielded no candidate productions", chunk,
-                buffer.getName()));
-        }
-
+        else if (LOGGER.isDebugEnabled()) LOGGER.debug(
+            String.format("%s in %s buffer yielded no candidate productions",
+                chunk, buffer.getName()));
       }
 
-      // and the completely ambiguous set
-      candidates.clear();
-      getPossibleProductions(null, null, candidates);
+    }
 
-      if (LOGGER.isDebugEnabled())
-        LOGGER.debug(String.format("Ambiguous productions %s", candidates));
+    // and the completely ambiguous set
+    candidates.clear();
+    getPossibleProductions(null, null, candidates, selector);
 
-      container.addAll(candidates);
+    if (LOGGER.isDebugEnabled())
+      LOGGER.debug(String.format("Ambiguous productions %s", candidates));
 
-      FastSetFactory.recycle(candidates);
+    container.addAll(candidates);
 
-      return container;
+    if (LOGGER.isDebugEnabled())
+      LOGGER.debug(String.format("%d candidates", container.size()));
+
+    FastSetFactory.recycle(candidates);
+
+    return container;
 
   }
 
   public Set<IProduction> getPossibleProductions(String bufferName,
-      IChunkType chunkType, Set<IProduction> container)
+      IChunkType chunkType, Set<IProduction> container,
+      Predicate<IProduction> selector)
   {
     return getProceduralModule().getProductionStorage()
-        .getProductions(bufferName, chunkType, container);
+        .getProductions(bufferName, chunkType, container, selector);
   }
 
   public Set<IProduction> getPossibleProductions(String bufferName,
-      Set<IProduction> container)
+      Set<IProduction> container, Predicate<IProduction> selector)
   {
-    return getPossibleProductions(bufferName, null, container);
+    return getPossibleProductions(bufferName, null, container, selector);
   }
 
-  public Set<IProduction> getAmbiguousProductions(Set<IProduction> container)
+  public Set<IProduction> getAmbiguousProductions(Set<IProduction> container,
+      Predicate<IProduction> selector)
   {
-    return getPossibleProductions(null, null, container);
+    return getPossibleProductions(null, null, container, selector);
   }
 }
