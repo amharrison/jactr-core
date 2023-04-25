@@ -79,21 +79,25 @@ public class DefaultConflictSetAssembler implements IConflictSetAssembler
   private Predicate<IProduction> getSelectionPredicate(
       Map<String, Collection<IChunkType>> bufferContents)
   {
-    return (p) -> {
+    final Map<IProduction, Boolean> alreadyTested = Maps.mutable.empty();
 
-      for (ICondition condition : p.getSymbolicProduction().getConditions())
-        if (condition instanceof ChunkTypeCondition)
-        {
-          ChunkTypeCondition ctc = (ChunkTypeCondition) condition;
-          Collection<IChunkType> currentTypes = bufferContents
-              .getOrDefault(ctc.getBufferName(), Collections.emptyList());
-          boolean matches = currentTypes.stream().anyMatch(ct -> {
-            return ct.isA(ctc.getChunkType());
-          });
+    return (prod) -> {
 
-          if (!matches) return false;
-        }
-      return true;
+      return alreadyTested.computeIfAbsent(prod, p -> {
+        for (ICondition condition : p.getSymbolicProduction().getConditions())
+          if (condition instanceof ChunkTypeCondition)
+          {
+            ChunkTypeCondition ctc = (ChunkTypeCondition) condition;
+            Collection<IChunkType> currentTypes = bufferContents
+                .getOrDefault(ctc.getBufferName(), Collections.emptyList());
+            boolean matches = currentTypes.stream().anyMatch(ct -> {
+              return ct.isA(ctc.getChunkType());
+            });
+
+            if (!matches) return false;
+          }
+        return true;
+      });
     };
 
   }
