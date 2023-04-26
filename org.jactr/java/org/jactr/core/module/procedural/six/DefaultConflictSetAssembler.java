@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import org.eclipse.collections.impl.factory.Maps;
+import org.eclipse.collections.impl.factory.Sets;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
@@ -16,7 +17,6 @@ import org.jactr.core.module.procedural.IProceduralModule;
 import org.jactr.core.production.IProduction;
 import org.jactr.core.production.condition.ChunkTypeCondition;
 import org.jactr.core.production.condition.ICondition;
-import org.jactr.core.utils.collections.FastSetFactory;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -56,7 +56,7 @@ public class DefaultConflictSetAssembler implements IConflictSetAssembler
     return _module;
   }
 
-  private Map<String, Collection<IChunkType>> bufferContentMap()
+  protected Map<String, Collection<IChunkType>> bufferContentMap()
   {
     Map<String, Collection<IChunkType>> rtn = Maps.mutable.empty();
     Collection<IChunk> source = new ArrayList<>(2);
@@ -76,10 +76,15 @@ public class DefaultConflictSetAssembler implements IConflictSetAssembler
     return rtn;
   }
 
-  private Predicate<IProduction> getSelectionPredicate(
+  protected Map<IProduction, Boolean> createMapForPredicate()
+  {
+    return Maps.mutable.empty();
+  }
+
+  protected Predicate<IProduction> getSelectionPredicate(
       Map<String, Collection<IChunkType>> bufferContents)
   {
-    final Map<IProduction, Boolean> alreadyTested = Maps.mutable.empty();
+    final Map<IProduction, Boolean> alreadyTested = createMapForPredicate();
 
     return (prod) -> {
 
@@ -94,84 +99,82 @@ public class DefaultConflictSetAssembler implements IConflictSetAssembler
               return ct.isA(ctc.getChunkType());
             });
 
-            if (!matches) return false;
+            if (!matches) return Boolean.FALSE;
           }
-        return true;
+        return Boolean.TRUE;
       });
     };
 
   }
 
+  protected Set<IProduction> getConflictSetForBuffer(IActivationBuffer buffer,
+      Predicate<IProduction> selector, Set<IProduction> container)
+  {
+    Set<IProduction> candidates = Sets.mutable.empty();
+    String bufferName = buffer.getName().toLowerCase();
+
+    /*
+     * first, the buffer ambiguous
+     */
+    getPossibleProductions(bufferName, null, candidates, selector);
+
+    if (candidates.size() != 0)
+    {
+      if (LOGGER.isDebugEnabled())
+        LOGGER.debug(String.format("%s yielded %s", buffer, candidates));
+      container.addAll(candidates);
+    }
+    else if (LOGGER.isDebugEnabled()) LOGGER.debug(String
+        .format("%s buffer yielded no ambiguous buffer productions", buffer));
+
+    // get the source contents
+    for (IChunk chunk : buffer.getSourceChunks())
+    {
+      candidates.clear();
+
+      IChunkType chunkType = chunk.getSymbolicChunk().getChunkType();
+      getPossibleProductions(buffer.getName(), chunkType, candidates, selector);
+
+      if (candidates.size() != 0)
+      {
+        if (LOGGER.isDebugEnabled())
+          LOGGER.debug(String.format("Chunktype : %s in %s yielded %s",
+              chunkType, buffer, candidates));
+
+        container.addAll(candidates);
+      }
+      else if (LOGGER.isDebugEnabled()) LOGGER.debug(
+          String.format("%s in %s buffer yielded no candidate productions",
+              chunk, buffer.getName()));
+    }
+    return container;
+  }
+
   public Set<IProduction> getConflictSet(Set<IProduction> container)
   {
-    Set<IProduction> candidates = FastSetFactory.newInstance();
     Map<String, Collection<IChunkType>> chunkTypesInBuffers = bufferContentMap();
     Predicate<IProduction> selector = getSelectionPredicate(
         chunkTypesInBuffers);
     for (IActivationBuffer buffer : getProceduralModule().getModel()
         .getActivationBuffers())
     {
-      candidates.clear();
-
-      String bufferName = buffer.getName().toLowerCase();
-
-      /*
-       * first, the buffer ambiguous
-       */
-      getPossibleProductions(bufferName, null, candidates, selector);
-
-      if (candidates.size() != 0)
-      {
-        if (LOGGER.isDebugEnabled())
-          LOGGER.debug(String.format("%s yielded %s", buffer, candidates));
-        container.addAll(candidates);
-      }
-      else if (LOGGER.isDebugEnabled()) LOGGER.debug(String
-          .format("%s buffer yielded no ambiguous buffer productions", buffer));
-
-      // get the source contents
-      for (IChunk chunk : buffer.getSourceChunks())
-      {
-        candidates.clear();
-
-        IChunkType chunkType = chunk.getSymbolicChunk().getChunkType();
-        getPossibleProductions(buffer.getName(), chunkType, candidates,
-            selector);
-
-        if (candidates.size() != 0)
-        {
-          if (LOGGER.isDebugEnabled())
-            LOGGER.debug(String.format("Chunktype : %s in %s yielded %s",
-                chunkType, buffer, candidates));
-
-          container.addAll(candidates);
-        }
-        else if (LOGGER.isDebugEnabled()) LOGGER.debug(
-            String.format("%s in %s buffer yielded no candidate productions",
-                chunk, buffer.getName()));
-      }
-
+      Set<IProduction> candidates = getConflictSetForBuffer(buffer, selector,
+          Sets.mutable.empty());
+      container.addAll(candidates);
     }
 
     // and the completely ambiguous set
-    candidates.clear();
-    getPossibleProductions(null, null, candidates, selector);
-
-    if (LOGGER.isDebugEnabled())
-      LOGGER.debug(String.format("Ambiguous productions %s", candidates));
-
-    container.addAll(candidates);
+    container.addAll(
+        getPossibleProductions(null, null, Sets.mutable.empty(), selector));
 
     if (LOGGER.isDebugEnabled())
       LOGGER.debug(String.format("%d candidates", container.size()));
-
-    FastSetFactory.recycle(candidates);
 
     return container;
 
   }
 
-  public Set<IProduction> getPossibleProductions(String bufferName,
+  protected Set<IProduction> getPossibleProductions(String bufferName,
       IChunkType chunkType, Set<IProduction> container,
       Predicate<IProduction> selector)
   {
@@ -179,13 +182,13 @@ public class DefaultConflictSetAssembler implements IConflictSetAssembler
         .getProductions(bufferName, chunkType, container, selector);
   }
 
-  public Set<IProduction> getPossibleProductions(String bufferName,
+  protected Set<IProduction> getPossibleProductions(String bufferName,
       Set<IProduction> container, Predicate<IProduction> selector)
   {
     return getPossibleProductions(bufferName, null, container, selector);
   }
 
-  public Set<IProduction> getAmbiguousProductions(Set<IProduction> container,
+  protected Set<IProduction> getAmbiguousProductions(Set<IProduction> container,
       Predicate<IProduction> selector)
   {
     return getPossibleProductions(null, null, container, selector);
