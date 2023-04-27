@@ -23,15 +23,15 @@ import org.jactr.core.utils.collections.SkipListSetFactory;
  * 
  * @author harrison
  */
-public class PartialSingleThreadedSearchDelegate implements ISearchDelegate
+public class DefaultPartialSearchDelegate implements ISearchDelegate
 {
   /**
    * Logger definition
    */
   static private final transient org.slf4j.Logger LOGGER = LoggerFactory
-                                                .getLogger(PartialSingleThreadedSearchDelegate.class);
+                                                .getLogger(DefaultPartialSearchDelegate.class);
 
-  public PartialSingleThreadedSearchDelegate()
+  public DefaultPartialSearchDelegate()
   {
 
   }

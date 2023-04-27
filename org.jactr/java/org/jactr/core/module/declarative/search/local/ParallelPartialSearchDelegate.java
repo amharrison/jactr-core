@@ -23,15 +23,15 @@ import org.jactr.core.utils.collections.SkipListSetFactory;
  * 
  * @author harrison
  */
-public class PartialParallelSearchDelegate extends ExactParallelSearchDelegate
+public class ParallelPartialSearchDelegate extends ParallelExactSearchDelegate
 {
   /**
    * Logger definition
    */
   static private final transient org.slf4j.Logger LOGGER = LoggerFactory
-                                                .getLogger(PartialParallelSearchDelegate.class);
+                                                .getLogger(ParallelPartialSearchDelegate.class);
 
-  public PartialParallelSearchDelegate()
+  public ParallelPartialSearchDelegate()
   {
   }
 

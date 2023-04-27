@@ -18,6 +18,7 @@ import java.util.Comparator;
 
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.module.declarative.search.filter.IChunkFilter;
+import org.jactr.core.module.declarative.search.local.ISearchDelegate;
 import org.jactr.core.production.request.ChunkTypeRequest;
 
 /**
@@ -62,10 +63,18 @@ public interface ISearchSystem
   public void clear();
   
 //  public void addListener(ISearchListener listener, Executor executor);
-//  
+//
 //  public void removeListener(ISearchListener listener);
-//  
+//
 //  public boolean hasListeners();
+
+  public ISearchDelegate getExactSearchDelegate();
+
+  public ISearchDelegate getPartialSearchDelegate();
+
+  public void setExactSearchDelegate(ISearchDelegate delegate);
+
+  public void setPartialSearchDelegate(ISearchDelegate delegate);
 }
 
 

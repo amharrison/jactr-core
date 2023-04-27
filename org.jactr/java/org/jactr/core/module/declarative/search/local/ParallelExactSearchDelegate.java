@@ -38,13 +38,13 @@ import org.slf4j.LoggerFactory;
  * 
  * @author harrison
  */
-public class ExactParallelSearchDelegate implements ISearchDelegate
+public class ParallelExactSearchDelegate implements ISearchDelegate
 {
   /**
    * Logger definition
    */
   static private final transient org.slf4j.Logger LOGGER            = LoggerFactory
-                                                           .getLogger(ExactParallelSearchDelegate.class);
+                                                           .getLogger(ParallelExactSearchDelegate.class);
 
   protected final boolean            _enableNotFilters = Boolean
                                                            .getBoolean("jactr.search.enableNotFilters");
@@ -56,7 +56,7 @@ public class ExactParallelSearchDelegate implements ISearchDelegate
   protected final boolean            _testNotFilter    = Boolean
                                                            .getBoolean("jactr.search.testNotFilters");
 
-  public ExactParallelSearchDelegate()
+  public ParallelExactSearchDelegate()
   {
 
   }

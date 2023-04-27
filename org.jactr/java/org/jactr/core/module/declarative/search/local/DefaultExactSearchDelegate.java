@@ -29,13 +29,13 @@ import org.slf4j.LoggerFactory;
  * 
  * @author harrison
  */
-public class ExactSingleThreadedSearchDelegate implements ISearchDelegate
+public class DefaultExactSearchDelegate implements ISearchDelegate
 {
   /**
    * Logger definition
    */
   static private final transient org.slf4j.Logger LOGGER            = LoggerFactory
-      .getLogger(ExactSingleThreadedSearchDelegate.class);
+      .getLogger(DefaultExactSearchDelegate.class);
 
   protected final boolean                         _enableNotFilters = Boolean
       .getBoolean("jactr.search.enableNotFilters");
@@ -47,7 +47,7 @@ public class ExactSingleThreadedSearchDelegate implements ISearchDelegate
   protected final boolean                         _testNotFilter    = Boolean
       .getBoolean("jactr.search.testNotFilters");
 
-  public ExactSingleThreadedSearchDelegate()
+  public DefaultExactSearchDelegate()
   {
 
   }

@@ -64,6 +64,7 @@ import org.jactr.core.module.declarative.search.ISearchSystem;
 import org.jactr.core.module.declarative.search.filter.IChunkFilter;
 import org.jactr.core.module.declarative.search.filter.ILoggedChunkFilter;
 import org.jactr.core.module.declarative.search.local.DefaultSearchSystem;
+import org.jactr.core.module.declarative.search.local.ISearchDelegate;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.utils.StringUtilities;
 import org.jactr.core.utils.collections.SkipListSetFactory;
@@ -124,6 +125,10 @@ public class DefaultDeclarativeModule extends AbstractDeclarativeModule
   static public final String          CHUNK_TYPE_NAMER_PARAM               = "ChunkTypeNamerClass";
 
   static public final String          CHUNK_TYPE_CONFIGURATOR_PARAM        = "ChunkTypeConfiguratorClass";
+
+  static public final String          EXACT_SEARCH_DELEGATE_PARAM          = "ExactSearchDelegateClass";
+
+  static public final String          PARTIAL_SEARCH_DELEGATE_PARAM        = "PartialSearchDelegateClass";
 
   protected ReentrantReadWriteLock    _chunkTypeLock;
 
@@ -662,6 +667,10 @@ public class DefaultDeclarativeModule extends AbstractDeclarativeModule
       return getChunkTypeNamer().getClass().getName();
     else if (CHUNK_TYPE_CONFIGURATOR_PARAM.equalsIgnoreCase(key))
       return getChunkTypeConfigurator().getClass().getName();
+    else if (EXACT_SEARCH_DELEGATE_PARAM.equalsIgnoreCase(key))
+      return getSearchSystem().getExactSearchDelegate().getClass().getName();
+    else if (PARTIAL_SEARCH_DELEGATE_PARAM.equalsIgnoreCase(key))
+      return getSearchSystem().getPartialSearchDelegate().getClass().getName();
     return null;
   }
 
@@ -684,6 +693,8 @@ public class DefaultDeclarativeModule extends AbstractDeclarativeModule
     rtn.add(SUBSYMBOLIC_CHUNK_TYPE_FACTORY_PARAM);
     rtn.add(CHUNK_TYPE_NAMER_PARAM);
     rtn.add(CHUNK_TYPE_CONFIGURATOR_PARAM);
+    rtn.add(EXACT_SEARCH_DELEGATE_PARAM);
+    rtn.add(PARTIAL_SEARCH_DELEGATE_PARAM);
 
     return rtn;
   }
@@ -805,7 +816,20 @@ public class DefaultDeclarativeModule extends AbstractDeclarativeModule
       }
       setChunkTypeConfigurator(factory);
     }
-
+    else if (EXACT_SEARCH_DELEGATE_PARAM.equalsIgnoreCase(key))
+    {
+      ISearchDelegate delegate = (ISearchDelegate) instantiate(value);
+      if (delegate == null) if (LOGGER.isWarnEnabled())
+        LOGGER.warn(String.format("Could not instantiate %s", value));
+      getSearchSystem().setExactSearchDelegate(delegate);
+    }
+    else if (PARTIAL_SEARCH_DELEGATE_PARAM.equalsIgnoreCase(key))
+    {
+      ISearchDelegate delegate = (ISearchDelegate) instantiate(value);
+      if (delegate == null) if (LOGGER.isWarnEnabled())
+        LOGGER.warn(String.format("Could not instantiate %s", value));
+      getSearchSystem().setPartialSearchDelegate(delegate);
+    }
     else if (LOGGER.isWarnEnabled()) LOGGER.warn(
         String.format("%s doesn't recognize %s. Available parameters : %s",
             getClass().getSimpleName(), key, getSetableParameters()));

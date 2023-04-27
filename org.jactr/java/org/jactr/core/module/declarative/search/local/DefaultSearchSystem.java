@@ -134,9 +134,9 @@ public class DefaultSearchSystem implements ISearchSystem
   private boolean                                           _testNotFilter       = Boolean
                                                                                      .getBoolean("jactr.search.testNotFilters");
 
-  private ISearchDelegate                                   _exactSearch         = new ExactSingleThreadedSearchDelegate();
+  private ISearchDelegate                                   _exactSearch         = new DefaultExactSearchDelegate();
 
-  private ISearchDelegate                                   _partialSearch       = new PartialSingleThreadedSearchDelegate();
+  private ISearchDelegate                                   _partialSearch       = new DefaultPartialSearchDelegate();
 
   public DefaultSearchSystem(IDeclarativeModule module)
   {
@@ -146,25 +146,7 @@ public class DefaultSearchSystem implements ISearchSystem
     _module = module;
   }
 
-  public void setExactDelegate(ISearchDelegate exact)
-  {
-    _exactSearch = exact;
-  }
 
-  public void setPartialDelegate(ISearchDelegate partial)
-  {
-    _partialSearch = partial;
-  }
-
-  public ISearchDelegate getExactDelegate()
-  {
-    return _exactSearch;
-  }
-
-  public ISearchDelegate getPartialDelegate()
-  {
-    return _partialSearch;
-  }
 
   public void clear()
   {
@@ -236,7 +218,7 @@ public class DefaultSearchSystem implements ISearchSystem
 
   /**
    * old test code for threaded search, migrated to
-   * {@link ExactParallelSearchDelegate}
+   * {@link ParallelExactSearchDelegate}
    * 
    * @param pattern
    * @return
@@ -317,7 +299,7 @@ public class DefaultSearchSystem implements ISearchSystem
 
   /**
    * Moved to
-   * {@link ExactSingleThreadedSearchDelegate#sortPattern(IChunkType, Collection, List, DefaultSearchSystem)}
+   * {@link DefaultExactSearchDelegate#sortPattern(IChunkType, Collection, List, DefaultSearchSystem)}
    * sort the slots by the guessed size of the result set. This is only used by
    * findExact. We also convert not's into filters instead whereever possible
    * 
@@ -378,7 +360,7 @@ public class DefaultSearchSystem implements ISearchSystem
 
   /**
    * Moved to
-   * {@link ExactSingleThreadedSearchDelegate#sortPatternOriginal(IChunkType, Collection, DefaultSearchSystem)}
+   * {@link DefaultExactSearchDelegate#sortPatternOriginal(IChunkType, Collection, DefaultSearchSystem)}
    * sort the slots by the guessed size of the result set.
    * 
    * @param chunkType
@@ -402,7 +384,7 @@ public class DefaultSearchSystem implements ISearchSystem
 
   /**
    * old single threaded search. moved to
-   * {@link ExactSingleThreadedSearchDelegate}
+   * {@link DefaultExactSearchDelegate}
    * 
    * @param pattern
    * @param sortRule
@@ -521,7 +503,7 @@ public class DefaultSearchSystem implements ISearchSystem
   }
 
   /**
-   * moved to {@link PartialSingleThreadedSearchDelegate} default fuzzy search.
+   * moved to {@link DefaultPartialSearchDelegate} default fuzzy search.
    * 
    * @param pattern
    * @param sortRule
@@ -1163,6 +1145,31 @@ public class DefaultSearchSystem implements ISearchSystem
       LOGGER.debug("Returning " + typeValueMap + " for " + typeSlotNameIndexKey
           + "=" + value);
     return typeValueMap;
+  }
+
+  @Override
+  public ISearchDelegate getExactSearchDelegate()
+  {
+    return _exactSearch;
+  }
+
+  @Override
+  public ISearchDelegate getPartialSearchDelegate()
+  {
+    return _partialSearch;
+  }
+
+  @Override
+  public void setExactSearchDelegate(ISearchDelegate delegate)
+  {
+    _exactSearch = delegate;
+  }
+
+  @Override
+  public void setPartialSearchDelegate(ISearchDelegate delegate)
+  {
+    _partialSearch = delegate;
+
   }
 
   // public void addListener(ISearchListener listener, Executor executor)
