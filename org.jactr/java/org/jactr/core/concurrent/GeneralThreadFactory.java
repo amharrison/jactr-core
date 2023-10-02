@@ -36,38 +36,15 @@ public class GeneralThreadFactory implements ThreadFactory
 
   public Thread newThread(final Runnable r)
   {
-    Thread t = null;
-
-    Runnable defensive = new Runnable() {
-      public void run()
-      {
-        try
-        {
-          r.run();
-        }
-        catch (Throwable thrown)
-        {
-          LOGGER
-              .error("Uncaught exception on " + Thread.currentThread().getName()
-                  + ", while executing " + r + "(" + r.getClass().getName()
-                  + ") : " + thrown.getMessage() + " ", thrown);
-        }
-      }
-    };
-
-    t = new Thread(defensive);
-
-    t.setName(_nameTemplate + "-" + (++_count));
-
-    t.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+    Thread t = Thread.ofVirtual().name(_nameTemplate + "-" + (++_count))
+        .uncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 
       public void uncaughtException(Thread t, Throwable e)
       {
         LOGGER.error("Uncaught exception on " + t + " : ", e);
       }
 
-    });
-
+        }).unstarted(r);
     return t;
   }
 
