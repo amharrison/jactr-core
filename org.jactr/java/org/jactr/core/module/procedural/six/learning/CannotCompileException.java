@@ -12,5 +12,15 @@ public class CannotCompileException extends Exception {
 		super(message);
 	}
 
+    /**
+     * no need for stack traces here
+     * 
+     * @see java.lang.Throwable#fillInStackTrace()
+     */
+    @Override
+    public Throwable fillInStackTrace()
+    {
+      return this;
+    }
 
 }
