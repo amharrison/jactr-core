@@ -25,14 +25,14 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>org.commonreality.time</groupId>
+			<groupId>org.commonreality</groupId>
 			<artifactId>org.commonreality.time</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.5.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.commonreality.sensors.xml</groupId>
+			<groupId>org.commonreality</groupId>
 			<artifactId>org.commonreality.sensors.xml</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.5.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jactr</groupId>
