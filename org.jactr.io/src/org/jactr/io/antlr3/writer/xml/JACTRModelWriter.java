@@ -34,7 +34,7 @@ public class JACTRModelWriter extends CodeGeneratorWriter
    */
   public JACTRModelWriter(boolean trimImports)
   {
-    super(CodeGeneratorFactory.getCodeGenerator("jactr"), trimImports);
+    super(CodeGeneratorFactory.getCodeGenerator("jactrx"), trimImports);
   }
 
   public JACTRModelWriter()
