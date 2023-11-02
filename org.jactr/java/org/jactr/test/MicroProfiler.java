@@ -4,16 +4,20 @@ import java.io.PrintStream;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.slf4j.LoggerFactory;
 
 public class MicroProfiler {
-	static private final transient org.slf4j.Logger LOGGER = LoggerFactory.getLogger(MicroProfiler.class);
+	
 
 	final private SummaryStatistics _stats = new SummaryStatistics();
 	final private String _name;
+	private long _warmUp = -1;
 
 	private MicroProfiler(String name) {
 		_name = name;
+	}
+	
+	public void withWarmup(long warmup) {
+	  _warmUp = warmup;
 	}
 
 	public void time(Runnable runner) {
@@ -35,7 +39,14 @@ public class MicroProfiler {
 			long delta = System.nanoTime() - start;
 			double seconds = delta * 1E-6;
 			_stats.addValue(seconds);
+			//handle the warmup
+			if(_stats.getN()==_warmUp)
+			  _stats.clear();
 		}
+	}
+	
+	public SummaryStatistics getStats() {
+	  return _stats;
 	}
 
 	public static MicroProfiler profiling(Object object) {
