@@ -15,6 +15,7 @@ import org.jactr.core.logging.Logger;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.declarative.IDeclarativeModule;
 import org.jactr.core.slot.IMutableSlot;
+import org.jactr.core.utils.StringUtilities;
 import org.jactr.modules.pm.common.memory.IPerceptualEncoder;
 import org.jactr.modules.pm.common.memory.IPerceptualMemory;
 import org.jactr.modules.pm.visual.IVisualModule;
@@ -327,7 +328,7 @@ public abstract class AbstractVisualEncoder implements IPerceptualEncoder
 
       IModel model = memory.getModule().getModel();
       if (Logger.hasLoggers(model)) Logger.log(model, Logger.Stream.VISUAL,
-          "Updated precoding of " + encoding);
+          "Updated precoding of " + StringUtilities.toString(encoding));
 
     }
     catch (Exception e)

@@ -25,51 +25,53 @@ import org.jactr.io2.source.SourceGeneratorManager;
 public class ProductionCompilationListener implements IInstrument
 {
 
-  private IProceduralLearningModule6Listener _listener         = new IProceduralLearningModule6Listener() {
+  private IProceduralLearningModule6Listener _listener            = new IProceduralLearningModule6Listener() {
 
-                                                                 @Override
-                                                                 public void stopReward(
-                                                                     ProceduralLearningEvent event)
-                                                                 {
+                                                                    @Override
+                                                                    public void stopReward(
+                                                                        ProceduralLearningEvent event)
+                                                                    {
 
-                                                                 }
+                                                                    }
 
-                                                                 @Override
-                                                                 public void startReward(
-                                                                     ProceduralLearningEvent event)
-                                                                 {
+                                                                    @Override
+                                                                    public void startReward(
+                                                                        ProceduralLearningEvent event)
+                                                                    {
 
-                                                                 }
+                                                                    }
 
-                                                                 @Override
-                                                                 public void rewarded(
-                                                                     ProceduralLearningEvent event)
-                                                                 {
+                                                                    @Override
+                                                                    public void rewarded(
+                                                                        ProceduralLearningEvent event)
+                                                                    {
 
-                                                                 }
+                                                                    }
 
-                                                                 @Override
-                                                                 public void productionNotCompiled(
-                                                                     ProceduralLearningEvent event)
-                                                                 {
-                                                                   notCompiled(
-                                                                       event);
-                                                                 }
+                                                                    @Override
+                                                                    public void productionNotCompiled(
+                                                                        ProceduralLearningEvent event)
+                                                                    {
+                                                                      notCompiled(
+                                                                          event);
+                                                                    }
 
-                                                                 @Override
-                                                                 public void productionCompiled(
-                                                                     ProceduralLearningEvent event)
-                                                                 {
-                                                                   compiled(
-                                                                       event);
-                                                                 }
-                                                               };
+                                                                    @Override
+                                                                    public void productionCompiled(
+                                                                        ProceduralLearningEvent event)
+                                                                    {
+                                                                      compiled(
+                                                                          event);
+                                                                    }
+                                                                  };
 
-  private Map<IModel, PrintStream>           _writers          = new HashMap<>();
+  private Map<IModel, PrintStream>           _writers             = new HashMap<>();
 
   private IASTGenerator                      _ast;
 
-  private Map<IProduction, Set<IProduction>> _failedAndWritten = new HashMap<>();
+  private Map<IProduction, Set<IProduction>> _failedAndWritten    = new HashMap<>();
+
+  private Map<IProduction, Set<IProduction>> _succeededAndWritten = new HashMap<>();
 
   @Override
   public void install(IModel model)
@@ -84,7 +86,7 @@ public class ProductionCompilationListener implements IInstrument
       PrintStream ps = null;
       _writers.put(model, ps = new PrintStream(new FileOutputStream(
           new File(model.getName() + ".production.trace.xml"))));
-      
+
       ps.println("<trace>");
       ps.flush();
     }
@@ -99,6 +101,7 @@ public class ProductionCompilationListener implements IInstrument
   public void uninstall(IModel model)
   {
     _failedAndWritten.clear();
+    _succeededAndWritten.clear();
     _ast = null;
 
     IProceduralLearningModule6 procMod = (IProceduralLearningModule6) model
@@ -106,7 +109,7 @@ public class ProductionCompilationListener implements IInstrument
     procMod.removeListener(_listener);
 
     PrintStream ps = _writers.remove(model);
-    ps.println("</trace>");		
+    ps.println("</trace>");
     ps.close();
   }
 
@@ -121,33 +124,52 @@ public class ProductionCompilationListener implements IInstrument
     String format = "jactr";
     IProduction[] parents = event.getParents();
     IProduction child = event.getProduction();
-
-    Object[] asts = new Object[3];
-    asts[0] = _ast.generate(parents[0], format);
-    asts[1] = _ast.generate(parents[1], format);
-    asts[2] = _ast.generate(child, format);
-
-    String[] codes = new String[3];
-    for (int i = 0; i < 3; i++)
-    {
-      ISourceGenerator source = SourceGeneratorManager.get()
-          .getSourceGenerator(null, format).get();
-      codes[i] = source.generate(asts[i], format);
-    }
-
     PrintStream ps = _writers.get(event.getSource().getModel());
-    ps.println("<compiled cycle=\"" + event.getSource().getModel()
-        .getProceduralModule().getNumberOfProductionsFired() + "\">");
-    for (int i = 0; i < 2; i++)
+
+    // already written, write in short form
+    if (_succeededAndWritten.getOrDefault(parents[0], Collections.emptySet())
+        .contains(parents[1]))
     {
-      ps.println("  <parent><![CDATA[");
-      ps.println(codes[i]);
-      ps.println("  ]]></parent>");
+      ps.println("<compiled cycle=\"" + event.getSource().getModel()
+          .getProceduralModule().getNumberOfProductionsFired() + "\">");
+      ps.println("  <parent>" + parents[0].getSymbolicProduction().getName()
+          + "</parent>");
+      ps.println("  <parent>" + parents[1].getSymbolicProduction().getName()
+          + "</parent>");
+      ps.println(
+          "  <child>" + child.getSymbolicProduction().getName() + "</child>");
+      ps.println("</compiled>");
+      return;
     }
-    ps.println("  <child><![CDATA[");
-    ps.println(codes[2]);
-    ps.println("  ]]></child>");
-    ps.println("</compiled>");
+    else
+    {
+      // long form
+      Object[] asts = new Object[3];
+      asts[0] = _ast.generate(parents[0], format);
+      asts[1] = _ast.generate(parents[1], format);
+      asts[2] = _ast.generate(child, format);
+
+      String[] codes = new String[3];
+      for (int i = 0; i < 3; i++)
+      {
+        ISourceGenerator source = SourceGeneratorManager.get()
+            .getSourceGenerator(null, format).get();
+        codes[i] = source.generate(asts[i], format);
+      }
+
+      ps.println("<compiled cycle=\"" + event.getSource().getModel()
+          .getProceduralModule().getNumberOfProductionsFired() + "\">");
+      for (int i = 0; i < 2; i++)
+      {
+        ps.println("  <parent><![CDATA[");
+        ps.println(codes[i]);
+        ps.println("  ]]></parent>");
+      }
+      ps.println("  <child><![CDATA[");
+      ps.println(codes[2]);
+      ps.println("  ]]></child>");
+      ps.println("</compiled>");
+    }
 
     ps.flush();
   }
@@ -197,7 +219,7 @@ public class ProductionCompilationListener implements IInstrument
       ps.println("  ]]></parent>");
     }
     ps.println("</compile-failed>");
-    
+
     ps.flush();
 
     // add to the list of written

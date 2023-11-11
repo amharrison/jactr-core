@@ -73,6 +73,10 @@ public class DefaultProductionCompiler6 implements IProductionCompiler
   {
     evaluator = new ProductionCompilerEvaluator();
   }
+  
+  public ProductionCompilerEvaluator getEvaluator() {
+    return evaluator;
+  }
 
   protected LRUMap getLRUMap(IInstantiation instantiation)
   {
