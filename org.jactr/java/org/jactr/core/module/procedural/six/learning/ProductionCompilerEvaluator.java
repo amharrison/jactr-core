@@ -37,12 +37,19 @@ public class ProductionCompilerEvaluator
 
     public int mask()
     {
-      return (int) Math.pow(2, ordinal());
+      return 1 << ordinal();
     }
 
     public boolean isOn(int mask)
     {
       return (mask | mask()) == mask;
+    }
+    
+    static public int mask(Operation ...operations) {
+      int mask = 0;
+      for(Operation operator : operations)
+        mask |= operator.mask();
+      return mask;
     }
   }
 

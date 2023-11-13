@@ -48,9 +48,14 @@ public class DefaultController implements IController
 
   final private Set<ExecutorService> _executors     = new HashSet<ExecutorService>();
 
-  public DefaultController()
+  
+  public DefaultController() {
+    this(false);
+  }
+  
+  public DefaultController(boolean runEmbedded)
   {
-    _state = new RuntimeState();
+    _state = new RuntimeState(runEmbedded);
     _runtimeListener = new RuntimeListener(_state) {
       @Override
       public void modelAdded(ACTRRuntimeEvent event)

@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
- 
 import org.slf4j.LoggerFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.model.IModel;
@@ -24,20 +23,23 @@ public class RuntimeState
    * Logger definition
    */
   static private final transient org.slf4j.Logger LOGGER = LoggerFactory
-                                                .getLogger(RuntimeState.class);
+      .getLogger(RuntimeState.class);
 
-  final private Collection<IModel>   _startingModels;
+  final private Collection<IModel>                _startingModels;
 
-  final private Collection<IModel>   _activeModels;
+  final private Collection<IModel>                _activeModels;
 
-  final private Collection<IModel>   _inactiveModels;
+  final private Collection<IModel>                _inactiveModels;
 
-  final private Collection<IModel>   _suspendedModels;
+  final private Collection<IModel>                _suspendedModels;
 
-  final private Lock                 _lock  = new ReentrantLock();
+  final private Lock                              _lock  = new ReentrantLock();
 
-  public RuntimeState()
+  final private boolean                           _fireCRControlEvents;
+
+  public RuntimeState(boolean fireCRControlEvents)
   {
+    _fireCRControlEvents = fireCRControlEvents;
     _startingModels = new HashSet<IModel>();
     _activeModels = new HashSet<IModel>();
     _inactiveModels = new HashSet<IModel>();
@@ -146,7 +148,8 @@ public class RuntimeState
     /*
      * connect to CR or local
      */
-    runtime.getConnector().start();
+    if (_fireCRControlEvents && !runtime.getConnector().isRunning())
+      runtime.getConnector().start();
 
     /*
      * and the custom start up
@@ -334,10 +337,9 @@ public class RuntimeState
 
         fireStopped = _inactiveModels.containsAll(runtime.getModels());
       }
-      else if (LOGGER.isWarnEnabled())
-        LOGGER.warn(String.format(
-            "%s has stopped, but we have no record of it running or starting",
-            model.getName()));
+      else if (LOGGER.isWarnEnabled()) LOGGER.warn(String.format(
+          "%s has stopped, but we have no record of it running or starting",
+          model.getName()));
     }
     finally
     {
@@ -363,7 +365,7 @@ public class RuntimeState
         deferred = e;
       }
 
-      try
+      if (_fireCRControlEvents && runtime.getConnector().isRunning()) try
       {
         if (LOGGER.isDebugEnabled()) LOGGER.debug("Stopping connector");
         runtime.getConnector().stop();
@@ -374,9 +376,8 @@ public class RuntimeState
         deferred = e;
       }
 
-      if (runtime.hasListeners())
-        runtime.dispatch(new ACTRRuntimeEvent(null,
-            ACTRRuntimeEvent.Type.STOPPED, deferred));
+      if (runtime.hasListeners()) runtime.dispatch(
+          new ACTRRuntimeEvent(null, ACTRRuntimeEvent.Type.STOPPED, deferred));
     }
   }
 

@@ -77,9 +77,14 @@ public class DebugController extends DefaultController implements
 
   private IACTRRuntimeListener                                 _runtimeListener;
 
-  public DebugController()
+  
+  public DebugController() {
+    this(false);
+  }
+  
+  public DebugController(boolean useEmbedded)
   {
-    super();
+    super(useEmbedded);
     _disabledProductions = new HashSet<IProduction>();
     _breakpoints = new HashMap<IModel, Map<BreakpointType, Collection<Object>>>();
 

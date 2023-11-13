@@ -113,7 +113,12 @@ public class RuntimeBuilder
   public IController build()
   {
     buildInternal();
-    return defaultController();
+    return defaultController(false);
+  }
+  
+  public IController buildEmbedded() {
+    buildInternal();
+    return defaultController(true);
   }
 
   /**
@@ -125,21 +130,26 @@ public class RuntimeBuilder
   public IController debugBuild()
   {
     buildInternal();
-    return debugController();
+    return debugController(false);
+  }
+  
+  public IController debugBuildEmbedded() {
+    buildInternal();
+    return debugController(true);
   }
 
-  protected DefaultController defaultController()
+  protected DefaultController defaultController(boolean runEmbedded)
   {
     ACTRRuntime runtime = ACTRRuntime.getRuntime();
-    DefaultController controller = new DefaultController();
+    DefaultController controller = new DefaultController(runEmbedded);
     runtime.setController(controller);
     return controller;
   }
 
-  protected DebugController debugController()
+  protected DebugController debugController(boolean runEmbedded)
   {
     ACTRRuntime runtime = ACTRRuntime.getRuntime();
-    DebugController controller = new DebugController();
+    DebugController controller = new DebugController(runEmbedded);
     runtime.setController(controller);
     return controller;
   }
