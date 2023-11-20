@@ -79,12 +79,12 @@ public class DebugController extends DefaultController implements
 
   
   public DebugController() {
-    this(false);
+    this(true);
   }
   
-  public DebugController(boolean useEmbedded)
+  public DebugController(boolean propogateSignalToCR)
   {
-    super(useEmbedded);
+    super(propogateSignalToCR);
     _disabledProductions = new HashSet<IProduction>();
     _breakpoints = new HashMap<IModel, Map<BreakpointType, Collection<Object>>>();
 

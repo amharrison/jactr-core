@@ -41,7 +41,10 @@ public class MicroProfiler {
 			_stats.addValue(seconds);
 			//handle the warmup
 			if(_stats.getN()==_warmUp)
-			  _stats.clear();
+			  {
+			   _stats.clear();
+			   _warmUp = -1;
+			  }
 		}
 	}
 	

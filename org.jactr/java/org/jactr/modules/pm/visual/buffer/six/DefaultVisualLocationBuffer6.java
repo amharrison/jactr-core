@@ -54,7 +54,7 @@ public class DefaultVisualLocationBuffer6 extends AbstractPMActivationBuffer6
   /**
    * logger definition
    */
-  static public final transient org.slf4j.Logger LOGGER             = LoggerFactory
+  static public final transient org.slf4j.Logger LOGGER = LoggerFactory
       .getLogger(DefaultVisualLocationBuffer6.class);
 
   protected IChunk                               _currentVisualLocation;
@@ -68,7 +68,6 @@ public class DefaultVisualLocationBuffer6 extends AbstractPMActivationBuffer6
   protected VisualSearchRequestDelegate          _scanDelegate;
 
   protected ChunkTypeRequest                     _defaultSearchRequest;
-
 
   public DefaultVisualLocationBuffer6(IVisualActivationBuffer visualBuffer,
       IVisualModule module)
@@ -120,7 +119,8 @@ public class DefaultVisualLocationBuffer6 extends AbstractPMActivationBuffer6
 
     _currentVisualLocation = null;
 
-    if (_scanDelegate.isBufferStuffPending()) _scanDelegate.cancelBufferStuff();
+    if (_scanDelegate != null && _scanDelegate.isBufferStuffPending())
+      _scanDelegate.cancelBufferStuff();
 
     clearLastLocation();
     return source;

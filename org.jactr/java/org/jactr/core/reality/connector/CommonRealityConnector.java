@@ -56,6 +56,8 @@ public class CommonRealityConnector implements IConnector
   protected Map<IModel, IClock>    _allClocks;
 
   protected IClockConfigurator     _clockConfig;
+  
+  protected boolean _persistentRealityEnabled = false;
 
   public CommonRealityConnector()
   {
@@ -87,6 +89,19 @@ public class CommonRealityConnector implements IConnector
       }
 
     });
+  }
+  
+  /**
+   * called if we are to NOT shutdown the actr agent after the model terminates.
+   * This is necessary if you need to start and stop a model within a simulation session.
+   * 
+   */
+  public void persistent() {
+	  _persistentRealityEnabled = true;
+  }
+  
+  public boolean isPersistent() {
+	  return _persistentRealityEnabled;
   }
 
   /**
@@ -209,7 +224,7 @@ public class CommonRealityConnector implements IConnector
 
     // now we can disconnect from reality
     IAgent agentInterface = getAgent(model);
-    if (agentInterface != null)
+    if (agentInterface != null && !isPersistent())
       try
       {
         CommonReality.removeAgent(agentInterface);

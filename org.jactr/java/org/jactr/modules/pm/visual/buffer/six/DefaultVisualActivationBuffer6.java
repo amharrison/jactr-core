@@ -40,30 +40,34 @@ import org.slf4j.LoggerFactory;
  * @author developer
  */
 public class DefaultVisualActivationBuffer6 extends AbstractPMActivationBuffer6
-    implements IVisualActivationBuffer,ICompilableBuffer
+    implements IVisualActivationBuffer, ICompilableBuffer
 {
   /**
    * logger definition
    */
-  static public final transient org.slf4j.Logger           LOGGER = LoggerFactory
-                                               .getLogger(DefaultVisualActivationBuffer6.class);
+  static public final transient org.slf4j.Logger LOGGER = LoggerFactory
+      .getLogger(DefaultVisualActivationBuffer6.class);
 
-  protected IChunkType              _visualChunkType;
+  protected IChunkType                           _visualChunkType;
 
-  protected AttendToRequestDelegate _moveAttentionDelegate;
+  protected AttendToRequestDelegate              _moveAttentionDelegate;
 
-  protected AttendToRequestDelegate _attendToDelegate;
+  protected AttendToRequestDelegate              _attendToDelegate;
 
   public DefaultVisualActivationBuffer6(IVisualModule module)
   {
     super(IVisualModule.VISUAL_BUFFER, module);
   }
-  
+
   @Override
   protected Collection<IChunk> clearInternal()
   {
-    _moveAttentionDelegate.clear();
-    _attendToDelegate.clear();
+    //null if we haven't called grabReferences yet
+    if (_visualChunkType != null)
+    {
+      _moveAttentionDelegate.clear();
+      _attendToDelegate.clear();
+    }
     return super.clearInternal();
   }
 
@@ -72,20 +76,20 @@ public class DefaultVisualActivationBuffer6 extends AbstractPMActivationBuffer6
   {
     try
     {
-      _visualChunkType = getModel().getDeclarativeModule().getChunkType(
-          IVisualModule.VISUAL_CHUNK_TYPE).get();
+      _visualChunkType = getModel().getDeclarativeModule()
+          .getChunkType(IVisualModule.VISUAL_CHUNK_TYPE).get();
     }
     catch (Exception e)
     {
-      LOGGER.error("Could not get " + IVisualModule.VISUAL_CHUNK_TYPE
-          + " chunk type", e);
+      LOGGER.error(
+          "Could not get " + IVisualModule.VISUAL_CHUNK_TYPE + " chunk type",
+          e);
     }
 
     installDefaultChunkPatternProcessors();
 
     super.grabReferences();
   }
-
 
   protected void installDefaultChunkPatternProcessors()
   {
@@ -104,7 +108,8 @@ public class DefaultVisualActivationBuffer6 extends AbstractPMActivationBuffer6
        * the rest of these are chunktype specific requests
        */
       _moveAttentionDelegate = new AttendToRequestDelegate(
-          (IVisualModule) getModule(), model.getDeclarativeModule()
+          (IVisualModule) getModule(),
+          model.getDeclarativeModule()
               .getChunkType(IVisualModule.MOVE_ATTENTION_CHUNK_TYPE).get(),
           IVisualModule.SCREEN_POSITION_SLOT);
 
@@ -116,32 +121,31 @@ public class DefaultVisualActivationBuffer6 extends AbstractPMActivationBuffer6
        * different modules (much like clear was refactored)
        */
       _attendToDelegate = new AttendToRequestDelegate(
-          (IVisualModule) getModule(), model.getDeclarativeModule()
-              .getChunkType("attend-to").get(), "where");
+          (IVisualModule) getModule(),
+          model.getDeclarativeModule().getChunkType("attend-to").get(),
+          "where");
       addRequestDelegate(_attendToDelegate);
 
       addRequestDelegate(new ClearRequestDelegate(model.getDeclarativeModule()
           .getChunkType(IVisualModule.CLEAR_CHUNK_TYPE).get()));
-      addRequestDelegate(new AssignFINSTRequestDelegate(model
-          .getDeclarativeModule().getChunkType(
-              IVisualModule.ASSIGN_FINST_CHUNK_TYPE).get()));
-      addRequestDelegate(new StartTrackingRequestDelegate(model
-          .getDeclarativeModule().getChunkType(
-              IVisualModule.START_TRACKING_CHUNK_TYPE).get()));
+      addRequestDelegate(
+          new AssignFINSTRequestDelegate(model.getDeclarativeModule()
+              .getChunkType(IVisualModule.ASSIGN_FINST_CHUNK_TYPE).get()));
+      addRequestDelegate(
+          new StartTrackingRequestDelegate(model.getDeclarativeModule()
+              .getChunkType(IVisualModule.START_TRACKING_CHUNK_TYPE).get()));
 
-      addRequestDelegate(new SetDefaultSearchRequestDelegate(model
-          .getDeclarativeModule().getChunkType("set-default-visual-search")
-          .get()));
+      addRequestDelegate(
+          new SetDefaultSearchRequestDelegate(model.getDeclarativeModule()
+              .getChunkType("set-default-visual-search").get()));
 
       addRequestDelegate(new AbstractRequestDelegate(_visualChunkType) {
 
-
         @Override
-        protected void finishRequest(IRequest request,
-            IActivationBuffer buffer, Object startValue)
+        protected void finishRequest(IRequest request, IActivationBuffer buffer,
+            Object startValue)
         {
-          
-          
+
         }
 
         @Override
@@ -159,7 +163,8 @@ public class DefaultVisualActivationBuffer6 extends AbstractPMActivationBuffer6
         }
 
         @Override
-        protected Object startRequest(IRequest request, IActivationBuffer buffer, double requestTime)
+        protected Object startRequest(IRequest request,
+            IActivationBuffer buffer, double requestTime)
         {
           // TODO Auto-generated method stub
           return null;
@@ -192,9 +197,8 @@ public class DefaultVisualActivationBuffer6 extends AbstractPMActivationBuffer6
         LOGGER.debug("Chunk to insert has been disposed of setting error");
 
       IModel model = getModel();
-      if (Logger.hasLoggers(model))
-        Logger.log(model, Logger.Stream.VISUAL,
-            "visual chunk has disappeared, error");
+      if (Logger.hasLoggers(model)) Logger.log(model, Logger.Stream.VISUAL,
+          "visual chunk has disappeared, error");
 
       /*
        * set the error
@@ -207,6 +211,7 @@ public class DefaultVisualActivationBuffer6 extends AbstractPMActivationBuffer6
 
   /**
    * set the source chunk and flag the FINST for the visual object as attended
+   * 
    * @param chunk
    * @see org.jactr.core.buffer.delegate.DefaultDelegatedRequestableBuffer6#setSourceChunkInternal(org.jactr.core.chunk.IChunk)
    */
@@ -217,9 +222,8 @@ public class DefaultVisualActivationBuffer6 extends AbstractPMActivationBuffer6
 
     IVisualModule module = (IVisualModule) getModule();
     IModel model = getModel();
-    if (Logger.hasLoggers(model))
-      Logger.log(model, Logger.Stream.VISUAL, getName()
-          + " current visual object " + getSourceChunk());
+    if (Logger.hasLoggers(model)) Logger.log(model, Logger.Stream.VISUAL,
+        getName() + " current visual object " + getSourceChunk());
 
     if (chunk == null) // turn off tracking if its on
       module.setTrackedVisualChunk(null);

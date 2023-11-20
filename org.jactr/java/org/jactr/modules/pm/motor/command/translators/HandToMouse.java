@@ -22,7 +22,7 @@ public class HandToMouse extends AbstractHandToTranslator
   {
     // check to see if we are on mouse
     if (!rightHandIsOnHome(model))
-      throw new IllegalArgumentException("Right hand is not on home");
+      LOGGER.warn("Right hand is not on home");
   }
 
   @Override

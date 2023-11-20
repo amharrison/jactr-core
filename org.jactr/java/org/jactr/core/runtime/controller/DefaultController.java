@@ -50,12 +50,12 @@ public class DefaultController implements IController
 
   
   public DefaultController() {
-    this(false);
+    this(true);
   }
   
-  public DefaultController(boolean runEmbedded)
+  public DefaultController(boolean propogateSignalToCR)
   {
-    _state = new RuntimeState(runEmbedded);
+    _state = new RuntimeState(propogateSignalToCR);
     _runtimeListener = new RuntimeListener(_state) {
       @Override
       public void modelAdded(ACTRRuntimeEvent event)
