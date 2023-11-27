@@ -500,6 +500,13 @@ public class RemoteInterface extends NetworkedEndpoint implements IInstrument,
   {
     _installedModels.remove(model);
     model.removeListener(_modelListener);
+    if(_installedModels.size()==0)
+      try {
+        disconnect(false);
+      }
+    catch(Exception e) {
+      LOGGER.error("Failed to disconnect ",e);
+    }
   }
 
   @Override

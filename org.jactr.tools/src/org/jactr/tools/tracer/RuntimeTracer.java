@@ -24,8 +24,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicLong;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.model.IModel;
 import org.jactr.core.model.event.IModelListener;
@@ -33,6 +31,7 @@ import org.jactr.core.model.event.ModelEvent;
 import org.jactr.core.model.event.ModelListenerAdaptor;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.runtime.controller.IController;
+import org.jactr.core.runtime.controller.debug.DebugController;
 import org.jactr.core.runtime.controller.debug.IDebugController;
 import org.jactr.core.runtime.controller.debug.event.BreakpointEvent;
 import org.jactr.core.runtime.controller.debug.event.IBreakpointListener;
@@ -44,6 +43,7 @@ import org.jactr.instrument.IInstrument;
 import org.jactr.tools.misc.ModelsLock;
 import org.jactr.tools.tracer.listeners.ITraceListener;
 import org.jactr.tools.tracer.sinks.ChainedSink;
+import org.slf4j.LoggerFactory;
 
 /**
  * tracer that can listen and record the actions of all running models. At the
@@ -99,6 +99,10 @@ public class RuntimeTracer implements IInstrument, IParameterized
   private AtomicLong                 _synchronizationCount = new AtomicLong(0);
 
   private ModelsLock                 _modelsLock           = new ModelsLock();
+
+  private ACTRRuntimeAdapter _runtimeListener;
+
+  private IBreakpointListener _breakpointListener;
 
   public RuntimeTracer()
   {
@@ -211,6 +215,16 @@ public class RuntimeTracer implements IInstrument, IParameterized
 
     _modelsLock.uninstall(model);
     _attachedModels.remove(model);
+    
+    if(_attachedModels.size()==0)
+    {
+      //disconnect the runtime
+      ACTRRuntime.getRuntime().removeListener(_runtimeListener);
+      IController controller = ACTRRuntime.getRuntime().getController();
+      if(controller instanceof IDebugController) {
+        ((IDebugController)controller).removeListener(_breakpointListener);
+      }
+    }
   }
 
   /**
@@ -224,7 +238,7 @@ public class RuntimeTracer implements IInstrument, IParameterized
   {
     _modelsLock.initialize();
     ACTRRuntime runtime = ACTRRuntime.getRuntime();
-    runtime.addListener(new ACTRRuntimeAdapter() {
+    runtime.addListener(_runtimeListener = new ACTRRuntimeAdapter() {
 
       @Override
       public void modelAdded(ACTRRuntimeEvent event)
@@ -256,7 +270,7 @@ public class RuntimeTracer implements IInstrument, IParameterized
 
     IController controller = runtime.getController();
     if (controller instanceof IDebugController)
-      ((IDebugController) controller).addListener(new IBreakpointListener() {
+      ((IDebugController) controller).addListener(_breakpointListener = new IBreakpointListener() {
 
         public void breakpointReached(BreakpointEvent be)
         {

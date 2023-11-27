@@ -52,7 +52,7 @@ public class MoveCursorTranslator extends AbstractManualTranslator
       IEfferentObject muscle, IModel model) throws IllegalArgumentException
   {
     if (!rightHandIsOnMouse(model))
-      throw new IllegalArgumentException("Right hand is not on mouse");
+      LOGGER.warn("Right hand is not on mouse");
 
     double[] target = getTarget(request);
 
