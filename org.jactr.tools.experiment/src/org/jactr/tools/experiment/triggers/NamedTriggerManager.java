@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.tools.experiment.impl.IVariableContext;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +48,7 @@ public class NamedTriggerManager
   public boolean fire(String triggerName, IVariableContext context)
   {
     triggerName = triggerName.toLowerCase();
-    List<NamedTrigger> triggers = FastListFactory.newInstance();
+    List<NamedTrigger> triggers = new ArrayList<>();
 
     synchronized (this)
     {
@@ -72,7 +71,7 @@ public class NamedTriggerManager
     }
     finally
     {
-      FastListFactory.recycle(triggers);
+      
     }
   }
 

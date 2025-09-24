@@ -1,5 +1,6 @@
 package org.jactr.tools.itr;
 
+import java.util.ArrayList;
 /*
  * default logging
  */
@@ -9,10 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
- 
-import org.slf4j.LoggerFactory;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.io2.compilation.ICompilationUnit;
+import org.slf4j.LoggerFactory;
 
 public class ParameterSetModifier implements IParameterSetModifier
 {
@@ -30,8 +29,8 @@ public class ParameterSetModifier implements IParameterSetModifier
 
   public ParameterSetModifier()
   {
-    _parameterValues = FastListFactory.newInstance();
-    _modifiers = FastListFactory.newInstance();
+    _parameterValues = new ArrayList<>();
+    _modifiers = new ArrayList<>();
   }
 
   public void add(IParameterModifier modifier)

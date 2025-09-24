@@ -4,6 +4,7 @@ package org.jactr.io.antlr3.misc;
  * default logging
  */
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -13,7 +14,6 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.TreeNodeStream;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.io.misc.JACTRIOException;
 import org.jactr.io.misc.JACTRIOException.Level;
 import org.jactr.io.misc.JACTRIOException.Stage;
@@ -40,16 +40,14 @@ public class DefaultErrorReporter implements IErrorReporter
 
   private void acquireCollections()
   {
-    _error = FastListFactory.newInstance();
-    _warn = FastListFactory.newInstance();
-    _info = FastListFactory.newInstance();
+    _error = new ArrayList<>();
+    _warn = new ArrayList<>();
+    _info = new ArrayList<>();
   }
 
   private void releaseCollections()
   {
-    FastListFactory.recycle(_error);
-    FastListFactory.recycle(_warn);
-    FastListFactory.recycle(_info);
+    
   }
 
   public void reportError(Exception exception)

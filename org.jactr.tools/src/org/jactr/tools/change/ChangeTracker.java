@@ -34,7 +34,6 @@ import org.jactr.core.module.procedural.event.IProceduralModuleListener;
 import org.jactr.core.module.procedural.event.ProceduralModuleEvent;
 import org.jactr.core.module.procedural.event.ProceduralModuleListenerAdaptor;
 import org.jactr.core.production.IProduction;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.instrument.IInstrument;
 import org.jactr.io.generator.CodeGeneratorFactory;
@@ -310,7 +309,7 @@ public class ChangeTracker implements IInstrument, IParameterized
     }
 
 
-    List<IChunk> changedChunks = FastListFactory.newInstance();
+    List<IChunk> changedChunks = new ArrayList<>();
     synchronized (_changedChunks)
     {
       changedChunks.addAll(_changedChunks.get(model));
@@ -324,7 +323,7 @@ public class ChangeTracker implements IInstrument, IParameterized
       asts.add(ASTResolver.toAST(chunk, false));
     }
     
-    FastListFactory.recycle(changedChunks);
+    
   }
 
   /**
@@ -336,7 +335,7 @@ public class ChangeTracker implements IInstrument, IParameterized
    */
   protected void flush( IModel model,  boolean cleanUp)
   {
-    List<CommonTree> list = FastListFactory.newInstance();
+    List<CommonTree> list = new ArrayList<>();
     
     synchronized (_astsToWrite)
     {
@@ -357,7 +356,7 @@ public class ChangeTracker implements IInstrument, IParameterized
       Logger.log(model, CHANGE_STREAM, sb.toString());
     }
 
-    FastListFactory.recycle(list);
+    
 
 
     if (cleanUp)

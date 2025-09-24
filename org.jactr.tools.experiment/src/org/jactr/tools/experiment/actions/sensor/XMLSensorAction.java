@@ -4,20 +4,19 @@ package org.jactr.tools.experiment.actions.sensor;
  * default logging
  */
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
- 
-import org.slf4j.LoggerFactory;
 import org.commonreality.reality.CommonReality;
 import org.commonreality.sensors.ISensor;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.tools.experiment.IExperiment;
 import org.jactr.tools.experiment.actions.IAction;
 import org.jactr.tools.experiment.impl.IVariableContext;
 import org.jactr.tools.experiment.impl.VariableResolver;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -108,7 +107,7 @@ public class XMLSensorAction implements IAction
       }
       else
       {
-        List<Element> elements = FastListFactory.newInstance();
+        List<Element> elements = new ArrayList<>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder parser = factory.newDocumentBuilder();
         Document doc = parser.parse(loc.openStream());
@@ -124,7 +123,7 @@ public class XMLSensorAction implements IAction
 
         if (newSensor != null) newSensor.flush(elements);
 
-        FastListFactory.recycle(elements);
+        
       }
     }
     catch (Exception e)

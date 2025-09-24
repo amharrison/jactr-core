@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.ISubsymbolicChunk;
 import org.jactr.core.chunk.event.ChunkEvent;
@@ -23,8 +21,8 @@ import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.event.IParameterEvent;
 import org.jactr.core.event.IParameterListener;
 import org.jactr.core.module.declarative.associative.IAssociativeLinkContainer;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.tools.grapher.core.container.IProbeContainer;
+import org.slf4j.LoggerFactory;
 
 public class ChunkSelector extends AbstractNameSelector<IChunk>
 {
@@ -96,7 +94,7 @@ public class ChunkSelector extends AbstractNameSelector<IChunk>
 
   private void checkLinks(IChunk chunk)
   {
-    List<IAssociativeLink> links = FastListFactory.newInstance();
+    List<IAssociativeLink> links = new ArrayList<>();
 
     IAssociativeLinkContainer alc = chunk
         .getAdapter(IAssociativeLinkContainer.class);
@@ -105,7 +103,7 @@ public class ChunkSelector extends AbstractNameSelector<IChunk>
     for (IAssociativeLink link : links)
       checkLink(link, getProbeContainer(chunk));
 
-    FastListFactory.recycle(links);
+    
   }
 
   /**

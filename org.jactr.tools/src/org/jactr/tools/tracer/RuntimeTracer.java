@@ -31,13 +31,11 @@ import org.jactr.core.model.event.ModelEvent;
 import org.jactr.core.model.event.ModelListenerAdaptor;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.runtime.controller.IController;
-import org.jactr.core.runtime.controller.debug.DebugController;
 import org.jactr.core.runtime.controller.debug.IDebugController;
 import org.jactr.core.runtime.controller.debug.event.BreakpointEvent;
 import org.jactr.core.runtime.controller.debug.event.IBreakpointListener;
 import org.jactr.core.runtime.event.ACTRRuntimeAdapter;
 import org.jactr.core.runtime.event.ACTRRuntimeEvent;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.instrument.IInstrument;
 import org.jactr.tools.misc.ModelsLock;
@@ -326,7 +324,7 @@ public class RuntimeTracer implements IInstrument, IParameterized
       setExecutor(value);
     else if (SINK_CLASS.equalsIgnoreCase(key))
     {
-      List<ITraceSink> sinks = FastListFactory.newInstance();
+      List<ITraceSink> sinks = new ArrayList<>();
       String[] sinkClasses = value.split(",");
       for (String sinkClass : sinkClasses)
       {
@@ -357,7 +355,7 @@ public class RuntimeTracer implements IInstrument, IParameterized
         setTraceSink(sink);
       }
 
-      FastListFactory.recycle(sinks);
+      
     }
     else if (LISTENERS.equalsIgnoreCase(key))
       for (String name : value.split(","))

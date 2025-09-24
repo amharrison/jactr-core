@@ -13,21 +13,20 @@
  */
 package org.jactr.tools.tracer.sinks;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.concurrent.ExecutorServices;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.tools.async.controller.RemoteInterface;
 import org.jactr.tools.async.message.BulkMessage;
 import org.jactr.tools.async.message.IMessage;
 import org.jactr.tools.tracer.ITraceSink;
 import org.jactr.tools.tracer.transformer.ITransformedEvent;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author developer
@@ -71,7 +70,7 @@ public class NetworkedSink implements ITraceSink
     }
 
     _messageBuffer = Collections
-        .synchronizedCollection(FastListFactory.newInstance());
+        .synchronizedCollection(new ArrayList<>());
 
     _autoFlush = new Runnable() {
 

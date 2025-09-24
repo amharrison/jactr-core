@@ -1,5 +1,6 @@
 package org.jactr.extensions.cached.procedural.internal;
 
+import java.util.ArrayList;
 /*
  * default logging
  */
@@ -25,7 +26,6 @@ import org.jactr.core.slot.INotifyingSlotContainer;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.slot.IUniqueSlotContainer;
 import org.jactr.core.slot.NotifyingSlot;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.extensions.cached.procedural.invalidators.BufferInvalidator;
 import org.jactr.extensions.cached.procedural.invalidators.IInvalidator;
 import org.jactr.extensions.cached.procedural.invalidators.SlotInvalidator;
@@ -136,7 +136,7 @@ public class InstantiationCache
       unregisterAll(production, invalidators);
     }
 
-    if (invalidators != null) FastListFactory.recycle(invalidators);
+    
   }
 
   public void add(IProduction production, CannotInstantiateException cie)
@@ -144,7 +144,7 @@ public class InstantiationCache
     if (LOGGER.isDebugEnabled())
       LOGGER.debug(String.format("Testing %s after %s", production, cie));
 
-    List<IInvalidator> invalidators = FastListFactory.newInstance();
+    List<IInvalidator> invalidators = new ArrayList<>();
     boolean canCache = registerAll(production, cie, invalidators);
 
     if (canCache)
@@ -182,7 +182,7 @@ public class InstantiationCache
                     "%s could not be associated with any invalidators, it will be available for instantiation",
                     production));
 
-      FastListFactory.recycle(invalidators);
+      
     }
   }
 

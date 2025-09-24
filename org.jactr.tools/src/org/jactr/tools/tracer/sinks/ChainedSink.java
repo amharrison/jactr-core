@@ -7,12 +7,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
- 
-import org.slf4j.LoggerFactory;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.tools.tracer.ITraceSink;
 import org.jactr.tools.tracer.transformer.ITransformedEvent;
+import org.slf4j.LoggerFactory;
 
 public class ChainedSink implements ITraceSink, IParameterized
 {
@@ -22,7 +20,7 @@ public class ChainedSink implements ITraceSink, IParameterized
   static private final transient org.slf4j.Logger LOGGER = LoggerFactory
                                                 .getLogger(ChainedSink.class);
 
-  private Collection<ITraceSink>     _sinks = FastListFactory.newInstance();
+  private Collection<ITraceSink>     _sinks = new ArrayList<>();
 
 
   public void add(ITraceSink sink)

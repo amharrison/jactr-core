@@ -1,18 +1,17 @@
 package org.jactr.extensions.cached.procedural.listeners;
 
+import java.util.ArrayList;
 /*
  * default logging
  */
 import java.util.Collection;
 import java.util.List;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.event.ActivationBufferEvent;
 import org.jactr.core.buffer.event.ActivationBufferListenerAdaptor;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.extensions.cached.procedural.invalidators.IInvalidator;
+import org.slf4j.LoggerFactory;
 
 public class BufferListener extends ActivationBufferListenerAdaptor
 {
@@ -31,7 +30,7 @@ public class BufferListener extends ActivationBufferListenerAdaptor
 
   public BufferListener(IActivationBuffer buffer)
   {
-    _generalInvalidators = FastListFactory.newInstance();
+    _generalInvalidators = new ArrayList<>();
 
     _buffer = buffer;
     _buffer.addListener(this, null);
@@ -88,7 +87,7 @@ public class BufferListener extends ActivationBufferListenerAdaptor
 
   synchronized private List<IInvalidator> getInvalidators()
   {
-    List<IInvalidator> invalidators = FastListFactory.newInstance();
+    List<IInvalidator> invalidators = new ArrayList<>();
     invalidators.addAll(_generalInvalidators);
     return invalidators;
   }
@@ -114,7 +113,7 @@ public class BufferListener extends ActivationBufferListenerAdaptor
       LOGGER.error("failed to invalidate ", e);
     }
 
-    FastListFactory.recycle(invalidators);
+    
   }
 
 }

@@ -1,21 +1,20 @@
 package org.jactr.tools.grapher.core.selector;
 
+import java.util.ArrayList;
 /*
  * default logging
  */
 import java.util.Collection;
 import java.util.concurrent.Executor;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.chunktype.event.ChunkTypeEvent;
 import org.jactr.core.chunktype.event.ChunkTypeListenerAdaptor;
 import org.jactr.core.chunktype.event.IChunkTypeListener;
 import org.jactr.core.concurrent.ExecutorServices;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.tools.grapher.core.container.IProbeContainer;
+import org.slf4j.LoggerFactory;
 
 public class ChunkTypeSelector extends AbstractNameSelector<IChunkType>
 {
@@ -32,7 +31,7 @@ public class ChunkTypeSelector extends AbstractNameSelector<IChunkType>
   public ChunkTypeSelector(String regex)
   {
     super(regex);
-    _chunkSelectors = FastListFactory.newInstance();
+    _chunkSelectors = new ArrayList<>();
     _listener = new ChunkTypeListenerAdaptor() {
       @Override
       public void chunkAdded(ChunkTypeEvent cte)

@@ -1,5 +1,6 @@
 package org.jactr.tools.marker.markerof;
 
+import java.util.ArrayList;
 /*
  * default logging
  */
@@ -12,7 +13,6 @@ import org.jactr.core.buffer.event.ActivationBufferEvent;
 import org.jactr.core.buffer.event.ActivationBufferListenerAdaptor;
 import org.jactr.core.buffer.event.IActivationBufferListener;
 import org.jactr.core.chunk.IChunk;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.tools.marker.IMarker;
 import org.jactr.tools.marker.impl.DefaultMarker;
 import org.slf4j.LoggerFactory;
@@ -105,7 +105,7 @@ public class MarkerOfBuffers implements IMarkerOf<IActivationBuffer>
     IMarker marker = _contentMarkers.remove(buffer);
     if (marker != null) marker.close(when);
 
-    List<IChunk> sourceChunks = FastListFactory.newInstance();
+    List<IChunk> sourceChunks = new ArrayList<>();
     buffer.getSourceChunks(sourceChunks);
 
     if (sourceChunks.size() != 0)
@@ -126,7 +126,7 @@ public class MarkerOfBuffers implements IMarkerOf<IActivationBuffer>
       marker.open(when);
     }
 
-    FastListFactory.recycle(sourceChunks);
+    
   }
 
 }

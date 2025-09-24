@@ -1,5 +1,6 @@
 package org.jactr.tools.marker.tracer;
 
+import java.util.ArrayList;
 /*
  * default logging
  */
@@ -8,10 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.model.IModel;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.tools.marker.IMarkerListener;
 import org.jactr.tools.marker.MarkerManager;
 import org.jactr.tools.marker.impl.MarkerEvent;
@@ -19,6 +17,7 @@ import org.jactr.tools.tracer.ITraceSink;
 import org.jactr.tools.tracer.listeners.BaseTraceListener;
 import org.jactr.tools.tracer.sinks.ChainedSink;
 import org.jactr.tools.tracer.sinks.trace.ArchivalSink;
+import org.slf4j.LoggerFactory;
 
 public class MarkerTraceListener extends BaseTraceListener
 {
@@ -103,7 +102,7 @@ public class MarkerTraceListener extends BaseTraceListener
     if (sink instanceof ChainedSink)
     {
       ChainedSink cSink = (ChainedSink) sink;
-      List<ITraceSink> sinks = FastListFactory.newInstance();
+      List<ITraceSink> sinks = new ArrayList<>();
       cSink.getSinks(sinks);
 
       try
@@ -116,7 +115,7 @@ public class MarkerTraceListener extends BaseTraceListener
       }
       finally
       {
-        FastListFactory.recycle(sinks);
+        
       }
     }
     return null;

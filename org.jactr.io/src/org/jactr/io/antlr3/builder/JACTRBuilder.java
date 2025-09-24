@@ -57,7 +57,6 @@ import org.jactr.core.slot.IMutableSlot;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.slot.ISlotContainer;
 import org.jactr.core.slot.IUniqueSlotContainer;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.io.antlr3.misc.ASTSupport;
 import org.jactr.scripting.IScriptableFactory;
@@ -250,12 +249,11 @@ public class JACTRBuilder extends TreeParser {
         {
           if (slot instanceof ILogicalSlot)
         {
-          List<ISlot> children = FastListFactory.newInstance();
+          List<ISlot> children = new ArrayList<>();
           ((ILogicalSlot)slot).getSlots(children);
           for(ISlot s : children)
            cleanupSlot(s);
            
-          FastListFactory.recycle(children);
         }
         else
         {

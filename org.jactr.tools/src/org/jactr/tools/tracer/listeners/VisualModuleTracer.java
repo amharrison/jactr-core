@@ -23,7 +23,6 @@ import org.jactr.core.model.event.IModelListener;
 import org.jactr.core.model.event.ModelEvent;
 import org.jactr.core.model.event.ModelListenerAdaptor;
 import org.jactr.core.module.IModule;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.modules.pm.common.event.IPerceptualMemoryModuleEvent;
 import org.jactr.modules.pm.common.memory.map.FeatureMapEvent;
 import org.jactr.modules.pm.common.memory.map.IFeatureMap;
@@ -197,7 +196,7 @@ public class VisualModuleTracer extends BaseTraceListener
     {
       vis.addListener(_visualListener, executor);
 
-      List<IFeatureMap> featureMaps = FastListFactory.newInstance();
+      List<IFeatureMap> featureMaps = new ArrayList<>();
       vis.getVisualMemory().getFeatureMaps(featureMaps);
 
       for (IFeatureMap map : featureMaps)
@@ -205,7 +204,7 @@ public class VisualModuleTracer extends BaseTraceListener
         if (LOGGER.isDebugEnabled()) LOGGER.debug("Attaching to " + map);
         map.addListener(_featureListener, executor);
       }
-      FastListFactory.recycle(featureMaps);
+      
     }
   }
 
@@ -216,13 +215,13 @@ public class VisualModuleTracer extends BaseTraceListener
     if (vis != null)
     {
       vis.removeListener(_visualListener);
-      List<IFeatureMap> featureMaps = FastListFactory.newInstance();
+      List<IFeatureMap> featureMaps = new ArrayList<>();
       vis.getVisualMemory().getFeatureMaps(featureMaps);
 
       for (IFeatureMap map : featureMaps)
         map.removeListener(_featureListener);
 
-      FastListFactory.recycle(featureMaps);
+      
     }
 
   }
@@ -313,7 +312,7 @@ public class VisualModuleTracer extends BaseTraceListener
   protected void updateAllData(IModel model, IIdentifier identifier,
       Map<String, Object> data)
   {
-    List<IFeatureMap> featureMaps = FastListFactory.newInstance();
+    List<IFeatureMap> featureMaps = new ArrayList<>();
     try
     {
       ((IVisualModule) model.getModule(IVisualModule.class)).getVisualMemory()
@@ -324,7 +323,7 @@ public class VisualModuleTracer extends BaseTraceListener
     }
     finally
     {
-      FastListFactory.recycle(featureMaps);
+      
     }
   }
 

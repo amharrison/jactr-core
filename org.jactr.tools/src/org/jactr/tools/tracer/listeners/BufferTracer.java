@@ -10,8 +10,6 @@ import java.util.TreeSet;
 import java.util.concurrent.Executor;
 
 import org.antlr.runtime.tree.CommonTree;
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.BufferUtilities;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.event.ActivationBufferEvent;
@@ -29,11 +27,11 @@ import org.jactr.core.module.procedural.event.IProceduralModuleListener;
 import org.jactr.core.module.procedural.event.ProceduralModuleEvent;
 import org.jactr.core.module.procedural.event.ProceduralModuleListenerAdaptor;
 import org.jactr.core.slot.ISlotContainer;
-import org.jactr.core.utils.collections.FastSetFactory;
 import org.jactr.io.antlr3.builder.JACTRBuilder;
 import org.jactr.io.antlr3.misc.ASTSupport;
 import org.jactr.io.resolver.ASTResolver;
 import org.jactr.tools.tracer.transformer.buffer.BulkBufferEvent;
+import org.slf4j.LoggerFactory;
 
 /**
  * buffer tracer that monitors the buffers and contents for any changes. The AST
@@ -190,7 +188,7 @@ public class BufferTracer extends BaseTraceListener
 
   protected void flush(IModel model, double time, boolean isEndOfCycle)
   {
-    Set<String> buffers = FastSetFactory.newInstance();
+    Set<String> buffers = new TreeSet<>();
 
     synchronized (_dirtyBuffers)
     {
@@ -255,6 +253,6 @@ public class BufferTracer extends BaseTraceListener
     if (buffers.size() > 0)
       sink(new BulkBufferEvent(model.getName(), time, buffersAST, isEndOfCycle));
 
-    FastSetFactory.recycle(buffers);
+    
   }
 }

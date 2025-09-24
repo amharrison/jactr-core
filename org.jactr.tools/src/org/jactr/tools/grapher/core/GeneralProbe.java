@@ -19,7 +19,6 @@ import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.model.IModel;
 import org.jactr.core.model.event.ModelEvent;
 import org.jactr.core.model.event.ModelListenerAdaptor;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.tools.grapher.core.container.IProbeContainer;
 import org.jactr.tools.grapher.core.message.NetworkPackager;
@@ -100,7 +99,7 @@ public class GeneralProbe implements ITraceListener, IParameterized
     
     if (LOGGER.isDebugEnabled()) LOGGER.debug("ProcessedData : " + data);
 
-    final Collection<ITransformedEvent> events = FastListFactory.newInstance();
+    final Collection<ITransformedEvent> events = new ArrayList<>();
     events.addAll(_packager.process(topLevelContainer.getName(), data, when,
         _timeWindow));
 
@@ -130,7 +129,7 @@ public class GeneralProbe implements ITraceListener, IParameterized
     Set<String> additions = new TreeSet<String>();
     Set<String> removed = new TreeSet<String>();
 
-    List<IProbe> probes = FastListFactory.newInstance();
+    List<IProbe> probes = new ArrayList<>();
     /*
      * take care of the top probes first
      */
@@ -150,9 +149,9 @@ public class GeneralProbe implements ITraceListener, IParameterized
       }
     }
 
-    FastListFactory.recycle(probes);
+    
 
-    List<IProbeContainer> children = FastListFactory.newInstance();
+    List<IProbeContainer> children = new ArrayList<>();
 
     /*
      * descend
@@ -160,7 +159,7 @@ public class GeneralProbe implements ITraceListener, IParameterized
     for (IProbeContainer child : container.getChildren(children))
       processContainer(child, myData);
 
-    FastListFactory.recycle(children);
+    
   }
 
   public String getParameter(String key)

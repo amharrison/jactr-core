@@ -1,5 +1,6 @@
 package org.jactr.extensions.cached.procedural.listeners;
 
+import java.util.ArrayList;
 /*
  * default logging
  */
@@ -12,7 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.jactr.core.slot.INotifyingSlotContainer;
 import org.jactr.core.slot.event.ISlotContainerListener;
 import org.jactr.core.slot.event.SlotEvent;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.extensions.cached.procedural.invalidators.IInvalidator;
 import org.jactr.extensions.cached.procedural.invalidators.SlotInvalidator;
 import org.slf4j.LoggerFactory;
@@ -63,7 +63,7 @@ public class SlotListener implements ISlotContainerListener
           LOGGER.debug(String.format("Recycle : %s used list:%d",
               entry.getKey(), entry.getValue().hashCode()));
 
-        FastListFactory.recycle(entry.getValue());
+        
       }
     }
 
@@ -105,7 +105,7 @@ public class SlotListener implements ISlotContainerListener
 
   public void register(SlotInvalidator invalidator)
   {
-    List<IInvalidator> list = FastListFactory.newInstance();
+    List<IInvalidator> list = new ArrayList<>();
     Collection<IInvalidator> invalidators = _invalidators.putIfAbsent(
         invalidator.getSlotName().toLowerCase(), list);
 
@@ -121,7 +121,7 @@ public class SlotListener implements ISlotContainerListener
     }
 
     //
-    if (list != invalidators) FastListFactory.recycle(list);
+    
   }
 
   public void unregister(SlotInvalidator invalidator)
@@ -143,7 +143,7 @@ public class SlotListener implements ISlotContainerListener
   {
     slotName = slotName.toLowerCase();
     Collection<IInvalidator> invalidators = _invalidators.get(slotName);
-    List<IInvalidator> rtn = FastListFactory.newInstance();
+    List<IInvalidator> rtn = new ArrayList<>();
     if (invalidators != null) synchronized (invalidators)
     {
       rtn.addAll(invalidators);
@@ -169,7 +169,7 @@ public class SlotListener implements ISlotContainerListener
     }
     finally
     {
-      FastListFactory.recycle(invalidators);
+      
     }
 
   }

@@ -4,6 +4,7 @@ package org.jactr.tools.tracer.sinks.trace;
  * default logging
  */
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -13,7 +14,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.commonreality.util.LockUtilities;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.runtime.ACTRRuntime;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.tools.tracer.ITraceSink;
 import org.jactr.tools.tracer.sinks.trace.internal.TraceFileManager;
 import org.jactr.tools.tracer.transformer.ITransformedEvent;
@@ -151,7 +151,7 @@ public class ArchivalSink implements ITraceSink
         _isActive = true;
         try
         {
-          List<TraceFileManager> managers = FastListFactory.newInstance();
+          List<TraceFileManager> managers = new ArrayList<>();
 
           LockUtilities.runLocked(_lock.writeLock(), () -> {
             managers.addAll(_fileManagers.values());

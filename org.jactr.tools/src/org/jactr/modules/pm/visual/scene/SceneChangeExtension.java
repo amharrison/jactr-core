@@ -1,5 +1,6 @@
 package org.jactr.modules.pm.visual.scene;
 
+import java.util.ArrayList;
 /*
  * default logging
  */
@@ -7,8 +8,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
- 
-import org.slf4j.LoggerFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.object.manager.IAfferentObjectManager;
 import org.commonreality.object.manager.event.IAfferentListener;
@@ -27,7 +26,6 @@ import org.jactr.core.queue.timedevents.AbstractTimedEvent;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.slot.BasicSlot;
 import org.jactr.core.slot.IMutableSlot;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.core.utils.parameter.ParameterHandler;
 import org.jactr.modules.pm.common.buffer.AbstractRequestDelegate;
 import org.jactr.modules.pm.common.event.IPerceptualMemoryModuleEvent;
@@ -36,6 +34,7 @@ import org.jactr.modules.pm.visual.IVisualModule;
 import org.jactr.modules.pm.visual.buffer.IVisualActivationBuffer;
 import org.jactr.modules.pm.visual.event.IVisualModuleListener;
 import org.jactr.modules.pm.visual.event.VisualModuleEvent;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides scene change detection functionality without touching the core
@@ -195,14 +194,14 @@ public class SceneChangeExtension implements IExtension
        * we attach the listener to all the feature maps and handle the events
        * inline with the visual processing
        */
-      List<IFeatureMap> featureMaps = FastListFactory.newInstance();
+      List<IFeatureMap> featureMaps = new ArrayList<>();
       _visualModule.getVisualMemory().getFeatureMaps(featureMaps);
 
       for (IFeatureMap featureMap : featureMaps)
         featureMap.addListener(_sceneChangeListener,
             ExecutorServices.INLINE_EXECUTOR);
 
-      FastListFactory.recycle(featureMaps);
+      
     }
 
     /*
@@ -321,13 +320,13 @@ public class SceneChangeExtension implements IExtension
      * if we didn't install like this, it doesn't matter, removing a
      * non-existant listener doesn't do anything.
      */
-    List<IFeatureMap> featureMaps = FastListFactory.newInstance();
+    List<IFeatureMap> featureMaps = new ArrayList<>();
     _visualModule.getVisualMemory().getFeatureMaps(featureMaps);
     
     for (IFeatureMap featureMap : featureMaps)
       featureMap.removeListener(_sceneChangeListener);
 
-    FastListFactory.recycle(featureMaps);
+    
     
     _model = null;
     _visualModule = null;

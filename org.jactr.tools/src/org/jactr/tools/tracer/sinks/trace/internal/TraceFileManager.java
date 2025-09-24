@@ -7,16 +7,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.model.ModelTerminatedException;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.tools.tracer.transformer.ITransformedEvent;
+import org.slf4j.LoggerFactory;
 
 public class TraceFileManager
 {
@@ -47,7 +46,7 @@ public class TraceFileManager
 
   public TraceFileManager(File outputDirectory)
   {
-    _pendingEvents = FastListFactory.newInstance();
+    _pendingEvents = new ArrayList<>();
     _traceIndex = new TraceIndex(outputDirectory);
     _outputDirectory = outputDirectory;
     _outputDirectory.mkdirs();
