@@ -1,5 +1,6 @@
 package org.jactr.modules.pm.visual.memory.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 /*
  * default logging
@@ -13,7 +14,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.slot.BasicSlot;
 import org.jactr.core.slot.ISlot;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.modules.pm.common.memory.impl.IIndexManager;
 import org.jactr.modules.pm.visual.IVisualModule;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ public class VisualLocationManager implements IIndexManager
       double verticalSpan, int verticalResolution)
   {
     _lock.lock();
-    List<IChunk> locations = FastListFactory.newInstance();
+    List<IChunk> locations = new ArrayList<>();
     try
     {
       _horizontalResolution = horizonalResolution;

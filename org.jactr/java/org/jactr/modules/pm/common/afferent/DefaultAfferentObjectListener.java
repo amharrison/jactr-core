@@ -15,6 +15,7 @@ package org.jactr.modules.pm.common.afferent;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +34,6 @@ import org.commonreality.object.manager.event.ObjectEvent;
 import org.commonreality.time.IClock;
 import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.Sets;
-import org.jactr.core.utils.collections.FastListFactory;
-import org.jactr.core.utils.collections.FastMapFactory;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -130,9 +129,9 @@ public class DefaultAfferentObjectListener
    */
   final public void run()
   {
-    List<IAfferentObject> added = FastListFactory.newInstance();
-    List<IAfferentObject> removed = FastListFactory.newInstance();
-    Map<IAfferentObject, IObjectDelta> deltas = FastMapFactory.newInstance();
+    List<IAfferentObject> added = new ArrayList<>();
+    List<IAfferentObject> removed = new ArrayList<>();
+    Map<IAfferentObject, IObjectDelta> deltas = new HashMap<>();
 
     synchronized (_addedObjects)
     {
@@ -161,9 +160,6 @@ public class DefaultAfferentObjectListener
     objectsRemoved(removed);
     _pendingUpdates.addAndGet(-removed.size());
 
-    FastListFactory.recycle(added);
-    FastListFactory.recycle(removed);
-    FastMapFactory.recycle(deltas);
 
     /*
      * if this is being run right after shutdown has staretd, getClock could be

@@ -1,10 +1,9 @@
 package org.jactr.core.module.retrieval.six;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.map.LRUMap;
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.module.retrieval.IRetrievalModule;
@@ -12,7 +11,7 @@ import org.jactr.core.module.retrieval.event.IRetrievalModuleListener;
 import org.jactr.core.module.retrieval.event.RetrievalModuleEvent;
 import org.jactr.core.queue.ITimedEvent;
 import org.jactr.core.queue.timedevents.AbstractTimedEvent;
-import org.jactr.core.utils.collections.FastListFactory;
+import org.slf4j.LoggerFactory;
 
 public class DeclarativeFINSTManager
 {
@@ -132,7 +131,7 @@ public class DeclarativeFINSTManager
      * abort the timed events
      */
 
-    List<ITimedEvent> expirationEvents = FastListFactory.newInstance();
+    List<ITimedEvent> expirationEvents = new ArrayList<>();
     synchronized (this)
     {
       expirationEvents.addAll(_recentlyRetrieved.values());
@@ -142,7 +141,7 @@ public class DeclarativeFINSTManager
     for (ITimedEvent event : expirationEvents)
       if (!event.hasAborted() && !event.hasFired()) event.abort();
 
-    FastListFactory.recycle(expirationEvents);
+    
   }
 
   synchronized public boolean hasBeenRetrieved(IChunk chunk)

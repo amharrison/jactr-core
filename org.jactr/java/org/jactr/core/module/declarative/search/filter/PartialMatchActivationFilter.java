@@ -1,14 +1,14 @@
 package org.jactr.core.module.declarative.search.filter;
 
  
-import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.ISubsymbolicChunk;
 import org.jactr.core.chunk.five.ISubsymbolicChunk5;
 import org.jactr.core.logging.IMessageBuilder;
-import org.jactr.core.logging.impl.MessageBuilderFactory;
+import org.jactr.core.logging.impl.StringMessageBuilder;
 import org.jactr.core.production.VariableBindings;
 import org.jactr.core.production.request.ChunkTypeRequest;
+import org.slf4j.LoggerFactory;
 
 /**
  * Basic filter that removes candidates based on their activation values, and
@@ -46,7 +46,7 @@ public class PartialMatchActivationFilter implements ILoggedChunkFilter
     _request = request;
     _activationThreshold = threshold;
     _log = logEvaluations;
-    if (_log) _message = MessageBuilderFactory.newInstance();
+    if (_log) _message = new StringMessageBuilder();
   }
 
   public PartialMatchActivationFilter(ChunkTypeRequest request, double threshold)

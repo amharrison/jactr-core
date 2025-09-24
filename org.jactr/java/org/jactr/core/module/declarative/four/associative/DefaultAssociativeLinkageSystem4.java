@@ -1,13 +1,12 @@
 package org.jactr.core.module.declarative.four.associative;
 
+import java.util.ArrayList;
 import java.util.Collection;
 /*
  * default logging
  */
 import java.util.concurrent.Executor;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.event.IChunkListener;
 import org.jactr.core.chunk.four.AssociativeLinkEquation4;
@@ -25,7 +24,7 @@ import org.jactr.core.module.declarative.four.learning.IDeclarativeLearningModul
 import org.jactr.core.module.procedural.IProceduralModule;
 import org.jactr.core.module.procedural.event.IProceduralModuleListener;
 import org.jactr.core.slot.ISlot;
-import org.jactr.core.utils.collections.FastCollectionFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * version four associative linkage system. The base class handles the creation
@@ -88,7 +87,7 @@ public class DefaultAssociativeLinkageSystem4 extends
          * listener can be attached). So, we do the containment linking directly
          */
 
-        Collection<ISlot> slots = FastCollectionFactory.newInstance();
+        Collection<ISlot> slots = new ArrayList<>();
         try
         {
           iChunk.getSymbolicChunk().getSlots(slots);
@@ -104,7 +103,7 @@ public class DefaultAssociativeLinkageSystem4 extends
         }
         finally
         {
-          FastCollectionFactory.recycle(slots);
+          
         }
       }
     };
@@ -187,7 +186,7 @@ public class DefaultAssociativeLinkageSystem4 extends
     IAssociativeLinkContainer jContainer = jChunk
         .getAdapter(IAssociativeLinkContainer.class);
 
-    Collection<IAssociativeLink> links = FastCollectionFactory.newInstance();
+    Collection<IAssociativeLink> links = new ArrayList<>();
     iContainer.getInboundLinks(jChunk, links);
 
     if (!valueIsOld)
@@ -236,7 +235,7 @@ public class DefaultAssociativeLinkageSystem4 extends
             + jChunk + " decrementing : " + sJI);
     }
 
-    FastCollectionFactory.recycle(links);
+    
 
     // ISubsymbolicChunk4 sscI = iChunk.getSubsymbolicChunk()
     // .getAdapter(ISubsymbolicChunk4.class);

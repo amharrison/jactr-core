@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.SortedSet;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
@@ -21,7 +22,6 @@ import org.jactr.core.module.declarative.search.filter.SlotFilter;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ISlot;
-import org.jactr.core.utils.collections.SkipListSetFactory;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -60,8 +60,7 @@ public class DefaultExactSearchDelegate implements ISearchDelegate
     /*
      * second pass, ditch all those that don't match our chunktype
      */
-    SortedSet<IChunk> candidates = SkipListSetFactory
-        .newInstance(searchSystem._chunkNameComparator);
+    SortedSet<IChunk> candidates = new ConcurrentSkipListSet<>(searchSystem._chunkNameComparator);
     IChunkType chunkType = pattern.getChunkType();
 
     /*
@@ -163,8 +162,7 @@ public class DefaultExactSearchDelegate implements ISearchDelegate
       IChunkFilter chunkFilter = filter == null ? searchSystem._defaultFilter
           : filter;
 
-      SortedSet<IChunk> returnCandidates = SkipListSetFactory
-          .newInstance(comparator);
+      SortedSet<IChunk> returnCandidates = new ConcurrentSkipListSet<IChunk>(comparator);
 
       for (IChunk candidate : candidates)
         if (chunkType == null || candidate.isA(chunkType))
@@ -174,7 +172,6 @@ public class DefaultExactSearchDelegate implements ISearchDelegate
               // sure?
               returnCandidates.add(candidate);
 
-      searchSystem.recycleCollection(candidates);
       candidates = returnCandidates;
     }
 

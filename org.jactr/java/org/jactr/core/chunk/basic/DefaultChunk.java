@@ -31,7 +31,6 @@ import org.jactr.core.event.ParameterEvent;
 import org.jactr.core.model.IModel;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.utils.DefaultAdaptable;
-import org.jactr.core.utils.collections.FastCollectionFactory;
 
 /**
  * abstract chunk that handles most common logic for the developer.
@@ -296,10 +295,6 @@ public class DefaultChunk extends DefaultAdaptable implements IChunk
 
       if (isEncoded()) return;
 
-      /*
-       * we cant actually lock here since the encoding process may trigger some
-       * internal events, such as parameter events
-       */
       getSymbolicChunk().encode(when);
       getSubsymbolicChunk().encode(when);
       _chunkData.setEncoded(true);
@@ -477,7 +472,7 @@ public class DefaultChunk extends DefaultAdaptable implements IChunk
     /*
      * same slots?
      */
-    Collection<ISlot> slots = FastCollectionFactory.newInstance();
+    Collection<ISlot> slots = new ArrayList<>();
     try
     {
       for (ISlot slot : mySC.getSlots(slots))
@@ -494,7 +489,7 @@ public class DefaultChunk extends DefaultAdaptable implements IChunk
     }
     finally
     {
-      FastCollectionFactory.recycle(slots);
+      
     }
   }
 

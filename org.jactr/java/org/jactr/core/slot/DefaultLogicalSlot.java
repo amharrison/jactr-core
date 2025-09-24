@@ -3,8 +3,8 @@ package org.jactr.core.slot;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 
- 
 import org.slf4j.LoggerFactory;
 import org.jactr.core.production.CannotInstantiateException;
 
@@ -24,7 +24,7 @@ public class DefaultLogicalSlot extends BasicSlot implements ILogicalSlot,
   // protected ISlot _slot2;
   private int               _operator;
 
-  private Collection<ISlot> _children = new ArrayList<ISlot>(2);
+  final private Collection<ISlot> _children = new ArrayList<ISlot>(2);
 
 
 
@@ -84,7 +84,7 @@ public class DefaultLogicalSlot extends BasicSlot implements ILogicalSlot,
   }
 
   @Override
-  protected String createToString()
+  public String toString()
   {
 
     String operation = "=";
@@ -132,38 +132,26 @@ public class DefaultLogicalSlot extends BasicSlot implements ILogicalSlot,
     _children.remove(slot);
   }
 
-  /*
-   * (non-Javadoc)
-   * @see java.lang.Object#hashCode()
-   */
   @Override
   public int hashCode()
   {
     final int prime = 31;
     int result = super.hashCode();
-    result = prime * result + (_children == null ? 0 : _children.hashCode());
-    result = prime * result + _operator;
+    result = prime * result + Objects.hash(_children, _operator);
     return result;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
   @Override
   public boolean equals(Object obj)
   {
     if (this == obj) return true;
     if (!super.equals(obj)) return false;
-    if (!(obj instanceof DefaultLogicalSlot)) return false;
+    if (getClass() != obj.getClass()) return false;
     DefaultLogicalSlot other = (DefaultLogicalSlot) obj;
-    if (_children == null)
-    {
-      if (other._children != null) return false;
-    }
-    else if (!_children.equals(other._children)) return false;
-    if (_operator != other._operator) return false;
-    return true;
+    return Objects.equals(_children, other._children)
+        && _operator == other._operator;
   }
+
+
 
 }

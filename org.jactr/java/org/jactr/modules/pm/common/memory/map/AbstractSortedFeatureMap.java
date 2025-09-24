@@ -4,6 +4,7 @@ package org.jactr.modules.pm.common.memory.map;
  * default logging
  */
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -15,7 +16,6 @@ import org.jactr.core.chunk.IChunk;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ISlot;
-import org.jactr.core.utils.collections.FastSetFactory;
 import org.jactr.modules.pm.IPerceptualModule;
 import org.slf4j.LoggerFactory;
 
@@ -147,7 +147,7 @@ public abstract class AbstractSortedFeatureMap<T> extends AbstractFeatureMap<T>
   {
     boolean firstInsertion = true;
     String slotName = getRelevantSlotName();
-    Set<IIdentifier> tmp = FastSetFactory.newInstance();
+    Set<IIdentifier> tmp = new HashSet<>();
     for (IConditionalSlot slot : request.getConditionalSlots())
       if (slot.getName().equalsIgnoreCase(slotName))
         if (isValidValue(slot))
@@ -193,7 +193,7 @@ public abstract class AbstractSortedFeatureMap<T> extends AbstractFeatureMap<T>
         else if (LOGGER.isDebugEnabled())
           LOGGER.debug(this + " " + slot + " value is not naturally ordered");
 
-    FastSetFactory.recycle(tmp);
+    
   }
 
   @Override
@@ -205,7 +205,7 @@ public abstract class AbstractSortedFeatureMap<T> extends AbstractFeatureMap<T>
     Set<IIdentifier> identifiers = _valueMap.get(data);
     if (identifiers == null)
     {
-      identifiers = FastSetFactory.newInstance();
+      identifiers = new HashSet<>();
       _valueMap.put(data, identifiers);
     }
     identifiers.add(identifier);
@@ -229,7 +229,7 @@ public abstract class AbstractSortedFeatureMap<T> extends AbstractFeatureMap<T>
         if (identifiers.size() == 0)
         {
           _valueMap.remove(value);
-          FastSetFactory.recycle(identifiers);
+          
         }
       }
     }

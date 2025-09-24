@@ -13,6 +13,7 @@
  */
 package org.jactr.core.module.declarative.four.associative;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.jactr.core.chunk.IChunk;
@@ -24,7 +25,6 @@ import org.jactr.core.chunk.link.IAssociativeLink;
 import org.jactr.core.module.declarative.associative.IAssociativeLinkContainer;
 import org.jactr.core.module.declarative.basic.chunk.IChunkFactory;
 import org.jactr.core.module.declarative.basic.chunk.ISubsymbolicChunkFactory;
-import org.jactr.core.utils.collections.FastCollectionFactory;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -215,7 +215,7 @@ public class ChunkListener extends ChunkListenerAdaptor
         .getAdapter(IAssociativeLinkContainer.class);
     master.getAdapter(IAssociativeLinkContainer.class);
 
-    Collection<IAssociativeLink> links = FastCollectionFactory.newInstance();
+    Collection<IAssociativeLink> links = new ArrayList<>();
     if (processInboundLinks)
       cCont.getInboundLinks(links);
     else
@@ -351,7 +351,7 @@ public class ChunkListener extends ChunkListenerAdaptor
       // otherSSC.removeLink(oldLink);
     }
 
-    FastCollectionFactory.recycle(links);
+    
   }
 
   /**
@@ -367,7 +367,7 @@ public class ChunkListener extends ChunkListenerAdaptor
   static public IAssociativeLink getAssociativeLink(IChunk containingChunk,
       IChunk referenceChunk, boolean getOutbound)
   {
-    Collection<IAssociativeLink> links = FastCollectionFactory.newInstance();
+    Collection<IAssociativeLink> links = new ArrayList<>();
     try
     {
       IAssociativeLinkContainer alc = containingChunk
@@ -382,7 +382,7 @@ public class ChunkListener extends ChunkListenerAdaptor
     }
     finally
     {
-      FastCollectionFactory.recycle(links);
+      
     }
   }
 

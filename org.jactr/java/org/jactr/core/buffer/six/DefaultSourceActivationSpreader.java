@@ -1,5 +1,6 @@
 package org.jactr.core.buffer.six;
 
+import java.util.ArrayList;
 import java.util.Collection;
 /*
  * default logging
@@ -22,7 +23,6 @@ import org.jactr.core.logging.Logger;
 import org.jactr.core.logging.Logger.Stream;
 import org.jactr.core.model.IModel;
 import org.jactr.core.slot.ISlot;
-import org.jactr.core.utils.collections.FastCollectionFactory;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -83,9 +83,9 @@ public class DefaultSourceActivationSpreader
      * also have a link from X with a count of 2. X will receive twice the
      * source activation, and will propogate that through the doubled link.
      */
-    Collection<IAssociativeLink> jLinks = FastCollectionFactory.newInstance();
-    Collection<IChunk> sourceChunks = FastCollectionFactory.newInstance();
-    Collection<ISlot> slots = FastCollectionFactory.newInstance();
+    Collection<IAssociativeLink> jLinks = new ArrayList<>();
+    Collection<IChunk> sourceChunks = new ArrayList<>();
+    Collection<ISlot> slots = new ArrayList<>();
 
     try
     {
@@ -210,9 +210,6 @@ public class DefaultSourceActivationSpreader
     }
     finally
     {
-      FastCollectionFactory.recycle(slots);
-      FastCollectionFactory.recycle(jLinks);
-      FastCollectionFactory.recycle(sourceChunks);
     }
   }
 

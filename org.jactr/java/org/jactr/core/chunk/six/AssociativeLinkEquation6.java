@@ -1,5 +1,6 @@
 package org.jactr.core.chunk.six;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.jactr.core.chunk.IChunk;
@@ -9,7 +10,6 @@ import org.jactr.core.chunk.link.IAssociativeLinkEquation;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.declarative.associative.IAssociativeLinkContainer;
 import org.jactr.core.module.declarative.six.learning.IDeclarativeLearningModule6;
-import org.jactr.core.utils.collections.FastCollectionFactory;
 import org.slf4j.LoggerFactory;
 
 public class AssociativeLinkEquation6 implements IAssociativeLinkEquation
@@ -38,15 +38,14 @@ public class AssociativeLinkEquation6 implements IAssociativeLinkEquation
 
     double max = _declarativeLearningModule.getMaximumStrength();
 
-    Collection<IAssociativeLink> links = FastCollectionFactory.newInstance();
+    Collection<IAssociativeLink> links = new ArrayList<>();
     link.getJChunk().getAdapter(IAssociativeLinkContainer.class)
         .getOutboundLinks(links);
 
     double fanj = links.stream().filter(l -> {
       return l.getIChunk().isEncoded();
     }).count();
-
-    FastCollectionFactory.recycle(links);
+    
     links = null;
 
     fanj = fanj / ((Link4) link).getCount();
@@ -63,7 +62,7 @@ public class AssociativeLinkEquation6 implements IAssociativeLinkEquation
 
   public void resetStrengths(IModel model)
   {
-    Collection<IAssociativeLink> links = FastCollectionFactory.newInstance();
+    Collection<IAssociativeLink> links = new ArrayList<>();
     try
     {
       for (IChunk chunk : model.getDeclarativeModule().getChunks().get())
@@ -86,7 +85,7 @@ public class AssociativeLinkEquation6 implements IAssociativeLinkEquation
     }
     finally
     {
-      FastCollectionFactory.recycle(links);
+      
     }
   }
 

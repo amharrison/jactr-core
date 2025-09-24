@@ -9,7 +9,6 @@ import java.util.Collections;
 
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.VariableBindings;
-import org.jactr.core.production.bindings.VariableBindingsFactory;
 import org.jactr.core.production.condition.match.ExceptionMatchFailure;
 import org.jactr.core.production.condition.match.IMatchFailure;
 import org.jactr.core.production.request.SlotBasedRequest;
@@ -184,7 +183,7 @@ public class ProxyCondition extends AbstractSlotCondition
       expandedBindings = variableBindings;
     else
     {
-      expandedBindings = VariableBindingsFactory.newInstance();
+      expandedBindings = new VariableBindings();
       expandedBindings.copy(variableBindings);
       canRecycleBindings = true;
 
@@ -212,11 +211,6 @@ public class ProxyCondition extends AbstractSlotCondition
     {
       throw new CannotMatchException(new ExceptionMatchFailure(this,
           _delegateCondition.getClass().getName(), e));
-    }
-    finally
-    {
-      if (canRecycleBindings)
-        VariableBindingsFactory.recycle(expandedBindings);
     }
   }
 

@@ -15,7 +15,6 @@ import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.logging.IMessageBuilder;
 import org.jactr.core.logging.Logger;
-import org.jactr.core.logging.impl.MessageBuilderFactory;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.IModule;
 import org.jactr.core.runtime.ACTRRuntime;
@@ -140,8 +139,6 @@ public abstract class AbstractCapacityBuffer6 extends
       }
       removeSourceChunk(toRemove);
     }
-
-    if (sb != null) MessageBuilderFactory.recycle(sb);
   }
 
   /**

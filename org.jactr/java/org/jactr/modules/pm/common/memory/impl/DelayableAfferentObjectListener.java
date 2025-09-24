@@ -1,5 +1,6 @@
 package org.jactr.modules.pm.common.memory.impl;
 
+import java.util.ArrayList;
 /*
  * default logging
  */
@@ -7,14 +8,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Executor;
 
- 
-import org.slf4j.LoggerFactory;
 import org.commonreality.agents.IAgent;
 import org.commonreality.object.IAfferentObject;
 import org.jactr.core.model.IModel;
 import org.jactr.core.queue.timedevents.RunnableTimedEvent;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.modules.pm.common.afferent.DefaultAfferentObjectListener;
+import org.slf4j.LoggerFactory;
 
 /**
  * object listener that can delay the removal of percepts..
@@ -75,8 +74,7 @@ public class DelayableAfferentObjectListener extends
   protected void delayRemoval(Collection<IAfferentObject> toBeRemoved)
   {
     // copy of the collection as it will be recycled
-    final List<IAfferentObject> internalToBeRemoved = FastListFactory
-        .newInstance();
+    final List<IAfferentObject> internalToBeRemoved = new ArrayList<>();
     internalToBeRemoved.addAll(toBeRemoved);
 
     double currentTime = getAgent().getClock().getTime();
@@ -90,7 +88,7 @@ public class DelayableAfferentObjectListener extends
       {
         for (IAfferentObject object : internalToBeRemoved)
           objectRemoved(object);
-        FastListFactory.recycle(internalToBeRemoved);
+        
       }
 
     };

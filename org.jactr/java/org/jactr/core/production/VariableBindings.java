@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.jactr.core.production.bindings.BindingFactory;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -26,26 +25,18 @@ public class VariableBindings
   /**
    * Logger definition
    */
-  static private final transient org.slf4j.Logger LOGGER           = LoggerFactory
-                                                    .getLogger(VariableBindings.class);
+  static private final transient org.slf4j.Logger LOGGER    = LoggerFactory
+      .getLogger(VariableBindings.class);
 
   /**
    * keyed on name [value, originalSlot, container]
    */
-  private final Map<String, Object[]> _bindings = new TreeMap<String, Object[]>();
-
-  private boolean                     _recycleBindings = false;
+  private final Map<String, Object[]>             _bindings = new TreeMap<String, Object[]>();
 
   public VariableBindings()
   {
-    this(false);
-  }
 
-  public VariableBindings(boolean recycleBindings)
-  {
-    _recycleBindings = recycleBindings;
   }
-
 
   /**
    * make a copy, without any recycling of bindings
@@ -54,7 +45,6 @@ public class VariableBindings
    */
   public VariableBindings(VariableBindings bindings)
   {
-    this(false);
     copy(bindings);
   }
 
@@ -70,12 +60,9 @@ public class VariableBindings
 
   public void clear()
   {
-    if (_recycleBindings) for (Object[] binding : _bindings.values())
-      BindingFactory.recycle(binding);
 
     _bindings.clear();
   }
-
 
   /**
    * copy the bindings from bindings into this.
@@ -102,21 +89,13 @@ public class VariableBindings
 
   public void bind(String variableName, Object value, Object variableSource)
   {
-
     Object[] binding = null;
-    if (_recycleBindings)
-      binding = BindingFactory.newInstance(value, variableSource);
-    else
-    {
-      binding = new Object[2];
-      binding[0] = value;
-      binding[1] = variableSource;
-    }
+
+    binding = new Object[2];
+    binding[0] = value;
+    binding[1] = variableSource;
 
     Object[] oldBinding = _bindings.put(variableName.toLowerCase(), binding);
-
-    if (oldBinding != null && _recycleBindings)
-      BindingFactory.recycle(oldBinding);
   }
 
   public void bind(String variableName, Object value)
@@ -127,7 +106,6 @@ public class VariableBindings
   public void unbind(String variableName)
   {
     Object[] binding = _bindings.remove(variableName.toLowerCase());
-    if (binding != null && _recycleBindings) BindingFactory.recycle(binding);
   }
 
   public boolean isBound(String variableName)

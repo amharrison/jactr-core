@@ -7,15 +7,14 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentSkipListSet;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.module.declarative.search.filter.AcceptAllFilter;
 import org.jactr.core.module.declarative.search.filter.IChunkFilter;
 import org.jactr.core.production.request.ChunkTypeRequest;
-import org.jactr.core.utils.collections.SkipListSetFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * basic implementation of a hideously inefficient partial matching (but it is
@@ -79,13 +78,12 @@ public class DefaultPartialSearchDelegate implements ISearchDelegate
       IChunkFilter chunkFilter = filter == null ? new AcceptAllFilter()
           : filter;
 
-      returnCandidates = SkipListSetFactory.newInstance(comparator);
+      returnCandidates = new ConcurrentSkipListSet<IChunk>(comparator);
 
       for (IChunk candidate : candidates)
         if (chunkType == null || candidate.isA(chunkType))
           if (chunkFilter.accept(candidate)) returnCandidates.add(candidate);
 
-      searchSystem.recycleCollection(candidates);
     }
     else
       returnCandidates = new TreeSet<IChunk>();

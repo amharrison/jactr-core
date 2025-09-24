@@ -1,16 +1,15 @@
 package org.jactr.modules.pm.visual.memory;
 
+import java.util.ArrayList;
 import java.util.List;
 
- 
-import org.slf4j.LoggerFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.jactr.core.buffer.BufferUtilities;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.modules.pm.common.memory.PerceptualSearchResult;
 import org.jactr.modules.pm.visual.IVisualModule;
+import org.slf4j.LoggerFactory;
 
 public class VisualUtilities
 {
@@ -30,14 +29,14 @@ public class VisualUtilities
    */
   static public PerceptualSearchResult getSearchResult(IChunk locationChunk, IVisualMemory visualMemory)
   {
-    List<PerceptualSearchResult> results = FastListFactory.newInstance();
+    List<PerceptualSearchResult> results = new ArrayList<>();
     visualMemory.getRecentSearchResults(results);
 
     for (PerceptualSearchResult result : results)
       if (locationChunk == result.getLocation())
         return result;
 
-    FastListFactory.recycle(results);
+    
     return null;
   }
    
@@ -50,14 +49,14 @@ public class VisualUtilities
   static public PerceptualSearchResult getSearchResult(
       IIdentifier perceptualIdentifier, IVisualMemory visualMemory)
   {
-    List<PerceptualSearchResult> results = FastListFactory.newInstance();
+    List<PerceptualSearchResult> results = new ArrayList<>();
     visualMemory.getRecentSearchResults(results);
 
     for (PerceptualSearchResult result : results)
       if (result.getPerceptIdentifier().equals(perceptualIdentifier))
         return result;
 
-    FastListFactory.recycle(results);
+    
     return null;
   }
 

@@ -48,9 +48,6 @@ public class BaseASTMessage extends BaseMessage implements Serializable,
 
   private transient boolean    _compress;
 
-  static private transient ThreadLocal<ByteArrayOutputStream> _localBAOS       = new ThreadLocal<ByteArrayOutputStream>();
-
-  static private transient ThreadLocal<byte[]>                _localInput      = new ThreadLocal<byte[]>();
 
   public BaseASTMessage(CommonTree ast)
   {
@@ -85,13 +82,7 @@ public class BaseASTMessage extends BaseMessage implements Serializable,
         /*
          * go to a GZIPOutputStream
          */
-        ByteArrayOutputStream baos = _localBAOS.get();
-        if (baos == null)
-        {
-          baos = new ByteArrayOutputStream();
-          _localBAOS.set(baos);
-        }
-        baos.reset();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         DataOutputStream zip = new DataOutputStream(new GZIPOutputStream(baos));
         Serializer.write(_ast, zip);
@@ -134,11 +125,10 @@ public class BaseASTMessage extends BaseMessage implements Serializable,
          */
         int len = in.readInt();
 
-        byte[] bytes = _localInput.get();
+        byte[] bytes = null;
         if (bytes == null || bytes.length < len)
         {
           bytes = new byte[len];
-          _localInput.set(bytes);
         }
 
         if (LOGGER.isDebugEnabled()) LOGGER.debug("Reading "+len+" bytes to decompress");

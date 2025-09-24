@@ -1,5 +1,6 @@
 package org.jactr.modules.pm.visual.buffer.processor;
 
+import java.util.ArrayList;
 import java.util.List;
 /*
  * default logging
@@ -17,7 +18,6 @@ import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.production.request.IRequest;
 import org.jactr.core.queue.ITimedEvent;
 import org.jactr.core.slot.ISlot;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.modules.pm.buffer.IPerceptualBuffer;
 import org.jactr.modules.pm.common.buffer.AbstractRequestDelegate;
 import org.jactr.modules.pm.common.event.IPerceptualMemoryModuleEvent;
@@ -176,7 +176,7 @@ public class VisualSearchRequestDelegate extends AbstractRequestDelegate
     /*
      * figure out if this is a stuff request
      */
-    List<ISlot> slots = FastListFactory.newInstance();
+    List<ISlot> slots = new ArrayList<>();
     ctr.getSlots(slots);
 
 
@@ -206,7 +206,7 @@ public class VisualSearchRequestDelegate extends AbstractRequestDelegate
 
     _isStuffRequest = isStuffRequest;
 
-    FastListFactory.recycle(slots);
+    
 
     return _module.search(ctr, requestTime, isStuffRequest);
   }

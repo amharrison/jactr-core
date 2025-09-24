@@ -1,5 +1,6 @@
 package org.jactr.modules.pm.motor.managers;
 
+import java.util.ArrayList;
 /*
  * default logging
  */
@@ -28,7 +29,6 @@ import org.jactr.core.slot.BasicSlot;
 import org.jactr.core.slot.IMutableSlot;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.slot.IUniqueSlotContainer;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.modules.pm.buffer.IPerceptualBuffer;
 import org.jactr.modules.pm.common.efferent.EfferentCommandManager;
 import org.jactr.modules.pm.motor.AbstractMotorModule;
@@ -154,7 +154,7 @@ public class MotorCommandManager extends EfferentCommandManager<MovementCommand>
       _preparedMovements.clear();
       double now = ACTRRuntime.getRuntime().getClock(_module.getModel())
           .getTime();
-      List<IMovement> movements = FastListFactory.newInstance();
+      List<IMovement> movements = new ArrayList<>();
       movements.addAll(_commandMovementMap.values());
       for (IMovement movement : movements)
         try
@@ -176,7 +176,7 @@ public class MotorCommandManager extends EfferentCommandManager<MovementCommand>
           }
         }
 
-      FastListFactory.recycle(movements);
+      
     }
     finally
     {
@@ -206,7 +206,7 @@ public class MotorCommandManager extends EfferentCommandManager<MovementCommand>
 
   private boolean isPrepareOnly(IMovement movement)
   {
-    List<ISlot> container = FastListFactory.newInstance();
+    List<ISlot> container = new ArrayList<>();
     movement.getChunkTypeRequest().getSlots(container);
     try
     {
@@ -216,13 +216,13 @@ public class MotorCommandManager extends EfferentCommandManager<MovementCommand>
     }
     finally
     {
-      FastListFactory.recycle(container);
+      
     }
   }
 
   private boolean isAdjustment(IMovement movement)
   {
-    List<ISlot> container = FastListFactory.newInstance();
+    List<ISlot> container = new ArrayList<>();
     movement.getChunkTypeRequest().getSlots(container);
     try
     {
@@ -232,7 +232,7 @@ public class MotorCommandManager extends EfferentCommandManager<MovementCommand>
     }
     finally
     {
-      FastListFactory.recycle(container);
+      
     }
   }
 

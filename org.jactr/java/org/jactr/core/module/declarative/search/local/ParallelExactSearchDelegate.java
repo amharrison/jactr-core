@@ -14,6 +14,7 @@ import java.util.ListIterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
@@ -28,8 +29,6 @@ import org.jactr.core.module.declarative.search.filter.SlotFilter;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ISlot;
-import org.jactr.core.utils.collections.FastCollectionFactory;
-import org.jactr.core.utils.collections.SkipListSetFactory;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -187,8 +186,7 @@ public class ParallelExactSearchDelegate implements ISearchDelegate
         IChunkFilter chunkFilter = filter == null ? searchSystem._defaultFilter
             : filter;
 
-        SortedSet<IChunk> returnCandidates = SkipListSetFactory
-            .newInstance(comparator);
+        SortedSet<IChunk> returnCandidates = new ConcurrentSkipListSet<IChunk>(comparator);
 
         for (IChunk candidate : results)
           if (chunkType == null || candidate.isA(chunkType))
@@ -199,7 +197,6 @@ public class ParallelExactSearchDelegate implements ISearchDelegate
                 // sure?
                 returnCandidates.add(candidate);
 
-        searchSystem.recycleCollection(results);
         results = returnCandidates;
       }
 
@@ -235,8 +232,7 @@ public class ParallelExactSearchDelegate implements ISearchDelegate
       LOGGER.debug(String.format("Collapsing %d result sets",
           slotSearchResults.size()));
 
-    SortedSet<IChunk> candidates = SkipListSetFactory
-        .newInstance(searchSystem._chunkNameComparator);
+    SortedSet<IChunk> candidates = new ConcurrentSkipListSet<>(searchSystem._chunkNameComparator);
 
     boolean first = true;
     for (Collection<IChunk> slotSearchResult : slotSearchResults)
@@ -298,7 +294,7 @@ public class ParallelExactSearchDelegate implements ISearchDelegate
       Collection<IChunk> candidates, ISlot slot, IChunkFilter primaryFilter)
   {
     @SuppressWarnings("unchecked")
-    Collection<IChunk> rtn = FastCollectionFactory.newInstance();
+    Collection<IChunk> rtn = new ArrayList<>();
 
     /**
      * this collection comes directly from DeafultSearchSystems.find() which is

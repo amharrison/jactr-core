@@ -112,7 +112,7 @@ public class VisualTest extends TestCase
     try
     {
       // give all the other threads a chance to cleanup
-      Thread.sleep(5000);
+     Thread.sleep(100);
     }
     catch (InterruptedException e)
     {

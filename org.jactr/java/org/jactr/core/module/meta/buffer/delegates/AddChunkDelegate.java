@@ -1,5 +1,6 @@
 package org.jactr.core.module.meta.buffer.delegates;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.jactr.core.buffer.IActivationBuffer;
@@ -9,7 +10,7 @@ import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.ISymbolicChunk;
 import org.jactr.core.logging.IMessageBuilder;
 import org.jactr.core.logging.Logger;
-import org.jactr.core.logging.impl.MessageBuilderFactory;
+import org.jactr.core.logging.impl.StringMessageBuilder;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.meta.MetaModule;
 import org.jactr.core.production.request.ChunkRequest;
@@ -19,7 +20,6 @@ import org.jactr.core.production.request.SlotBasedRequest;
 import org.jactr.core.slot.DefaultConditionalSlot;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ISlot;
-import org.jactr.core.utils.collections.FastCollectionFactory;
 
 public class AddChunkDelegate implements IRequestDelegate
 {
@@ -87,14 +87,12 @@ public class AddChunkDelegate implements IRequestDelegate
         ((ChunkTypeRequest) existingRequest).addSlot(conditionalSlot);
         if (Logger.hasLoggers(buffer.getModel()))
         {
-          IMessageBuilder mb = MessageBuilderFactory.newInstance();
+          IMessageBuilder mb = new StringMessageBuilder();
 
           mb.append("Current request : ");
           mb.append(existingRequest);
 
           Logger.log(buffer.getModel(), "META", mb);
-
-          MessageBuilderFactory.recycle(mb);
         }
       }
       else
@@ -103,13 +101,11 @@ public class AddChunkDelegate implements IRequestDelegate
          * if not, log the error and go on
          */
         IModel model = mm.getModel();
-        IMessageBuilder mb = MessageBuilderFactory.newInstance();
+        IMessageBuilder mb = new StringMessageBuilder();
 
         mb.append("Cannot append condition to request " + existingRequest);
 
         if (Logger.hasLoggers(model)) Logger.log(model, "Meta", mb);
-
-        MessageBuilderFactory.recycle(mb);
         return false;
       }
     }
@@ -119,15 +115,13 @@ public class AddChunkDelegate implements IRequestDelegate
        * expand the request using the chunk nonnull slot values as default
        * values
        */
-      Collection<ISlot> chunkSlots = FastCollectionFactory.newInstance();
+      Collection<ISlot> chunkSlots = new ArrayList<>();
       chunkSlots = ctr.getChunk().getSymbolicChunk().getSlots(chunkSlots);
 
       chunkSlots.stream().filter(s -> s.getValue() != null)
           .forEach(s -> ctr.addSlot(s));
 
       buff.setContents(ctr);
-
-      FastCollectionFactory.recycle(chunkSlots);
     }
 
     return true;

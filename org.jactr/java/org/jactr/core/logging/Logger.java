@@ -18,7 +18,7 @@ import java.util.concurrent.Executor;
 
 import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.event.ACTREventDispatcher;
-import org.jactr.core.logging.impl.MessageBuilderFactory;
+import org.jactr.core.logging.impl.StringMessageBuilder;
 import org.jactr.core.model.IModel;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +49,7 @@ public class Logger
 
   static public IMessageBuilder messageBuilder()
   {
-    return MessageBuilderFactory.newInstance();
+    return new StringMessageBuilder();
   }
 
   /**
@@ -98,13 +98,13 @@ public class Logger
   static public void log(IModel model, Stream stream, IMessageBuilder message)
   {
     log(model, stream, message.toString());
-    MessageBuilderFactory.recycle(message);
+    
   }
 
   static public void log(IModel model, String stream, IMessageBuilder message)
   {
     log(model, stream, message.toString());
-    MessageBuilderFactory.recycle(message);
+    
   }
 
   static public void log(IModel model, Stream stream, String message)

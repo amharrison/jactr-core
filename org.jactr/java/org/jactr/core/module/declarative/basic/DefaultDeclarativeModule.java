@@ -21,7 +21,6 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.jactr.core.buffer.IActivationBuffer;
@@ -36,7 +35,7 @@ import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.event.IParameterEvent;
 import org.jactr.core.logging.IMessageBuilder;
 import org.jactr.core.logging.Logger;
-import org.jactr.core.logging.impl.MessageBuilderFactory;
+import org.jactr.core.logging.impl.StringMessageBuilder;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.declarative.IDeclarativeModule;
 import org.jactr.core.module.declarative.IRemovableDeclarativeModule;
@@ -67,7 +66,6 @@ import org.jactr.core.module.declarative.search.local.DefaultSearchSystem;
 import org.jactr.core.module.declarative.search.local.ISearchDelegate;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.utils.StringUtilities;
-import org.jactr.core.utils.collections.SkipListSetFactory;
 import org.jactr.core.utils.parameter.ClassNameParameterHandler;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.core.utils.parameter.ParameterHandler;
@@ -271,8 +269,7 @@ public class DefaultDeclarativeModule extends AbstractDeclarativeModule
 
       IChunk mergeInto = possibleMatches.iterator().next();
 
-      if (possibleMatches instanceof ConcurrentSkipListSet)
-        SkipListSetFactory.recycle((ConcurrentSkipListSet) possibleMatches);
+      
 
       return merge(mergeInto, chunk);
     }
@@ -490,7 +487,7 @@ public class DefaultDeclarativeModule extends AbstractDeclarativeModule
     // just incase a message builder wasn't created
     if (logMessage == null && Logger.hasLoggers(getModel()))
     {
-      logMessage = MessageBuilderFactory.newInstance();
+      logMessage = new StringMessageBuilder();
       recycle = true;
     }
 
@@ -506,7 +503,7 @@ public class DefaultDeclarativeModule extends AbstractDeclarativeModule
       Logger.log(getModel(), Logger.Stream.DECLARATIVE, logMessage.toString());
     }
 
-    if (recycle) MessageBuilderFactory.recycle(logMessage);
+    
 
     // clean up
     // if (candidates instanceof FastSet) FastSet.recycle((FastSet) candidates);
@@ -534,7 +531,7 @@ public class DefaultDeclarativeModule extends AbstractDeclarativeModule
     else
     {
       recycle = true;
-      logMessage = MessageBuilderFactory.newInstance();
+      logMessage = new StringMessageBuilder();
     }
 
     if (Logger.hasLoggers(getModel()))
@@ -545,7 +542,7 @@ public class DefaultDeclarativeModule extends AbstractDeclarativeModule
       Logger.log(getModel(), Logger.Stream.DECLARATIVE, logMessage.toString());
     }
 
-    if (recycle) MessageBuilderFactory.recycle(logMessage);
+    
 
     return candidates;
   }

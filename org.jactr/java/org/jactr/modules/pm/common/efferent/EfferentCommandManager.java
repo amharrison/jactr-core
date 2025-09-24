@@ -1,5 +1,6 @@
 package org.jactr.modules.pm.common.efferent;
 
+import java.util.ArrayList;
 /*
  * default logging
  */
@@ -30,8 +31,6 @@ import org.commonreality.object.delta.IObjectDelta;
 import org.commonreality.object.identifier.ISensoryIdentifier;
 import org.commonreality.object.manager.event.IObjectEvent;
 import org.eclipse.collections.impl.list.mutable.FastList;
-import org.jactr.core.utils.collections.FastListFactory;
-import org.jactr.core.utils.collections.FastSetFactory;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -99,7 +98,7 @@ public abstract class EfferentCommandManager<C extends IEfferentCommand>
 
       public void objectsAdded(IObjectEvent<IEfferentCommand, ?> addEvent)
       {
-        List<IEfferentCommand> valid = FastListFactory.newInstance();
+        List<IEfferentCommand> valid = new ArrayList<>();
         try
         {
           _lock.readLock().lock();
@@ -120,13 +119,13 @@ public abstract class EfferentCommandManager<C extends IEfferentCommand>
         for (IEfferentCommand command : valid)
           update((C) command);
 
-        FastListFactory.recycle(valid);
+        
       }
 
       public void objectsRemoved(IObjectEvent<IEfferentCommand, ?> removeEvent)
       {
-        List<C> valid = FastListFactory.newInstance();
-        Set<C> abortions = FastSetFactory.newInstance();
+        List<C> valid = new ArrayList<>();
+        Set<C> abortions = new HashSet<>();
         try
         {
           _lock.readLock().lock();
@@ -188,13 +187,12 @@ public abstract class EfferentCommandManager<C extends IEfferentCommand>
           _lock.writeLock().unlock();
         }
 
-        FastSetFactory.recycle(abortions);
-        FastListFactory.recycle(valid);
+        
       }
 
       public void objectsUpdated(IObjectEvent<IEfferentCommand, ?> updateEvent)
       {
-        List<IEfferentCommand> valid = FastListFactory.newInstance();
+        List<IEfferentCommand> valid = new ArrayList<>();
 
         try
         {
@@ -222,8 +220,6 @@ public abstract class EfferentCommandManager<C extends IEfferentCommand>
 
         for (IEfferentCommand command : valid)
           update((C) command);
-
-        FastListFactory.recycle(valid);
       }
 
     };
@@ -317,7 +313,7 @@ public abstract class EfferentCommandManager<C extends IEfferentCommand>
    */
   public void clear()
   {
-    Set<C> commands = FastSetFactory.newInstance();
+    Set<C> commands = new HashSet<>();
     try
     {
       _lock.writeLock().lock();
@@ -356,7 +352,7 @@ public abstract class EfferentCommandManager<C extends IEfferentCommand>
     }
     finally
     {
-      FastSetFactory.recycle(commands);
+      
 
       _lock.writeLock().unlock();
     }

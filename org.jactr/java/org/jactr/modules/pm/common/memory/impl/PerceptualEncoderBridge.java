@@ -1,5 +1,6 @@
 package org.jactr.modules.pm.common.memory.impl;
 
+import java.util.ArrayList;
 /*
  * default logging
  */
@@ -22,7 +23,6 @@ import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.module.declarative.IDeclarativeModule;
 import org.jactr.core.queue.timedevents.RunnableTimedEvent;
 import org.jactr.core.runtime.ACTRRuntime;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.modules.pm.common.afferent.DefaultAfferentObjectListener;
 import org.jactr.modules.pm.common.afferent.IAfferentObjectListener;
 import org.jactr.modules.pm.common.memory.IPerceptualEncoder;
@@ -122,7 +122,7 @@ public class PerceptualEncoderBridge implements IAfferentObjectListener
   {
     // _activeChunks.clear();
 
-    List<IIdentifier> ids = FastListFactory.newInstance();
+    List<IIdentifier> ids = new ArrayList<>();
     ids.addAll(_cache.keySet());
 
     for (IIdentifier id : ids)
@@ -130,7 +130,7 @@ public class PerceptualEncoderBridge implements IAfferentObjectListener
 
     _onsetTime.clear();
     _cache.clear();
-    FastListFactory.recycle(ids);
+    
   }
 
   final public IPerceptualEncoder getEncoder()
@@ -223,7 +223,7 @@ public class PerceptualEncoderBridge implements IAfferentObjectListener
       /*
        * is it part of a search result?
        */
-      List<PerceptualSearchResult> results = FastListFactory.newInstance();
+      List<PerceptualSearchResult> results = new ArrayList<>();
       try
       {
         _memory.getRecentSearchResults(results);
@@ -239,7 +239,7 @@ public class PerceptualEncoderBridge implements IAfferentObjectListener
       }
       finally
       {
-        FastListFactory.recycle(results);
+        
       }
 
     }

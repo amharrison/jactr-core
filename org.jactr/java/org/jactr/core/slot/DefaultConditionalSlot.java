@@ -14,8 +14,8 @@
 package org.jactr.core.slot;
 
 import java.util.Collection;
+import java.util.Objects;
 
- 
 import org.slf4j.LoggerFactory;
 
 /**
@@ -82,10 +82,7 @@ public class DefaultConditionalSlot extends DefaultMutableSlot implements
   public void setCondition(int condition)
   {
     if (condition >= EQUALS && condition <= NOT_EQUALS)
-    {
       _condition = condition;
-      invalidateToString();
-    }
   }
 
   public boolean matchesCondition(Object test)
@@ -205,7 +202,7 @@ public class DefaultConditionalSlot extends DefaultMutableSlot implements
   }
 
   @Override
-  protected String createToString()
+  public String toString()
   {
 
     String condition = "=";
@@ -239,7 +236,7 @@ public class DefaultConditionalSlot extends DefaultMutableSlot implements
   {
     final int prime = 31;
     int result = super.hashCode();
-    result = prime * result + _condition;
+    result = prime * result + Objects.hash(_condition);
     return result;
   }
 
@@ -250,8 +247,9 @@ public class DefaultConditionalSlot extends DefaultMutableSlot implements
     if (!super.equals(obj)) return false;
     if (getClass() != obj.getClass()) return false;
     DefaultConditionalSlot other = (DefaultConditionalSlot) obj;
-    if (_condition != other._condition) return false;
-    return true;
+    return _condition == other._condition;
   }
+
+
 
 }

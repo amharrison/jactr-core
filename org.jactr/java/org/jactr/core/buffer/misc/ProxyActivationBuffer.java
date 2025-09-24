@@ -1,18 +1,17 @@
 package org.jactr.core.buffer.misc;
 
+import java.util.ArrayList;
 /*
  * default logging
  */
 import java.util.Collection;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.AbstractActivationBuffer;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.IModule;
-import org.jactr.core.utils.collections.FastCollectionFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * a proxy buffer that merely wraps an existing buffer with a new name, and
@@ -73,7 +72,7 @@ public class ProxyActivationBuffer extends AbstractActivationBuffer
   @Override
   protected boolean removeSourceChunkInternal(IChunk chunkToRemove)
   {
-    Collection<IChunk> sources = FastCollectionFactory.newInstance();
+    Collection<IChunk> sources = new ArrayList<>();
     try
     {
       if (_buffer.getSourceChunks(sources).contains(chunkToRemove))
@@ -85,7 +84,7 @@ public class ProxyActivationBuffer extends AbstractActivationBuffer
     }
     finally
     {
-      FastCollectionFactory.recycle(sources);
+      
     }
   }
 

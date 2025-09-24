@@ -1,5 +1,6 @@
 package org.jactr.modules.pm.visual.memory.impl.filter;
 
+import java.util.ArrayList;
 /*
  * default logging
  */
@@ -10,7 +11,6 @@ import java.util.List;
 
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.IConditionalSlot;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.modules.pm.common.memory.filter.AbstractIndexFilter;
 import org.jactr.modules.pm.common.memory.filter.IIndexFilter;
 import org.jactr.modules.pm.visual.IVisualModule;
@@ -65,7 +65,7 @@ public class ValueVisualLocationFilter extends
 
   public Collection<IIndexFilter> instantiate(ChunkTypeRequest request)
   {
-    List<IConditionalSlot> conditionals = FastListFactory.newInstance();
+    List<IConditionalSlot> conditionals = new ArrayList<>();
 
     int index = 0;
     for (IConditionalSlot cSlot : request.getConditionalSlots())
@@ -78,7 +78,7 @@ public class ValueVisualLocationFilter extends
 
     if (conditionals.size() == 0)
     {
-      FastListFactory.recycle(conditionals);
+      
       return Collections.emptyList();
     }
 

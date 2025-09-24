@@ -616,74 +616,15 @@ public abstract class AbstractSubsymbolicChunk extends DefaultAdaptable
   {
     return _parameterHelper.getParameter(key);
 
-//    String rtn = null;
-//    // short-term fix until everything is migrated to ParameterProcessor/Helper
-//
-//    if (CREATION_TIME.equalsIgnoreCase(key))
-//      rtn = ParameterHandler.numberInstance().toString(getCreationTime());
-//    else if (TIMES_NEEDED.equalsIgnoreCase(key))
-//      rtn = ParameterHandler.numberInstance().toString(getTimesNeeded());
-//    else if (TIMES_IN_CONTEXT.equalsIgnoreCase(key))
-//      rtn = ParameterHandler.numberInstance().toString(getTimesInContext());
-//    else if (REFERENCE_COUNT.equalsIgnoreCase(key))
-//      rtn = ParameterHandler.numberInstance()
-//          .toString(getReferences().getNumberOfReferences());
-//    else if (REFERENCE_TIMES.equalsIgnoreCase(key))
-//    {
-//      double[] times = getReferences().getTimes((double[]) null);
-//      // make sure they are sorted
-//      Arrays.sort(times);
-//
-//      Collection<Number> nTimes = new ArrayList<Number>(times.length);
-//      for (double time : times)
-//        nTimes.add(time);
-//
-//      // make sure they are sorted
-//
-//      CollectionParameterHandler<Number> aph = new CollectionParameterHandler<Number>(
-//          ParameterHandler.numberInstance());
-//      return aph.toString(nTimes);
-//    }
-//    else if (BASE_LEVEL_ACTIVATION.equalsIgnoreCase(key))
-//      rtn = ParameterHandler.numberInstance()
-//          .toString(getBaseLevelActivation());
-//    else if (SPREADING_ACTIVATION.equalsIgnoreCase(key))
-//      rtn = ParameterHandler.numberInstance()
-//          .toString(getSpreadingActivation());
-//    else if (SOURCE_ACTIVATION.equalsIgnoreCase(key))
-//      rtn = ParameterHandler.numberInstance().toString(getSourceActivation());
-//    else if (ACTIVATION.equalsIgnoreCase(key))
-//      rtn = ParameterHandler.numberInstance().toString(getActivation());
-//    else
-//      rtn = _unknownParameters.get(key);
-//
-//    return rtn;
   }
 
   public Collection<String> getPossibleParameters()
   {
-//    Collection<String> setable = getSetableParameters();
-//    setable.add(SOURCE_ACTIVATION);
-//    // setable.add(SPREADING_ACTIVATION);
-//    return setable;
     return _parameterHelper.getParameterNames(Sets.mutable.empty());
   }
 
   public Collection<String> getSetableParameters()
   {
-//    ArrayList<String> params = new ArrayList<String>();
-//
-//    params.addAll(_unknownParameters.keySet());
-//    params.add(CREATION_TIME);
-//    params.add(TIMES_NEEDED);
-//    params.add(TIMES_IN_CONTEXT);
-//    params.add(REFERENCE_COUNT);
-//    params.add(REFERENCE_TIMES);
-//    params.add(BASE_LEVEL_ACTIVATION);
-//    params.add(SPREADING_ACTIVATION);
-//    // params.add(SOURCE_ACTIVATION);
-//    params.add(ACTIVATION);
-//    return params;
     return _parameterHelper.getSetableParameterNames(Sets.mutable.empty());
   }
 
@@ -692,123 +633,6 @@ public abstract class AbstractSubsymbolicChunk extends DefaultAdaptable
     if (LOGGER.isDebugEnabled())
       LOGGER.debug("Attempting to set " + key + " to " + value);
 
-//    if (CREATION_TIME.equalsIgnoreCase(key))
-//      setCreationTime(
-//          ParameterHandler.numberInstance().coerce(value).doubleValue());
-//    else if (TIMES_NEEDED.equalsIgnoreCase(key))
-//      setTimesNeeded(
-//          ParameterHandler.numberInstance().coerce(value).doubleValue());
-//    else if (TIMES_IN_CONTEXT.equalsIgnoreCase(key))
-//      setTimesInContext(
-//          ParameterHandler.numberInstance().coerce(value).doubleValue());
-//    else if (REFERENCE_COUNT.equalsIgnoreCase(key))
-//    {
-//      long referenceCount = ParameterHandler.numberInstance().coerce(value)
-//          .longValue();
-//      IReferences references = getReferences();
-//
-//      double[] oldTimes = references.getTimes();
-//      long oldCount = references.getNumberOfReferences();
-//
-//      references.clear();
-//
-//      /*
-//       * create referenceCount references from creation time to now
-//       */
-//      double min = getCreationTime();
-//      double step = (getParentChunk().getModel().getAge() - min)
-//          / referenceCount;
-//      for (int i = 0; i < referenceCount; i++)
-//        references.addReferenceTime(getCreationTime() + i * step);
-//
-//      _lastActivationComputationTime = -1;
-//
-//      if (_parentChunk.hasParameterListeners())
-//      {
-//        _parentChunk
-//            .dispatch(
-//                new ParameterEvent(
-//                    this, ACTRRuntime.getRuntime()
-//                        .getClock(_parentChunk.getModel()).getTime(),
-//                    REFERENCE_COUNT, oldCount, referenceCount));
-//        _parentChunk.dispatch(new ParameterEvent(this,
-//            ACTRRuntime.getRuntime().getClock(_parentChunk.getModel())
-//                .getTime(),
-//            REFERENCE_TIMES, oldTimes, references.getTimes()));
-//      }
-//    }
-//    else if (REFERENCE_TIMES.equalsIgnoreCase(key))
-//    {
-//      if (LOGGER.isDebugEnabled())
-//        LOGGER.debug("Attempting to set reference times with " + value);
-//
-//      CollectionParameterHandler<Number> cph = new CollectionParameterHandler<Number>(
-//          ParameterHandler.numberInstance());
-//
-//      Collection<Number> times = cph.coerce(value);
-//
-//      // let's make sure they are sorted..
-//      TreeSet<Double> refTimes = new TreeSet<Double>();
-//      for (Number time : times)
-//        refTimes.add(time.doubleValue());
-//
-//      IReferences references = getReferences();
-//      double[] oldTimes = references.getTimes();
-//
-//      /*
-//       * if count was previously set, we need to maintain it..
-//       */
-//      references.setNumberOfReferences(
-//          Math.max(0, references.getNumberOfReferences() - refTimes.size()));
-//
-//      /*
-//       * now we'll add these times
-//       */
-//      for (Double time : refTimes)
-//        references.addReferenceTime(time);
-//
-//      _lastActivationComputationTime = -1;
-//
-//      if (_parentChunk.hasParameterListeners())
-//        _parentChunk.dispatch(new ParameterEvent(this,
-//            ACTRRuntime.getRuntime().getClock(_parentChunk.getModel())
-//                .getTime(),
-//            REFERENCE_TIMES, oldTimes, references.getTimes()));
-//    }
-//    else if (BASE_LEVEL_ACTIVATION.equalsIgnoreCase(key))
-//      setBaseLevelActivation(
-//          ParameterHandler.numberInstance().coerce(value).doubleValue());
-//    else if (SPREADING_ACTIVATION.equalsIgnoreCase(key))
-//      setSpreadingActivation(
-//          ParameterHandler.numberInstance().coerce(value).doubleValue());
-//    else if (SOURCE_ACTIVATION.equalsIgnoreCase(key))
-//    {
-//      if (!_setSourceWarned)
-//      {
-//        _setSourceWarned = true;
-//        if (LOGGER.isWarnEnabled()) LOGGER.warn(String.format(
-//            "Setting source activation directly via setParameter no longer supported. "));
-//      }
-//      setSourceActivation(null,
-//          ParameterHandler.numberInstance().coerce(value).doubleValue());
-//    }
-//    else if (ACTIVATION.equalsIgnoreCase(key))
-//      setActivation(
-//          ParameterHandler.numberInstance().coerce(value).doubleValue());
-//    else
-//    {
-//      /*
-//       * an unknown parameter. We store and fire an event. This allows others to
-//       * add parameters with no hassle.
-//       */
-//      String oldValue = _unknownParameters.put(key, value);
-//      if (_parentChunk.hasParameterListeners()) _parentChunk
-//          .dispatch(
-//              new ParameterEvent(
-//                  this, ACTRRuntime.getRuntime()
-//                      .getClock(_parentChunk.getModel()).getTime(),
-//                  key, oldValue, value));
-//    }
     _parameterHelper.setParameter(key, value);
   }
 
@@ -840,16 +664,6 @@ public abstract class AbstractSubsymbolicChunk extends DefaultAdaptable
     setActivation(total);
   }
 
-  // abstract protected double computeBaseLevelActivation();
-
-  /**
-   * return the spreading activation value
-   * 
-   * @return
-   */
-  // abstract protected double computeSpreadingActivation();
-
-  // abstract protected double computeRandomActivation();
 
   public IChunk getParentChunk()
   {

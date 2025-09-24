@@ -13,6 +13,7 @@
 
 package org.jactr.core.module.retrieval.time;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jactr.core.chunk.IChunk;
@@ -26,7 +27,6 @@ import org.jactr.core.module.retrieval.four.IRetrievalModule4;
 import org.jactr.core.module.retrieval.six.DefaultRetrievalModule6;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.ISlot;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -94,7 +94,7 @@ public class DefaultRetrievalTimeEquation implements IRetrievalTimeEquation
   public double computeRetrievalTime(IChunk retrievedChunk,
       ChunkTypeRequest retrievalRequest)
   {
-    List<ISlot> slots = FastListFactory.newInstance();
+    List<ISlot> slots = new ArrayList<>();
     if(retrievalRequest != null)
     	retrievalRequest.getSlots(slots);
     double latencyFactor = _retrievalModule.getLatencyFactor();
@@ -193,7 +193,6 @@ public class DefaultRetrievalTimeEquation implements IRetrievalTimeEquation
       retrievalTime = latencyFactor * Math.exp(-latencyExponent * activation);
     }
 
-    FastListFactory.recycle(slots);
 
     return retrievalTime;
   }

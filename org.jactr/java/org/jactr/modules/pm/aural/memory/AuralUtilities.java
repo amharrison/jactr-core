@@ -1,14 +1,13 @@
 package org.jactr.modules.pm.aural.memory;
 
+import java.util.ArrayList;
 import java.util.List;
 
- 
-import org.slf4j.LoggerFactory;
 import org.commonreality.identifier.IIdentifier;
 import org.jactr.core.chunk.IChunk;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.modules.pm.aural.IAuralModule;
 import org.jactr.modules.pm.common.memory.PerceptualSearchResult;
+import org.slf4j.LoggerFactory;
 
 public class AuralUtilities
 {
@@ -22,14 +21,14 @@ public class AuralUtilities
   static public PerceptualSearchResult getSearchResult(IChunk locationChunk,
       IAuralMemory auralMemory)
   {
-    List<PerceptualSearchResult> results = FastListFactory.newInstance();
+    List<PerceptualSearchResult> results = new ArrayList<>();
     auralMemory.getRecentSearchResults(results);
 
     for (PerceptualSearchResult result : results)
       if (locationChunk==result.getLocation())
         return result;
 
-    FastListFactory.recycle(results);
+    
     return null;
   }
 
@@ -43,14 +42,14 @@ public class AuralUtilities
   static public PerceptualSearchResult getSearchResult(
       IIdentifier perceptualIdentifier, IAuralMemory auralMemory)
   {
-    List<PerceptualSearchResult> results = FastListFactory.newInstance();
+    List<PerceptualSearchResult> results = new ArrayList<>();
     auralMemory.getRecentSearchResults(results);
 
     for (PerceptualSearchResult result : results)
       if (result.getPerceptIdentifier().equals(perceptualIdentifier))
         return result;
 
-    FastListFactory.recycle(results);
+    
     return null;
   }
 

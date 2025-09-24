@@ -1,5 +1,6 @@
 package org.jactr.core.chunk.four;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.jactr.core.chunk.IChunk;
@@ -8,7 +9,6 @@ import org.jactr.core.chunk.link.IAssociativeLinkEquation;
 import org.jactr.core.model.IModel;
 import org.jactr.core.module.declarative.associative.IAssociativeLinkContainer;
 import org.jactr.core.module.declarative.four.learning.IDeclarativeLearningModule4;
-import org.jactr.core.utils.collections.FastCollectionFactory;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -118,7 +118,7 @@ public class AssociativeLinkEquation4 implements IAssociativeLinkEquation
 
   public void resetStrengths(IModel model)
   {
-    Collection<IAssociativeLink> links = FastCollectionFactory.newInstance();
+    Collection<IAssociativeLink> links = new ArrayList<>();
     try
     {
       for (IChunk chunk : model.getDeclarativeModule().getChunks().get())
@@ -141,7 +141,7 @@ public class AssociativeLinkEquation4 implements IAssociativeLinkEquation
     }
     finally
     {
-      FastCollectionFactory.recycle(links);
+      
     }
   }
 

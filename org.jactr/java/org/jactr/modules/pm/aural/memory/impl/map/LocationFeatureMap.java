@@ -3,6 +3,7 @@ package org.jactr.modules.pm.aural.memory.impl.map;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,7 +15,6 @@ import org.jactr.core.chunk.IChunk;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.slot.IConditionalSlot;
-import org.jactr.core.utils.collections.FastSetFactory;
 import org.jactr.modules.pm.aural.IAuralModule;
 import org.jactr.modules.pm.common.memory.IPerceptualMemory;
 import org.slf4j.LoggerFactory;
@@ -123,7 +123,7 @@ public class LocationFeatureMap extends AbstractAuralFeatureMap<IChunk>
   {
     boolean firstInsertion = true;
     String slotName = getRelevantSlotName();
-    Set<IIdentifier> tmp = FastSetFactory.newInstance();
+    Set<IIdentifier> tmp = new HashSet<>();
     for (IConditionalSlot slot : request.getConditionalSlots())
       if (slot.getName().equalsIgnoreCase(slotName))
       {
@@ -154,7 +154,7 @@ public class LocationFeatureMap extends AbstractAuralFeatureMap<IChunk>
         }
       }
 
-    FastSetFactory.recycle(tmp);
+    
   }
 
   protected void equals(IChunk value, Set<IIdentifier> container)

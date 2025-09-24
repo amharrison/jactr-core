@@ -6,14 +6,13 @@ package org.jactr.core.module.declarative.search.local;
 import java.util.Collection;
 import java.util.List;
 import java.util.SortedSet;
+import java.util.concurrent.ConcurrentSkipListSet;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.module.declarative.search.filter.IChunkFilter;
 import org.jactr.core.slot.ISlot;
-import org.jactr.core.utils.collections.SkipListSetFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * adapts the exact parallel to work as partial. It does this by disabling the
@@ -61,14 +60,11 @@ public class ParallelPartialSearchDelegate extends ParallelExactSearchDelegate
       IChunkFilter chunkFilter,
       DefaultSearchSystem searchSystem)
   {
-    SortedSet<IChunk> candidates = SkipListSetFactory
-        .newInstance(searchSystem._chunkNameComparator);
+    SortedSet<IChunk> candidates = new ConcurrentSkipListSet<>(searchSystem._chunkNameComparator);
 
     for (Collection<IChunk> slotSearchResult : slotSearchResults)
     {
       searchSystem.cleanAddAll(candidates, slotSearchResult);
-
-      searchSystem.recycleCollection(slotSearchResult);
     }
 
 

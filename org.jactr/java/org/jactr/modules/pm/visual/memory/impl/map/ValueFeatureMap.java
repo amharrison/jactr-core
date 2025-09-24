@@ -4,6 +4,7 @@ package org.jactr.modules.pm.visual.memory.impl.map;
  * default logging
  */
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -14,7 +15,6 @@ import org.commonreality.object.IAfferentObject;
 import org.commonreality.object.UnknownPropertyNameException;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.IConditionalSlot;
-import org.jactr.core.utils.collections.FastSetFactory;
 import org.jactr.modules.pm.visual.IVisualModule;
 import org.slf4j.LoggerFactory;
 
@@ -39,12 +39,12 @@ public class ValueFeatureMap extends AbstractVisualFeatureMap<String>
 
   private Set<IIdentifier> acquireSet()
   {
-    return FastSetFactory.newInstance();
+    return new HashSet<>();
   }
 
   private void releaseSet(Set<IIdentifier> set)
   {
-    FastSetFactory.recycle(set);
+    set.clear();
   }
 
   @Override
@@ -86,7 +86,7 @@ public class ValueFeatureMap extends AbstractVisualFeatureMap<String>
       Set<IIdentifier> results)
   {
     boolean firstInsertion = true;
-    Set<IIdentifier> tmp = FastSetFactory.newInstance();
+    Set<IIdentifier> tmp = acquireSet();
 
     for (IConditionalSlot slot : request.getConditionalSlots())
       if (slot.getName().equals(IVisualModule.VALUE_SLOT))
@@ -112,7 +112,6 @@ public class ValueFeatureMap extends AbstractVisualFeatureMap<String>
           results.retainAll(tmp);
       }
 
-    FastSetFactory.recycle(tmp);
   }
 
   private void not(String value, Set<IIdentifier> tmp)

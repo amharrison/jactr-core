@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
@@ -51,8 +50,6 @@ import org.jactr.core.production.request.ChunkRequest;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ISlot;
-import org.jactr.core.utils.collections.FastListFactory;
-import org.jactr.core.utils.collections.SkipListSetFactory;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.core.utils.parameter.ParameterHandler;
 import org.slf4j.LoggerFactory;
@@ -188,7 +185,7 @@ public class DefaultRetrievalModule6 extends AbstractModule
 
     fireInitiated(pattern);
 
-    List<ISlot> slots = FastListFactory.newInstance();
+    List<ISlot> slots = new ArrayList<>();
     pattern.getSlots(slots);
 
     // this must be vestigial code, but from when?
@@ -224,7 +221,7 @@ public class DefaultRetrievalModule6 extends AbstractModule
       fromDM = dm.findExactMatches(cleanedPattern, _activationSorter, filter);
     }
 
-    FastListFactory.recycle(slots);
+    
 
     Collection<IChunk> results = fromDM.get();
 
@@ -245,9 +242,6 @@ public class DefaultRetrievalModule6 extends AbstractModule
 
     fireCompleted(pattern, retrievalResult, retrievalTime, results);
 
-    // now we can recycle the collection
-    if (results instanceof ConcurrentSkipListSet)
-      SkipListSetFactory.recycle((ConcurrentSkipListSet) results);
 
     return retrievalResult;
   }
@@ -260,9 +254,9 @@ public class DefaultRetrievalModule6 extends AbstractModule
    */
   private ChunkTypeRequest cleanPattern(ChunkTypeRequest pattern)
   {
-    List<ISlot> slots = FastListFactory.newInstance();
+    List<ISlot> slots = new ArrayList<>();
     pattern.getSlots(slots);
-    List<ISlot> cleanSlots = FastListFactory.newInstance();
+    List<ISlot> cleanSlots = new ArrayList<>();
 
     for (ISlot cSlot : slots)
       if (!cSlot.getName().startsWith(":")) cleanSlots.add(cSlot);
@@ -274,8 +268,6 @@ public class DefaultRetrievalModule6 extends AbstractModule
         pattern = new ChunkRequest(((ChunkRequest) pattern).getChunk(),
             cleanSlots);
 
-    FastListFactory.recycle(slots);
-    FastListFactory.recycle(cleanSlots);
 
     return pattern;
   }

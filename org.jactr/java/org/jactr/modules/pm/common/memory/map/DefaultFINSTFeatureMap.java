@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -34,7 +35,6 @@ import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.slot.BasicSlot;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ISlot;
-import org.jactr.core.utils.collections.FastSetFactory;
 import org.jactr.modules.pm.common.memory.IPerceptualMemory;
 import org.slf4j.LoggerFactory;
 
@@ -561,7 +561,7 @@ public class DefaultFINSTFeatureMap implements IFINSTFeatureMap
       Set<IIdentifier> container)
   {
 
-    Set<IIdentifier> tmp = FastSetFactory.newInstance();
+    Set<IIdentifier> tmp = new HashSet<>();
     boolean firstInsertion = true;
     for (IConditionalSlot slot : request.getConditionalSlots())
       if (slot.getName().equalsIgnoreCase(_attendedSlotName))
@@ -587,7 +587,7 @@ public class DefaultFINSTFeatureMap implements IFINSTFeatureMap
           container.retainAll(tmp);
       }
 
-    FastSetFactory.recycle(tmp);
+    
   }
 
   private void equals(Object value, Set<IIdentifier> container)

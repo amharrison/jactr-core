@@ -33,7 +33,6 @@ import org.jactr.core.model.event.ModelEvent;
 import org.jactr.core.model.event.ModelListenerAdaptor;
 import org.jactr.core.module.IModule;
 import org.jactr.core.utils.DefaultAdaptable;
-import org.jactr.core.utils.collections.FastCollectionFactory;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.core.utils.parameter.ParameterHandler;
 import org.slf4j.LoggerFactory;
@@ -530,7 +529,7 @@ public abstract class AbstractActivationBuffer extends DefaultAdaptable
 
   public IChunk contains(IChunk c)
   {
-    Collection<IChunk> sources = FastCollectionFactory.newInstance();
+    Collection<IChunk> sources = new ArrayList<>();
     try
     {
       for (IChunk chunk : getSourceChunks(sources))
@@ -539,13 +538,13 @@ public abstract class AbstractActivationBuffer extends DefaultAdaptable
     }
     finally
     {
-      FastCollectionFactory.recycle(sources);
+      
     }
   }
 
   public IChunk containsExact(IChunk c)
   {
-    Collection<IChunk> sources = FastCollectionFactory.newInstance();
+    Collection<IChunk> sources = new ArrayList<>();
     try
     {
       for (IChunk chunk : getSourceChunks(sources))
@@ -554,7 +553,7 @@ public abstract class AbstractActivationBuffer extends DefaultAdaptable
     }
     finally
     {
-      FastCollectionFactory.recycle(sources);
+      
     }
   }
 

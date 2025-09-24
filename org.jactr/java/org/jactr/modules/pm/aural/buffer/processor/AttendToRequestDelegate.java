@@ -1,13 +1,12 @@
 package org.jactr.modules.pm.aural.buffer.processor;
 
+import java.util.ArrayList;
 import java.util.List;
 /*
  * default logging
  */
 import java.util.concurrent.Future;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
@@ -21,7 +20,6 @@ import org.jactr.core.queue.ITimedEvent;
 import org.jactr.core.queue.timedevents.DelayedBufferInsertionTimedEvent;
 import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ISlot;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.modules.pm.aural.IAuralModule;
 import org.jactr.modules.pm.aural.buffer.IAuralActivationBuffer;
 import org.jactr.modules.pm.aural.event.IAuralModuleListener;
@@ -29,6 +27,7 @@ import org.jactr.modules.pm.aural.memory.AuralUtilities;
 import org.jactr.modules.pm.common.buffer.AbstractRequestDelegate;
 import org.jactr.modules.pm.common.event.IPerceptualMemoryModuleEvent;
 import org.jactr.modules.pm.common.memory.PerceptualSearchResult;
+import org.slf4j.LoggerFactory;
 
 /**
  * attend-to and move-attention delegate that handles buffer states and routes
@@ -116,7 +115,7 @@ public class AttendToRequestDelegate extends AbstractRequestDelegate
     /*
      * figure out if this is a stuff request
      */
-    List<ISlot> slots = FastListFactory.newInstance();
+    List<ISlot> slots = new ArrayList<>();
     try
     {
       ctr.getSlots(slots);
@@ -133,7 +132,7 @@ public class AttendToRequestDelegate extends AbstractRequestDelegate
     }
     finally
     {
-      FastListFactory.recycle(slots);
+      
     }
   }
 

@@ -1,11 +1,13 @@
 package org.jactr.modules.pm.aural.memory.impl.map;
 
+import java.util.ArrayList;
 /*
  * default logging
  */
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -19,8 +21,6 @@ import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.slot.BasicSlot;
 import org.jactr.core.slot.IConditionalSlot;
-import org.jactr.core.utils.collections.FastCollectionFactory;
-import org.jactr.core.utils.collections.FastSetFactory;
 import org.jactr.modules.pm.aural.IAuralModule;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,7 @@ public class KindFeatureMap extends AbstractAuralFeatureMap<String[]>
       Collection<IIdentifier> identifiers = _kindMap.get(kind);
       if (identifiers == null)
       {
-        identifiers = FastCollectionFactory.newInstance();
+        identifiers = new ArrayList<>();
         _kindMap.put(kind, identifiers);
       }
       identifiers.add(identifier);
@@ -88,7 +88,7 @@ public class KindFeatureMap extends AbstractAuralFeatureMap<String[]>
       Set<IIdentifier> results)
   {
     boolean firstInsertion = true;
-    Set<IIdentifier> tmp = FastSetFactory.newInstance();
+    Set<IIdentifier> tmp = new HashSet<>();
 
     for (IConditionalSlot slot : request.getConditionalSlots())
       if (slot.getName().equals(IAuralModule.KIND_SLOT))
@@ -114,7 +114,7 @@ public class KindFeatureMap extends AbstractAuralFeatureMap<String[]>
           results.retainAll(tmp);
       }
 
-    FastSetFactory.recycle(tmp);
+    
   }
 
   private void not(String kind, Set<IIdentifier> container)
@@ -160,7 +160,7 @@ public class KindFeatureMap extends AbstractAuralFeatureMap<String[]>
         if (identifiers.size() == 0)
         {
           _kindMap.remove(kind);
-          FastCollectionFactory.recycle(identifiers);
+          
         }
       }
     }

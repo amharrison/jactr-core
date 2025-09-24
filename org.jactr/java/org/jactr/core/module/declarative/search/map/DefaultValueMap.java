@@ -20,10 +20,8 @@ import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.commons.collections.collection.CompositeCollection;
- 
-import org.slf4j.LoggerFactory;
 import org.eclipse.collections.impl.factory.Maps;
-import org.jactr.core.utils.collections.CompositeCollectionFactory;
+import org.slf4j.LoggerFactory;
 
 public class DefaultValueMap<V, I> implements IValueMap<V, I>
 {
@@ -60,7 +58,7 @@ public class DefaultValueMap<V, I> implements IValueMap<V, I>
 
   protected CompositeCollection instantiateReturnSet()
   {
-    return CompositeCollectionFactory.newInstance();
+    return new CompositeCollection();
   }
 
   /**

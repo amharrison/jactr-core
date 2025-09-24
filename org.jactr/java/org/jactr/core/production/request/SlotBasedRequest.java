@@ -24,7 +24,6 @@ import org.jactr.core.slot.ISlot;
 import org.jactr.core.slot.ISlotContainer;
 import org.jactr.core.slot.IUniqueSlotContainer;
 import org.jactr.core.slot.IVariableNameSlot;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.slf4j.LoggerFactory;
 
 /*
@@ -78,7 +77,7 @@ public class SlotBasedRequest implements IRequest, ISlotContainer
   {
     ISymbolicChunk sc = chunk.getSymbolicChunk();
     String name = sc.getName();
-    List<ISlot> slots = FastListFactory.newInstance();
+    List<ISlot> slots = new ArrayList<>();
     getSlots(slots);
     int count = 0;
 
@@ -93,8 +92,6 @@ public class SlotBasedRequest implements IRequest, ISlotContainer
 
       }
 
-    FastListFactory.recycle(slots);
-
     return count;
   }
 
@@ -103,28 +100,22 @@ public class SlotBasedRequest implements IRequest, ISlotContainer
   {
     ISymbolicChunk sc = reference.getSymbolicChunk();
     String name = sc.getName();
-    List<ISlot> slots = FastListFactory.newInstance();
+    List<ISlot> slots = new ArrayList<>();
     getSlots(slots);
     VariableBindings bindings = new VariableBindings();
 
-    try
-    {
-      for (ISlot slot : slots)
-        try
-        {
-          resolveSlot(slot, bindings, name, sc);
-        }
-        catch (Exception e)
-        {
-          return false;
-        }
+    for (ISlot slot : slots)
+      try
+      {
+        resolveSlot(slot, bindings, name, sc);
+      }
+      catch (Exception e)
+      {
+        return false;
+      }
 
-      return true;
-    }
-    finally
-    {
-      FastListFactory.recycle(slots);
-    }
+    return true;
+
   }
 
   protected boolean resolveSlot(ISlot slot, VariableBindings bindings,
@@ -159,7 +150,7 @@ public class SlotBasedRequest implements IRequest, ISlotContainer
       VariableBindings bindings, String slotContainerName,
       IUniqueSlotContainer container) throws CannotMatchException
   {
-    List<ISlot> slots = FastListFactory.newInstance();
+    List<ISlot> slots = new ArrayList<>();
 
     int op = slotToResolve.getOperator();
     try
@@ -220,7 +211,7 @@ public class SlotBasedRequest implements IRequest, ISlotContainer
     }
     finally
     {
-      FastListFactory.recycle(slots);
+      
     }
   }
 
@@ -443,7 +434,7 @@ public class SlotBasedRequest implements IRequest, ISlotContainer
   {
     if (_unresolved == null)
     {
-      _unresolved = FastListFactory.newInstance();
+      _unresolved = new ArrayList<>();
       _unresolved.addAll(getConditionalAndLogicalSlots());
     }
 
@@ -495,7 +486,7 @@ public class SlotBasedRequest implements IRequest, ISlotContainer
   {
     if (_unresolved == null)
     {
-      _unresolved = FastListFactory.newInstance();
+      _unresolved = new ArrayList<>();
       _unresolved.addAll(getConditionalAndLogicalSlots());
     }
 
@@ -601,7 +592,7 @@ public class SlotBasedRequest implements IRequest, ISlotContainer
   // except for logic slots
   public Collection<? extends IConditionalSlot> getConditionalSlots()
   {
-    Collection<IConditionalSlot> slots = FastListFactory.newInstance();
+    Collection<IConditionalSlot> slots = new ArrayList<>();
     for (ISlot slot : _slots)
       if (slot instanceof IConditionalSlot) slots.add((IConditionalSlot) slot);
 
@@ -611,7 +602,7 @@ public class SlotBasedRequest implements IRequest, ISlotContainer
 
   public Collection<? extends ISlot> getConditionalAndLogicalSlots()
   {
-    Collection<ISlot> slots = FastListFactory.newInstance();
+    Collection<ISlot> slots = new ArrayList<>();
     for (ISlot slot : _slots)
       if (slot instanceof IConditionalSlot || slot instanceof ILogicalSlot)
         slots.add(slot);

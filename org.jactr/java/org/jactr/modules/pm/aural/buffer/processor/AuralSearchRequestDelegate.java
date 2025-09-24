@@ -1,13 +1,12 @@
 package org.jactr.modules.pm.aural.buffer.processor;
 
+import java.util.ArrayList;
 import java.util.List;
 /*
  * default logging
  */
 import java.util.concurrent.Future;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.concurrent.ExecutorServices;
@@ -19,7 +18,6 @@ import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.production.request.IRequest;
 import org.jactr.core.queue.ITimedEvent;
 import org.jactr.core.slot.ISlot;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.modules.pm.aural.IAuralModule;
 import org.jactr.modules.pm.aural.buffer.IAuralLocationBuffer;
 import org.jactr.modules.pm.aural.event.IAuralModuleListener;
@@ -28,6 +26,7 @@ import org.jactr.modules.pm.common.buffer.AbstractRequestDelegate;
 import org.jactr.modules.pm.common.event.IPerceptualMemoryModuleEvent;
 import org.jactr.modules.pm.common.memory.IPerceptualMemory;
 import org.jactr.modules.pm.common.memory.PerceptualSearchResult;
+import org.slf4j.LoggerFactory;
 
 /**
  * handles aural-location requests by checking and managing the buffer states
@@ -139,7 +138,7 @@ public class AuralSearchRequestDelegate extends AbstractRequestDelegate
     /*
      * figure out if this is a stuff request
      */
-    List<ISlot> slots = FastListFactory.newInstance();
+    List<ISlot> slots = new ArrayList<>();
     ctr.getSlots(slots);
 
     boolean isStuffRequest = false;
@@ -168,7 +167,7 @@ public class AuralSearchRequestDelegate extends AbstractRequestDelegate
 
     _isStuffRequest = isStuffRequest;
 
-    FastListFactory.recycle(slots);
+    
 
     return _module.search(ctr, requestTime, isStuffRequest);
   }

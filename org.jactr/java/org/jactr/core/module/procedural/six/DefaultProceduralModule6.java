@@ -62,7 +62,6 @@ import org.jactr.core.production.condition.IBufferCondition;
 import org.jactr.core.production.condition.ICondition;
 import org.jactr.core.production.condition.VariableCondition;
 import org.jactr.core.production.six.DefaultProduction6;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.core.utils.parameter.IParameterized;
 import org.jactr.core.utils.parameter.ParameterHandler;
 import org.slf4j.LoggerFactory;
@@ -517,7 +516,7 @@ public class DefaultProceduralModule6 extends AbstractModule
       int tasks = size / minimumBlockSize;
       tasks += size % minimumBlockSize == 0 ? 0 : 1;
 
-      List<IProduction> working = FastListFactory.newInstance();
+      List<IProduction> working = new ArrayList<>();
       working.addAll(productions);
 
       for (int i = 0; i < tasks; i++)
@@ -545,7 +544,6 @@ public class DefaultProceduralModule6 extends AbstractModule
           LOGGER.error("Failed to instantiatie productions in parallel: ", e);
         }
 
-      FastListFactory.recycle(working);
     }
     else
       try

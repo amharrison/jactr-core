@@ -14,13 +14,14 @@
 package org.jactr.core.slot;
 
  
-import org.slf4j.LoggerFactory;
+import java.util.Objects;
+
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
 import org.jactr.core.model.IModel;
 import org.jactr.core.production.IProduction;
-import org.jactr.core.utils.WeaklyCached;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author harrison TODO To change the template for this generated type comment
@@ -36,13 +37,6 @@ public class BasicSlot implements ISlot, Comparable<ISlot>
 
   private String                     _name;
 
-  /**
-   * we cache the toString representation since it will be called so frequently,
-   * however this creates a ton of strings that are actually relatively short
-   * lived, so we use references to hold onto it for a short term
-   */
-  private WeaklyCached<String>       _toString = new WeaklyCached<>(
-      this::createToString);
 
   public BasicSlot(String name)
   {
@@ -114,35 +108,7 @@ public class BasicSlot implements ISlot, Comparable<ISlot>
     return new BasicSlot(_name, _value);
   }
 
-  @Override
-  public int hashCode()
-  {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + (_name == null ? 0 : _name.hashCode());
-    result = prime * result + (_value == null ? 0 : _value.hashCode());
-    return result;
-  }
-
-  @Override
-  public boolean equals(Object obj)
-  {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
-    BasicSlot other = (BasicSlot) obj;
-    if (_name == null)
-    {
-      if (other._name != null) return false;
-    }
-    else if (!_name.equals(other._name)) return false;
-    if (_value == null)
-    {
-      if (other._value != null) return false;
-    }
-    else if (!_value.equals(other._value)) return false;
-    return true;
-  }
+ 
 
   /**
    * checks to see if the slot value is a variable. Three things must be true:<br>
@@ -181,18 +147,9 @@ public class BasicSlot implements ISlot, Comparable<ISlot>
   @Override
   public String toString()
   {
-    return _toString.get();
-  }
-
-  protected void invalidateToString()
-  {
-    _toString.invalidate();
-  }
-
-  protected String createToString()
-  {
     return String.format("%1$s(%2$s)", getName(), getValue());
   }
+
 
   /**
    * set the value of the slot, returning the prior value
@@ -223,7 +180,6 @@ public class BasicSlot implements ISlot, Comparable<ISlot>
 
     Object old = _value;
     _value = value;
-    invalidateToString();
     return old;
   }
 
@@ -231,8 +187,26 @@ public class BasicSlot implements ISlot, Comparable<ISlot>
   {
     String old = _name;
     _name = name;
-    invalidateToString();
     return old;
   }
+
+  @Override
+  public int hashCode()
+  {
+    return Objects.hash(_name, _value);
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
+    BasicSlot other = (BasicSlot) obj;
+    return Objects.equals(_name, other._name)
+        && Objects.equals(_value, other._value);
+  }
+  
+  
 
 }

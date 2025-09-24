@@ -13,6 +13,7 @@
  */
 package org.jactr.core.module.declarative.four.associative;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.SortedMap;
@@ -29,7 +30,6 @@ import org.jactr.core.production.IInstantiation;
 import org.jactr.core.production.condition.IBufferCondition;
 import org.jactr.core.production.condition.ICondition;
 import org.jactr.core.slot.ISlot;
-import org.jactr.core.utils.collections.FastCollectionFactory;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -113,7 +113,7 @@ public class ProceduralModuleListener extends ProceduralModuleListenerAdaptor
 
   public void updateStatistics(SortedMap<String, IChunk> matchedChunks)
   {
-    Collection<ISlot> slots = FastCollectionFactory.newInstance();
+    Collection<ISlot> slots = new ArrayList<>();
     for (Map.Entry<String, IChunk> matchedEntry : matchedChunks.entrySet())
     {
       IChunk matchedChunk = matchedEntry.getValue();
@@ -177,7 +177,7 @@ public class ProceduralModuleListener extends ProceduralModuleListenerAdaptor
 
     }
 
-    FastCollectionFactory.recycle(slots);
+    
   }
 
 }

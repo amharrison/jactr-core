@@ -7,7 +7,7 @@ import org.jactr.core.buffer.meta.IMetaBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.logging.IMessageBuilder;
 import org.jactr.core.logging.Logger;
-import org.jactr.core.logging.impl.MessageBuilderFactory;
+import org.jactr.core.logging.impl.StringMessageBuilder;
 import org.jactr.core.module.meta.MetaModule;
 import org.jactr.core.module.meta.buffer.delegates.AddChunkDelegate;
 import org.jactr.core.module.meta.buffer.delegates.AddChunkTypeDelegate;
@@ -45,14 +45,12 @@ public class MetaBuffer extends DefaultDelegatedRequestableBuffer6
       _request = (IRequest) object;
       if (Logger.hasLoggers(getModel()))
       {
-        IMessageBuilder mb = MessageBuilderFactory.newInstance();
+        IMessageBuilder mb = new StringMessageBuilder();
 
         mb.append("Current request : ");
         mb.append(_request);
 
         Logger.log(getModel(), "META", mb);
-
-        MessageBuilderFactory.recycle(mb);
       }
     }
   }

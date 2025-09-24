@@ -1,9 +1,8 @@
 package org.jactr.modules.pm.motor.buffer.processor;
 
+import java.util.ArrayList;
 import java.util.List;
 
- 
-import org.slf4j.LoggerFactory;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.buffer.delegate.SimpleRequestDelegate;
 import org.jactr.core.chunktype.IChunkType;
@@ -12,10 +11,10 @@ import org.jactr.core.model.IModel;
 import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.production.request.IRequest;
 import org.jactr.core.slot.ISlot;
-import org.jactr.core.utils.collections.FastListFactory;
 import org.jactr.modules.pm.motor.AbstractMotorModule;
 import org.jactr.modules.pm.motor.IMotorModule;
 import org.jactr.modules.pm.motor.command.IMovement;
+import org.slf4j.LoggerFactory;
 
 public class MotorRequestDelegate extends SimpleRequestDelegate
 {
@@ -72,7 +71,7 @@ public class MotorRequestDelegate extends SimpleRequestDelegate
 
   private boolean isAdjustment(ChunkTypeRequest request)
   {
-    List<ISlot> container = FastListFactory.newInstance();
+    List<ISlot> container = new ArrayList<>();
     request.getSlots(container);
     try
     {
@@ -82,7 +81,7 @@ public class MotorRequestDelegate extends SimpleRequestDelegate
     }
     finally
     {
-      FastListFactory.recycle(container);
+      
     }
   }
 }

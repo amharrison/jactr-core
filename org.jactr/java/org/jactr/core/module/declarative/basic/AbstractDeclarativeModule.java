@@ -54,7 +54,6 @@ import org.jactr.core.production.request.ChunkTypeRequest;
 import org.jactr.core.runtime.ACTRRuntime;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.utils.StringUtilities;
-import org.jactr.core.utils.collections.FastCollectionFactory;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -1119,9 +1118,8 @@ public abstract class AbstractDeclarativeModule extends AbstractModule
 
   protected void processPendingEncodingAndDisposals()
   {
-    Collection<IChunk> chunkContainer = FastCollectionFactory.newInstance();
-    Collection<IActivationBuffer> bufferContainer = FastCollectionFactory
-        .newInstance();
+    Collection<IChunk> chunkContainer = new ArrayList<>();
+    Collection<IActivationBuffer> bufferContainer = new ArrayList<>();
 
     try
     {
@@ -1130,8 +1128,6 @@ public abstract class AbstractDeclarativeModule extends AbstractModule
     }
     finally
     {
-      FastCollectionFactory.recycle(chunkContainer);
-      FastCollectionFactory.recycle(bufferContainer);
     }
   }
 

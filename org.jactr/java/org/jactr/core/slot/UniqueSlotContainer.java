@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import org.slf4j.LoggerFactory;
@@ -16,75 +17,28 @@ public class UniqueSlotContainer implements IUniqueSlotContainer
   /**
    * Logger definition
    */
-  static private final transient org.slf4j.Logger LOGGER      = LoggerFactory
+  static private final transient org.slf4j.Logger LOGGER   = LoggerFactory
       .getLogger(UniqueSlotContainer.class);
 
-  private Map<String, ISlot>                      _slotMap;
+  final private Map<String, ISlot>                _slotMap = new TreeMap<String, ISlot>();
 
-  protected boolean                               _useMutable = false;
+  final protected boolean                         _useMutable;
+
+  private boolean                                 _encoded = false;
 
   public UniqueSlotContainer()
   {
     this(false);
   }
 
-  @Override
-  public int hashCode()
-  {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + (_slotMap == null ? 0 : _slotMap.hashCode());
-    result = prime * result + (_useMutable ? 1231 : 1237);
-    return result;
-  }
-
-  /**
-   * this is retained for BasicSymbolicChunk down the inheritance line. This
-   * exposes the default Object.hashCode
-   *
-   * @return
-   */
-  protected int originalHashCode()
-  {
-    return super.hashCode();
-  }
-
-  @Override
-  public boolean equals(Object obj)
-  {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
-    UniqueSlotContainer other = (UniqueSlotContainer) obj;
-    if (_slotMap == null)
-    {
-      if (other._slotMap != null) return false;
-    }
-    else if (!_slotMap.equals(other._slotMap)) return false;
-    if (_useMutable != other._useMutable) return false;
-    return true;
-  }
-
   public UniqueSlotContainer(boolean useMutableSlots)
   {
-    _slotMap = new TreeMap<String, ISlot>();
     _useMutable = useMutableSlots;
-  }
-
-  public UniqueSlotContainer(IUniqueSlotContainer container,
-      boolean useMutableSlots)
-  {
-    this(useMutableSlots);
-    for (ISlot slot : container.getSlots())
-      addSlot(slot);
   }
 
   public ISlot getSlot(String slotName)
   {
-    synchronized (_slotMap)
-    {
-      return _slotMap.get(slotName.toLowerCase());
-    }
+    return _slotMap.get(slotName);
   }
 
   protected ISlot createSlot(ISlot slot)
@@ -97,10 +51,7 @@ public class UniqueSlotContainer implements IUniqueSlotContainer
 
   public void addSlot(ISlot slot)
   {
-    synchronized (_slotMap)
-    {
-      _slotMap.put(slot.getName().toLowerCase(), createSlot(slot));
-    }
+    if (!_encoded) _slotMap.put(slot.getName(), createSlot(slot));
   }
 
   public Collection<? extends ISlot> getSlots()
@@ -110,37 +61,52 @@ public class UniqueSlotContainer implements IUniqueSlotContainer
 
   public Collection<ISlot> getSlots(Collection<ISlot> slots)
   {
-    if (slots == null) slots = new ArrayList<ISlot>(_slotMap.size());
-    synchronized (_slotMap)
-    {
+    if (slots == null)
+      slots = new ArrayList<ISlot>(_slotMap.values());
+    else
       slots.addAll(_slotMap.values());
-    }
     return slots;
   }
 
   public Collection<IMutableSlot> getMutableSlots()
   {
-    if (!_useMutable) return Collections.EMPTY_LIST;
+    if (!_useMutable) return Collections.emptyList();
+    if (_encoded) return Collections.emptyList();
+
     Collection<IMutableSlot> rtn = new ArrayList<IMutableSlot>(_slotMap.size());
-    synchronized (_slotMap)
-    {
-      for (ISlot slot : _slotMap.values())
-        rtn.add((IMutableSlot) slot);
-    }
+
+    for (ISlot slot : _slotMap.values())
+      rtn.add((IMutableSlot) slot);
+
     return rtn;
   }
 
   public void removeSlot(ISlot slot)
   {
-    synchronized (_slotMap)
-    {
-      _slotMap.remove(slot.getName().toLowerCase());
-    }
+    if (!_encoded) _slotMap.remove(slot.getName());
   }
 
   public boolean hasSlot(String slotName)
   {
-    return _slotMap.containsKey(slotName.toLowerCase());
+    return _slotMap.containsKey(slotName);
+  }
+  
+  /**
+   * makes readonly and optimizes
+   */
+  protected void encode() {
+    if(_encoded) return;
+    
+    var slots = getSlots();
+    _slotMap.clear();
+    
+    for(ISlot slot : slots)
+    {
+      String intern = slot.getName().intern();
+      _slotMap.put(intern, new OptimizedSlot(intern, slot.getValue()));
+    }
+    
+    _encoded = true;
   }
 
   /**
@@ -148,9 +114,36 @@ public class UniqueSlotContainer implements IUniqueSlotContainer
    */
   public void clear()
   {
-    synchronized (_slotMap)
-    {
-      _slotMap.clear();
-    }
+    if (!_encoded) _slotMap.clear();
   }
+
+  /**
+   * this is retained for BasicSymbolicChunk down the inheritance line. This
+   * exposes the default Object.hashCode
+   *
+   * @return
+   */
+//  protected int originalHashCode()
+//  {
+//    return super.hashCode();
+//  }
+
+  @Override
+  public int hashCode()
+  {
+    return Objects.hash(_slotMap, _useMutable, _encoded);
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
+    UniqueSlotContainer other = (UniqueSlotContainer) obj;
+    return Objects.equals(_slotMap, other._slotMap)
+        && _useMutable == other._useMutable 
+        && _encoded == other._encoded;
+  }
+
 }

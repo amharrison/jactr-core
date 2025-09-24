@@ -16,9 +16,7 @@ package org.jactr.core.module.declarative.search.map;
 import java.util.Collection;
 
 import org.apache.commons.collections.set.CompositeSet;
- 
 import org.slf4j.LoggerFactory;
-import org.jactr.core.utils.collections.CompositeSetFactory;
 public class NumericTypeValueMap<I> extends AbstractTypeValueMap<Double, I> implements ITypeValueMap<Double, I>
 {
   /**
@@ -84,7 +82,7 @@ public class NumericTypeValueMap<I> extends AbstractTypeValueMap<Double, I> impl
   {
     double low = asKeyType(value);
     double hi = asKeyType(value);
-    CompositeSet rtn = CompositeSetFactory.newInstance();
+    CompositeSet rtn = new CompositeSet();
 
     rtn.addComposited(getValueMap().lessThan(low));
     rtn.addComposited(getValueMap().greaterThan(hi));

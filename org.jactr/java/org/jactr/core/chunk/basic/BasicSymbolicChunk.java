@@ -14,6 +14,7 @@ package org.jactr.core.chunk.basic;
 
 import java.util.concurrent.locks.Lock;
 
+import org.commonreality.util.LockUtilities;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunk.ISymbolicChunk;
 import org.jactr.core.chunk.IllegalChunkStateException;
@@ -69,7 +70,8 @@ public class BasicSymbolicChunk extends NotifyingSlotContainer
   @Override
   public int hashCode()
   {
-    return originalHashCode();
+    return super.hashCode();
+//    return originalHashCode();
   }
 
   protected Lock readLock()
@@ -103,6 +105,9 @@ public class BasicSymbolicChunk extends NotifyingSlotContainer
    */
   public void encode(double when)
   {
+    if(!getParentChunk().isMutable())
+      super.encode();
+    
   }
 
   /**
@@ -112,6 +117,7 @@ public class BasicSymbolicChunk extends NotifyingSlotContainer
   {
     if (_chunkName == null || _chunkName == "")
       setName(_chunkType.getSymbolicChunkType().getName() + "-" + TOTAL_COUNT);
+    
     Lock l = readLock();
     try
     {

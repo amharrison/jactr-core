@@ -17,33 +17,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.commons.collections.collection.CompositeCollection;
-import org.apache.commons.collections.set.CompositeSet;
 import org.jactr.core.buffer.IActivationBuffer;
 import org.jactr.core.chunk.IChunk;
 import org.jactr.core.chunktype.IChunkType;
-import org.jactr.core.concurrent.ExecutorServices;
 import org.jactr.core.module.declarative.IDeclarativeModule;
 import org.jactr.core.module.declarative.search.ISearchSystem;
 import org.jactr.core.module.declarative.search.filter.AcceptAllFilter;
-import org.jactr.core.module.declarative.search.filter.DelegatedFilter;
 import org.jactr.core.module.declarative.search.filter.IChunkFilter;
-import org.jactr.core.module.declarative.search.filter.SlotFilter;
 import org.jactr.core.module.declarative.search.map.BooleanTypeValueMap;
 import org.jactr.core.module.declarative.search.map.ITypeValueMap;
 import org.jactr.core.module.declarative.search.map.NullTypeValueMap;
@@ -55,11 +45,6 @@ import org.jactr.core.slot.IConditionalSlot;
 import org.jactr.core.slot.ILogicalSlot;
 import org.jactr.core.slot.ISlot;
 import org.jactr.core.utils.collections.ChunkNameComparator;
-import org.jactr.core.utils.collections.CompositeCollectionFactory;
-import org.jactr.core.utils.collections.CompositeSetFactory;
-import org.jactr.core.utils.collections.FastCollectionFactory;
-import org.jactr.core.utils.collections.FastListFactory;
-import org.jactr.core.utils.collections.SkipListSetFactory;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -121,18 +106,6 @@ public class DefaultSearchSystem implements ISearchSystem
 
   protected IChunkFilter                                    _defaultFilter       = new AcceptAllFilter();
 
-  /*
-   * made default AMH 5/29/15
-   */
-  private boolean                                           _enableNotFilters    = !Boolean
-                                                                                     .getBoolean("jactr.search.disableNotFilters");
-
-  /**
-   * will do all the filter processing, but not actually swap out the filter for
-   * the search. this tests the overhead of building the filters.
-   */
-  private boolean                                           _testNotFilter       = Boolean
-                                                                                     .getBoolean("jactr.search.testNotFilters");
 
   private ISearchDelegate                                   _exactSearch         = new DefaultExactSearchDelegate();
 
@@ -215,285 +188,7 @@ public class DefaultSearchSystem implements ISearchSystem
     // return candidates;
     return _exactSearch.find(pattern, sortRule, filter, this);
   }
-
-  /**
-   * old test code for threaded search, migrated to
-   * {@link ParallelExactSearchDelegate}
-   * 
-   * @param pattern
-   * @return
-   */
-  @Deprecated
-  protected Collection<IChunk> findExactPooledThreads(ChunkTypeRequest pattern)
-  {
-    /*
-     * will not work yet since this old version of fastset might not work
-     * multithreaded
-     */
-    final Set<IChunk> candidates = new HashSet<IChunk>();
-    final IChunkType chunkType = pattern.getChunkType();
-    if (chunkType != null)
-      candidates.addAll(chunkType.getSymbolicChunkType().getChunks());
-
-    ExecutorService pool = ExecutorServices.getExecutor(ExecutorServices.POOL);
-
-    Collection<Future<Collection<IChunk>>> results = FastCollectionFactory
-        .newInstance();
-
-    for (ISlot slot : pattern.getConditionalAndLogicalSlots())
-    {
-      final ISlot fSlot = slot;
-      /*
-       * submit and snag the future for the results
-       */
-      results.add(pool.submit(new Callable<Collection<IChunk>>() {
-        public Collection<IChunk> call() throws Exception
-        {
-          return find(chunkType, fSlot, candidates);
-        }
-
-      }));
-    }
-
-    /*
-     * a search has been invoked for every slot pattern specified. Now we
-     * iterate through and block on the results. Since order only matters if
-     * this is the first result, we just block on the results and process them
-     * in order
-     */
-    boolean first = chunkType == null;
-    boolean zeroResults = false;
-    for (Future<Collection<IChunk>> result : results)
-      try
-      {
-        // if we've got nothing by now, cancel all the remaining searches
-        if (zeroResults)
-          result.cancel(true);
-        else
-        {
-          Collection<IChunk> slotCandidates = result.get();
-          if (first)
-          {
-            cleanAddAll(candidates, slotCandidates);
-            first = false;
-          }
-          else
-            cleanRetainAll(candidates, slotCandidates);
-        }
-
-        zeroResults = candidates.size() == 0;
-      }
-      catch (Exception e)
-      {
-        LOGGER.error("Failed to process parallel search results :", e);
-      }
-
-    FastCollectionFactory.recycle(results);
-
-    if (LOGGER.isDebugEnabled())
-      LOGGER.debug("First pass candidates for " + pattern + " chunks: "
-          + candidates);
-
-    return candidates;
-  }
-
-  /**
-   * Moved to
-   * {@link DefaultExactSearchDelegate#sortPattern(IChunkType, Collection, List, DefaultSearchSystem)}
-   * sort the slots by the guessed size of the result set. This is only used by
-   * findExact. We also convert not's into filters instead whereever possible
-   * 
-   * @param chunkType
-   * @param originalSlots
-   * @return
-   */
-  @Deprecated
-  protected IChunkFilter sortPattern(IChunkType chunkType,
-      Collection<? extends ISlot> originalSlots, List<ISlot> container)
-  {
-    // ArrayList<ISlot> sorted = new ArrayList<ISlot>(originalSlots);
-    container.addAll(originalSlots);
-
-    Map<ISlot, Long> sizeMap = new HashMap<ISlot, Long>();
-    for (ISlot slot : originalSlots)
-      sizeMap.put(slot, guessSize(chunkType, slot));
-
-    // Collections.sort(sorted, new PatternComparator(sizeMap));
-    Collections.sort(container, new PatternComparator(sizeMap));
-
-    /*
-     * after they are sorted, we could iterate over this set and if the first
-     * slot isn't a not, we can turn all subsequent not's (conditional, not
-     * logical) into filters instead.
-     */
-    boolean safeToFilter = false;
-    ListIterator<ISlot> sItr = container.listIterator();
-    DelegatedFilter notFilter = null;
-    while (sItr.hasNext())
-    {
-      ISlot slot = sItr.next();
-      if (slot instanceof IConditionalSlot)
-      {
-        IConditionalSlot cSlot = (IConditionalSlot) slot;
-        if (cSlot.getCondition() == IConditionalSlot.NOT_EQUALS)
-          if (safeToFilter)
-          {
-            if (LOGGER.isDebugEnabled())
-              LOGGER.debug(String.format("Converting %s to a filter", cSlot));
-
-            if (!_testNotFilter)
-            {
-              if (notFilter == null) notFilter = new DelegatedFilter();
-
-              notFilter.add(new SlotFilter(cSlot));
-              sItr.remove();
-            }
-          }
-          else if (LOGGER.isDebugEnabled())
-            LOGGER.debug(String.format("Cannot convert %s to filter", cSlot));
-      }
-      safeToFilter = true;
-    }
-
-    return notFilter == null ? new AcceptAllFilter() : notFilter;
-  }
-
-  /**
-   * Moved to
-   * {@link DefaultExactSearchDelegate#sortPatternOriginal(IChunkType, Collection, DefaultSearchSystem)}
-   * sort the slots by the guessed size of the result set.
-   * 
-   * @param chunkType
-   * @param slots
-   * @return
-   */
-  @Deprecated
-  protected List<ISlot> sortPatternOriginal(IChunkType chunkType,
-      Collection<? extends ISlot> slots)
-  {
-    ArrayList<ISlot> sorted = new ArrayList<ISlot>(slots);
-
-    Map<ISlot, Long> sizeMap = new HashMap<ISlot, Long>();
-    for (ISlot slot : slots)
-      sizeMap.put(slot, guessSize(chunkType, slot));
-
-    Collections.sort(sorted, new PatternComparator(sizeMap));
-
-    return sorted;
-  }
-
-  /**
-   * old single threaded search. moved to
-   * {@link DefaultExactSearchDelegate}
-   * 
-   * @param pattern
-   * @param sortRule
-   * @param filter
-   * @return
-   */
-  @Deprecated
-  protected SortedSet<IChunk> findExactSingleThreaded(ChunkTypeRequest pattern,
-      Comparator<IChunk> sortRule, IChunkFilter filter)
-  {
-    /*
-     * second pass, ditch all those that don't match our chunktype
-     */
-    SortedSet<IChunk> candidates = SkipListSetFactory
-        .newInstance(_chunkNameComparator);
-    IChunkType chunkType = pattern.getChunkType();
-
-    /*
-     * we optimize the following slot based searches by first sorting the slots
-     * by an estimate of the result set size. This allows us to process the
-     * smallest first, allowing us to bail early without processing everything.
-     * We also support the conversion of not's (when possible) to filters, which
-     * is often cheaper since not's are expensive in terms of large set
-     * operations.
-     */
-    List<ISlot> sortedSlots = null;
-    Collection<? extends ISlot> originalSlots = pattern
-        .getConditionalAndLogicalSlots();
-    IChunkFilter primaryFilter = _defaultFilter;
-    if (_enableNotFilters || _testNotFilter)
-    {
-      sortedSlots = new ArrayList<ISlot>(originalSlots.size());
-      primaryFilter = sortPattern(chunkType, originalSlots, sortedSlots);
-    }
-    else
-      sortedSlots = sortPatternOriginal(chunkType, originalSlots);
-
-    /*
-     * first things first, find all the candidates based on the content of the
-     * pattern. We sort the slots based on the estimated size of the returned
-     * set, then execute them. This lets us keep our candidate size down, which
-     * reduces the time cost of retainAll operations.
-     */
-    boolean first = candidates.size() == 0;
-    for (ISlot slot : sortedSlots)
-    {
-      if (first)
-      {
-        // candidates.addAll(find(slot, candidates));
-        cleanAddAll(candidates, find(chunkType, slot, candidates));
-        first = false;
-      }
-      else
-        cleanRetainAll(candidates, find(chunkType, slot, candidates));
-      // candidates.retainAll(find(slot, candidates));
-
-      if (candidates.size() == 0) break;
-    }
-
-    /**
-     * if there are no slots, we need all the chunks of the type
-     */
-    if (sortedSlots.size() == 0)
-      if (chunkType != null)
-        candidates.addAll(chunkType.getSymbolicChunkType().getChunks());
-      else
-        try
-        {
-          candidates.addAll(_module.getChunks().get());
-        }
-        catch (Exception e)
-        {
-          LOGGER.error("Failed to fetch all chunks for null chunktype search ",
-              e);
-        }
-
-    if (candidates.size() != 0)
-    {
-      /*
-       * we now need to deal with those that are actually the correct chunk
-       * type. Iteration over the candidates doing an isA() test would be
-       * O(candidates.size). candidates.retainAll(chunksOfType) is either
-       * O(candidates.size)*O(log(chunksOfType.size) or
-       * O(chunksOfType.size)*O(log(candidates.size)). Until the Fast
-       * collections come out with their predicate iterators, we will just
-       * iterate raw. And use the opportunity to filter and sort.
-       */
-      Comparator<IChunk> comparator = _chunkNameComparator;
-      if (sortRule != null) comparator = sortRule;
-
-      IChunkFilter chunkFilter = filter == null ? _defaultFilter : filter;
-
-      SortedSet<IChunk> returnCandidates = SkipListSetFactory
-          .newInstance(comparator);
-
-      for (IChunk candidate : candidates)
-        if (chunkType == null || candidate.isA(chunkType))
-          if (primaryFilter.accept(candidate))
-            if (chunkFilter.accept(candidate)) returnCandidates.add(candidate);
-
-      recycleCollection(candidates);
-      candidates = returnCandidates;
-    }
-    if (LOGGER.isDebugEnabled())
-      LOGGER.debug("First pass candidates for " + pattern + " chunks: "
-          + candidates);
-
-    return candidates;
-  }
+ 
 
   public SortedSet<IChunk> findFuzzy(ChunkTypeRequest pattern,
       Comparator<IChunk> sortRule, IChunkFilter filter)
@@ -502,73 +197,7 @@ public class DefaultSearchSystem implements ISearchSystem
     // return findFuzzyInternal(pattern, sortRule, filter);
   }
 
-  /**
-   * moved to {@link DefaultPartialSearchDelegate} default fuzzy search.
-   * 
-   * @param pattern
-   * @param sortRule
-   * @param filter
-   * @return
-   */
-  @Deprecated
-  protected SortedSet<IChunk> findFuzzyInternal(ChunkTypeRequest pattern,
-      Comparator<IChunk> sortRule, IChunkFilter filter)
-  {
-
-    /*
-     * second pass, ditch all those that don't match our chunktype
-     */
-    Collection<IChunk> candidates = null;
-    SortedSet<IChunk> returnCandidates = null;
-    IChunkType chunkType = pattern.getChunkType();
-
-    if (chunkType != null)
-      candidates = chunkType.getSymbolicChunkType().getChunks();
-    else
-      try
-      {
-        candidates = _module.getChunks().get();
-      }
-      catch (Exception e)
-      {
-        LOGGER
-            .error("Failed to fetch all chunks for null chunktype search ", e);
-      }
-
-    if (candidates.size() != 0)
-    {
-      /*
-       * we now need to deal with those that are actually the correct chunk
-       * type. Iteration over the candidates doing an isA() test would be
-       * O(candidates.size). candidates.retainAll(chunksOfType) is either
-       * O(candidates.size)*O(log(chunksOfType.size) or
-       * O(chunksOfType.size)*O(log(candidates.size)). Until the Fast
-       * collections come out with their predicate iterators, we will just
-       * iterate raw. And use the opportunity to filter and sort.
-       */
-      Comparator<IChunk> comparator = _chunkNameComparator;
-      if (sortRule != null) comparator = sortRule;
-
-      IChunkFilter chunkFilter = filter == null ? new AcceptAllFilter()
-          : filter;
-
-      returnCandidates = SkipListSetFactory.newInstance(comparator);
-
-      for (IChunk candidate : candidates)
-        if (chunkType == null || candidate.isA(chunkType))
-          if (chunkFilter.accept(candidate)) returnCandidates.add(candidate);
-
-      recycleCollection(candidates);
-    }
-    else
-      returnCandidates = new TreeSet<IChunk>();
-
-    if (LOGGER.isDebugEnabled())
-      LOGGER.debug("First pass candidates for " + pattern + " chunks: "
-          + returnCandidates);
-
-    return returnCandidates;
-  }
+ 
 
   protected long guessSize(IChunkType type, ISlot slot)
   {
@@ -612,7 +241,7 @@ public class DefaultSearchSystem implements ISearchSystem
     else if (slot instanceof ILogicalSlot)
     {
       ILogicalSlot logicalSlot = (ILogicalSlot) slot;
-      List<ISlot> children = FastListFactory.newInstance();
+      List<ISlot> children = new ArrayList<>();
       logicalSlot.getSlots(children);
 
       switch (logicalSlot.getOperator())
@@ -626,7 +255,7 @@ public class DefaultSearchSystem implements ISearchSystem
           size = guessSize(type, children.get(0));
       }
 
-      FastListFactory.recycle(children);
+      
     }
     else
       LOGGER.error("Ignoring slot " + slot
@@ -646,7 +275,7 @@ public class DefaultSearchSystem implements ISearchSystem
       Set<IChunk> candidates)
   {
     // Set<IChunk> rtn = SkipListSetFactory.newInstance(_chunkNameComparator);
-    Collection<IChunk> rtn = CompositeCollectionFactory.newInstance();
+    Collection<IChunk> rtn = new CompositeCollection();
     if (slot instanceof IConditionalSlot)
     {
       IConditionalSlot conditionalSlot = (IConditionalSlot) slot;
@@ -678,9 +307,9 @@ public class DefaultSearchSystem implements ISearchSystem
           {
             // don't use this guy, it won't work. if we use retainAll/removeAll
             // we need the skip list set.
-            CompositeCollectionFactory.recycle((CompositeCollection) rtn);
+            
 
-            rtn = SkipListSetFactory.newInstance(_chunkNameComparator);
+            rtn = new ConcurrentSkipListSet<IChunk>(_chunkNameComparator);
 
             cleanAddAll(rtn, candidates);
             cleanRemoveAll(rtn, ((IChunkType) slot.getValue())
@@ -699,7 +328,7 @@ public class DefaultSearchSystem implements ISearchSystem
     else if (slot instanceof ILogicalSlot)
     {
       ILogicalSlot logicalSlot = (ILogicalSlot) slot;
-      List<ISlot> children = FastListFactory.newInstance();
+      List<ISlot> children = new ArrayList<>();
       logicalSlot.getSlots(children);
 
       switch (logicalSlot.getOperator())
@@ -707,9 +336,9 @@ public class DefaultSearchSystem implements ISearchSystem
         case ILogicalSlot.AND:
           // don't use this guy, it won't work. if we use retainAll/removeAll
           // we need the skip list set.
-          CompositeCollectionFactory.recycle((CompositeCollection) rtn);
+          
 
-          rtn = SkipListSetFactory.newInstance(_chunkNameComparator);
+          rtn = new ConcurrentSkipListSet<IChunk>(_chunkNameComparator);
 
           cleanAddAll(rtn, find(type, children.get(0), candidates));
           cleanRetainAll(rtn,
@@ -723,15 +352,15 @@ public class DefaultSearchSystem implements ISearchSystem
         case ILogicalSlot.NOT:
           // don't use this guy, it won't work. if we use retainAll/removeAll
           // we need the skip list set.
-          CompositeCollectionFactory.recycle((CompositeCollection) rtn);
+          
 
-          rtn = SkipListSetFactory.newInstance(_chunkNameComparator);
+          rtn = new ConcurrentSkipListSet<IChunk>(_chunkNameComparator);
 
           cleanAddAll(rtn, candidates);
           cleanRemoveAll(rtn, find(type, children.get(0), candidates));
       }
 
-      FastListFactory.recycle(children);
+      
       LOGGER.debug("Logical.AND search for " + logicalSlot + " returning "
           + rtn);
     }
@@ -761,7 +390,7 @@ public class DefaultSearchSystem implements ISearchSystem
     else
     {
       rtnSet.addAll(candidates);
-      recycleCollection(candidates);
+//      recycleCollection(candidates);
     }
   }
 
@@ -775,7 +404,7 @@ public class DefaultSearchSystem implements ISearchSystem
       Collection<IChunk> candidates)
   {
     rtnSet.retainAll(candidates);
-    recycleCollection(candidates);
+//    recycleCollection(candidates);
   }
 
   /**
@@ -788,7 +417,7 @@ public class DefaultSearchSystem implements ISearchSystem
       Collection<IChunk> candidates)
   {
     rtnSet.removeAll(candidates);
-    recycleCollection(candidates);
+//    recycleCollection(candidates);
   }
 
   protected Collection<IChunk> equals(IChunkType type, ISlot slot)
@@ -877,17 +506,7 @@ public class DefaultSearchSystem implements ISearchSystem
     return 0;
   }
 
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  protected void recycleCollection(Collection<?> collection)
-  {
-    if (collection instanceof CompositeCollection)
-      CompositeCollectionFactory.recycle((CompositeCollection) collection);
-    else if (collection instanceof CompositeSet)
-      CompositeSetFactory.recycle((CompositeSet) collection);
-    else if (collection instanceof ConcurrentSkipListSet)
-      SkipListSetFactory.recycle((ConcurrentSkipListSet) collection);
-
-  }
+ 
 
   @SuppressWarnings("unchecked")
   protected Collection<IChunk> not(IChunkType type, ISlot slot)
@@ -897,7 +516,7 @@ public class DefaultSearchSystem implements ISearchSystem
      * are, but also all the other type value maps.all() we'll start with the
      * obvious part first
      */
-    CompositeCollection rtn = CompositeCollectionFactory.newInstance();
+    CompositeCollection rtn = new CompositeCollection();
     String key = getKey(type, slot.getName());
     ITypeValueMap<?, IChunk> typeValueMap = getSlotNameTypeValueMap(key,
         slot.getValue(), false);

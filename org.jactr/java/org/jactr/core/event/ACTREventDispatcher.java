@@ -22,7 +22,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 
 import org.jactr.core.concurrent.ExecutorServices;
-import org.jactr.core.utils.collections.FastCollectionFactory;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -97,14 +96,11 @@ public class ACTREventDispatcher<S, L>
     synchronized (this)
     {
       if (_actualListeners == null) return;
-      container = FastCollectionFactory.newInstance();
-      container.addAll(_actualListeners);
+      container = new ArrayList<>(_actualListeners);
     }
 
     for (Pair pair : container)
       pair.fire(event);
-
-    FastCollectionFactory.recycle(container);
   }
 
   private class Pair
@@ -177,7 +173,7 @@ public class ACTREventDispatcher<S, L>
    */
   synchronized public Collection<L> getListeners()
   {
-    if (_actualListeners == null) return Collections.EMPTY_LIST;
+    if (_actualListeners == null) return Collections.emptyList();
 
     List<L> listeners = new ArrayList<>(_actualListeners.size());
     for (Pair pair : _actualListeners)

@@ -28,7 +28,6 @@ import org.jactr.core.module.procedural.IProceduralModule;
 import org.jactr.core.production.IInstantiation;
 import org.jactr.core.queue.TimedEventQueue;
 import org.jactr.core.runtime.ACTRRuntime;
-import org.jactr.core.utils.collections.FastCollectionFactory;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -62,7 +61,7 @@ public class DefaultCycleProcessor6 implements ICycleProcessor
 
   private void execute(Collection<Runnable> source)
   {
-    Collection<Runnable> container = FastCollectionFactory.newInstance();
+    Collection<Runnable> container = new ArrayList<>();
     synchronized (source)
     {
       container.addAll(source);
@@ -79,7 +78,7 @@ public class DefaultCycleProcessor6 implements ICycleProcessor
         LOGGER.error("Failed to execute " + runner, e);
       }
 
-    FastCollectionFactory.recycle(container);
+    
   }
 
   @Override

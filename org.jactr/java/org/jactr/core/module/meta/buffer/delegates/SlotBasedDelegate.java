@@ -5,7 +5,7 @@ import org.jactr.core.buffer.delegate.IRequestDelegate;
 import org.jactr.core.buffer.meta.IMetaBuffer;
 import org.jactr.core.logging.IMessageBuilder;
 import org.jactr.core.logging.Logger;
-import org.jactr.core.logging.impl.MessageBuilderFactory;
+import org.jactr.core.logging.impl.StringMessageBuilder;
 import org.jactr.core.production.request.IRequest;
 import org.jactr.core.production.request.SlotBasedRequest;
 import org.jactr.core.slot.ISlot;
@@ -39,14 +39,12 @@ public class SlotBasedDelegate implements IRequestDelegate
 
       if (Logger.hasLoggers(buffer.getModel()))
       {
-        IMessageBuilder mb = MessageBuilderFactory.newInstance();
+        IMessageBuilder mb = new StringMessageBuilder();
 
         mb.append("Current request : ");
         mb.append(existing);
 
         Logger.log(buffer.getModel(), "META", mb);
-
-        MessageBuilderFactory.recycle(mb);
       }
     }
 

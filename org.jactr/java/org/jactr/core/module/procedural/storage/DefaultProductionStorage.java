@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
@@ -26,7 +28,6 @@ import org.jactr.core.production.IProduction;
 import org.jactr.core.production.condition.ChunkTypeCondition;
 import org.jactr.core.production.condition.IBufferCondition;
 import org.jactr.core.production.condition.ICondition;
-import org.jactr.core.utils.collections.FastSetFactory;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -64,8 +65,7 @@ public class DefaultProductionStorage implements IProductionStorage
                                                                                                                                                    /*
                                                                                                                                                     * reindex
                                                                                                                                                     */
-                                                                                           Set<IProduction> candidates = FastSetFactory
-                                                                                               .newInstance();
+                                                                                           Set<IProduction> candidates = new HashSet<>();
                                                                                            for (IActivationBuffer buffer : getProceduralModule()
                                                                                                .getModel()
                                                                                                .getActivationBuffers())
@@ -87,9 +87,6 @@ public class DefaultProductionStorage implements IProductionStorage
                                                                                                    production);
                                                                                            }
 
-                                                                                           FastSetFactory
-                                                                                               .recycle(
-                                                                                                   candidates);
                                                                                          }
                                                                                        };
 
@@ -345,7 +342,7 @@ public class DefaultProductionStorage implements IProductionStorage
   protected IProduction checkForExistingProduction(IProduction production)
   {
     Map<String, Set<IChunkType>> map = new TreeMap<String, Set<IChunkType>>();
-    Set<String> ambiguous = FastSetFactory.newInstance();
+    Set<String> ambiguous = new TreeSet<>();
 
     extractIndexInfo(production, map, ambiguous);
 
@@ -394,7 +391,7 @@ public class DefaultProductionStorage implements IProductionStorage
           intersect = tmp.size() != 0;
         }
       }
-      FastSetFactory.recycle(chunkTypes);
+      
     }
 
     /*
@@ -431,7 +428,7 @@ public class DefaultProductionStorage implements IProductionStorage
             Set<IChunkType> chunkTypes = chunkTypeMapping.get(bufferName);
             if (chunkTypes == null)
             {
-              chunkTypes = FastSetFactory.newInstance();
+              chunkTypes = new HashSet<>();
               chunkTypeMapping.put(bufferName, chunkTypes);
             }
 
@@ -492,7 +489,7 @@ public class DefaultProductionStorage implements IProductionStorage
     _allProductionsByName.put(name.toLowerCase(), production);
 
     Map<String, Set<IChunkType>> map = new TreeMap<String, Set<IChunkType>>();
-    Set<String> ambiguous = FastSetFactory.newInstance();
+    Set<String> ambiguous = new TreeSet<>();
 
     extractIndexInfo(production, map, ambiguous);
 
@@ -514,11 +511,11 @@ public class DefaultProductionStorage implements IProductionStorage
         for (IChunkType chunkType : entry.getValue())
           addToProductionMap(entry.getKey(), chunkType, production);
 
-        FastSetFactory.recycle(entry.getValue());
+        
       }
     }
 
-    FastSetFactory.recycle(ambiguous);
+    
   }
 
   private void addToProductionMap(String bufferName, IChunkType chunkType,
@@ -537,7 +534,7 @@ public class DefaultProductionStorage implements IProductionStorage
     Set<IProduction> productions = tree.get(chunkType);
     if (productions == null)
     {
-      productions = FastSetFactory.newInstance();
+      productions = new HashSet<>();
       tree.put(chunkType, productions);
     }
 
@@ -565,7 +562,7 @@ public class DefaultProductionStorage implements IProductionStorage
         .remove(production.getSymbolicProduction().getName().toLowerCase());
 
     Map<String, Set<IChunkType>> map = new TreeMap<String, Set<IChunkType>>();
-    Set<String> ambiguous = FastSetFactory.newInstance();
+    Set<String> ambiguous = new TreeSet<>();
 
     extractIndexInfo(production, map, ambiguous);
 
@@ -587,11 +584,9 @@ public class DefaultProductionStorage implements IProductionStorage
         for (IChunkType chunkType : entry.getValue())
           removeFromProductionMap(entry.getKey(), chunkType, production);
 
-        FastSetFactory.recycle(entry.getValue());
       }
     }
 
-    FastSetFactory.recycle(ambiguous);
   }
 
   private void writeLocked(Runnable runner)

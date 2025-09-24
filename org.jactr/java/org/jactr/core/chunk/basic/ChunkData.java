@@ -34,15 +34,15 @@ import org.jactr.core.utils.parameter.IParameterized;
  */
 public class ChunkData
 {
-  private ACTREventDispatcher<IChunk, IChunkListener>             _eventDispatcher;
+  final private ACTREventDispatcher<IChunk, IChunkListener>             _eventDispatcher;
 
-  private ACTREventDispatcher<IParameterized, IParameterListener> _parameterEventDispatcher;
+  final private ACTREventDispatcher<IParameterized, IParameterListener> _parameterEventDispatcher;
 
   private boolean                                                 _hasBeenDisposed;
 
   private String                                                  _comment;
 
-  private Map<String, Object>                                     _metaData;
+  final private Map<String, Object>                                     _metaData;
 
   private boolean                                                 _isEncoded = false;
 
@@ -63,10 +63,8 @@ public class ChunkData
   public void dispose()
   {
     _eventDispatcher.clear();
-    _eventDispatcher = null;
     _parameterEventDispatcher.clear();
-    _parameterEventDispatcher = null;
-    _metaData = null;
+    _metaData.clear();
     _hasBeenDisposed = true;
     _isEncoded = false;
     _isMutable = false;
